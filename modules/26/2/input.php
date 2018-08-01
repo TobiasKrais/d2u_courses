@@ -1,0 +1,1 @@
+<p>Einstellung für den Warenkorb werden im <a href="index.php?page=d2u_courses/settings">D2U Kurse Addon > Einstellungen</a> verwaltet.</p>

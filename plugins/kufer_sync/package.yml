@@ -1,0 +1,18 @@
+package: d2u_courses/kufer_sync
+version: '3.0.0'
+author: Tobias Krais
+supportpage: http://github.com/tobiaskrais/d2u_courses
+
+page:
+    title: 'translate:d2u_courses_kufer_sync'
+    perm: d2u_courses[kufer_sync]
+    icon: rex-icon fa-cloud-download
+
+requires:
+    php:
+        extensions: [xml]
+    packages:
+        cronjob: '>=2.1.1'
+        d2u_courses/locations: '>=3.0.0'
+        d2u_courses/schedule_categories: '>=3.0.0'
+        d2u_courses/target_groups: '>=3.0.0'

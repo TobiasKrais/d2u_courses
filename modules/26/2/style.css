@@ -1,0 +1,83 @@
+.cart_box {
+	background-color: #fab20a;
+}
+.cart_box_title {
+	color: white;
+	text-align: center;
+}
+.cart_course_title, .cart_course_title:hover {
+	color: white !important;
+	font-size: 1.25rem;
+}
+#cart_empty {
+	background-color: #f4f4f4;
+	color: #333333;
+}
+.cart_row {
+	margin-bottom: 5px;
+}
+.cart_row_title, .cart_row_title h1 {
+	color: white;
+	padding: 5px;
+}
+
+.div_cart {
+	padding: 0 5px 5px 0;
+}
+.div_cart input, .div_cart select {
+	background-color: white;
+	border: 0;
+	height: 30px;
+	width: 100%;
+}
+.spacer {
+	padding-bottom: 2em;
+}
+
+.add_participant {
+	background: transparent;
+	border: 0;
+	color: white;
+	padding: 0 0 5px 0;
+}
+.delete_participant {
+	margin: 5px 5px 7px;
+}
+
+.registration_header {
+	background-color: #fab20a;
+	color: white;
+	margin-bottom: 15px;
+	padding-left: 10px;
+}
+label.cart_text, label.cart_select {
+    float: left;
+    width: 150px;
+}
+input.cart_checkbox {
+	margin-top: 7px;
+	vertical-align: top;
+}
+label.cart_checkbox {
+	max-width: 80%;
+}
+.cart_checkbox {
+    background-color: #f4f4f4;
+    border: 3px #f4f4f4 solid;
+    max-width: 100%;
+    padding-left: 7px;
+}
+.cart_checkbox a {
+	text-decoration: underline;
+}
+input.cart_text, input.cart_date, input.cart_email, input.cart_number, select.cart_select {
+    background-color: #f4f4f4;
+    border: 3px #f4f4f4 solid;
+    color: #4f4c4c !important;
+    max-width: 100%;
+    width: 300px;
+}
+
+.view_head {
+	text-align: center;
+}

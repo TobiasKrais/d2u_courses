@@ -1,0 +1,21 @@
+d2u_courses_locations = Örtlichkeiten
+
+d2u_courses_location = Ort
+d2u_courses_location_latitude = Breitengrad
+d2u_courses_location_longitude = Längengrad
+d2u_courses_location_no_locations_found = Es wurden keine Örtlichkeiten angelegt.
+d2u_courses_location_rexuser = Redaxo Benutzer mit Editiererlaubnis
+d2u_courses_location_site_plan = Lageplan
+d2u_courses_location_street = Straße
+d2u_courses_location_zip_code = PLZ
+
+d2u_courses_location_categories = Ortskategorien
+d2u_courses_location_category = Ortskategorie
+d2u_courses_location_zoomlevel = Zoomstufe
+
+d2u_courses_location_room = Raum
+
+d2u_courses_location_settings_article = Redaxo Artikel Örtlichkeiten
+d2u_courses_location_settings_bg_color = Hintergrundfarbe
+
+d2u_courses_locations_rights_locations = D2U Kurse Addon: Örtlichkeiten

@@ -1,0 +1,12 @@
+package: d2u_courses/locations
+version: '3.0.0'
+author: Tobias Krais
+supportpage: http://github.com/tobiaskrais/d2u_courses
+
+page:
+    title: 'translate:d2u_courses_locations'
+    perm: d2u_courses[locations]
+    icon: rex-icon fa-map-marker
+    subpages:
+        location: { title: 'translate:d2u_courses_locations', icon: rex-icon fa-map-marker }
+        location_category: { title: 'translate:d2u_courses_location_categories', icon: rex-icon rex-icon-open-category }

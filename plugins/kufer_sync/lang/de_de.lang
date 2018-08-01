@@ -1,0 +1,12 @@
+d2u_courses_kufer_sync = Kufer Sync
+
+d2u_courses_kufer_categories = Kufer Bezeichnungsstrukturen<br>Je eine pro Zeile<br>Kategorietrenner: " / "
+d2u_courses_kufer_categories_target_group_name = Name in KuferSQL
+
+d2u_courses_import_settings_autoimport = Täglichen Autoimport aktivieren.
+d2u_courses_import_settings_default_category = Standard Kategorie
+d2u_courses_import_settings_default_location = Standard Örtlichkeit
+d2u_courses_import_settings_xml_registration_path = Verzeichnis Anmeldungen
+d2u_courses_import_settings_xml_url = Kufer XML URL
+
+d2u_courses_kufer_sync_rights_kufer_sync = D2U Kurse Addon: Kufer Sync
