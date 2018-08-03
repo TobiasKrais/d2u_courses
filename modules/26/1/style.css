@@ -122,3 +122,31 @@ a.course_row_a:hover {
 .add_cart a {
 	color: white !important;
 }
+
+.search_div {
+	float: right;
+	width: 100%;
+}
+.search_box {
+	border: 1px solid #a49f9f;
+	border-right: transparent;
+	height: 2em;
+	width: 90%;
+}
+.search_button {
+	border: 1px solid #a49f9f;
+	border-left: transparent;
+	height: 2em;
+	width: 10%;
+}
+.search_button {
+	min-width: 11px;
+}
+.search_title {
+	background-color: #a49f9f;
+	padding: 0.5em;
+}
+.search_title h1 {
+	color: white;
+	font-size: 1.75em;
+}

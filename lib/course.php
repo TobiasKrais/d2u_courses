@@ -488,10 +488,12 @@ class Course {
 	 * @param string $keyword Keyword
 	 */
 	static public function search($keyword) {
-		$query = "SELECT courses.course_id FROM ". \rex::getTablePrefix() ."d2u_courses_courses AS courses "
-			."LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_locations AS locations "
-				."ON courses.location_id = locations.location_id "
-			."LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_categories AS categories "
+		$query = "SELECT courses.course_id FROM ". \rex::getTablePrefix() ."d2u_courses_courses AS courses ";
+		if(\rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
+			$query .= "LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_locations AS locations "
+				."ON courses.location_id = locations.location_id ";
+		}
+		$query .= "LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_categories AS categories "
 				."ON courses.category_id = categories.category_id "
 			."WHERE courses.online_status = 'online'"
 				."AND (courses.date_start = '' OR courses.date_start > CURDATE()) "

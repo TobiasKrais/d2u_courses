@@ -1,4 +1,8 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+	session_start();
+}
+
 /*
  * Get parameters
  */
@@ -122,12 +126,24 @@ if(!function_exists('printBox')) {
 	}
 }
 
+// Course search box
+$show_search = "REX_VALUE[3]" == 'true' ? TRUE : FALSE;
+if($show_search) {
+	print '<div class="d-none d-sm-block col-sm-6 col-md-8 spacer d-print-none">&nbsp;</div>';
+	print '<div class="col-12 col-sm-6 col-md-4 spacer d-print-none">';
+	print '<div class="search_div">';
+	print '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_courses')) .'" method="post">'
+		. '<input class="search_box" name="course_search" value="'. filter_input(INPUT_POST, 'course_search') .'" type="text">'
+		. '<button class="search_button"><img src="'. rex_url::addonAssets('d2u_courses', 'lens.png').'"></button>'
+		. '</form>';
+	print '</div>';
+	print '</div>';
+}
 
 $courses = [];
 // Get courses if search field was used
 if(filter_input(INPUT_POST, 'course_search') != "") {
-	$_SESSION['course_search'] = filter_input(INPUT_POST, 'course_search');
-	$courses = D2U_Courses\Course::search($_SESSION['course_search']);
+	$courses = D2U_Courses\Course::search(filter_input(INPUT_POST, 'course_search'));
 }
 // Deal with categories
 else if($category !== FALSE) {
@@ -231,7 +247,9 @@ if(rex_config::get('d2u_courses', 'forward_single_course', 'inactive') =="active
 else if(count($courses) > 0) {
 	if(filter_input(INPUT_POST, 'course_search') != "") {
 		print '<div class="col-12 spacer">';
-		print '<h1>'. $tag_open .'d2u_courses_search_results'. $tag_close .' "'. $_SESSION['course_search'] .'":</h1>';
+		print '<div class="search_title">';	
+		print '<h1>'. $tag_open .'d2u_courses_search_results'. $tag_close .' "'. filter_input(INPUT_POST, 'course_search') .'":</h1>';
+		print '</div>';
 		print '</div>';
 	}
 	else if($target_group !== FALSE) {
@@ -339,8 +357,10 @@ else if(count($courses) > 0) {
 }
 else if(filter_input(INPUT_POST, 'course_search') != "") {
 	print '<div class="col-12">';
+	print '<div class="search_title">';
 	print '<h1>'. $tag_open .'d2u_courses_search_no_hits'. $tag_close .'</h1>';
 	print '<p>'. $tag_open .'d2u_courses_search_no_hits_text'. $tag_close .'</p>';
+	print '</div>';
 	print '</div>';
 }
 
@@ -367,17 +387,17 @@ if($course !== FALSE) {
 		print '<div class="row" data-match-height>';
 
 		if($course->picture != "") {
-			print '<div class="col-12 col-sm-9 course_row" data-height-watch>';
+			print '<div class="col-12 col-sm-9 course_row">';
 		}
 		else {
-			print '<div class="col-12 course_row" data-height-watch>';
+			print '<div class="col-12 course_row">';
 			
 		}
 		print '<div class="course_box spacer_box" data-height-watch>'. $course->description .'</div>';
 		print '</div>';
 
 		if($course->picture != "") {
-			print '<div class="col-12 col-sm-3 course_row" data-height-watch>';
+			print '<div class="col-12 col-sm-3 course_row">';
 			print '<div class="course_box spacer_box course_picture" data-height-watch><img src="index.php?rex_media_type=d2u_helper_sm&rex_media_file='. $course->picture .'" alt="'. $course->name .'"></div>';
 			print '</div>';
 		}

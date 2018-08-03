@@ -12,10 +12,10 @@ class D2UCoursesModules {
 	public static function getModules() {
 		$modules = [];
 		$modules[] = new D2UModule("26-1",
-			"D2U Kurse - Kursausgabe",
-			1);
+			"D2U Veranstaltungen - Ausgabe Veranstaltungen",
+			2);
 		$modules[] = new D2UModule("26-2",
-			"D2U Kurse - Warenkorb",
+			"D2U Veranstaltungen - Warenkorb",
 			1);
 		return $modules;
 	}
