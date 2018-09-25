@@ -20,6 +20,7 @@ if (filter_input(INPUT_POST, "btn_save") == 1 || filter_input(INPUT_POST, "btn_a
 	$category->color = $form['color'];
 	$category->picture = $input_media[1];
 	$category->parent_category = $form['parent_category_id'] > 0 ? new D2U_Courses\Category($form['parent_category_id']) : FALSE;
+	$category->priority = $form['priority'];
 	if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
 		$category->kufer_categories = array_map('trim', preg_grep('/^\s*$/s', explode(PHP_EOL, $form['kufer_categories']), PREG_GREP_INVERT));
 	}
@@ -102,6 +103,7 @@ if ($func == 'edit' || $func == 'add') {
 						$options_parents[$parent->category_id] = $parent->name;
 					}
 					d2u_addon_backend_helper::form_select('d2u_courses_categories_parent_category', 'form[parent_category_id]', $options_parents, ($category->parent_category === FALSE ? [-1] : [$category->parent_category->category_id]), 1, FALSE, $readonly);
+					d2u_addon_backend_helper::form_input('header_priority', 'form[priority]', $category->priority, TRUE, $readonly, 'number');
 					if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
 						d2u_addon_backend_helper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $category->kufer_categories), 5, FALSE, $readonly, FALSE);
 					}
@@ -137,11 +139,16 @@ if ($func == 'edit' || $func == 'add') {
 }
 
 if ($func == '') {
-	$query = 'SELECT category.category_id, category.name, parents.name AS parent_name '
+	$query = 'SELECT category.category_id, category.name, parents.name AS parent_name, category.priority '
 		. 'FROM '. rex::getTablePrefix() .'d2u_courses_categories AS category '
 		. 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_categories AS parents '
-			. 'ON category.parent_category_id = parents.category_id '
-		.'ORDER BY name ASC';
+			. 'ON category.parent_category_id = parents.category_id ';
+	if($this->getConfig('default_category_sort') == 'priority') {
+		$query .= 'ORDER BY parent_name, priority ASC';
+	}
+	else {
+		$query .= 'ORDER BY parent_name, category.name ASC';
+	}
     $list = rex_list::factory($query);
 
     $list->addTableAttribute('class', 'table-striped table-hover');
@@ -160,6 +167,8 @@ if ($func == '') {
     $list->setColumnParams('name', ['func' => 'edit', 'entry_id' => '###category_id###']);
 
     $list->setColumnLabel('parent_name', rex_i18n::msg('d2u_courses_categories_parent_category'));
+
+	$list->setColumnLabel('priority', rex_i18n::msg('header_priority'));
 
 	$list->addColumn(rex_i18n::msg('module_functions'), '<i class="rex-icon rex-icon-edit"></i> ' . rex_i18n::msg('edit'));
     $list->setColumnLayout(rex_i18n::msg('module_functions'), ['<th class="rex-table-action" colspan="2">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);

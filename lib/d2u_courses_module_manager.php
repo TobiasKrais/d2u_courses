@@ -16,7 +16,7 @@ class D2UCoursesModules {
 			2);
 		$modules[] = new D2UModule("26-2",
 			"D2U Veranstaltungen - Warenkorb",
-			1);
+			2);
 		return $modules;
 	}
 }

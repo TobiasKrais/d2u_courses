@@ -208,41 +208,23 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 	print '</p>';
 	
 	print '<br><div class="registration_header cart_row_title">'. $tag_open .'d2u_courses_payment_data'. $tag_close .'</div>';
-?>
-	<script type="text/javascript">
-		function remove_required() {
-			if($('#invoice_form-payment').val() === 'F') {
-				$('#invoice_form-account_owner').attr('required', true);
-				$('#invoice_form-bank').attr('required', true);
-				$('#invoice_form-iban').attr('required', true);
-				$('#invoice_form-bic').attr('required', true);
-				$("label[for='invoice_form-account_owner']").append("*");
-				$("label[for='invoice_form-bank']").append("*");
-				$("label[for='invoice_form-iban']").append("*");
-				$("label[for='invoice_form-bic']").append("*");
-			}
-			else {
-				$('#invoice_form-account_owner').removeAttr('required');
-				$('#invoice_form-bank').removeAttr('required');
-				$('#invoice_form-iban').removeAttr('required');
-				$('#invoice_form-bic').removeAttr('required');
-				$("label[for='invoice_form-account_owner']").text($("label[for='invoice_form-account_owner']").text().replace("*", ""));
-				$("label[for='invoice_form-bank']").text($("label[for='invoice_form-bank']").text().replace("*", ""));
-				$("label[for='invoice_form-iban']").text($("label[for='invoice_form-iban']").text().replace("*", ""));
-				$("label[for='invoice_form-bic']").text($("label[for='invoice_form-bic']").text().replace("*", ""));
-			}
-		}
-	</script>
-<?php
+
 	print '<p>';
 	print '<label class="cart_select" for="invoice_form-payment">'. $tag_open .'d2u_courses_payment'. $tag_close .'</label>';
     print '<select class="cart_select" id="invoice_form-payment" name="invoice_form[payment]" size="1" onChange="remove_required()">';
-	print '<option value="F">'. $tag_open .'d2u_courses_payment_debit'. $tag_close .'</option>';
-	print '<option value="W">'. $tag_open .'d2u_courses_payment_transfer'. $tag_close .'</option>';
+	$payment_options = rex_config::get("d2u_courses", 'payment_options', []);
+	if(in_array("direct_debit", $payment_options)) {
+		print '<option value="L">'. $tag_open .'d2u_courses_payment_debit'. $tag_close .'</option>';
+	}
+	if(in_array("bank_transfer", $payment_options)) {
+		print '<option value="Ü">'. $tag_open .'d2u_courses_payment_transfer'. $tag_close .'</option>';
+	}
+	if(in_array("cash", $payment_options)) {
+		print '<option value="B">'. $tag_open .'d2u_courses_payment_cash'. $tag_close .'</option>';
+	}
 	print '</select>';
 	print '</p>';
 	
-	print '<br>';
 	print '<p>';
     print '<label class="cart_text" for="invoice_form-account_owner">'. $tag_open .'d2u_courses_payment_account_owner'. $tag_close .' *</label>';
 	print '<input type="text" class="cart_text" name="invoice_form[account_owner]" id="invoice_form-account_owner" maxlength="30" value="" required>';
@@ -262,9 +244,38 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
     print '<label class="cart_text" for="invoice_form-bic">'. $tag_open .'d2u_courses_payment_bic'. $tag_close .' *</label>';
 	print '<input type="text" class="cart_text" name="invoice_form[bic]" id="invoice_form-bic" maxlength="11" value="" required>';
 	print '</p>';
-
+	print '<br>';
+?>
+	<script>
+		function remove_required() {
+			if($('#invoice_form-payment').val() === 'L') {
+				$('#invoice_form-account_owner').attr('required', true);
+				$('#invoice_form-bank').attr('required', true);
+				$('#invoice_form-iban').attr('required', true);
+				$('#invoice_form-bic').attr('required', true);
+				$('#invoice_form-account_owner').parent().slideDown();
+				$('#invoice_form-bank').parent().slideDown();
+				$('#invoice_form-iban').parent().slideDown();
+				$('#invoice_form-bic').parent().slideDown();
+			}
+			else {
+				$('#invoice_form-account_owner').removeAttr('required');
+				$('#invoice_form-bank').removeAttr('required');
+				$('#invoice_form-iban').removeAttr('required');
+				$('#invoice_form-bic').removeAttr('required');
+				$('#invoice_form-account_owner').parent().slideUp();
+				$('#invoice_form-bank').parent().slideUp();
+				$('#invoice_form-iban').parent().slideUp();
+				$('#invoice_form-bic').parent().slideUp();
+			}
+		}
+		// On init
+		remove_required();
+	</script>
+<?php
 	// Bestellübersicht
 	print '<div class="registration_header cart_row_title"><h1>'. $tag_open .'d2u_courses_order_overview'. $tag_close .'</h1></div>';
+	$has_minor_participants = FALSE;
 	foreach($cart->getCourseIDs() as $course_id) {
 		$course = new D2U_Courses\Course($course_id);
 		print '<div class="row">';
@@ -306,6 +317,9 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 		print '<ul>';
 		foreach($cart->getCourseParticipants($course_id) as $id => $participant) {
 			print '<li>'. $participant['firstname'] .' '. $participant['lastname'] .' ('. $tag_open .'d2u_courses_birthdate'. $tag_close .': '. D2U_Courses\Cart::formatCourseDate($participant['birthday']) .', '. ($participant["gender"] == "M" ? $tag_open .'d2u_courses_male'. $tag_close : $tag_open .'d2u_courses_female'. $tag_close) .')</li>';
+			if($cart::calculateAge($participant['birthday']) < 18) {
+				$has_minor_participants = TRUE;
+			}
 		}
 		print '</ul>';
 		print '</div>';
@@ -313,6 +327,12 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 		print '</div>';
 		print '</div>';
 		print '</div>';
+	}
+	// Are minors allowed to retun home by their own?
+	if(rex_config::get('d2u_courses', 'ask_kids_go_home_alone', 'inactive') == 'active') {
+		print '<p class="cart_checkbox">';
+		print '<input type="checkbox" class="cart_checkbox" name="invoice_form[kids_go_home_alone]" id="invoice_kids_go_home_alone" value="yes">';
+		print '<label class="cart_checkbox" for="invoice_kids_go_home_alone">'. $tag_open .'d2u_courses_kids_go_home_alone'. $tag_close .'</label></p>';
 	}
 	
 	print '<p>&nbsp;</p>';
@@ -343,7 +363,7 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 
 	print '* '. $tag_open .'d2u_courses_mandatory_fields'. $tag_close .'<br><br>';
 	print '<p class="formsubmit formsubmit">';
-    print '<input type="submit" class="submit" name="invoice_form[submit]" id="invoice_form-submit" value="'. $tag_open .'d2u_courses_make_booking'. $tag_close .'">';
+    print '<input type="submit" class="submit save_cart" name="invoice_form[submit]" id="invoice_form-submit" value="'. $tag_open .'d2u_courses_make_booking'. $tag_close .'">';
 	print '</p>';
 
 	print '</form>';
@@ -458,15 +478,11 @@ else {
 		print '<div class="row">';
 		
 		print '<div class="col-12 col-sm-6 spacer">';
-		print '<div class="add_cart">';
-		print '<input type="submit" class="add_cart" name="participant_save" value="'. $tag_open .'d2u_courses_cart_save'. $tag_close .'"><br><br>';
-		print '</div>';
+		print '<input type="submit" class="save_cart" name="participant_save" value="'. $tag_open .'d2u_courses_cart_save'. $tag_close .'">';
 		print '</div>';
 
 		print '<div class="col-12 col-sm-6 spacer">';
-		print '<div class="add_cart">';
-		print '<input type="submit" class="add_cart" name="request_courses" value="'. $tag_open .'d2u_courses_cart_checkout'. $tag_close .'"><br><br>';
-		print '</div>';
+		print '<input type="submit" class="save_cart" name="request_courses" value="'. $tag_open .'d2u_courses_cart_checkout'. $tag_close .'">';
 		print '</div>';
 
 		print '</div>';

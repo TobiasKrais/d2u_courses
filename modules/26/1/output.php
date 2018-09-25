@@ -567,9 +567,9 @@ if($course !== FALSE) {
 		if($show_map) {
 			print '<div class="col-12 col-md-8 course_row">';
 			?>
-			<script type="text/javascript" src="https://maps.google.com/maps/api/js"></script> 
+			<script src="https://maps.google.com/maps/api/js"></script> 
 			<div id="map_canvas" style="display: block; width: 100%; height: 300px"></div> 
-			<script type="text/javascript"> 
+			<script> 
 				function createGeocodeMap() {
 					var geocoder = new google.maps.Geocoder();
 					var map; 

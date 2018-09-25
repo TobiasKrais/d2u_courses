@@ -14,7 +14,7 @@ page:
 
 requires:
     packages:
-        d2u_helper: '>=1.4.7'
+        d2u_helper: '>=1.4.6'
         sprog: '>=1.0.0'
         url: '>=1.0.1'
         yrewrite: '>=2.0.1'

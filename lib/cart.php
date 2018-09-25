@@ -48,7 +48,7 @@ class Cart {
 	 * @param string $date Date (format DD.MM.YYYY)
 	 * @return int Age in years
 	 */
-	private static function calculateAge($date) {
+	public static function calculateAge($date) {
 		$time = 0;
 		if(strpos($date, "-")) {
 			$d = explode("-", $date);
@@ -220,6 +220,14 @@ class Cart {
 			$iban->appendChild($xml->createTextNode($invoice_address['iban']));
 			$stammdaten->appendChild($iban);
 		} 
+		
+		// <BEMERKUNG>Minor kids are allowed to return home by their own.</BEMERKUNG>
+		if(isset($invoice_address['kids_go_home_alone']) && $invoice_address['kids_go_home_alone'] == 'yes') {
+			$bemerkung = $xml->createElement("BEMERKUNG");
+			$bemerkung->appendChild($xml->createTextNode(\Sprog\Wildcard::get('d2u_courses_kids_go_home_alone')));
+			$stammdaten->appendChild($bemerkung);
+		}
+
 		// <SESSIONTIME>Unix Timestamp</SESSIONTIME>
 		$session_time = $xml->createElement("SESSIONTIME");
 		$session_time->appendChild($xml->createTextNode(time()));
@@ -281,6 +289,11 @@ class Cart {
 			$status = $xml->createElement("STATUS");
 			$status->appendChild($xml->createTextNode("A"));
 			$kurs_xml->appendChild($status);
+
+			// <ZAHLART>A</ZAHLART>
+			$zahlart = $xml->createElement("ZAHLART");
+			$zahlart->appendChild($xml->createTextNode($invoice_address['payment']));
+			$kurs_xml->appendChild($zahlart);
 
 			// <KURSGEBUEHR>35,00</KURSGEBUEHR>
 			$kursgebuehr = $xml->createElement("KURSGEBUEHR");
@@ -521,15 +534,18 @@ class Cart {
 		$body .= "Geburtsdatum: ". self::formatCourseDate($invoice_address['birthday'])  ."<br>";
 		$body .= "Geschlecht: ". $invoice_address['gender']  ."<br>";
 		$body .= "Gewünscht Zahlungsart: ";
-		if($invoice_address['payment'] == "F") {
+		if($invoice_address['payment'] == "L") {
 			$body .= "Lastschrift<br>";
 			$body .= "Name der Bank: ". $invoice_address['bank']  ."<br>";
 			$body .= "Kontoinhaber: ". $invoice_address['account_owner']  ."<br>";
 			$body .= "BIC: ". $invoice_address['bic']  ."<br>";
 			$body .= "IBAN: ". $invoice_address['iban'];		
 		}
-		else {
+		else if($invoice_address['payment'] == "Ü"){
 			$body .= "Überweisung";
+		}
+		else {
+			$body .= "Barzahlung";
 		}
 		$body .=  "<br>";
 		foreach($cart as $course_id => $participant) {
@@ -553,6 +569,9 @@ class Cart {
 				$body .= "Geburtsdatum: ". self::formatCourseDate($participant_data['birthday'])  ."<br>";
 				$body .= "Geschlecht: ". $participant_data['gender']  ."<br>";
 			}
+		}
+		if(isset($invoice_address['kids_go_home_alone']) && $invoice_address['kids_go_home_alone'] == 'yes') {
+			$body .= "<br><br>". \Sprog\Wildcard::get('d2u_courses_kids_go_home_alone');
 		}
 		
 		$mail->Body = $body;

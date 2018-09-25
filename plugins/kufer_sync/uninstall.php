@@ -10,5 +10,5 @@ $sql->setQuery('ALTER TABLE `'. rex::getTablePrefix() . 'd2u_courses_courses` DR
 
 // Delete Autoimport if activated
 if(rex_config::get('d2u_courses', 'kufer_sync_autoimport', 'inactive') == 'active') {
-	kufer_sync_backend_helper::autoimportDelete();
+	kufer_sync_cronjob::delete();
 }

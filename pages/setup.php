@@ -135,6 +135,7 @@ if(rex_request('import', 'string') == "d2u_courses" && $old_tables_available) {
 		UPDATE `". rex::getTablePrefix() ."d2u_courses_categories` SET `color` = CONCAT('#', `color`);
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CHANGE `eltern_kurskategorie_id` `parent_category_id` INT(10) NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` ADD `priority` INT(10) NULL DEFAULT 0 AFTER `parent_category_id`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CHANGE `kufer_kategorien_bezeichnungsstrukturen` `kufer_categories` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` ENGINE = InnoDB;
 
@@ -214,6 +215,11 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.1-DEV:</p>
 <ul>
+	<li>Design Verbesserungen im Warenkorb Beispielmodul.</li>
+	<li>Fehlerbehebung Zahlungsart bei Kufer Anmeldung.</li>
+	<li>Bei der Anmeldung Minderjähriger kann nun gefragt werden, ob diese alleine nach Hause gehen dürfen.</li>
+	<li>Verfügbare Zahlungsarten können in Einstellungen nach Bedarf ausgewählt werden.</li>
+	<li>Priorität Feld für Kategorien hinzugefügt.</li>
 	<li>Suche in Modul 26-1 integriert und Bugfix Suchfunktion.</li>
 </ul>
 <p>3.0.0:</p>

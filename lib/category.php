@@ -42,6 +42,11 @@ class Category {
 	var $parent_category = FALSE;
 	
 	/**
+	 * @var int Sort Priority
+	 */
+	var $priority = 0;
+
+	/**
 	 * @var string[] KuferSQL category name including parent category name.
 	 * Devider is " \ ".
 	 * Im Kufer XML export field name "Bezeichnungsstruktur".
@@ -80,6 +85,7 @@ class Category {
 			if($result->getValue("parent_category_id") > 0) {
 				$this->parent_category = new Category($result->getValue("parent_category_id"));
 			}
+			$this->priority = $result->getValue("priority");
 			$this->updatedate = $result->getValue("updatedate");
 			if(\rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
 				$this->kufer_categories = array_map('trim', preg_grep('/^\s*$/s', explode(PHP_EOL, $result->getValue("kufer_categories")), PREG_GREP_INVERT));
@@ -151,7 +157,13 @@ class Category {
 				$query .= "WHERE online_status = 'online' ";
 			}
 			$query .= "AND (date_start = '' OR date_start >= CURDATE()) "
-					."GROUP BY category_id";
+					."GROUP BY category_id ";
+		}
+		if(\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority') {
+			$query .= 'ORDER BY priority';
+		}
+		else {
+			$query .= 'ORDER BY name';
 		}
 		$result =  \rex_sql::factory();
 		$result->setQuery($query);
@@ -196,7 +208,12 @@ class Category {
 	public function getChildren($online_only = FALSE) {
 		$query = "SELECT category_id FROM ". \rex::getTablePrefix() ."d2u_courses_categories "
 				."WHERE parent_category_id = ". $this->category_id ." ";
-		$query .= "ORDER BY name";
+		if(\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority') {
+			$query .= 'ORDER BY priority';
+		}
+		else {
+			$query .= 'ORDER BY name';
+		}
 		$result =  \rex_sql::factory();
 		$result->setQuery($query);
 
@@ -225,8 +242,13 @@ class Category {
 					.'LEFT JOIN ' .\rex::getTablePrefix() . 'd2u_courses_categories AS parent_not '
 						.'ON child_not.parent_category_id = parent_not.category_id '
 				.'WHERE parent_not.category_id > 0 '
-				.'GROUP BY child_not.parent_category_id) '
-			.'ORDER BY name';
+				.'GROUP BY child_not.parent_category_id) ';
+		if(\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority') {
+			$query .= 'ORDER BY child.priority';
+		}
+		else {
+			$query .= 'ORDER BY child.name';
+		}
 		$result =  \rex_sql::factory();
 		$result->setQuery($query);
 		$num_rows = $result->getRows();
@@ -246,11 +268,19 @@ class Category {
 	 * @return Category[] Array with category objects.
 	 */
 	static function getAllParents($online_only = FALSE) {
-		$query = "SELECT category_id FROM ". \rex::getTablePrefix() ."d2u_courses_categories"
-			." WHERE parent_category_id <= 0";
+		$query = "SELECT category_id FROM ". \rex::getTablePrefix() ."d2u_courses_categories AS cats"
+			." WHERE parent_category_id <= 0 ";
 		if($online_only) {
-			$query = "SELECT category_id FROM ". \rex::getTablePrefix() ."d2u_courses_url_categories "
-				." WHERE parent_category_id <= 0";
+			$query = "SELECT url_cat.category_id FROM ". \rex::getTablePrefix() ."d2u_courses_url_categories AS url_cat "
+				."LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_categories AS cats "
+					."ON url_cat.category_id = cats.category_id "
+				." WHERE url_cat.parent_category_id <= 0 ";
+		}
+		if(\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority') {
+			$query .= 'ORDER BY cats.priority';
+		}
+		else {
+			$query .= 'ORDER BY cats.name';
 		}
 		$result =  \rex_sql::factory();
 		$result->setQuery($query);
@@ -346,6 +376,12 @@ class Category {
 	 * @return boolean TRUE if successful.
 	 */
 	public function save() {
+		// save priority, but only if new or changed
+		$pre_save_category = new Category($this->category_id, $this->clang_id);
+		if($this->priority != $pre_save_category->priority || $this->category_id == 0) {
+			$this->setPriority();
+		}
+
 		$query = "INSERT INTO ";
 		if($this->category_id > 0) {
 			$query = "UPDATE ";
@@ -371,5 +407,42 @@ class Category {
 		}
 		
 		return !$result->hasError();
+	}
+	
+	/**
+	 * Reassigns priority to all Categories in database.
+	 */
+	private function setPriority() {
+		// Pull prios from database
+		$query = "SELECT category_id, priority FROM ". \rex::getTablePrefix() ."d2u_courses_categories "
+			."WHERE category_id <> ". $this->category_id ." ORDER BY priority";
+		$result = \rex_sql::factory();
+		$result->setQuery($query);
+		
+		// When priority is too small, set at beginning
+		if($this->priority <= 0) {
+			$this->priority = 1;
+		}
+		
+		// When prio is too high, simply add at end 
+		if($this->priority > $result->getRows()) {
+			$this->priority = $result->getRows() + 1;
+		}
+
+		$categories = [];
+		for($i = 0; $i < $result->getRows(); $i++) {
+			$categories[$result->getValue("priority")] = $result->getValue("category_id");
+			$result->next();
+		}
+		array_splice($categories, ($this->priority - 1), 0, [$this->category_id]);
+
+		// Save all prios
+		foreach($categories as $prio => $category_id) {
+			$query = "UPDATE ". \rex::getTablePrefix() ."d2u_courses_categories "
+					."SET priority = ". ($prio + 1) ." " // +1 because array_splice recounts at zero
+					."WHERE category_id = ". $category_id;
+			$result = \rex_sql::factory();
+			$result->setQuery($query);
+		}
 	}
 }

@@ -8,6 +8,7 @@ $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_cours
 	`color` varchar(255) collate utf8_general_ci default NULL,
 	`picture` varchar(255) collate utf8_general_ci default NULL,
 	`parent_category_id` int(10) default NULL,
+	`priority` int(10) default NULL,
 	`updatedate` int(11) default NULL,
 	PRIMARY KEY (`category_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1;");

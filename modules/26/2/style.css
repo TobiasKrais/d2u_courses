@@ -34,6 +34,20 @@
 	padding-bottom: 2em;
 }
 
+.save_cart {
+	background-color: #a49f9f;
+	border: 0px;
+	color: white;
+	font-weight: bold;
+	cursor: pointer;
+	padding: 10px;
+	text-align: center;
+	width: 100%;
+}
+.save_cart a {
+	color: white !important;
+}
+
 .add_participant {
 	background: transparent;
 	border: 0;
