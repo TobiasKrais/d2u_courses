@@ -31,6 +31,9 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 		$settings['multinewsletter_subscribe'] = array_key_exists('multinewsletter_subscribe', $settings) ? "show" : "hide";
 	}
 	
+	// Multiple select box care for option if no option is needed
+	$settings['payment_options'] = array_key_exists('payment_options', $settings) ? $settings['payment_options'] : [];
+	
 	// Save settings
 	if(rex_config::set("d2u_courses", $settings)) {
 		echo rex_view::success(rex_i18n::msg('form_saved'));
@@ -205,8 +208,17 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 						<?php
 							d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_multinewsletter_subscribe', 'settings[multinewsletter_subscribe]', 'show', $this->getConfig('multinewsletter_subscribe') == 'show');
 							$options_groups = [];
-							foreach(MultinewsletterGroupList::getAll() as $group) {
-								$options_groups[$group->getId()] = $group->getName();
+							if(class_exists('MultinewsletterGroupList')) {
+								// MultiNewsletter <= 3.2.0
+								foreach(MultinewsletterGroupList::getAll() as $group) {
+									$options_groups[$group->getId()] = $group->getName();
+								}
+							}
+							else {
+								// MultiNewsletter >= 3.2.1
+								foreach(MultinewsletterGroup::getAll() as $group) {
+									$options_groups[$group->id] = $group->name;
+								}
 							}
 							d2u_addon_backend_helper::form_select('d2u_courses_settings_multinewsletter_group', 'settings[multinewsletter_group]', $options_groups, [$this->getConfig('multinewsletter_group')], 1, FALSE, FALSE);
 						?>

@@ -213,6 +213,11 @@ else if($old_tables_available) {
 <p>Fehlermeldungen bitte im Git Projekt unter
 	<a href="https://github.com/TobiasKrais/d2u_courses/issues" target="_blank">https://github.com/TobiasKrais/d2u_courses/issues</a> melden.</p>
 <h2>Changelog</h2>
+<p>3.0.2-DEV:</p>
+<ul>
+	<li>Warenkorb Modul: Wenn Kufer Sync Plugin deaktiviert ist, werden statistische Angaben ausgeblendet.</li>
+	<li>Warenkorb Modul: Wenn keine Zahlungsoptionen ausgewählt sind, werden Zahlungsangaben nicht abgefragt.</li>
+</ul>
 <p>3.0.1:</p>
 <ul>
 	<li>Design Verbesserungen im Warenkorb Beispielmodul.</li>

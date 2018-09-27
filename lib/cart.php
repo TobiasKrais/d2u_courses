@@ -202,7 +202,7 @@ class Cart {
 			$city->appendChild($xml->createTextNode(str_pad($invoice_address['zipcode'], 5, 0, STR_PAD_LEFT) .' '. $invoice_address['city']));
 			$stammdaten->appendChild($city);
 		}
-		if($invoice_address['iban'] != "" ) {
+		if(isset($invoice_address['iban']) && $invoice_address['iban'] != "" ) {
 			// <BANKBEZ>Bank name</BANKBEZ>
 			$bank = $xml->createElement("BANKBEZ");
 			$bank->appendChild($xml->createTextNode($invoice_address['bank']));
@@ -291,9 +291,11 @@ class Cart {
 			$kurs_xml->appendChild($status);
 
 			// <ZAHLART>A</ZAHLART>
-			$zahlart = $xml->createElement("ZAHLART");
-			$zahlart->appendChild($xml->createTextNode($invoice_address['payment']));
-			$kurs_xml->appendChild($zahlart);
+			if(isset($invoice_address['payment'])) {
+				$zahlart = $xml->createElement("ZAHLART");
+				$zahlart->appendChild($xml->createTextNode($invoice_address['payment']));
+				$kurs_xml->appendChild($zahlart);
+			}
 
 			// <KURSGEBUEHR>35,00</KURSGEBUEHR>
 			$kursgebuehr = $xml->createElement("KURSGEBUEHR");
@@ -531,20 +533,18 @@ class Cart {
 		$body .= str_pad($invoice_address['zipcode'], 5, 0, STR_PAD_LEFT) .' '. $invoice_address['city']  ."<br>";
 		$body .= $invoice_address['phone'] ."<br>";
 		$body .= '<a href="'. $invoice_address['e-mail'] .'">'. $invoice_address['e-mail']  ."</a><br>";
-		$body .= "Geburtsdatum: ". self::formatCourseDate($invoice_address['birthday'])  ."<br>";
-		$body .= "Geschlecht: ". $invoice_address['gender']  ."<br>";
 		$body .= "Gewünscht Zahlungsart: ";
-		if($invoice_address['payment'] == "L") {
+		if(isset($invoice_address['payment']) && $invoice_address['payment'] == "L") {
 			$body .= "Lastschrift<br>";
 			$body .= "Name der Bank: ". $invoice_address['bank']  ."<br>";
 			$body .= "Kontoinhaber: ". $invoice_address['account_owner']  ."<br>";
 			$body .= "BIC: ". $invoice_address['bic']  ."<br>";
 			$body .= "IBAN: ". $invoice_address['iban'];		
 		}
-		else if($invoice_address['payment'] == "Ü"){
+		else if(isset($invoice_address['payment']) && $invoice_address['payment'] == "Ü"){
 			$body .= "Überweisung";
 		}
-		else {
+		else if(isset($invoice_address['payment']) && $invoice_address['payment'] == "B") {
 			$body .= "Barzahlung";
 		}
 		$body .=  "<br>";

@@ -150,12 +150,22 @@ if(isset($form_data['invoice_form'])) {
 	}
 }
 else if(isset($form_data['request_courses']) && $form_data['request_courses'] != "") {
+	$payment_options = rex_config::get("d2u_courses", 'payment_options', []);
+
 	// Anmeldeformular
 	print '<div class="col-12">';
 	print '<div>';
     print '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'" method="post" enctype="multipart/form-data">';
 
-	print '<div class="registration_header cart_row_title"><h1>'. $tag_open .'d2u_courses_cart_heading'. $tag_close .'</h1>'. $tag_open .'d2u_courses_cart_bill_address'. $tag_close .'</div>';
+	print '<div class="registration_header cart_row_title">';
+	print '<h1>'. $tag_open .'d2u_courses_cart_heading'. $tag_close .'</h1>';
+	if(count($payment_options) > 0) {
+		print $tag_open .'d2u_courses_cart_bill_address'. $tag_close;
+	}
+	else {
+		print $tag_open .'d2u_courses_cart_contact_address'. $tag_close;		
+	}
+	print '</div>';
 
 	print '<p>';
     print '<label class="cart_text" for="invoice_form-firstname">'. $tag_open .'d2u_courses_firstname'. $tag_close .' *</label>';
@@ -190,61 +200,63 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 	print '<p>';
     print '<label class="cart_text" for="invoice_form-e-mail">'. $tag_open .'d2u_courses_email'. $tag_close .' *</label>';
     print '<input type="email" class="cart_text" name="invoice_form[e-mail]" id="invoice_form-e-mail" value="" required>';
-	print '</p>';
+	print '</p><br>';
 	
-	print '<br><div class="registration_header cart_row_title">'. $tag_open .'d2u_courses_statistic'. $tag_close .'</div>';
-	
-	print '<p>';
-    print '<label class="cart_text" for="invoice_form-birthday">'. $tag_open .'d2u_courses_birthdate'. $tag_close .'</label>';
-    print '<input type="date" class="cart_date" name="invoice_form[birthday]" placeholder="'. $tag_open .'d2u_courses_date_placeholder'. $tag_close .'" min="1900-01-01" max="'. (date("Y") - 5) .'-01-01">';
-	print '</p>';
-	
-	print '<p>';
-    print '<label class="cart_select" for="invoice_form-gender">'. $tag_open .'d2u_courses_gender'. $tag_close .'</label>';
-    print '<select class="cart_select" id="invoice_form-gender" name="invoice_form[gender]" size="1">';
-	print '<option value="W">'. $tag_open .'d2u_courses_female'. $tag_close .'</option>';
-	print '<option value="M">'. $tag_open .'d2u_courses_male'. $tag_close .'</option>';
-	print '</select>';
-	print '</p>';
-	
-	print '<br><div class="registration_header cart_row_title">'. $tag_open .'d2u_courses_payment_data'. $tag_close .'</div>';
+	// Kufer Sync Plugin needs statistic values
+	if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
+		print '<div class="registration_header cart_row_title">'. $tag_open .'d2u_courses_statistic'. $tag_close .'</div>';
 
-	print '<p>';
-	print '<label class="cart_select" for="invoice_form-payment">'. $tag_open .'d2u_courses_payment'. $tag_close .'</label>';
-    print '<select class="cart_select" id="invoice_form-payment" name="invoice_form[payment]" size="1" onChange="remove_required()">';
-	$payment_options = rex_config::get("d2u_courses", 'payment_options', []);
-	if(in_array("direct_debit", $payment_options)) {
-		print '<option value="L">'. $tag_open .'d2u_courses_payment_debit'. $tag_close .'</option>';
+		print '<p>';
+		print '<label class="cart_text" for="invoice_form-birthday">'. $tag_open .'d2u_courses_birthdate'. $tag_close .'</label>';
+		print '<input type="date" class="cart_date" name="invoice_form[birthday]" placeholder="'. $tag_open .'d2u_courses_date_placeholder'. $tag_close .'" min="1900-01-01" max="'. (date("Y") - 5) .'-01-01">';
+		print '</p>';
+
+		print '<p>';
+		print '<label class="cart_select" for="invoice_form-gender">'. $tag_open .'d2u_courses_gender'. $tag_close .'</label>';
+		print '<select class="cart_select" id="invoice_form-gender" name="invoice_form[gender]" size="1">';
+		print '<option value="W">'. $tag_open .'d2u_courses_female'. $tag_close .'</option>';
+		print '<option value="M">'. $tag_open .'d2u_courses_male'. $tag_close .'</option>';
+		print '</select>';
+		print '</p><br>';
 	}
-	if(in_array("bank_transfer", $payment_options)) {
-		print '<option value="Ü">'. $tag_open .'d2u_courses_payment_transfer'. $tag_close .'</option>';
-	}
-	if(in_array("cash", $payment_options)) {
-		print '<option value="B">'. $tag_open .'d2u_courses_payment_cash'. $tag_close .'</option>';
-	}
-	print '</select>';
-	print '</p>';
 	
-	print '<p>';
-    print '<label class="cart_text" for="invoice_form-account_owner">'. $tag_open .'d2u_courses_payment_account_owner'. $tag_close .' *</label>';
-	print '<input type="text" class="cart_text" name="invoice_form[account_owner]" id="invoice_form-account_owner" maxlength="30" value="" required>';
-	print '</p>';
-	
-	print '<p>';
-    print '<label class="cart_text" for="invoice_form-bank">'. $tag_open .'d2u_courses_payment_bank'. $tag_close .' *</label>';
-	print '<input type="text" class="cart_text" name="invoice_form[bank]" id="invoice_form-bank" maxlength="30" value="" required>';
-	print '</p>';
-	
-	print '<p>';
-	print '<label class="cart_text" for="invoice_form-iban">'. $tag_open .'d2u_courses_payment_iban'. $tag_close .' *</label>';
-	print '<input type="text" class="cart_text" name="invoice_form[iban]" id="invoice_form-iban" maxlength="35" value="" required>';
-	print '</p>';
-	
-	print '<p>';
-    print '<label class="cart_text" for="invoice_form-bic">'. $tag_open .'d2u_courses_payment_bic'. $tag_close .' *</label>';
-	print '<input type="text" class="cart_text" name="invoice_form[bic]" id="invoice_form-bic" maxlength="11" value="" required>';
-	print '</p>';
-	print '<br>';
+	if(count($payment_options) > 0) {
+		print '<div class="registration_header cart_row_title">'. $tag_open .'d2u_courses_payment_data'. $tag_close .'</div>';
+
+		print '<p>';
+		print '<label class="cart_select" for="invoice_form-payment">'. $tag_open .'d2u_courses_payment'. $tag_close .'</label>';
+		print '<select class="cart_select" id="invoice_form-payment" name="invoice_form[payment]" size="1" onChange="remove_required()">';
+		if(in_array("direct_debit", $payment_options)) {
+			print '<option value="L">'. $tag_open .'d2u_courses_payment_debit'. $tag_close .'</option>';
+		}
+		if(in_array("bank_transfer", $payment_options)) {
+			print '<option value="Ü">'. $tag_open .'d2u_courses_payment_transfer'. $tag_close .'</option>';
+		}
+		if(in_array("cash", $payment_options)) {
+			print '<option value="B">'. $tag_open .'d2u_courses_payment_cash'. $tag_close .'</option>';
+		}
+		print '</select>';
+		print '</p>';
+
+		print '<p>';
+		print '<label class="cart_text" for="invoice_form-account_owner">'. $tag_open .'d2u_courses_payment_account_owner'. $tag_close .' *</label>';
+		print '<input type="text" class="cart_text" name="invoice_form[account_owner]" id="invoice_form-account_owner" maxlength="30" value="" required>';
+		print '</p>';
+
+		print '<p>';
+		print '<label class="cart_text" for="invoice_form-bank">'. $tag_open .'d2u_courses_payment_bank'. $tag_close .' *</label>';
+		print '<input type="text" class="cart_text" name="invoice_form[bank]" id="invoice_form-bank" maxlength="30" value="" required>';
+		print '</p>';
+
+		print '<p>';
+		print '<label class="cart_text" for="invoice_form-iban">'. $tag_open .'d2u_courses_payment_iban'. $tag_close .' *</label>';
+		print '<input type="text" class="cart_text" name="invoice_form[iban]" id="invoice_form-iban" maxlength="35" value="" required>';
+		print '</p>';
+
+		print '<p>';
+		print '<label class="cart_text" for="invoice_form-bic">'. $tag_open .'d2u_courses_payment_bic'. $tag_close .' *</label>';
+		print '<input type="text" class="cart_text" name="invoice_form[bic]" id="invoice_form-bic" maxlength="11" value="" required>';
+		print '</p><br>';
 ?>
 	<script>
 		function remove_required() {
@@ -273,6 +285,7 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 		remove_required();
 	</script>
 <?php
+	}
 	// Bestellübersicht
 	print '<div class="registration_header cart_row_title"><h1>'. $tag_open .'d2u_courses_order_overview'. $tag_close .'</h1></div>';
 	$has_minor_participants = FALSE;
