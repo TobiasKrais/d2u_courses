@@ -385,23 +385,9 @@ if($course !== FALSE) {
 	print '</div>';
 	if($course->description != "") {
 		print '<div class="row" data-match-height>';
-
-		if($course->picture != "") {
-			print '<div class="col-12 col-sm-9 course_row">';
-		}
-		else {
-			print '<div class="col-12 course_row">';
-			
-		}
+		print '<div class="col-12 course_row">';
 		print '<div class="course_box spacer_box" data-height-watch>'. $course->description .'</div>';
 		print '</div>';
-
-		if($course->picture != "") {
-			print '<div class="col-12 col-sm-3 course_row">';
-			print '<div class="course_box spacer_box course_picture" data-height-watch><img src="index.php?rex_media_type=d2u_helper_sm&rex_media_file='. $course->picture .'" alt="'. $course->name .'"></div>';
-			print '</div>';
-		}
-
 		print '</div>';
 	}
 	print '<div class="row" data-match-height>';
@@ -486,7 +472,7 @@ if($course !== FALSE) {
 	if($course->redaxo_article > 0 || $course->url_external != "" || count($course->downloads) > 0) {
 		if($course->redaxo_article > 0 || $course->url_external != "") {
 			print '<div class="col-12 course_row" data-height-watch>';
-			print '<div class="course_box spacer_box"><b>'. $tag_open .'d2u_courses_infolink'. $tag_close .':</b> ';
+			print '<div class="course_box spacer_box" data-height-watch><b>'. $tag_open .'d2u_courses_infolink'. $tag_close .':</b> ';
 			if($course->redaxo_article > 0) {
 				$article = rex_article::get($course->redaxo_article);
 				print '<a href="'. rex_getUrl($course->redaxo_article) .'">'. $article->getName() .'</a><br>';
@@ -513,8 +499,6 @@ if($course !== FALSE) {
 	}
 
 	if($course->registration_possible == "yes" || $course->registration_possible == "booked") {
-		print '</div>';
-		print '<div class="row">';
 		print '<div class="col-12 course_row" data-height-watch>';
 		print '<div class="course_box spacer_box add_cart" data-height-watch>';
 		if(D2U_Courses\Cart::getCart()->hasCourse($course->course_id)) {
@@ -532,6 +516,13 @@ if($course !== FALSE) {
 
 	print '</div>';
 	print '</div>';
+	if($course->picture != "") {
+		print '<div class="col-12 col-md-6">';
+		print '<div class="course_box spacer_box course_picture">';
+		print '<img src="index.php?rex_media_type=d2u_helper_sm&rex_media_file='. $course->picture .'" alt="'. $course->name .'">';
+		print '</div>';
+		print '</div>';
+	}
 	
 	if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
 		print '<div class="col-12 col-md-6">';

@@ -215,6 +215,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.2-DEV:</p>
 <ul>
+	<li>Warenkorb Modul: CSS für Pflichtfelder intuitiver gestaltet.</li>
 	<li>Warenkorb Modul: Wenn Kufer Sync Plugin deaktiviert ist, werden statistische Angaben ausgeblendet.</li>
 	<li>Warenkorb Modul: Wenn keine Zahlungsoptionen ausgewählt sind, werden Zahlungsangaben nicht abgefragt.</li>
 </ul>
