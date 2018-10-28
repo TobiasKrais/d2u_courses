@@ -102,12 +102,11 @@ if(rex_request('import', 'string') == "d2u_courses" && $old_tables_available) {
 	// Normal tables
 	$sql->setQuery("RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_orte_kategorien` TO `". rex::getTablePrefix() ."d2u_courses_location_categories`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_location_categories` CHANGE `ort_kategorie_id` `location_category_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` ADD `description` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `name`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_location_categories` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_location_categories` CHANGE `zoomstufe` `zoom_level` INT(10) NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_location_categories` ENGINE = InnoDB;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_location_categories` ENGINE = InnoDB;");
 
-		RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_orte` TO `". rex::getTablePrefix() ."d2u_courses_locations`;
+	$sql->setQuery("RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_orte` TO `". rex::getTablePrefix() ."d2u_courses_locations`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `ort_id` `location_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `laengengrad` `longitude` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `breitengrad` `latitude` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
@@ -118,35 +117,36 @@ if(rex_request('import', 'string') == "d2u_courses" && $old_tables_available) {
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `lageplan` `site_plan` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `ort_kategorie_id` `location_category_id` INT(10) NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `redaxo_benutzer` `redaxo_users` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` ENGINE = InnoDB;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` ENGINE = InnoDB;");
 
-		RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_zielgruppen` TO `". rex::getTablePrefix() ."d2u_courses_target_groups`;
+	$sql->setQuery("RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_zielgruppen` TO `". rex::getTablePrefix() ."d2u_courses_target_groups`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_target_groups` CHANGE `zielgruppe_id` `target_group_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_target_groups` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_target_groups` CHANGE `kufer_zielgruppe_name` `kufer_target_group_name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_target_groups` CHANGE `kufer_kategorien_bezeichnungsstrukturen` `kufer_categories` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 		DELETE FROM `". rex::getTablePrefix() ."d2u_courses_target_groups` WHERE `eltern_zielgruppe_id` > 0;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_target_groups` DROP `eltern_zielgruppe_id`;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_target_groups` ENGINE = InnoDB;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_target_groups` ENGINE = InnoDB;");
 
-		RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_kategorien` TO `". rex::getTablePrefix() ."d2u_courses_categories`;
+	$sql->setQuery("RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_kategorien` TO `". rex::getTablePrefix() ."d2u_courses_categories`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CHANGE `kurskategorie_id` `category_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` ADD `description` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `name`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CHANGE `farbe` `color` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 		UPDATE `". rex::getTablePrefix() ."d2u_courses_categories` SET `color` = CONCAT('#', `color`);
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CHANGE `eltern_kurskategorie_id` `parent_category_id` INT(10) NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` ADD `priority` INT(10) NULL DEFAULT 0 AFTER `parent_category_id`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CHANGE `kufer_kategorien_bezeichnungsstrukturen` `kufer_categories` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` ENGINE = InnoDB;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` ENGINE = InnoDB;");
 
-		RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_terminkategorien` TO `". rex::getTablePrefix() ."d2u_courses_schedule_categories`;
+	$sql->setQuery("RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_terminkategorien` TO `". rex::getTablePrefix() ."d2u_courses_schedule_categories`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_schedule_categories` CHANGE `terminkategorie_id` `schedule_category_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_schedule_categories` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_schedule_categories` CHANGE `eltern_terminkategorie_id` `parent_schedule_category_id` INT(10) NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_schedule_categories` CHANGE `kufer_kategorien_bezeichnungsstrukturen` `kufer_categories` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_schedule_categories` ENGINE = InnoDB;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_schedule_categories` ENGINE = InnoDB;");
 
-		RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_kurse` TO `". rex::getTablePrefix() ."d2u_courses_courses`;
+	$sql->setQuery("RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_kurse` TO `". rex::getTablePrefix() ."d2u_courses_courses`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `kurs_id` `course_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `titel` `name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `beschreibung` `description` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
@@ -182,7 +182,16 @@ if(rex_request('import', 'string') == "d2u_courses" && $old_tables_available) {
 			DROP `sekundaere_kurskategorie_ids`,
 			DROP `terminkategorie_ids`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` ENGINE = InnoDB;");
-
+	
+	$sql = rex_sql::factory();
+	$sql->setQuery("SELECT `category_id` FROM `". rex::getTablePrefix() ."d2u_courses_categories` ORDER BY `parent_category_id`, `name`;");
+	$update_query = "";
+	for($i = 0; $i < $sql->getRows(); $i++) {
+		$update_query .= "UPDATE `". rex::getTablePrefix() ."d2u_courses_categories` SET `priority` = ". ($i + 1) ." WHERE `category_id` = ". $sql->getValue('category_id') .";";
+		$sql->next();
+	}
+	$sql->setQuery($update_query);
+	
 	$error = $sql->hasError() ? $sql->getError() : "";
 
 	if($error != "") {
@@ -215,6 +224,8 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.2-DEV:</p>
 <ul>
+	<li>Bugfix: Import aus Redaxo 4 Datenbank verbessert.</li>
+	<li>Kategorie kann nicht mehr sich selbst als Elternkategorie haben.</li>
 	<li>Warenkorb Modul: CSS für Pflichtfelder intuitiver gestaltet.</li>
 	<li>Warenkorb Modul: Wenn Kufer Sync Plugin deaktiviert ist, werden statistische Angaben ausgeblendet.</li>
 	<li>Warenkorb Modul: Wenn keine Zahlungsoptionen ausgewählt sind, werden Zahlungsangaben nicht abgefragt.</li>
