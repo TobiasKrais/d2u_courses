@@ -567,7 +567,7 @@ if($course !== FALSE) {
 					var address = "<?php print $course->location->street .', '. $course->location->zip_code .' '. $course->location->city; ?>";
 					if (geocoder) {
 						geocoder.geocode( { 'address': address}, function(results, status) {
-							if (status == google.maps.GeocoderStatus.OK) {
+							if (status === google.maps.GeocoderStatus.OK) {
 								map.setCenter(results[0].geometry.location);
 								var marker = new google.maps.Marker({
 									map: map,
@@ -590,7 +590,7 @@ if($course !== FALSE) {
 					var myOptions = {
 						zoom: <?php echo $course->location->location_category->zoom_level; ?>,
 						mapTypeId: google.maps.MapTypeId.ROADMAP
-					}
+					};
 					map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 				}
 
@@ -604,7 +604,7 @@ if($course !== FALSE) {
 						zoom: <?php echo $course->location->location_category->zoom_level; ?>,
 						center: myLatlng,
 						mapTypeId: google.maps.MapTypeId.ROADMAP
-					}
+					};
 					var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
 					var marker = new google.maps.Marker({
@@ -656,7 +656,7 @@ if($course !== FALSE) {
 						i=Math.max.apply(Math,n);
 					t.css("min-height", i+1);
 				}
-			)
+			);
 		}
-	)
+	);
 </script>

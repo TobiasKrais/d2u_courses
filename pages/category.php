@@ -100,7 +100,9 @@ if ($func == 'edit' || $func == 'add') {
 					d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $category->picture, $readonly);
 					$options_parents = [-1 => rex_i18n::msg('d2u_courses_categories_parent_category_none')];
 					foreach(D2U_Courses\Category::getAllParents() as $parent) {
-						$options_parents[$parent->category_id] = $parent->name;
+                        if($parent->category_id != $category->category_id) {
+                            $options_parents[$parent->category_id] = $parent->name;
+                        }
 					}
 					d2u_addon_backend_helper::form_select('d2u_courses_categories_parent_category', 'form[parent_category_id]', $options_parents, ($category->parent_category === FALSE ? [-1] : [$category->parent_category->category_id]), 1, FALSE, $readonly);
 					d2u_addon_backend_helper::form_input('header_priority', 'form[priority]', $category->priority, TRUE, $readonly, 'number');

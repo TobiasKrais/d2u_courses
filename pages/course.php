@@ -122,7 +122,7 @@ if ($func == 'edit' || $func == 'clone' || $func == 'add') {
 							d2u_addon_backend_helper::form_input('d2u_courses_course_number', 'form[course_number]', $course->course_number, FALSE, $readonly, 'text');
 							d2u_addon_backend_helper::form_input('d2u_courses_instructor', 'form[instructor]', $course->instructor, FALSE, $readonly, 'text');
 							d2u_addon_backend_helper::form_checkbox('d2u_helper_online_status', 'form[online_status]', 'online', $course->online_status == "online", $readonly);
-							d2u_addon_backend_helper::form_textarea('d2u_courses_teaser', "form[teaser]", $course->teaser, 3, FALSE, $readonly, FALSE);
+							d2u_addon_backend_helper::form_input('d2u_courses_teaser', "form[teaser]", $course->teaser, FALSE, $readonly, FALSE);
 							d2u_addon_backend_helper::form_textarea('d2u_courses_description', "form[description]", $course->description, 5, FALSE, $readonly, TRUE);
 							d2u_addon_backend_helper::form_textarea('d2u_courses_details_course', "form[details_course]", $course->details_course, 3, FALSE, $readonly, FALSE);
 							d2u_addon_backend_helper::form_textarea('d2u_courses_details_deadline', "form[details_deadline]", $course->details_deadline, 3, FALSE, $readonly, FALSE);

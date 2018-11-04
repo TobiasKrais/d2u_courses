@@ -395,7 +395,7 @@ else {
 	print '</div>';
 
 	if(count($cart->getCourseIDs()) == 0) {
-		print '<div class="col-12 col-md-9">';
+		print '<div class="col-12 col-md-9 spacer">';
 		print '<div class="cart_row_title" id="cart_empty">'. $tag_open .'d2u_courses_cart_empty'. $tag_close .'</div>';
 		print '</div>';
 	}

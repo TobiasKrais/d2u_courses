@@ -130,7 +130,7 @@ if ($func == '') {
 		. 'FROM '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS category '
 		. 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS parents '
 			. 'ON category.parent_schedule_category_id = parents.schedule_category_id '
-		.'ORDER BY name ASC';
+		.'ORDER BY parents.name, name ASC';
     $list = rex_list::factory($query);
 
     $list->addTableAttribute('class', 'table-striped table-hover');
