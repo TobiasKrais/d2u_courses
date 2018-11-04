@@ -224,6 +224,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.2-DEV:</p>
 <ul>
+	<li>Bugfix: CronJob wird - wenn installiert - nicht immer richtig aktiviert.</li>
 	<li>Bugfix: Import aus Redaxo 4 Datenbank verbessert.</li>
 	<li>Kategorie kann nicht mehr sich selbst als Elternkategorie haben.</li>
 	<li>Warenkorb Modul: CSS für Pflichtfelder intuitiver gestaltet.</li>
