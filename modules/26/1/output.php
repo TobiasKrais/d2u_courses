@@ -382,27 +382,20 @@ if($course !== FALSE) {
 	print '</div>';
 	print '</div>';
 
-	print '</div>';
-	if($course->description != "") {
-		print '<div class="row" data-match-height>';
-		print '<div class="col-12 course_row">';
-		print '<div class="course_box spacer_box" data-height-watch>'. $course->description .'</div>';
-		print '</div>';
-		print '</div>';
-	}
-	print '<div class="row" data-match-height>';
-	print '<div class="col-12 col-md-6">';
-	print '<div class="row" data-match-height>';
+	print '</div>'; // End row
+	
+	
+	$box_details = '';
 
 	if($course->instructor != "") {
-		print '<div class="col-12 course_row" data-height-watch>';
-		print '<div class="course_box spacer_box" data-height-watch><b>'. $tag_open .'d2u_courses_instructor'. $tag_close .':</b> '. $course->instructor .'</div>';
-		print '</div>';
+		$box_details .= '<div class="col-12 course_row">';
+		$box_details .= '<div class="course_box spacer_box"><b>'. $tag_open .'d2u_courses_instructor'. $tag_close .':</b> '. $course->instructor .'</div>';
+		$box_details .= '</div>';
 	}
 	
 	if($course->date_start != "" || $course->date_end != "" || $course->time != "") {
-		print '<div class="col-12 course_row" data-height-watch>';
-		print '<div class="course_box spacer_box" data-height-watch><b>'. $tag_open .'d2u_courses_date'. $tag_close .':</b> ';
+		$box_details .= '<div class="col-12 course_row">';
+		$box_details .= '<div class="course_box spacer_box"><b>'. $tag_open .'d2u_courses_date'. $tag_close .':</b> ';
 		if($course->date_start != "" || $course->date_end != "" || $course->time != "") {
 			$date = '';
 			if($course->date_start != "") {
@@ -420,108 +413,130 @@ if($course !== FALSE) {
 //					$date .= ' '. $tag_open .'d2u_courses_oclock'. $tag_close;
 //				}
 			}
-			print $date .'<br>';
+			$box_details .= $date .'<br>';
 		}
-		print '</div>';
-		print '</div>';
+		$box_details .= '</div>';
+		$box_details .= '</div>';
 	}
 
 	if(trim($course->details_deadline) != "") {
-		print '<div class="col-12 course_row" data-height-watch>';
-		print '<div class="course_box spacer_box" data-height-watch>';
-		print '<b>'. $tag_open .'d2u_courses_registration_deadline'. $tag_close .':</b> '. $course->details_deadline;
-		print '</div>';
-		print '</div>';
+		$box_details .= '<div class="col-12 course_row">';
+		$box_details .= '<div class="course_box spacer_box">';
+		$box_details .= '<b>'. $tag_open .'d2u_courses_registration_deadline'. $tag_close .':</b> '. $course->details_deadline;
+		$box_details .= '</div>';
+		$box_details .= '</div>';
 	}
 
 	if($course->price > 0) {
-		print '<div class="col-12 course_row" data-height-watch>';
-		print '<div class="course_box spacer_box" data-height-watch><b>'. $tag_open .'d2u_courses_fee'. $tag_close .':</b> '. number_format($course->price, 2, ",", ".") .' €';
+		$box_details .= '<div class="col-12 course_row">';
+		$box_details .= '<div class="course_box spacer_box"><b>'. $tag_open .'d2u_courses_fee'. $tag_close .':</b> '. number_format($course->price, 2, ",", ".") .' €';
 		if($course->price_discount > 0 && $course->price_discount < $course->price) {
-			print ' ('. $tag_open .'d2u_courses_discount'. $tag_close .': '. number_format($course->price_discount, 2, ",", ".") .' €)';
+			$box_details .= ' ('. $tag_open .'d2u_courses_discount'. $tag_close .': '. number_format($course->price_discount, 2, ",", ".") .' €)';
 		}
-		print '</div>';
-		print '</div>';
+		$box_details .= '</div>';
+		$box_details .= '</div>';
 	}
 
 	if(trim($course->details_course) != "") {
-		print '<div class="col-12 course_row" data-height-watch>';
-		print '<div class="course_box spacer_box" data-height-watch>';
-		print '<b>'. $tag_open .'d2u_courses_details_course'. $tag_close .':</b> '. $course->details_course;
-		print '</div>';
-		print '</div>';
+		$box_details .= '<div class="col-12 course_row">';
+		$box_details .= '<div class="course_box spacer_box">';
+		$box_details .= '<b>'. $tag_open .'d2u_courses_details_course'. $tag_close .':</b> '. $course->details_course;
+		$box_details .= '</div>';
+		$box_details .= '</div>';
 	}
 
 	if($course->participants_max > 0) {
-		print '<div class="col-12 course_row" data-height-watch>';
-		print '<div class="course_box spacer_box" data-height-watch>';
-		print '<b>'. $tag_open .'d2u_courses_participants'. $tag_close .': '. $course->participants_max .'</b> ('. $tag_open .'d2u_courses_max'. $tag_close .')';
+		$box_details .= '<div class="col-12 course_row">';
+		$box_details .= '<div class="course_box spacer_box">';
+		$box_details .= '<b>'. $tag_open .'d2u_courses_participants'. $tag_close .': '. $course->participants_max .'</b> ('. $tag_open .'d2u_courses_max'. $tag_close .')';
 		if($course->participants_min > 0) {
-			print ' / <b>'. $course->participants_min .'</b> ('. $tag_open .'d2u_courses_min'. $tag_close .')';
+			$box_details .= ' / <b>'. $course->participants_min .'</b> ('. $tag_open .'d2u_courses_min'. $tag_close .')';
 		}
 		if($course->participants_number > 0) {
-			print ' / <b>'. $course->participants_number .'</b> ('. $tag_open .'d2u_courses_booked'. $tag_close .')';
+			$box_details .= ' / <b>'. $course->participants_number .'</b> ('. $tag_open .'d2u_courses_booked'. $tag_close .')';
 		}
 		if($course->participants_wait_list > 0) {
-			print ' / <b>'. $course->participants_wait_list .'</b> ('. $tag_open .'d2u_courses_wait_list'. $tag_close .')';
+			$box_details .= ' / <b>'. $course->participants_wait_list .'</b> ('. $tag_open .'d2u_courses_wait_list'. $tag_close .')';
 		}
-		print '<br></div>';
-		print '</div>';
+		$box_details .= '<br></div>';
+		$box_details .= '</div>';
 	}
 	
 	if($course->redaxo_article > 0 || $course->url_external != "" || count($course->downloads) > 0) {
 		if($course->redaxo_article > 0 || $course->url_external != "") {
-			print '<div class="col-12 course_row" data-height-watch>';
-			print '<div class="course_box spacer_box" data-height-watch><b>'. $tag_open .'d2u_courses_infolink'. $tag_close .':</b> ';
+			$box_details .= '<div class="col-12 course_row">';
+			$box_details .= '<div class="course_box spacer_box"><b>'. $tag_open .'d2u_courses_infolink'. $tag_close .':</b> ';
 			if($course->redaxo_article > 0) {
 				$article = rex_article::get($course->redaxo_article);
-				print '<a href="'. rex_getUrl($course->redaxo_article) .'">'. $article->getName() .'</a><br>';
+				$box_details .= '<a href="'. rex_getUrl($course->redaxo_article) .'">'. $article->getName() .'</a><br>';
 			}
 			if($course->url_external != "") {
-				print '<a href="'. $course->url_external .'" target="_blank">'. $course->url_external .'</a><br>';
+				$box_details .= '<a href="'. $course->url_external .'" target="_blank">'. $course->url_external .'</a><br>';
 			}
-			print '</div>';
-			print '</div>';
+			$box_details .= '</div>';
+			$box_details .= '</div>';
 		}
 
 		if(count($course->downloads) > 0) {
-			print '<div class="col-12 course_row" data-height-watch>';
-			print '<div class="course_box spacer_box"><b>'. $tag_open .'d2u_courses_downloads'. $tag_close .':</b> ';
-			print '<ul>';
+			$box_details .= '<div class="col-12 course_row">';
+			$box_details .= '<div class="course_box spacer_box"><b>'. $tag_open .'d2u_courses_downloads'. $tag_close .':</b> ';
+			$box_details .= '<ul>';
 			foreach($course->downloads as $document) {
 				$rex_document = rex_media::get($document);
-				print '<li><a href="'. rex_url::media($document) .'" target="_blank">'. ($rex_document->getTitle() == "" ? $document : $rex_document->getTitle()) .'</a></li>';
+				$box_details .= '<li><a href="'. rex_url::media($document) .'" target="_blank">'. ($rex_document->getTitle() == "" ? $document : $rex_document->getTitle()) .'</a></li>';
 			}
-			print '</ul>';
-			print '</div>';
-			print '</div>';
+			$box_details .= '</ul>';
+			$box_details .= '</div>';
+			$box_details .= '</div>';
 		}
 	}
 
 	if($course->registration_possible == "yes" || $course->registration_possible == "booked") {
-		print '<div class="col-12 course_row" data-height-watch>';
-		print '<div class="course_box spacer_box add_cart" data-height-watch>';
+		$box_details .= '<div class="col-12 course_row">';
+		$box_details .= '<div class="course_box spacer_box add_cart">';
 		if(D2U_Courses\Cart::getCart()->hasCourse($course->course_id)) {
-			print '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'">'. $tag_open .'d2u_courses_cart_course_already_in'. $tag_close .' - '. $tag_open .'d2u_courses_cart_go_to'. $tag_close .'</a>';
+			$box_details .= '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'">'. $tag_open .'d2u_courses_cart_course_already_in'. $tag_close .' - '. $tag_open .'d2u_courses_cart_go_to'. $tag_close .'</a>';
 		}
 		else {
-			print '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'" method="post">';
-			print '<input type="hidden" name="course_id" value="'. $course->course_id .'">';
-			print '<input type="submit" class="add_cart" name="submit" value="'. $tag_open .'d2u_courses_cart_add'. $tag_close .'">';
-			print '</form>';
+			$box_details .= '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'" method="post">';
+			$box_details .= '<input type="hidden" name="course_id" value="'. $course->course_id .'">';
+			$box_details .= '<input type="submit" class="add_cart" name="submit" value="'. $tag_open .'d2u_courses_cart_add'. $tag_close .'">';
+			$box_details .= '</form>';
 		}
-		print '</div>';
-		print '</div>';
+		$box_details .= '</div>';
+		$box_details .= '</div>';
+	}
+	
+	if($course->picture != "") {
+		$box_picture = '<div class="col-12 col-md-6">';
+		$box_picture .= '<div class="course_box spacer_box course_picture">';
+		$box_picture .= '<img src="index.php?rex_media_type=d2u_helper_sm&rex_media_file='. $course->picture .'" alt="'. $course->name .'">';
+		$box_picture .= '</div>';
+		$box_picture .= '</div>';
+	}
+	
+	$box_description = '';
+	if($course->description != "") {
+		$box_description .= '<div class="row" data-match-height>';
+		$box_description .= '<div class="col-12'. ($box_details == '' ? ' col-md-6' : '') .' course_row">';
+		$box_description .= '<div class="course_box spacer_box" data-height-watch>'. $course->description .'</div>';
+		$box_description .= '</div>';
+		if($box_details == '') {
+			$box_description .= $box_picture;
+		}
+		$box_description .= '</div>';
 	}
 
-	print '</div>';
-	print '</div>';
-	if($course->picture != "") {
+	// Output
+	print $box_description;
+	print '<div class="row" data-match-height>';
+	if($box_details != '') {
 		print '<div class="col-12 col-md-6">';
-		print '<div class="course_box spacer_box course_picture">';
-		print '<img src="index.php?rex_media_type=d2u_helper_sm&rex_media_file='. $course->picture .'" alt="'. $course->name .'">';
+		print '<div class="row">';
+		print $box_details;
 		print '</div>';
 		print '</div>';
+		print $box_picture; // only if not included in $box_decription
 	}
 	
 	if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
@@ -638,7 +653,7 @@ if($course !== FALSE) {
 		print '</div>';
 		print '</div>';
 	}
-	print '</div>';
+	print '</div>'; // End row
 
 	print '</div>';
 }

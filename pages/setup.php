@@ -213,9 +213,11 @@ else if($old_tables_available) {
 ?>
 <h2>Beispielseiten</h2>
 <ul>
-	<li>D2U Kurse Addon: <a href="https://www.tuttikiesi.de/" target="_blank">
+	<li>D2U Veranstaltungen Addon: <a href="https://www.skiclub-loerrach.de/" target="_blank">
+		www.skiclub-loerrach.de</a>.</li>
+	<li>D2U Veranstaltungen Addon: <a href="https://www.tuttikiesi.de/" target="_blank">
 		www.tuttikiesi.de</a>.</li>
-	<li>D2U Kurse Addon: <a href="https://www.kaltenbach-stiftung.de/" target="_blank">
+	<li>D2U Veranstaltungen Addon: <a href="https://www.kaltenbach-stiftung.de/" target="_blank">
 		www.kaltenbach-stiftung.de</a>.</li>
 </ul>
 <h2>Support</h2>
@@ -224,6 +226,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.2-DEV:</p>
 <ul>
+	<li>Ausgabe Modul: Detailverbesserungen in der Darstellung wenn nur die Beschreibung ausgefüllt ist.</li>
 	<li>Bugfix: CronJob wird - wenn installiert - nicht immer richtig aktiviert.</li>
 	<li>Bugfix: Import aus Redaxo 4 Datenbank verbessert.</li>
 	<li>Kategorie kann nicht mehr sich selbst als Elternkategorie haben.</li>
