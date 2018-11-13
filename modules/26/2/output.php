@@ -105,10 +105,10 @@ if(isset($form_data['invoice_form'])) {
 		$anrede = $form_data['invoice_form']['gender'] == "W" ? 1 : 0;
 
 		if($user !== FALSE) {
-			$user->setValue('title', $anrede);
-			$user->setValue('firstname', $form_data['invoice_form']['firstname']);
-			$user->setValue('lastname', $form_data['invoice_form']['lastname']);
-			$user->setValue('clang_id', rex_clang::getCurrentId());
+			$user->title = $anrede;
+			$user->firstname = $form_data['invoice_form']['firstname'];
+			$user->lastname = $form_data['invoice_form']['lastname'];
+			$user->clang_id = rex_clang::getCurrentId();
 		}
 		else {
 			$user = MultinewsletterUser::factory(
@@ -120,12 +120,10 @@ if(isset($form_data['invoice_form'])) {
 				rex_clang::getCurrentId()
 			);
 		}
-		$user->setValue('createdate', time());
-		$user->setValue('createip', filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP));
-		$user->setValue('group_ids', rex_config::get('d2u_courses', 'multinewsletter_group'));
-		$user->setValue('status', 0);
-		$user->setValue('subscriptiontype', 'web');
-		$user->setValue('activationkey', rand(100000, 999999));
+		$user->group_ids[] = rex_config::get('d2u_courses', 'multinewsletter_group');
+		$user->status = 0;
+		$user->subscriptiontype = 'web';
+		$user->activationkey = rand(100000, 999999);
 		$user->save();
 
 		// Send activationmail

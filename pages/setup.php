@@ -226,6 +226,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.2-DEV:</p>
 <ul>
+	<li>Warenkorb Modul: Anpassung an MultiNewsletter > 3.2.0.</li>
 	<li>Ausgabe Modul: Detailverbesserungen in der Darstellung wenn nur die Beschreibung ausgefüllt ist.</li>
 	<li>Bugfix: CronJob wird - wenn installiert - nicht immer richtig aktiviert.</li>
 	<li>Bugfix: Import aus Redaxo 4 Datenbank verbessert.</li>
