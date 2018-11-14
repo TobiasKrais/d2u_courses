@@ -13,6 +13,3 @@ $sql->setQuery('DROP VIEW IF EXISTS ' . \rex::getTablePrefix() . 'd2u_courses_ur
 // Delete tables
 $sql->setQuery('DROP TABLE IF EXISTS ' . rex::getTablePrefix() . 'd2u_courses_target_groups');
 $sql->setQuery('DROP TABLE IF EXISTS ' . rex::getTablePrefix() . 'd2u_courses_2_target_groups');
-
-// Delete language replacements
-d2u_courses_lang_helper::factory()->uninstall();

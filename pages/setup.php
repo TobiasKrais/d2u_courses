@@ -226,6 +226,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.2-DEV:</p>
 <ul>
+	<li>Bugfix: Deaktiviertes Addon zu deinstallieren führte zu fatal error.</li>
 	<li>In den Einstellungen gibt es jetzt eine Option, eigene Übersetzungen in SProg dauerhaft zu erhalten.</li>
 	<li>Warenkorb Modul: Anpassung an MultiNewsletter > 3.2.0.</li>
 	<li>Ausgabe Modul: Detailverbesserungen in der Darstellung wenn nur die Beschreibung ausgefüllt ist.</li>

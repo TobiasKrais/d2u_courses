@@ -30,6 +30,8 @@ if(class_exists('D2UModuleManager')) {
 }
 
 // Update translations
-if ($this->hasConfig('lang_replacements_install', 'false') == 'true') {
-	d2u_helper_lang_helper::factory()->install();
+if(!class_exists('d2u_courses_lang_helper')) {
+	// Load class in case addon is deactivated
+	require_once 'lib/d2u_courses_lang_helper.php';
 }
+d2u_courses_lang_helper::factory()->install();
