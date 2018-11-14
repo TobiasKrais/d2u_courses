@@ -14,7 +14,8 @@ if(rex_config::get('d2u_courses', 'kufer_sync_autoimport', 'inactive') == 'activ
 		// Load class in case addon is deactivated
 		require_once 'lib/kufer_sync_cronjob.php';
 	}
-	if(kufer_sync_cronjob::isInstalled()) {
-		kufer_sync_cronjob::delete();
+	$kufer_cronjob = kufer_sync_cronjob::factory();
+	if($kufer_cronjob->isInstalled()) {
+		$kufer_cronjob->delete();
 	}
 }

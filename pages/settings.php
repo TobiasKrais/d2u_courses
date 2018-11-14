@@ -62,13 +62,14 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 		
 		// Install / remove Cronjob
 		if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
+			$kufer_cronjob = kufer_sync_cronjob::factory();
 			if($this->getConfig('kufer_sync_autoimport') == 'active') {
-				if(!kufer_sync_cronjob::isInstalled()) {
-					kufer_sync_cronjob::install();
+				if(!$kufer_cronjob->isInstalled()) {
+					$kufer_cronjob->install();
 				}
 			}
 			else {
-				kufer_sync_cronjob::delete();
+				$kufer_cronjob->delete();
 			}
 		}
 	}
