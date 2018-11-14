@@ -22,8 +22,9 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 	}
 
 	// Checkbox also need special treatment if empty
-	$settings['forward_single_course'] = array_key_exists('forward_single_course', $settings) ? "active" : "inactive";
 	$settings['ask_kids_go_home_alone'] = array_key_exists('ask_kids_go_home_alone', $settings) ? "active" : "inactive";
+	$settings['forward_single_course'] = array_key_exists('forward_single_course', $settings) ? "active" : "inactive";
+	$settings['lang_wildcard_overwrite'] = array_key_exists('lang_wildcard_overwrite', $settings) ? "true" : "false";
 	if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
 		$settings['kufer_sync_autoimport'] = array_key_exists('kufer_sync_autoimport', $settings) ? "active" : "inactive";
 	}
@@ -114,6 +115,7 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 				<legend><small><i class="rex-icon rex-icon-language"></i></small> <?php echo rex_i18n::msg('d2u_helper_lang_replacements'); ?></legend>
 				<div class="panel-body-wrapper slide">
 					<?php
+						d2u_addon_backend_helper::form_checkbox('d2u_helper_lang_wildcard_overwrite', 'settings[lang_wildcard_overwrite]', 'true', $this->getConfig('lang_wildcard_overwrite') == 'true');
 						foreach(rex_clang::getAll() as $rex_clang) {
 							print '<dl class="rex-form-group form-group">';
 							print '<dt><label>'. $rex_clang->getName() .'</label></dt>';
