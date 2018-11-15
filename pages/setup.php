@@ -224,7 +224,7 @@ else if($old_tables_available) {
 <p>Fehlermeldungen bitte im Git Projekt unter
 	<a href="https://github.com/TobiasKrais/d2u_courses/issues" target="_blank">https://github.com/TobiasKrais/d2u_courses/issues</a> melden.</p>
 <h2>Changelog</h2>
-<p>3.0.2-DEV:</p>
+<p>3.0.2:</p>
 <ul>
 	<li>Bugfix: Deaktiviertes Addon zu deinstallieren führte zu fatal error.</li>
 	<li>In den Einstellungen gibt es jetzt eine Option, eigene Übersetzungen in SProg dauerhaft zu erhalten.</li>
