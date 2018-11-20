@@ -226,7 +226,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.3-DEV:</p>
 <ul>
-	<li>...</li>
+	<li>Bugfix locations Plugin: Der Klasse für die Ortskategorie hatten die Methoden für die Meta Tags gefehlt</li>
 </ul>
 <p>3.0.2:</p>
 <ul>

@@ -126,6 +126,14 @@ class LocationCategory {
 	}
 	
 	/**
+	 * Get the <link rel="canonical"> tag for page header.
+	 * @return Complete tag.
+	 */
+	public function getCanonicalTag() {
+		return '<link rel="canonical" href="'. $this->getURL() .'">';
+	}
+	
+	/**
 	 * Get all locations of this category
 	 * @param boolean $online_only Get only locations hosting online courses.
 	 * @return Location[] Array with locations
@@ -153,6 +161,30 @@ class LocationCategory {
 		return $locations;
 	}
 	
+	/**
+	 * Get the <meta rel="alternate" hreflang=""> tags for page header.
+	 * @return Complete tags.
+	 */
+	public function getMetaAlternateHreflangTags() {
+		return '<link rel="alternate" type="text/html" hreflang="'. \rex_clang::getCurrent()->getCode() .'" href="'. $this->getURL() .'" title="'. str_replace('"', '', $this->name) .'">';
+	}
+	
+	/**
+	 * Get the <meta name="description"> tag for page header.
+	 * @return Complete tag.
+	 */
+	public function getMetaDescriptionTag() {
+		return '<meta name="description" content="">';
+	}
+	
+	/**
+	 * Get the <title> tag for page header.
+	 * @return Complete title tag.
+	 */
+	public function getTitleTag() {
+		return '<title>'. $this->name .' / '. \rex::getServerName() .'</title>';
+	}
+
 	/**
 	 * Returns the URL of this object.
 	 * @param string $including_domain TRUE if Domain name should be included
