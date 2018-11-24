@@ -141,9 +141,9 @@ class Category {
 	 * @return Category[] Array with category objects.
 	 */
 	static function getAll($online_only = FALSE, $parent_category_id = 0) {
-		$query = "SELECT category_id FROM ". \rex::getTablePrefix() ."d2u_courses_categories";
+		$query = "SELECT category_id FROM ". \rex::getTablePrefix() ."d2u_courses_categories ";
 		if($parent_category_id > 0) {
-			$query .= " WHERE parent_category_id = ". $parent_category_id ." ";
+			$query .= "WHERE parent_category_id = ". $parent_category_id ." ";
 		}
 		if($online_only) {
 			$query = "SELECT courses.category_id FROM ". \rex::getTablePrefix() ."d2u_courses_courses AS courses ";
