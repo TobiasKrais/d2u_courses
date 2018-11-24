@@ -123,11 +123,14 @@ class TargetGroup {
 	 * @param string target_group_child_id ID
 	 */
 	public static function getByChildID($target_group_child_id) {
-		$ids = explode("-", $target_group_child_id);
+		// Separator is ugly, but needs to consist of digits only
+		$target_group_id = substr($target_group_child_id, 0, strrpos($target_group_child_id, "00000"));
+		$category_id = substr($target_group_child_id, strrpos($target_group_child_id, "00000") + 5);
+
 		$target_child = new TargetGroup(0);
-		$target_child->parent_target_group = new TargetGroup($ids[0]);
-		$target_child->target_group_id = $ids[1];
-		$category = new Category($ids[1]);
+		$target_child->parent_target_group = new TargetGroup($target_group_id);
+		$target_child->target_group_id = $category_id;
+		$category = new Category($category_id);
 		$target_child->name = $category->name;
 		$target_child->picture= $category->picture;
 		$target_child->updatedate = $category->updatedate;
@@ -187,7 +190,7 @@ class TargetGroup {
 				."LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_courses AS courses ON c2t.course_id = courses.course_id "
 				."LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_2_categories AS c2c ON c2c.course_id = courses.course_id "
 				."WHERE c2t.target_group_id = ". $this->parent_target_group->target_group_id ." "
-					."AND c2c.category_id = ". $this->target_group_id;
+					."AND c2c.category_id = ". $this->target_group_id ." ";
 		}
 		if($online_only) {
 			$query .= "AND online_status = 'online' "
@@ -256,7 +259,8 @@ class TargetGroup {
 		if($this->url == "") {
 			$parameterArray = [];
 			if($this->parent_target_group !== FALSE) {
-				$parameterArray['target_group_child_id'] = $this->parent_target_group->target_group_id ."-". $this->target_group_id;
+				// Separator is ugly, but needs to consist of digits only
+				$parameterArray['target_group_child_id'] = $this->parent_target_group->target_group_id ."00000". $this->target_group_id;
 			}
 			else {
 				$parameterArray['target_group_id'] = $this->target_group_id;
