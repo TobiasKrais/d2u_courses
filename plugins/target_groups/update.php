@@ -1,6 +1,7 @@
 <?php
 // 3.0.3 Database update
 $sql = rex_sql::factory();
+// Online target groups childs (separator is 00000 - ugly, but only digits are allowed)
 $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_target_group_childs AS
 	SELECT target.target_group_id, categories.category_id, CONCAT(target.target_group_id, "00000", categories.category_id) AS target_group_child_id, categories.name, categories.name AS seo_title, categories.picture, courses.updatedate
 	FROM '. rex::getTablePrefix() .'d2u_courses_target_groups AS target
