@@ -9,4 +9,4 @@ d2u_courses_import_settings_default_location = Standard Örtlichkeit
 d2u_courses_import_settings_xml_registration_path = Verzeichnis Anmeldungen
 d2u_courses_import_settings_xml_url = Kufer XML URL
 
-d2u_courses_kufer_sync_rights_kufer_sync = D2U Kurse Addon: Kufer Sync
+d2u_courses_kufer_sync_rights_kufer_sync = D2U Veranstaltungen Addon: Kufer Sync
