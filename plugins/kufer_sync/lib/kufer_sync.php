@@ -298,10 +298,10 @@ class KuferSync {
 			$new_course->save();
 		}
 		
-		print \rex_view::success("Kufer Import Ergebnis");
+		print \rex_view::success("Kufer Import Ergebnis: ");
 		print "<ul>";
-		print "<li>". $counter_new ." Kurse hinzugef&uuml;gt.</li>";
-		print "<li>". $counter_update ." Kurse aktualisiert.</li>";
+		print "<li>". $counter_new ." Kurse hinzugefügt. </li>";
+		print "<li>". $counter_update ." Kurse aktualisiert. </li>";
 		
 		// Übrige importierte Kurse löschen
 		$counter_delete = 0;
@@ -310,7 +310,7 @@ class KuferSync {
 			$counter_delete++;
 		}
  
-		print "<li>". $counter_delete ." Kurse gel&ouml;scht.</li>";
+		print "<li>". $counter_delete ." Kurse gelöscht. </li>";
 		print "</ul>";
 	}
 }

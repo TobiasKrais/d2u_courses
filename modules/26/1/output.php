@@ -491,6 +491,34 @@ if($course !== FALSE) {
 		}
 	}
 
+	if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
+		$box_details .= '<div class="col-12 course_row">';
+		$box_details .= '<div class="course_box spacer_box">';
+		if($course->room != "") {
+			$box_details .= '<b>'. $tag_open .'d2u_courses_locations_room'. $tag_close .':</b><br />';
+			$box_details .= $course->room;
+			if($course->location->site_plan != "") {
+				$box_details .= ' (<a href="'. rex_url::media($course->location->site_plan) .'" target="_blank">'. $tag_open .'d2u_courses_locations_site_plan'. $tag_close .'</a>)';
+			}
+			$box_details .= '<br><br>';
+		}
+		else {
+			if($course->location->site_plan != "") {
+				$box_details .= '<b><a href="'. rex_url::media($course->location->site_plan) .'" target="_blank">'. $tag_open .'d2u_courses_locations_site_plan'. $tag_close .'</a></b><br><br>';
+			}
+		}
+		$box_details .= '<b>'. $tag_open .'d2u_courses_locations_city'. $tag_close .':</b><br />';
+		$box_details .= $course->location->name;
+		if($course->location->street != "") {
+			$box_details .= '<br>'. $course->location->street;
+		}
+		if($course->location->zip_code != "" || $course->location->city != "") {
+			$box_details .= '<br>'. $course->location->zip_code .' '. $course->location->city;
+		}
+		$box_details .= '</div>';
+		$box_details .= '</div>';
+	}
+
 	if($course->registration_possible == "yes" || $course->registration_possible == "booked") {
 		$box_details .= '<div class="col-12 course_row">';
 		$box_details .= '<div class="course_box spacer_box add_cart">';
@@ -506,9 +534,9 @@ if($course !== FALSE) {
 		$box_details .= '</div>';
 		$box_details .= '</div>';
 	}
-	
+
 	if($course->picture != "") {
-		$box_picture = '<div class="col-12 col-md-6">';
+		$box_picture = '<div class="col-12 col-md-6 course_row">';
 		$box_picture .= '<div class="course_box spacer_box course_picture">';
 		$box_picture .= '<img src="index.php?rex_media_type=d2u_helper_sm&rex_media_file='. $course->picture .'" alt="'. $course->name .'">';
 		$box_picture .= '</div>';
@@ -531,7 +559,7 @@ if($course !== FALSE) {
 	print $box_description;
 	print '<div class="row" data-match-height>';
 	if($box_details != '') {
-		print '<div class="col-12 col-md-6">';
+		print '<div class="col-12 col-md-6 course_row">';
 		print '<div class="row">';
 		print $box_details;
 		print '</div>';
@@ -540,41 +568,14 @@ if($course !== FALSE) {
 	}
 	
 	if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-		print '<div class="col-12 col-md-6">';
-		print '<div class="course_box spacer_box">';
-		print '<div class="row">';
-
-		print '<div class="col-12 course_row">';
-		if($course->room != "") {
-			print '<b>'. $tag_open .'d2u_courses_locations_room'. $tag_close .':</b><br />';
-			print $course->room;
-			if($course->location->site_plan != "") {
-				print ' (<a href="'. rex_url::media($course->location->site_plan) .'" target="_blank">'. $tag_open .'d2u_courses_locations_site_plan'. $tag_close .'</a>)';
-			}
-			print '<br><br>';
-		}
-		else {
-			if($course->location->site_plan != "") {
-				print '<b><a href="'. rex_url::media($course->location->site_plan) .'" target="_blank">'. $tag_open .'d2u_courses_locations_site_plan'. $tag_close .'</a></b><br><br>';
-			}
-		}
-		print '<b>'. $tag_open .'d2u_courses_locations_city'. $tag_close .':</b><br />';
-		print $course->location->name;
-		if($course->location->street != "") {
-			print '<br>'. $course->location->street;
-		}
-		if($course->location->zip_code != "" || $course->location->city != "") {
-			print '<br>'. $course->location->zip_code .' '. $course->location->city;
-		}
-		print '</div>';
-
 		// Show Google map
 		$show_map = "REX_VALUE[2]" == 'true' ? TRUE : FALSE;
 		if($show_map) {
-			print '<div class="col-12 col-md-8 course_row">';
+			print '<div class="col-12 course_row">';
+			print '<div class="course_box spacer_box">';
 			?>
 			<script src="https://maps.google.com/maps/api/js"></script> 
-			<div id="map_canvas" style="display: block; width: 100%; height: 300px"></div> 
+			<div id="map_canvas" style="display: block; width: 100%; height: 400px"></div> 
 			<script> 
 				function createGeocodeMap() {
 					var geocoder = new google.maps.Geocoder();
@@ -648,10 +649,8 @@ if($course !== FALSE) {
 			</script>
 			<?php
 			print '</div>';
+			print '</div>';
 		}
-		print '</div>';
-		print '</div>';
-		print '</div>';
 	}
 	print '</div>'; // End row
 
