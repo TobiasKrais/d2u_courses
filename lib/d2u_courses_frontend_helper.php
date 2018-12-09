@@ -210,8 +210,13 @@ class d2u_courses_frontend_helper {
 		return $meta_tags;
 	}
 	
+	/**
+	 * Get SQL WHERE clause for which courses are online or not.
+	 * @return string WHERE clause
+	 */
 	public static function getShowTimeWhere() {
 		$config_show_time = rex_config::get('d2u_courses', 'show_time', 'day_one_start');
+		// Track changes of WHERE statement also in plugins/target_groups/update.php
 		$where = 'date_start = "" OR date_start > CURDATE()';
 		if($config_show_time == 'day_one_end') {
 			$where = 'date_start = "" OR date_start >= CURDATE()';				
