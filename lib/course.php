@@ -496,7 +496,7 @@ class Course {
 		$query .= "LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_categories AS categories "
 				."ON courses.category_id = categories.category_id "
 			."WHERE courses.online_status = 'online'"
-				."AND (courses.date_start = '' OR courses.date_start > CURDATE()) "
+				."AND (". \d2u_courses_frontend_helper::getShowTimeWhere() .") "
 				."AND ("
 					."courses.description LIKE '%". $keyword ."%' "
 					."OR courses.instructor LIKE '%". $keyword ."%' "

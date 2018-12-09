@@ -120,7 +120,7 @@ class Category {
 			."LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_courses AS courses ON c2c.course_id = courses.course_id "
 				."WHERE c2c.category_id = ". $this->category_id ." "
 					."AND online_status = 'online' "
-					."AND (date_start = '' OR date_start >= CURDATE()) ";
+					."AND (". \d2u_courses_frontend_helper::getShowTimeWhere() .") ";
 		$result =  \rex_sql::factory();
 		$result->setQuery($query);
 		$num_rows = $result->getRows();
@@ -156,7 +156,7 @@ class Category {
 			else {
 				$query .= "WHERE online_status = 'online' ";
 			}
-			$query .= "AND (date_start = '' OR date_start >= CURDATE()) "
+			$query .= "AND (". \d2u_courses_frontend_helper::getShowTimeWhere() .") "
 					."GROUP BY category_id ";
 		}
 		if(\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority') {
@@ -307,7 +307,7 @@ class Category {
 				."WHERE c2c.category_id = ". $this->category_id ." AND courses.course_id  > 0 ";
 		if($online_only) {
 			$query .= "AND online_status = 'online' "
-				."AND (date_start = '' OR date_start > CURDATE()) ";
+				."AND (". \d2u_courses_frontend_helper::getShowTimeWhere() .") ";
 		}
 		$query .= "ORDER BY date_start, name";
 		$result =  \rex_sql::factory();

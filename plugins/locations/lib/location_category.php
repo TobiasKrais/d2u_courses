@@ -90,7 +90,7 @@ class LocationCategory {
 					."ON courses.location_id = locations.location_id "
 				."WHERE locations.location_category_id = ". $this->location_category_id ." "
 					."AND courses.online_status = 'online' "
-					."AND (date_start = '' OR date_start > CURDATE()) ";
+					."AND (". \d2u_courses_frontend_helper::getShowTimeWhere() .") ";
 		$result = \rex_sql::factory();
 		$result->setQuery($query);
 
@@ -110,7 +110,7 @@ class LocationCategory {
 				."LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_locations AS locations "
 					."ON courses.location_id = locations.location_id "
 				."WHERE courses.online_status = 'online' "
-					."AND (date_start = '' OR date_start > CURDATE()) "
+					."AND (". \d2u_courses_frontend_helper::getShowTimeWhere() .") "
 				."GROUP BY locations.location_category_id";
 		}
 		$result = \rex_sql::factory();
@@ -146,7 +146,7 @@ class LocationCategory {
 				."LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_locations AS locations "
 					."ON courses.location_id = locations.location_id "
 				."WHERE online_status = 'online' AND location_category_id = ". $this->location_category_id ." "
-					."AND (date_start = '' OR date_start >= CURDATE()) "
+					."AND (". \d2u_courses_frontend_helper::getShowTimeWhere() .") "
 				."GROUP BY location_id";
 		}
 		$result = \rex_sql::factory();

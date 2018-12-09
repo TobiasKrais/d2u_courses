@@ -51,7 +51,7 @@ $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_cours
 // END install database
 
 // START create views for url addon
-// Online categories
+// Online categories (changes need to be done here and pages/settings.php)
 $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_categories AS
 	SELECT categories.category_id, CONCAT_WS(" - ", parents.name, categories.name) AS name, CONCAT_WS(" - ", parents.name, categories.name) AS seo_title, categories.picture, courses.updatedate, categories.parent_category_id
 	FROM '. rex::getTablePrefix() .'d2u_courses_categories AS categories
@@ -88,7 +88,7 @@ $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_ur
 			WHERE categories.parent_category_id = categories_max.parent_category_id AND courses_max.online_status = "online" AND (date_start = "" OR date_start > CURDATE())
 		)
 	GROUP BY category_id, name, seo_title, picture, updatedate, parent_category_id;');
-// Online courses
+// Online courses (changes need to be done here and pages/settings.php)
 $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_courses AS
 	SELECT course_id, name, name AS seo_title, teaser, picture, updatedate, category_id
 	FROM '. rex::getTablePrefix() .'d2u_courses_courses AS courses

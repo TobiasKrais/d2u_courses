@@ -194,7 +194,7 @@ class TargetGroup {
 		}
 		if($online_only) {
 			$query .= "AND online_status = 'online' "
-				."AND (date_start = '' OR date_start >= CURDATE()) ";
+				."AND (". \d2u_courses_frontend_helper::getShowTimeWhere() .") ";
 		}
 		$query .= "GROUP BY course_id "
 			."ORDER BY date_start, name";
@@ -243,7 +243,7 @@ class TargetGroup {
 				."LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_courses AS courses ON c2t.course_id = courses.course_id"
 				."WHERE c2t.target_group_id = ". $this->target_group_id ." "
 					."AND online_status = 'online' "
-					."AND (date_start = '' OR date_start >= CURDATE()) ";
+					."AND (". \d2u_courses_frontend_helper::getShowTimeWhere() .") ";
 		$result = \rex_sql::factory();
 		$result->setQuery($query);
 

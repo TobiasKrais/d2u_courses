@@ -209,5 +209,19 @@ class d2u_courses_frontend_helper {
 
 		return $meta_tags;
 	}
+	
+	public static function getShowTimeWhere() {
+		$config_show_time = rex_config::get('d2u_courses', 'show_time', 'day_one_start');
+		$where = 'date_start = "" OR date_start > CURDATE()';
+		if($config_show_time == 'day_one_end') {
+			$where = 'date_start = "" OR date_start >= CURDATE()';				
+		}
+		else if($config_show_time == 'day_x_start') {
+			$where = 'date_start = "" OR date_start >= CURDATE() OR date_end > CURDATE()';				
+		}
+		else if($config_show_time == 'day_x_end') {
+			$where = 'date_start = "" OR date_start >= CURDATE() OR date_end >= CURDATE()';				
+		}
+		return $where;
+	}
 }
-

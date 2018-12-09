@@ -97,7 +97,7 @@ class ScheduleCategory {
 			."LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_courses AS courses ON c2s.course_id = courses.course_id "
 				."WHERE c2s.schedule_category_id = ". $this->schedule_category_id ." "
 					."AND online_status = 'online' "
-					."AND (date_start = '' OR date_start >= CURDATE()) ";
+					."AND (". \d2u_courses_frontend_helper::getShowTimeWhere() .") ";
 		$result = \rex_sql::factory();
 		$result->setQuery($query);
 		$num_rows = $result->getRows();
@@ -128,7 +128,7 @@ class ScheduleCategory {
 					. "LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_courses AS courses "
 						."ON c2s.course_id = courses.course_id AND courses.course_id > 0 "
 					."WHERE online_status = 'online' "
-						."AND (date_start = '' OR date_start >= CURDATE()) "
+						."AND (". \d2u_courses_frontend_helper::getShowTimeWhere() .") "
 					."GROUP BY schedule_category_id";
 		}
 		$result = \rex_sql::factory();
@@ -266,7 +266,7 @@ class ScheduleCategory {
 				."WHERE c2s.schedule_category_id = ". $this->schedule_category_id ." ";
 		if($online_only) {
 			$query .= "AND online_status = 'online' "
-				."AND (date_start = '' OR date_start >= CURDATE()) ";
+				."AND (". \d2u_courses_frontend_helper::getShowTimeWhere() .") ";
 		}
 		$query .= "ORDER BY date_start, name";
 
