@@ -13,8 +13,8 @@ $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_cours
 $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_locations` (
 	`location_id` int(10) unsigned NOT NULL auto_increment,
 	`name` varchar(255) collate utf8_general_ci default NULL,
-	`longitude` varchar(50) collate utf8_general_ci default NULL,
-	`latitude` varchar(50) collate utf8_general_ci default NULL,
+    `latitude` decimal(14,10),
+    `longitude` decimal(14,10),
 	`street` varchar(255) collate utf8_general_ci default NULL,
 	`zip_code` varchar(10) collate utf8_general_ci default NULL,
 	`city` varchar(255) collate utf8_general_ci default NULL,
