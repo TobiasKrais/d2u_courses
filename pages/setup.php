@@ -108,8 +108,8 @@ if(rex_request('import', 'string') == "d2u_courses" && $old_tables_available) {
 
 	$sql->setQuery("RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_orte` TO `". rex::getTablePrefix() ."d2u_courses_locations`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `ort_id` `location_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `laengengrad` `longitude` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `breitengrad` `latitude` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `laengengrad` `longitude` decimal(14,10),;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `breitengrad` `latitude` decimal(14,10),;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `strasse` `street` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `plz` `zip_code` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `ort` `city` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
@@ -226,7 +226,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.3-DEV:</p>
 <ul>
-	<li>location Plugin: Bei der Eingabe einer Adresse gibt es jetzt die Möglichkeit eine Adresse direkt zu geocodieren wenn im D2U Helper Addon ein Google Maps API Key mit Zugriff auf die Geocoding API hinterlegt ist.
+	<li>locations Plugin: Bei der Eingabe einer Adresse gibt es jetzt die Möglichkeit eine Adresse direkt zu geocodieren wenn im D2U Helper Addon ein Google Maps API Key mit Zugriff auf die Geocoding API hinterlegt ist.
 		Geocodierte Adressen werden auf der Karte schneller geladen und belasten das Budget des Google Kontos weniger.</li>
 	<li>Einstellung: Option zur Dauer der Anzeige der Kurse eingefügt: bis Anfang / Ende erster Tag, bis Anfang / Ende letzter Tag.</li>
 	<li>Bugfix target_groups Plugin: Zielgruppenkinder URLs wurden mit rex_getUrl() nicht korrekt gebaut.</li>
