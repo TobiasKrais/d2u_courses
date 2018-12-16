@@ -49,7 +49,12 @@ if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
 		<input type="checkbox" name="REX_INPUT_VALUE[2]" value="true" <?php echo "REX_VALUE[2]" == 'true' ? ' checked="checked"' : ''; ?> style="float: right;" />
 	</div>
 	<div class="col-xs-8">
-		Google Maps Karte anzeigen<br />
+		Google Maps Karte anzeigen
+		<?php
+			if(rex_config::get('d2u_helper', 'maps_key', '') == '') {
+				print '<span style="color:red;">(in den Einstellung des <a href="index.php?page=d2u_helper/settings">D2U Helper Addon</a> muss hierfür noch ein Google Maps API Key eingegeben werden)';
+			}
+		?>
 	</div>
 </div>
 <div class="row">

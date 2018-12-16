@@ -573,79 +573,77 @@ if($course !== FALSE) {
 		if($show_map) {
 			print '<div class="col-12 course_row">';
 			print '<div class="course_box spacer_box">';
+			$api_key = "";
+			if($d2u_helper->hasConfig("maps_key")) {
+				$api_key = $d2u_helper->getConfig("maps_key");
+			}
 			?>
-			<script src="https://maps.google.com/maps/api/js"></script> 
+			<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo $api_key; ?>"></script> 
 			<div id="map_canvas" style="display: block; width: 100%; height: 400px"></div> 
 			<script> 
-				function createGeocodeMap() {
-					var geocoder = new google.maps.Geocoder();
-					var map; 
-					var address = "<?php print $course->location->street .', '. $course->location->zip_code .' '. $course->location->city; ?>";
-					if (geocoder) {
-						geocoder.geocode( { 'address': address}, function(results, status) {
-							if (status === google.maps.GeocoderStatus.OK) {
-								map.setCenter(results[0].geometry.location);
-								var marker = new google.maps.Marker({
-									map: map,
-									position: results[0].geometry.location
-								});
-								var infowindow = new google.maps.InfoWindow({
-									content: "<?php print $course->location->name; ?>",
-									position: results[0].geometry.location
-								});
-								infowindow.open(map, marker);
-								google.maps.event.addListener(marker, 'click', function() {
-									infowindow.open(map,marker);
-								});
-							} else {
-								alert("Geocode was not successful for the following reason: " + status);
-							}
-						});
-					}
+			<?php
+				// If longitude and latitude is available: create map
+				if($course->location->latitude != 0 && $course->location->longitude != 0) {
+			?>
+				var myLatlng = new google.maps.LatLng(<?php print $course->location->latitude .",". $course->location->longitude; ?>);
+				var myOptions = {
+					zoom: <?php echo $course->location->location_category->zoom_level; ?>,
+					center: myLatlng,
+					mapTypeId: google.maps.MapTypeId.ROADMAP
+				};
+				var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
-					var myOptions = {
-						zoom: <?php echo $course->location->location_category->zoom_level; ?>,
-						mapTypeId: google.maps.MapTypeId.ROADMAP
-					};
-					map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+				var marker = new google.maps.Marker({
+					position: myLatlng, 
+					map: map
+				});
+
+				var infowindow = new google.maps.InfoWindow({
+					content: "<?php print $course->location->name; ?>",
+					position: myLatlng
+				});
+				infowindow.open(map, marker);
+				google.maps.event.addListener(marker, 'click', function() {
+					infowindow.open(map,marker);
+				});
+			<?php
+				}
+				// Fallback on geocoding
+				else {
+			?>
+				var geocoder = new google.maps.Geocoder();
+				var map; 
+				var address = "<?php print $course->location->street .', '. $course->location->zip_code .' '. $course->location->city; ?>";
+				if (geocoder) {
+					geocoder.geocode( { 'address': address}, function(results, status) {
+						if (status === google.maps.GeocoderStatus.OK) {
+							map.setCenter(results[0].geometry.location);
+							var marker = new google.maps.Marker({
+								map: map,
+								position: results[0].geometry.location
+							});
+							var infowindow = new google.maps.InfoWindow({
+								content: "<?php print $course->location->name; ?>",
+								position: results[0].geometry.location
+							});
+							infowindow.open(map, marker);
+							google.maps.event.addListener(marker, 'click', function() {
+								infowindow.open(map,marker);
+							});
+						} else {
+							alert("Geocode was not successful for the following reason: " + status);
+						}
+					});
 				}
 
-				<?php
-					// If longitude and latitude is available: create map
-					if($course->location->latitude != 0 && $course->location->longitude != 0) {
-				?>
-				function createDegreeMap() {
-					var myLatlng = new google.maps.LatLng(<?php print $course->location->latitude .", ". $course->location->longitude; ?>);
-					var myOptions = {
-						zoom: <?php echo $course->location->location_category->zoom_level; ?>,
-						center: myLatlng,
-						mapTypeId: google.maps.MapTypeId.ROADMAP
-					};
-					var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-
-					var marker = new google.maps.Marker({
-						position: myLatlng, 
-						map: map
-					});
-
-					var infowindow = new google.maps.InfoWindow({
-						content: "<?php print $course->location->name; ?>",
-						position: myLatlng
-					});
-					infowindow.open(map, marker);
-					google.maps.event.addListener(marker, 'click', function() {
-						infowindow.open(map,marker);
-					});
+				var myOptions = {
+					zoom: <?php echo $course->location->location_category->zoom_level; ?>,
+					mapTypeId: google.maps.MapTypeId.ROADMAP
+				};
+				map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+			<?php
 				}
-				// Init on direct map call
-				createDegreeMap();
-				<?php
-					}
-					// Fallback on geocoding
-					else {
-						print "createGeocodeMap();";
-					}
-				?>
+			?>
 			</script>
 			<?php
 			print '</div>';
