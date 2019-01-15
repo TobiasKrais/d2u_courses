@@ -213,26 +213,26 @@ else if($old_tables_available) {
 ?>
 <h2>Beispielseiten</h2>
 <ul>
-	<li>D2U Veranstaltungen Addon: <a href="https://www.skiclub-loerrach.de/" target="_blank">
-		www.skiclub-loerrach.de</a>.</li>
-	<li>D2U Veranstaltungen Addon: <a href="https://www.tuttikiesi.de/" target="_blank">
-		www.tuttikiesi.de</a>.</li>
-	<li>D2U Veranstaltungen Addon: <a href="https://www.kaltenbach-stiftung.de/" target="_blank">
-		www.kaltenbach-stiftung.de</a>.</li>
+	<li>D2U Veranstaltungen Addon ohne Plugins: <a href="https://skiclub-loerrach.de/" target="_blank">
+		skiclub-loerrach.de</a>.</li>
+	<li>D2U Veranstaltungen Addon ohne Plugins: <a href="https://tuttikiesi.de/" target="_blank">
+		tuttikiesi.de</a>.</li>
+	<li>D2U Veranstaltungen Addon: <a href="https://kaltenbach-stiftung.de/" target="_blank">
+		kaltenbach-stiftung.de</a>.</li>
 </ul>
 <h2>Support</h2>
 <p>Fehlermeldungen bitte im Git Projekt unter
 	<a href="https://github.com/TobiasKrais/d2u_courses/issues" target="_blank">https://github.com/TobiasKrais/d2u_courses/issues</a> melden.</p>
 <h2>Changelog</h2>
-<p>3.0.3-DEV:</p>
+<p>3.0.3:</p>
 <ul>
 	<li>Suche in Modul 26-1 bei aktiviertem locations Plugin: Karte nutzt nun Google Maps API Key aus D2U Helper Addon.</li>
-	<li> .</li>
 	<li>locations Plugin: Bei der Eingabe einer Adresse gibt es jetzt die Möglichkeit eine Adresse direkt zu geocodieren wenn im D2U Helper Addon ein Google Maps API Key mit Zugriff auf die Geocoding API hinterlegt ist.
 		Geocodierte Adressen werden auf der Karte schneller geladen und belasten das Budget des Google Kontos weniger.</li>
+	<li>Bugfix locations Plugin: Der Klasse für die Ortskategorie hatten die Methoden für die Meta Tags gefehlt.</li>
 	<li>Einstellung: Option zur Dauer der Anzeige der Kurse eingefügt: bis Anfang / Ende erster Tag, bis Anfang / Ende letzter Tag.</li>
 	<li>Bugfix target_groups Plugin: Zielgruppenkinder URLs wurden mit rex_getUrl() nicht korrekt gebaut.</li>
-	<li>Bugfix locations Plugin: Der Klasse für die Ortskategorie hatten die Methoden für die Meta Tags gefehlt.</li>
+	<li>Bugfix target_groups Plugin: Zielgruppenkinder können selbst keine Kinder mehr haben.</li>
 </ul>
 <p>3.0.2:</p>
 <ul>

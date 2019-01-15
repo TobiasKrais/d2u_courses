@@ -132,7 +132,7 @@ class TargetGroup {
 		$target_child->target_group_id = $category_id;
 		$category = new Category($category_id);
 		$target_child->name = $category->name;
-		$target_child->picture= $category->picture;
+		$target_child->picture = $category->picture;
 		$target_child->updatedate = $category->updatedate;
 		return $target_child;
 	}
@@ -146,10 +146,16 @@ class TargetGroup {
 	}
 
 	/**
-	 * Get child courses for this object
+	 * Get child courses for this object. If target group is already a child, it
+	 * can not have children and an empty array is returned.
 	 * @return TargetGroup[] Array with target groups
 	 */
 	public function getChildren() {
+		if($this->parent_target_group != FALSE) {
+			return [];
+		}
+		
+		// Only target groups without parent can have children
 		$query = "SELECT category_id FROM ". \rex::getTablePrefix() ."d2u_courses_url_target_group_childs  "
 				."WHERE target_group_id = ". $this->target_group_id ." ";
 		$query .= "ORDER BY name";

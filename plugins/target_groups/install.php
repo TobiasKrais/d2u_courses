@@ -17,7 +17,7 @@ $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_cours
 // END install database
 
 // START create views for url addon
-// Online target groups (changes need to be done here and addon pages/settings.php)
+// Online target groups (changes need to be done here and pages/settings.php)
 $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_target_groups AS
 	SELECT target.target_group_id, target.name, target.name AS seo_title, target.picture, courses.updatedate
 	FROM '. rex::getTablePrefix() .'d2u_courses_target_groups AS target
@@ -33,7 +33,7 @@ $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_ur
 			WHERE target.target_group_id = targets_max.target_group_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
 		)
 	GROUP BY target_group_id, name, seo_title, picture, updatedate;');
-// Online target groups childs (separator is 00000 - ugly, but only digits are allowed) (changes need to be done here and addon pages/settings.php)
+// Online target groups childs (separator is 00000 - ugly, but only digits are allowed) (changes need to be done here and pages/settings.php)
 $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_target_group_childs AS
 	SELECT target.target_group_id, categories.category_id, CONCAT(target.target_group_id, "00000", categories.category_id) AS target_group_child_id, categories.name, categories.name AS seo_title, categories.picture, courses.updatedate
 	FROM '. rex::getTablePrefix() .'d2u_courses_target_groups AS target

@@ -165,7 +165,7 @@ class KuferSync {
 				$new_course->location = new Location(\rex_config::get('d2u_courses', 'kufer_sync_default_location_id', 0));
 				// room name
 				if(isset($kufer_course->ortraumname) && $kufer_course->ortraumname != "") {
-					$new_course->room = $kufer_course->ortraumname;
+					$new_course->room = str_replace('"', "'", $kufer_course->ortraumname);
 				}
 			}
 			
@@ -297,6 +297,9 @@ class KuferSync {
 			}
 			$new_course->save();
 		}
+		
+		// Delete cache to solve URL addon issues
+		rex_delete_cache();
 		
 		print \rex_view::success("Kufer Import Ergebnis: ");
 		print "<ul>";
