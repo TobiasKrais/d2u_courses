@@ -150,3 +150,7 @@ a.course_row_a:hover {
 	color: white;
 	font-size: 1.75em;
 }
+
+.registration_header h1 {
+	background: transparent;
+}

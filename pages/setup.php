@@ -224,6 +224,10 @@ else if($old_tables_available) {
 <p>Fehlermeldungen bitte im Git Projekt unter
 	<a href="https://github.com/TobiasKrais/d2u_courses/issues" target="_blank">https://github.com/TobiasKrais/d2u_courses/issues</a> melden.</p>
 <h2>Changelog</h2>
+<p>3.0.4-DEV:</p>
+<ul>
+	<li>...</li>
+</ul>
 <p>3.0.3:</p>
 <ul>
 	<li>Suche in Modul 26-1 bei aktiviertem locations Plugin: Karte nutzt nun Google Maps API Key aus D2U Helper Addon.</li>

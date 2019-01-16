@@ -126,11 +126,11 @@ if ($func == 'edit' || $func == 'add') {
 }
 
 if ($func == '') {
-	$query = 'SELECT category.schedule_category_id, category.name, parents.name AS parent_name '
+	$query = 'SELECT category.schedule_category_id, CONCAT_WS(" → ", parents.name, category.name) AS full_name '
 		. 'FROM '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS category '
 		. 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS parents '
 			. 'ON category.parent_schedule_category_id = parents.schedule_category_id '
-		.'ORDER BY parents.name, name ASC';
+		.'ORDER BY full_name ASC';
     $list = rex_list::factory($query);
 
     $list->addTableAttribute('class', 'table-striped table-hover');
@@ -145,10 +145,8 @@ if ($func == '') {
     $list->setColumnLabel('schedule_category_id', rex_i18n::msg('id'));
     $list->setColumnLayout('schedule_category_id', ['<th class="rex-table-id">###VALUE###</th>', '<td class="rex-table-id">###VALUE###</td>']);
 
-    $list->setColumnLabel('name', rex_i18n::msg('d2u_helper_name'));
-    $list->setColumnParams('name', ['func' => 'edit', 'entry_id' => '###schedule_category_id###']);
-
-    $list->setColumnLabel('parent_name', rex_i18n::msg('d2u_courses_categories_parent_category'));
+    $list->setColumnLabel('full_name', rex_i18n::msg('d2u_helper_name'));
+    $list->setColumnParams('full_name', ['func' => 'edit', 'entry_id' => '###schedule_category_id###']);
 
 	$list->addColumn(rex_i18n::msg('module_functions'), '<i class="rex-icon rex-icon-edit"></i> ' . rex_i18n::msg('edit'));
     $list->setColumnLayout(rex_i18n::msg('module_functions'), ['<th class="rex-table-action" colspan="2">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);

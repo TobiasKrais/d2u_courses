@@ -141,15 +141,15 @@ if ($func == 'edit' || $func == 'add') {
 }
 
 if ($func == '') {
-	$query = 'SELECT category.category_id, category.name, parents.name AS parent_name, category.priority '
+	$query = 'SELECT category.category_id, CONCAT_WS(" → ", parents.name, category.name) AS full_name, category.priority '
 		. 'FROM '. rex::getTablePrefix() .'d2u_courses_categories AS category '
 		. 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_categories AS parents '
 			. 'ON category.parent_category_id = parents.category_id ';
 	if($this->getConfig('default_category_sort') == 'priority') {
-		$query .= 'ORDER BY parent_name, priority ASC';
+		$query .= 'ORDER BY full_name, priority ASC';
 	}
 	else {
-		$query .= 'ORDER BY parent_name, category.name ASC';
+		$query .= 'ORDER BY full_name ASC';
 	}
     $list = rex_list::factory($query);
 
@@ -165,10 +165,8 @@ if ($func == '') {
     $list->setColumnLabel('category_id', rex_i18n::msg('id'));
     $list->setColumnLayout('category_id', ['<th class="rex-table-id">###VALUE###</th>', '<td class="rex-table-id">###VALUE###</td>']);
 
-    $list->setColumnLabel('name', rex_i18n::msg('d2u_helper_name'));
-    $list->setColumnParams('name', ['func' => 'edit', 'entry_id' => '###category_id###']);
-
-    $list->setColumnLabel('parent_name', rex_i18n::msg('d2u_courses_categories_parent_category'));
+    $list->setColumnLabel('full_name', rex_i18n::msg('d2u_helper_name'));
+    $list->setColumnParams('full_name', ['func' => 'edit', 'entry_id' => '###category_id###']);
 
 	$list->setColumnLabel('priority', rex_i18n::msg('header_priority'));
 
