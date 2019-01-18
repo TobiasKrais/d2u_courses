@@ -44,9 +44,9 @@ class KuferSync {
 		$counter_new = 0;
 		$counter_update = 0;
 
-		$course_categories = Category::getAll();
-		$schedule_categories = ScheduleCategory::getAll();
-		$target_groups = TargetGroup::getAll();
+		$course_categories = Category::getAll(FALSE);
+		$schedule_categories = ScheduleCategory::getAll(FALSE);
+		$target_groups = TargetGroup::getAll(FALSE);
 
 		foreach ($kufer_courses->kurs as $kufer_course) {
 			// Cancelled courses will not be imported ...

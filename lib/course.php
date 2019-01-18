@@ -207,7 +207,7 @@ class Course {
 				}
 				if(\rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
 					$this->location = $result->getValue("location_id") > 0 ? new Location($result->getValue("location_id")) : FALSE;
-					$this->room = $result->getValue("room");
+					$this->room = stripslashes($result->getValue("room"));
 				}
 				$this->participants_max = $result->getValue("participants_max");
 				$this->participants_min = $result->getValue("participants_min");
@@ -284,12 +284,31 @@ class Course {
 	 */
 	public function delete() {
 		if($this->course_id > 0) {
+			$result = \rex_sql::factory();
+
 			$query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_courses '
 					.'WHERE course_id = '. $this->course_id;
-			$result = \rex_sql::factory();
 			$result->setQuery($query);
 
-			return ($result->hasError() ? FALSE : TRUE);
+			$return = ($result->hasError() ? FALSE : TRUE);
+			
+			$query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_2_categories '
+					.'WHERE course_id = '. $this->course_id;
+			$result->setQuery($query);
+			
+			if(\rex_plugin::get('d2u_courses', 'schedule_categories')->isInstalled()) {
+				$query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_2_schedule_categories '
+						.'WHERE course_id = '. $this->course_id;
+				$result->setQuery($query);
+			}
+			
+			if(\rex_plugin::get('d2u_courses', 'target_groups')->isInstalled()) {
+				$query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_2_target_groups '
+						.'WHERE course_id = '. $this->course_id;
+				$result->setQuery($query);
+			}
+			
+			return $return;
 		}
 		else {
 			return FALSE;
@@ -437,7 +456,7 @@ class Course {
 			.'updatedate = '. time() .' ';
 		if(\rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
 			$query .= ', location_id = '. ($this->location !== FALSE ? $this->location->location_id : 0) .', '
-				.'`room` = "'. $this->room .'" ';
+				.'`room` = "'. addslashes($this->room) .'" ';
 		}
 		if(\rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
 			$query .= ', import_type = "'. $this->import_type .'"';

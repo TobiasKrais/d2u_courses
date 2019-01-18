@@ -82,12 +82,19 @@ class TargetGroup {
 	public function delete() {
 		// Do not delete children, because they are fake objects
 		if($this->parent_target_group === FALSE && $this->target_group_id > 0) {
+			$result = \rex_sql::factory();
+
 			$query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_target_groups '
 					.'WHERE target_group_id = '. $this->target_group_id;
-			$result = \rex_sql::factory();
 			$result->setQuery($query);
 
-			return ($result->hasError() ? FALSE : TRUE);
+			$return = ($result->hasError() ? FALSE : TRUE);
+
+			$query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_2_target_groups '
+					.'WHERE target_group_id = '. $this->target_group_id;
+			$result->setQuery($query);
+
+			return $return;
 		}
 		else {
 			return FALSE;

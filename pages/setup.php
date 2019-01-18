@@ -226,7 +226,9 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.4-DEV:</p>
 <ul>
-	<li>...</li>
+	<li>Bugfix kufer_sync Plugin: Beim target_groups Plugin wurden nicht alle Zielgruppen korrekt zugeordnet.</li>
+	<li>Beim Löschen werden jetzt auch die Zuordnungen zu Kategorien, usw. gelöscht.</li>
+	<li>Listennamen der Kategorien und Terminkategorien im Backend verbessert: Elternkategorien werden dem Namen vorangestellt.</li>
 </ul>
 <p>3.0.3:</p>
 <ul>

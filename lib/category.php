@@ -99,12 +99,19 @@ class Category {
 	 */
 	public function delete() {
 		if($this->category_id > 0) {
+			$result = \rex_sql::factory();
+
 			$query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_categories '
 					.'WHERE category_id = '. $this->category_id;
-			$result = \rex_sql::factory();
 			$result->setQuery($query);
 
-			return ($result->hasError() ? FALSE : TRUE);
+			$return = ($result->hasError() ? FALSE : TRUE);
+			
+			$query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_2_categories '
+					.'WHERE category_id = '. $this->category_id;
+			$result->setQuery($query);
+
+			return $return;
 		}
 		else {
 			return FALSE;
@@ -378,9 +385,6 @@ class Category {
 	public function save() {
 		// save priority, but only if new or changed
 		$pre_save_category = new Category($this->category_id, $this->clang_id);
-		if($this->priority != $pre_save_category->priority || $this->category_id == 0) {
-			$this->setPriority();
-		}
 
 		$query = "INSERT INTO ";
 		if($this->category_id > 0) {
@@ -404,6 +408,10 @@ class Category {
 
 		if($this->category_id == 0) {
 			$this->category_id = $result->getLastId();
+		}
+
+		if($this->priority != $pre_save_category->priority) {
+			$this->setPriority();
 		}
 		
 		return !$result->hasError();

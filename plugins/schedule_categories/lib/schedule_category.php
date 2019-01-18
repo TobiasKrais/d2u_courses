@@ -76,12 +76,19 @@ class ScheduleCategory {
 	 */
 	public function delete() {
 		if($this->schedule_category_id > 0) {
+			$result = \rex_sql::factory();
+
 			$query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_schedule_categories '
 					.'WHERE schedule_category_id = '. $this->schedule_category_id;
-			$result = \rex_sql::factory();
 			$result->setQuery($query);
 
-			return ($result->hasError() ? FALSE : TRUE);
+			$return = ($result->hasError() ? FALSE : TRUE);
+
+			$query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_2_schedule_categories '
+					.'WHERE schedule_category_id = '. $this->schedule_category_id;
+			$result->setQuery($query);
+
+			return $return;
 		}
 		else {
 			return FALSE;
