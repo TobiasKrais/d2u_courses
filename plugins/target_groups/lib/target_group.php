@@ -165,7 +165,12 @@ class TargetGroup {
 		// Only target groups without parent can have children
 		$query = "SELECT category_id FROM ". \rex::getTablePrefix() ."d2u_courses_url_target_group_childs  "
 				."WHERE target_group_id = ". $this->target_group_id ." ";
-		$query .= "ORDER BY name";
+		if(\rex_config::get('d2u_courses', 'default_category_sort') == 'priority') {
+			$query .= 'ORDER BY priority';
+		}
+		else {
+			$query .= 'ORDER BY name';
+		}
 		$result = \rex_sql::factory();
 		$result->setQuery($query);
 

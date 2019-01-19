@@ -146,7 +146,7 @@ if ($func == '') {
 		. 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_categories AS parents '
 			. 'ON category.parent_category_id = parents.category_id ';
 	if($this->getConfig('default_category_sort') == 'priority') {
-		$query .= 'ORDER BY full_name, priority ASC';
+		$query .= 'ORDER BY priority ASC';
 	}
 	else {
 		$query .= 'ORDER BY full_name ASC';

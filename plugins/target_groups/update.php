@@ -17,7 +17,7 @@ if (rex_string::versionCompare($this->getVersion(), '3.0.3', '<')) {
 	$sql = rex_sql::factory();
 	// Online target groups childs (separator is 00000 - ugly, but only digits are allowed)
 	$sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_target_group_childs AS
-		SELECT target.target_group_id, categories.category_id, CONCAT(target.target_group_id, "00000", categories.category_id) AS target_group_child_id, categories.name, categories.name AS seo_title, categories.picture, courses.updatedate
+		SELECT target.target_group_id, categories.category_id, CONCAT(target.target_group_id, "00000", categories.category_id) AS target_group_child_id, categories.name, categories.name AS seo_title, categories.picture, categories.priority, courses.updatedate
 		FROM '. rex::getTablePrefix() .'d2u_courses_target_groups AS target
 		LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_2_target_groups AS c2t
 			ON target.target_group_id = c2t.target_group_id
