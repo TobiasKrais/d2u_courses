@@ -19,6 +19,7 @@ if (filter_input(INPUT_POST, "btn_save") == 1 || filter_input(INPUT_POST, "btn_a
 	$target_group = new D2U_Courses\TargetGroup($target_group_id);
 	$target_group->name = $form['name'];
 	$target_group->picture = $input_media[1];
+	$target_group->priority = $form['priority'];
 	if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
 		$target_group->kufer_target_group_name = $form['kufer_target_group_name'];
 		$target_group->kufer_categories = array_map('trim', preg_grep('/^\s*$/s', explode(PHP_EOL, $form['kufer_categories']), PREG_GREP_INVERT));
@@ -82,8 +83,9 @@ if ($func == 'edit' || $func == 'add') {
 					$target_group = new D2U_Courses\TargetGroup($entry_id);
 					d2u_addon_backend_helper::form_input('d2u_helper_name', "form[name]", $target_group->name, TRUE, $readonly);
 					d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $target_group->picture, $readonly);
+					d2u_addon_backend_helper::form_input('header_priority', 'form[priority]', $target_group->priority, TRUE, $readonly, 'number');
 					if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-						d2u_addon_backend_helper::form_input('d2u_courses_kufer_categories_target_group_name', "form[kufer_target_group_name]", $target_group->kufer_target_group_name, TRUE, $readonly);
+						d2u_addon_backend_helper::form_input('d2u_courses_kufer_categories_target_group_name', "form[kufer_target_group_name]", $target_group->kufer_target_group_name, FALSE, $readonly);
 						d2u_addon_backend_helper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $target_group->kufer_categories), 5, FALSE, $readonly, FALSE);
 					}
 				?>
@@ -118,9 +120,14 @@ if ($func == 'edit' || $func == 'add') {
 }
 
 if ($func == '') {
-	$query = 'SELECT target_group_id, name '
-		. 'FROM '. rex::getTablePrefix() .'d2u_courses_target_groups '
-		.'ORDER BY name ASC';
+	$query = 'SELECT target_group_id, name, priority '
+		. 'FROM '. rex::getTablePrefix() .'d2u_courses_target_groups ';
+	if($this->getConfig('default_category_sort') == 'priority') {
+		$query .= 'ORDER BY priority ASC';
+	}
+	else {
+		$query .= 'ORDER BY name ASC';
+	}
     $list = rex_list::factory($query);
 
     $list->addTableAttribute('class', 'table-striped table-hover');
@@ -137,6 +144,8 @@ if ($func == '') {
 
     $list->setColumnLabel('name', rex_i18n::msg('d2u_helper_name'));
     $list->setColumnParams('name', ['func' => 'edit', 'entry_id' => '###target_group_id###']);
+
+	$list->setColumnLabel('priority', rex_i18n::msg('header_priority'));
 
 	$list->addColumn(rex_i18n::msg('module_functions'), '<i class="rex-icon rex-icon-edit"></i> ' . rex_i18n::msg('edit'));
     $list->setColumnLayout(rex_i18n::msg('module_functions'), ['<th class="rex-table-action" colspan="2">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);

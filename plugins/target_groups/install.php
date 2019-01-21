@@ -5,6 +5,7 @@ $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_cours
 	`target_group_id` int(10) unsigned NOT NULL auto_increment,
 	`name` varchar(255) collate utf8_general_ci default NULL,
 	`picture` varchar(255) collate utf8_general_ci default NULL,
+	`priority` int(10) default NULL,
 	`updatedate` int(11) default NULL,
 	PRIMARY KEY (`target_group_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1;");
@@ -17,9 +18,9 @@ $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_cours
 // END install database
 
 // START create views for url addon
-// Online target groups (changes need to be done here and pages/settings.php)
+// Online target groups (changes need to be done here, pages/settings.php and update.php)
 $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_target_groups AS
-	SELECT target.target_group_id, target.name, target.name AS seo_title, target.picture, courses.updatedate
+	SELECT target.target_group_id, target.name, target.name AS seo_title, target.picture, target.priority, courses.updatedate
 	FROM '. rex::getTablePrefix() .'d2u_courses_target_groups AS target
 	LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_2_target_groups AS c2t
 		ON target.target_group_id = c2t.target_group_id
@@ -32,8 +33,8 @@ $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_ur
 			LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max ON targets_max.course_id = courses_max.course_id
 			WHERE target.target_group_id = targets_max.target_group_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
 		)
-	GROUP BY target_group_id, name, seo_title, picture, updatedate;');
-// Online target groups childs (separator is 00000 - ugly, but only digits are allowed) (changes need to be done here and pages/settings.php)
+	GROUP BY target_group_id, name, seo_title, picture, priority, updatedate;');
+// Online target groups childs (separator is 00000 - ugly, but only digits are allowed) (changes need to be done here, pages/settings.php and update.php)
 $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_target_group_childs AS
 	SELECT target.target_group_id, categories.category_id, CONCAT(target.target_group_id, "00000", categories.category_id) AS target_group_child_id, categories.name, categories.name AS seo_title, categories.picture, categories.priority, courses.updatedate
 	FROM '. rex::getTablePrefix() .'d2u_courses_target_groups AS target

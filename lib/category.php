@@ -111,6 +111,9 @@ class Category {
 					.'WHERE category_id = '. $this->category_id;
 			$result->setQuery($query);
 
+			// reset priorities
+			$this->setPriority(TRUE);
+			
 			return $return;
 		}
 		else {
@@ -418,9 +421,10 @@ class Category {
 	}
 	
 	/**
-	 * Reassigns priority to all Categories in database.
+	 * Reassigns priorities in database.
+	 * @param boolean $delete Reorder priority after deletion
 	 */
-	private function setPriority() {
+	private function setPriority($delete = FALSE) {
 		// Pull prios from database
 		$query = "SELECT category_id, priority FROM ". \rex::getTablePrefix() ."d2u_courses_categories "
 			."WHERE category_id <> ". $this->category_id ." ORDER BY priority";
@@ -432,8 +436,8 @@ class Category {
 			$this->priority = 1;
 		}
 		
-		// When prio is too high, simply add at end 
-		if($this->priority > $result->getRows()) {
+		// When prio is too high or was deleted, simply add at end 
+		if($this->priority > $result->getRows() || $delete) {
 			$this->priority = $result->getRows() + 1;
 		}
 

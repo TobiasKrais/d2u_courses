@@ -226,6 +226,8 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.4-DEV:</p>
 <ul>
+	<li>target_groups Plugin beherrscht nun auch Prioritäten.</li>
+	<li>Bugfix: Prioritäten wurden beim Löschen nicht reorganisiert.</li>
 	<li>Wenn Kategorien im Frontend nach Priorität sortiert angezeigt werden, werden sie nun auch im Backend und bei den Zielgruppen Kind Kategorien so sortiert.</li>
 	<li>Bugfix kufer_sync Plugin: Beim target_groups Plugin wurden nicht alle Zielgruppen korrekt zugeordnet.</li>
 	<li>Beim Löschen werden jetzt auch die Zuordnungen zu Kategorien, usw. gelöscht.</li>

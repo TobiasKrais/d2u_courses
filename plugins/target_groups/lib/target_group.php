@@ -27,6 +27,11 @@ class TargetGroup {
 	var $picture = "";
 	
 	/**
+	 * @var int Sort Priority
+	 */
+	var $priority = 0;
+
+	/**
 	 * @var TargetGroup Parent TargetGroup
 	 */
 	var $parent_target_group = FALSE;
@@ -67,6 +72,7 @@ class TargetGroup {
 			$this->target_group_id = $result->getValue("target_group_id");
 			$this->name = $result->getValue("name");
 			$this->picture = $result->getValue("picture");
+			$this->priority = $result->getValue("priority");
 			$this->kufer_target_group_name = $result->getValue("kufer_target_group_name");
 			$this->kufer_categories = array_map('trim', preg_grep('/^\s*$/s', explode(PHP_EOL, $result->getValue("kufer_categories")), PREG_GREP_INVERT));
 			$this->updatedate = $result->getValue("updatedate");
@@ -94,6 +100,9 @@ class TargetGroup {
 					.'WHERE target_group_id = '. $this->target_group_id;
 			$result->setQuery($query);
 
+			// reset priorities
+			$this->setPriority(TRUE);
+			
 			return $return;
 		}
 		else {
@@ -111,7 +120,12 @@ class TargetGroup {
 		if($online_only) {
 			$query = "SELECT target_group_id FROM ". \rex::getTablePrefix() ."d2u_courses_url_target_groups ";
 		}
-		$query .= "ORDER BY name";
+		if(\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority') {
+			$query .= 'ORDER BY priority';
+		}
+		else {
+			$query .= 'ORDER BY name';
+		}
 		$result = \rex_sql::factory();
 		$result->setQuery($query);
 
@@ -330,10 +344,52 @@ class TargetGroup {
 				$this->target_group_id = $result->getLastId();
 			}
 
+			if($this->priority != $pre_save_category->priority) {
+				$this->setPriority();
+			}
+
 			return !$result->hasError();
 		}
 		else {
 			return FALSE;
+		}
+	}
+	
+	/**
+	 * Reassigns priority in database.
+	 * @param boolean $delete Reorder priority after deletion
+	 */
+	private function setPriority($delete = FALSE) {
+		// Pull prios from database
+		$query = "SELECT target_group_id, priority FROM ". \rex::getTablePrefix() ."d2u_courses_target_groups "
+			."WHERE target_group_id <> ". $this->target_group_id ." ORDER BY priority";
+		$result = \rex_sql::factory();
+		$result->setQuery($query);
+		
+		// When priority is too small, set at beginning
+		if($this->priority <= 0) {
+			$this->priority = 1;
+		}
+		
+		// When prio is too high or was deleted, simply add at end 
+		if($this->priority > $result->getRows() || $delete) {
+			$this->priority = $result->getRows() + 1;
+		}
+
+		$target_groups = [];
+		for($i = 0; $i < $result->getRows(); $i++) {
+			$target_groups[$result->getValue("priority")] = $result->getValue("target_group_id");
+			$result->next();
+		}
+		array_splice($target_groups, ($this->priority - 1), 0, [$this->target_group_id]);
+
+		// Save all prios
+		foreach($target_groups as $prio => $target_group_id) {
+			$query = "UPDATE ". \rex::getTablePrefix() ."d2u_courses_target_groups "
+					."SET priority = ". ($prio + 1) ." " // +1 because array_splice recounts at zero
+					."WHERE target_group_id = ". $target_group_id;
+			$result = \rex_sql::factory();
+			$result->setQuery($query);
 		}
 	}
 }
