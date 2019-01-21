@@ -226,6 +226,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.4-DEV:</p>
 <ul>
+	<li>schedule_categories Plugin sortiert nun auch die Elternkategorien nach Namen.</li>
 	<li>target_groups Plugin beherrscht nun auch Prioritäten.</li>
 	<li>Bugfix: Prioritäten wurden beim Löschen nicht reorganisiert.</li>
 	<li>Wenn Kategorien im Frontend nach Priorität sortiert angezeigt werden, werden sie nun auch im Backend und bei den Zielgruppen Kind Kategorien so sortiert.</li>

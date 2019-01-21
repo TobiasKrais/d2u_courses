@@ -131,47 +131,27 @@ class ScheduleCategory {
 		}
 		$query .= "ORDER BY name";
 		if($online_only) {
-			$query = "SELECT schedule_category_id FROM ". \rex::getTablePrefix() ."d2u_courses_2_schedule_categories AS c2s "
+			$query = "SELECT c2s.schedule_category_id, schedule_categories.name FROM ". \rex::getTablePrefix() ."d2u_courses_2_schedule_categories AS c2s "
+					. "LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_schedule_categories AS schedule_categories "
+						."ON c2s.schedule_category_id = schedule_categories.schedule_category_id "
 					. "LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_courses AS courses "
 						."ON c2s.course_id = courses.course_id AND courses.course_id > 0 "
 					."WHERE online_status = 'online' "
 						."AND (". \d2u_courses_frontend_helper::getShowTimeWhere() .") "
-					."GROUP BY schedule_category_id";
+						. ($parent_category_id > 0 ? "AND parent_schedule_category_id = ". $parent_category_id ." " : "" )
+					."GROUP BY c2s.schedule_category_id, schedule_categories.name "
+					."ORDER BY name";
 		}
 		$result = \rex_sql::factory();
 		$result->setQuery($query);
 		$num_rows = $result->getRows();
 		
-		$schedule_category_ids = [];
+		$schedule_categories = [];
 		for($i = 0; $i < $num_rows; $i++) {
-			if($online_only) {
-				$schedule_category_ids = array_merge($schedule_category_ids, preg_grep('/^\s*$/s', explode("|", $result->getValue("schedule_category_ids")), PREG_GREP_INVERT));
-			}
-			else {
-				$schedule_category_ids[] = $result->getValue("schedule_category_id");
-			}
+			$schedule_categories[] = new ScheduleCategory($result->getValue("schedule_category_id"));
 			$result->next();
 		}
-		$schedule_category_ids = array_unique($schedule_category_ids);
 
-		
-		$schedule_categories = [];
-		foreach($schedule_category_ids as $schedule_category_id) {
-			$schedule_category = new ScheduleCategory($schedule_category_id);
-			if($schedule_category->schedule_category_id > 0) {
-				if($parent_category_id > 0 && $schedule_category->parent_schedule_category !== FALSE && $schedule_category->parent_schedule_category->schedule_category_id == $parent_category_id) {
-					$schedule_categories[] = $schedule_category;
-				}
-				if($parent_category_id == 0) {
-					if($schedule_category->parent_schedule_category !== FALSE &&
-						!in_array($schedule_category->parent_schedule_category, $schedule_categories)) {
-						$schedule_categories[$schedule_category->parent_schedule_category->name] = $schedule_category->parent_schedule_category;
-					}
-					$schedule_categories[$schedule_category->name] = $schedule_category;
-				}
-			}
-		}
-		ksort($schedule_categories);
 		return $schedule_categories;
 	}
 	
@@ -211,10 +191,12 @@ class ScheduleCategory {
 	 */
 	static function getAllParents($online_only = FALSE) {
 		$query = "SELECT schedule_category_id FROM ". \rex::getTablePrefix() ."d2u_courses_schedule_categories"
-			." WHERE parent_schedule_category_id <= 0";
+			." WHERE parent_schedule_category_id <= 0 "
+			."ORDER BY name";
 		if($online_only) {
 			$query = "SELECT schedule_category_id FROM ". \rex::getTablePrefix() ."d2u_courses_url_schedule_categories "
-				." WHERE parent_schedule_category_id <= 0";
+				." WHERE parent_schedule_category_id <= 0 "
+				."ORDER BY name";
 		}
 		$result =  \rex_sql::factory();
 		$result->setQuery($query);
