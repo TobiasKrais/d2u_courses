@@ -134,9 +134,9 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 				// END create views for url addon
 			}
 			if(rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
-				// Online schedule categories (changes need to be done here and plugin install.php)
+				// Online schedule categories (changes need to be done here and plugin install.php / update.php)
 				$sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_schedule_categories AS
-					SELECT schedules.schedule_category_id, schedules.name, schedules.name AS seo_title, schedules.picture, courses.updatedate, schedules.parent_schedule_category_id
+					SELECT schedules.schedule_category_id, schedules.name, schedules.name AS seo_title, schedules.picture, schedules.priority, courses.updatedate, schedules.parent_schedule_category_id
 					FROM '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS schedules
 					LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories AS c2s
 						ON schedules.schedule_category_id = c2s.schedule_category_id
@@ -149,9 +149,9 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 							LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max ON schedules_max.course_id = courses_max.course_id
 							WHERE schedules.schedule_category_id = schedules_max.schedule_category_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
 						)
-					GROUP BY schedule_category_id, name, seo_title, picture, updatedate, parent_schedule_category_id
+					GROUP BY schedule_category_id, name, seo_title, picture, priority, updatedate, parent_schedule_category_id
 					UNION
-					SELECT parents.schedule_category_id, parents.name, parents.name AS seo_title, parents.picture, courses.updatedate, parents.parent_schedule_category_id
+					SELECT parents.schedule_category_id, parents.name, parents.name AS seo_title, parents.picture, parents.priority, courses.updatedate, parents.parent_schedule_category_id
 					FROM '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS schedules
 					LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories AS c2s
 						ON schedules.schedule_category_id = c2s.schedule_category_id
@@ -168,28 +168,12 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 							LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS schedules_max ON c2s_max.schedule_category_id = c2s_max.schedule_category_id
 							WHERE schedules.parent_schedule_category_id = schedules_max.schedule_category_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
 						)
-					GROUP BY schedule_category_id, name, seo_title, picture, updatedate, parent_schedule_category_id;');
+					GROUP BY schedule_category_id, name, seo_title, picture, priority, updatedate, parent_schedule_category_id;');
 			}
 			if(rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-				// Online target groups (changes need to be done here and plugin install.php)
-				$sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_target_groups AS
-					SELECT target.target_group_id, target.name, target.name AS seo_title, target.picture, courses.updatedate
-					FROM '. rex::getTablePrefix() .'d2u_courses_target_groups AS target
-					LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_2_target_groups AS c2t
-						ON target.target_group_id = c2t.target_group_id
-					LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses
-						ON c2t.course_id = courses.course_id
-					WHERE courses.online_status = "online"
-						AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
-						AND courses.updatedate = (
-							SELECT MAX(courses_max.updatedate) FROM '. rex::getTablePrefix() .'d2u_courses_2_target_groups AS targets_max
-							LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max ON targets_max.course_id = courses_max.course_id
-							WHERE target.target_group_id = targets_max.target_group_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
-						)
-					GROUP BY target_group_id, name, seo_title, picture, updatedate;');
-				// Online target groups childs (separator is 00000 - ugly, but only digits are allowed) (changes need to be done here and plugin install.php)
+				// Online target groups childs (separator is 00000 - ugly, but only digits are allowed) (changes need to be done here and plugin install.php / update.php)
 				$sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_target_group_childs AS
-					SELECT target.target_group_id, categories.category_id, CONCAT(target.target_group_id, "00000", categories.category_id) AS target_group_child_id, categories.name, categories.name AS seo_title, categories.picture, courses.updatedate
+					SELECT target.target_group_id, categories.category_id, CONCAT(target.target_group_id, "00000", categories.category_id) AS target_group_child_id, categories.name, categories.name AS seo_title, categories.picture, categories.priority, courses.updatedate
 					FROM '. rex::getTablePrefix() .'d2u_courses_target_groups AS target
 					LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_2_target_groups AS c2t
 						ON target.target_group_id = c2t.target_group_id
@@ -208,6 +192,22 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 							WHERE categories.category_id = categories_max.category_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
 						)
 					GROUP BY target_group_id, category_id, target_group_child_id, name, seo_title, picture, updatedate;');
+				// Online target groups (changes need to be done here and plugin install.php / update.php)
+				$sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_target_groups AS
+					SELECT target.target_group_id, target.name, target.name AS seo_title, target.picture, target.priority, courses.updatedate
+					FROM '. rex::getTablePrefix() .'d2u_courses_target_groups AS target
+					LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_2_target_groups AS c2t
+						ON target.target_group_id = c2t.target_group_id
+					LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses
+						ON c2t.course_id = courses.course_id
+					WHERE courses.online_status = "online"
+						AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+						AND courses.updatedate = (
+							SELECT MAX(courses_max.updatedate) FROM '. rex::getTablePrefix() .'d2u_courses_2_target_groups AS targets_max
+							LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max ON targets_max.course_id = courses_max.course_id
+							WHERE target.target_group_id = targets_max.target_group_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+						)
+					GROUP BY target_group_id, name, seo_title, picture, priority, updatedate;');
 			}
 			// END update views for url addon
 

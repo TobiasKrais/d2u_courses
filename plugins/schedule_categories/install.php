@@ -36,7 +36,7 @@ $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_ur
 		)
 	GROUP BY schedule_category_id, name, seo_title, picture, priority, updatedate, parent_schedule_category_id
 	UNION
-	SELECT parents.schedule_category_id, parents.name, parents.name AS seo_title, parents.picture, schedules.priority, courses.updatedate, parents.parent_schedule_category_id
+	SELECT parents.schedule_category_id, parents.name, parents.name AS seo_title, parents.picture, parents.priority, courses.updatedate, parents.parent_schedule_category_id
 	FROM '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS schedules
 	LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories AS c2s
 		ON schedules.schedule_category_id = c2s.schedule_category_id

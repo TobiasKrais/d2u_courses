@@ -27,7 +27,7 @@ if (rex_string::versionCompare($this->getVersion(), '3.0.4', '<')) {
 		$where = 'date_start = "" OR date_start >= CURDATE() OR date_end >= CURDATE()';				
 	}
 
-	// Online target groups childs (separator is 00000 - ugly, but only digits are allowed)
+	// Online schedule categories
 	$sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_schedule_categories AS
 		SELECT schedules.schedule_category_id, schedules.name, schedules.name AS seo_title, schedules.picture, schedules.priority, courses.updatedate, schedules.parent_schedule_category_id
 		FROM '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS schedules
@@ -44,7 +44,7 @@ if (rex_string::versionCompare($this->getVersion(), '3.0.4', '<')) {
 			)
 		GROUP BY schedule_category_id, name, seo_title, picture, priority, updatedate, parent_schedule_category_id
 		UNION
-		SELECT parents.schedule_category_id, parents.name, parents.name AS seo_title, parents.picture, schedules.priority, courses.updatedate, parents.parent_schedule_category_id
+		SELECT parents.schedule_category_id, parents.name, parents.name AS seo_title, parents.picture, parents.priority, courses.updatedate, parents.parent_schedule_category_id
 		FROM '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS schedules
 		LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories AS c2s
 			ON schedules.schedule_category_id = c2s.schedule_category_id
