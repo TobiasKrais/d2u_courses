@@ -5,6 +5,7 @@ $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_cours
 	`schedule_category_id` int(10) unsigned NOT NULL auto_increment,
 	`name` varchar(255) collate utf8_general_ci default NULL,
 	`picture` varchar(255) collate utf8_general_ci default NULL,
+	`priority` int(10) default NULL,
 	`parent_schedule_category_id` int(10) default NULL,
 	`updatedate` int(11) default NULL,
 	PRIMARY KEY (`schedule_category_id`)
@@ -18,9 +19,9 @@ $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_cours
 // END install database
 
 // START create views for url addon
-// Online schedule categories (changes need to be done here and addon pages/settings.php)
+// Online schedule categories (changes need to be done here, addon pages/settings.php and update.php)
 $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_schedule_categories AS
-	SELECT schedules.schedule_category_id, schedules.name, schedules.name AS seo_title, schedules.picture, courses.updatedate, schedules.parent_schedule_category_id
+	SELECT schedules.schedule_category_id, schedules.name, schedules.name AS seo_title, schedules.picture, schedules.priority, courses.updatedate, schedules.parent_schedule_category_id
 	FROM '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS schedules
 	LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories AS c2s
 		ON schedules.schedule_category_id = c2s.schedule_category_id
@@ -33,9 +34,9 @@ $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_ur
 			LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max ON schedules_max.course_id = courses_max.course_id
 			WHERE schedules.schedule_category_id = schedules_max.schedule_category_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
 		)
-	GROUP BY schedule_category_id, name, seo_title, picture, updatedate, parent_schedule_category_id
+	GROUP BY schedule_category_id, name, seo_title, picture, priority, updatedate, parent_schedule_category_id
 	UNION
-	SELECT parents.schedule_category_id, parents.name, parents.name AS seo_title, parents.picture, courses.updatedate, parents.parent_schedule_category_id
+	SELECT parents.schedule_category_id, parents.name, parents.name AS seo_title, parents.picture, schedules.priority, courses.updatedate, parents.parent_schedule_category_id
 	FROM '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS schedules
 	LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories AS c2s
 		ON schedules.schedule_category_id = c2s.schedule_category_id
@@ -52,7 +53,7 @@ $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_ur
 			LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS schedules_max ON c2s_max.schedule_category_id = c2s_max.schedule_category_id
 			WHERE schedules.parent_schedule_category_id = schedules_max.schedule_category_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
 		)
-	GROUP BY schedule_category_id, name, seo_title, picture, updatedate, parent_schedule_category_id;');
+	GROUP BY schedule_category_id, name, seo_title, picture, priority, updatedate, parent_schedule_category_id;');
 // END create views for url addon
 
 // Insert url schemes

@@ -122,7 +122,7 @@ if ($func == 'edit' || $func == 'add') {
 if ($func == '') {
 	$query = 'SELECT target_group_id, name, priority '
 		. 'FROM '. rex::getTablePrefix() .'d2u_courses_target_groups ';
-	if($this->getConfig('default_category_sort') == 'priority') {
+	if(rex_config::get('d2u_courses', 'default_category_sort', 'name') == 'priority') {
 		$query .= 'ORDER BY priority ASC';
 	}
 	else {

@@ -27,6 +27,11 @@ class ScheduleCategory {
 	var $picture = "";
 	
 	/**
+	 * @var int Sort Priority
+	 */
+	var $priority = 0;
+
+	/**
 	 * @var ScheduleCategory Parent schedule category
 	 */
 	var $parent_schedule_category = FALSE;
@@ -62,6 +67,7 @@ class ScheduleCategory {
 			$this->schedule_category_id = $result->getValue("schedule_category_id");
 			$this->name = $result->getValue("name");
 			$this->picture = $result->getValue("picture");
+			$this->priority = $result->getValue("priority");
 			if($result->getValue("parent_schedule_category_id") > 0) {
 				$this->parent_schedule_category = new ScheduleCategory($result->getValue("parent_schedule_category_id"));
 			}
@@ -88,6 +94,9 @@ class ScheduleCategory {
 					.'WHERE schedule_category_id = '. $this->schedule_category_id;
 			$result->setQuery($query);
 
+			// reset priorities
+			$this->setPriority(TRUE);
+			
 			return $return;
 		}
 		else {
@@ -129,7 +138,12 @@ class ScheduleCategory {
 		if($parent_category_id > 0) {
 			$query .= "WHERE parent_schedule_category_id = ". $parent_category_id ." ";
 		}
-		$query .= "ORDER BY name";
+		if(\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority') {
+			$query .= 'ORDER BY priority';
+		}
+		else {
+			$query .= 'ORDER BY name';
+		}
 		if($online_only) {
 			$query = "SELECT c2s.schedule_category_id, schedule_categories.name FROM ". \rex::getTablePrefix() ."d2u_courses_2_schedule_categories AS c2s "
 					. "LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_schedule_categories AS schedule_categories "
@@ -139,8 +153,13 @@ class ScheduleCategory {
 					."WHERE online_status = 'online' "
 						."AND (". \d2u_courses_frontend_helper::getShowTimeWhere() .") "
 						. ($parent_category_id > 0 ? "AND parent_schedule_category_id = ". $parent_category_id ." " : "" )
-					."GROUP BY c2s.schedule_category_id, schedule_categories.name "
-					."ORDER BY name";
+					."GROUP BY c2s.schedule_category_id, schedule_categories.name ";
+			if(\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority') {
+				$query .= 'ORDER BY priority';
+			}
+			else {
+				$query .= 'ORDER BY name';
+			}
 		}
 		$result = \rex_sql::factory();
 		$result->setQuery($query);
@@ -169,8 +188,13 @@ class ScheduleCategory {
 					.'LEFT JOIN ' .\rex::getTablePrefix() . 'd2u_courses_schedule_categories AS parent_not '
 						.'ON child_not.parent_schedule_category_id = parent_not.schedule_category_id '
 				.'WHERE parent_not.schedule_category_id > 0 '
-				.'GROUP BY child_not.parent_schedule_category_id) '
-			.'ORDER BY name';
+				.'GROUP BY child_not.parent_schedule_category_id) ';
+		if(\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority') {
+			$query .= 'ORDER BY priority';
+		}
+		else {
+			$query .= 'ORDER BY name';
+		}
 		$result =  \rex_sql::factory();
 		$result->setQuery($query);
 		$num_rows = $result->getRows();
@@ -191,12 +215,16 @@ class ScheduleCategory {
 	 */
 	static function getAllParents($online_only = FALSE) {
 		$query = "SELECT schedule_category_id FROM ". \rex::getTablePrefix() ."d2u_courses_schedule_categories"
-			." WHERE parent_schedule_category_id <= 0 "
-			."ORDER BY name";
+			." WHERE parent_schedule_category_id <= 0 ";
 		if($online_only) {
 			$query = "SELECT schedule_category_id FROM ". \rex::getTablePrefix() ."d2u_courses_url_schedule_categories "
-				." WHERE parent_schedule_category_id <= 0 "
-				."ORDER BY name";
+				." WHERE parent_schedule_category_id <= 0 ";
+		}
+		if(\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority') {
+			$query .= 'ORDER BY priority';
+		}
+		else {
+			$query .= 'ORDER BY name';
 		}
 		$result =  \rex_sql::factory();
 		$result->setQuery($query);
@@ -228,7 +256,12 @@ class ScheduleCategory {
 	public function getChildren($online_only = FALSE) {
 		$query = "SELECT schedule_category_id FROM ". \rex::getTablePrefix() ."d2u_courses_schedule_categories "
 				."WHERE parent_schedule_category_id = ". $this->schedule_category_id ." ";
-		$query .= "ORDER BY name";
+		if(\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority') {
+			$query .= 'ORDER BY priority';
+		}
+		else {
+			$query .= 'ORDER BY name';
+		}
 		$result =  \rex_sql::factory();
 		$result->setQuery($query);
 
@@ -347,6 +380,48 @@ class ScheduleCategory {
 			$this->schedule_category_id = $result->getLastId();
 		}
 		
+		if($this->priority != $pre_save_category->priority) {
+			$this->setPriority();
+		}
+		
 		return !$result->hasError();
+	}
+	
+	/**
+	 * Reassigns priority in database.
+	 * @param boolean $delete Reorder priority after deletion
+	 */
+	private function setPriority($delete = FALSE) {
+		// Pull prios from database
+		$query = "SELECT schedule_category_id, priority FROM ". \rex::getTablePrefix() ."d2u_courses_schedule_categories "
+			."WHERE schedule_category_id <> ". $this->schedule_category_id ." ORDER BY priority";
+		$result = \rex_sql::factory();
+		$result->setQuery($query);
+		
+		// When priority is too small, set at beginning
+		if($this->priority <= 0) {
+			$this->priority = 1;
+		}
+		
+		// When prio is too high or was deleted, simply add at end 
+		if($this->priority > $result->getRows() || $delete) {
+			$this->priority = $result->getRows() + 1;
+		}
+
+		$target_groups = [];
+		for($i = 0; $i < $result->getRows(); $i++) {
+			$target_groups[$result->getValue("priority")] = $result->getValue("schedule_category_id");
+			$result->next();
+		}
+		array_splice($target_groups, ($this->priority - 1), 0, [$this->schedule_category_id]);
+
+		// Save all prios
+		foreach($target_groups as $prio => $schedule_category_id) {
+			$query = "UPDATE ". \rex::getTablePrefix() ."d2u_courses_schedule_categories "
+					."SET priority = ". ($prio + 1) ." " // +1 because array_splice recounts at zero
+					."WHERE schedule_category_id = ". $schedule_category_id;
+			$result = \rex_sql::factory();
+			$result->setQuery($query);
+		}
 	}
 }
