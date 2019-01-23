@@ -155,10 +155,10 @@ class ScheduleCategory {
 						. ($parent_category_id > 0 ? "AND parent_schedule_category_id = ". $parent_category_id ." " : "" )
 					."GROUP BY c2s.schedule_category_id, schedule_categories.name ";
 			if(\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority') {
-				$query .= 'ORDER BY priority';
+				$query .= 'ORDER BY schedule_categories.priority';
 			}
 			else {
-				$query .= 'ORDER BY name';
+				$query .= 'ORDER BY schedule_categories.name';
 			}
 		}
 		$result = \rex_sql::factory();
@@ -190,7 +190,7 @@ class ScheduleCategory {
 				.'WHERE parent_not.schedule_category_id > 0 '
 				.'GROUP BY child_not.parent_schedule_category_id) ';
 		if(\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority') {
-			$query .= 'ORDER BY priority';
+			$query .= 'ORDER BY child.priority';
 		}
 		else {
 			$query .= 'ORDER BY name';
