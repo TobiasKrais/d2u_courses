@@ -52,11 +52,15 @@ class Cart {
 		$time = 0;
 		if(strpos($date, "-")) {
 			$d = explode("-", $date);
-			$time = mktime(0, 0, 0, $d[1], $d[2], $d[0]);
+			$time = mktime(0, 0, 0, (int) $d[1], (int) $d[2], (int) $d[0]);
+		}
+		else if(strpos($date, ".")){
+			$d = explode(".", $date);
+			$time = mktime(0, 0, 0, (int) $d[1], (int) $d[0], (int) $d[2]);
 		}
 		else {
-			$d = explode(".", $date);
-			$time = mktime(0, 0, 0, $d[1], $d[0], $d[2]);
+			$d = explode("/", $date);
+			$time = mktime(0, 0, 0, (int) $d[1], (int) $d[0], (int) $d[2]);
 		}
 		return floor((date("Ymd") - date("Ymd", $time)) / 10000);
 	}

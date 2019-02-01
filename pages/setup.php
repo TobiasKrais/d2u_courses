@@ -226,7 +226,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.5-DEV:</p>
 <ul>
-	<li>...</li>
+	<li>PHP Warning im Warenkorb entfernt.</li>
 </ul>
 <p>3.0.4:</p>
 <ul>
