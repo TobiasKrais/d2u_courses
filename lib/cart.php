@@ -512,7 +512,7 @@ class Cart {
 	 *		]
 	 *	)
 	 * @param mixed $cart
-	 * @param string $invoice_address
+	 * @param string[] $invoice_address
 	 * @return boolean TRUE if mail was sent successfully
 	 */
 	function sendRegistrations($cart, $invoice_address) {
@@ -552,6 +552,9 @@ class Cart {
 			$body .= "Barzahlung";
 		}
 		$body .=  "<br>";
+		if(isset($invoice_address['vacation_pass']) && (int) $invoice_address['vacation_pass'] > 0) {
+			$body .= "<br>Ferienpass: ". ((int) $invoice_address['vacation_pass']) ."<br>";
+		}
 		foreach($cart as $course_id => $participant) {
 			$body .=  "<br>";
 			$course = new Course($course_id);

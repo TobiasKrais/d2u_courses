@@ -198,7 +198,15 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 	print '<p>';
     print '<label class="cart_text" for="invoice_form-e-mail">'. $tag_open .'d2u_courses_email'. $tag_close .' *</label>';
     print '<input type="email" class="cart_text" name="invoice_form[e-mail]" id="invoice_form-e-mail" value="" required>';
-	print '</p><br>';
+	print '</p>';
+	
+	if(rex_config::get('d2u_courses', 'ask_vacation_pass', 'inactive') == 'active' && rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() === FALSE) {
+		print '<p>';
+		print '<label class="cart_text" for="invoice_form-vacation_pass">'. $tag_open .'d2u_courses_vacation_pass'. $tag_close .'</label>';
+		print '<input type="number" class="cart_text" name="invoice_form[vacation_pass]" id="invoice_form-vacation_pass" maxlength="5" value="">';
+		print '</p>';
+	}
+	print '<br>';
 	
 	// Kufer Sync Plugin needs statistic values
 	if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
@@ -345,7 +353,7 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 		print '<input type="checkbox" class="cart_checkbox" name="invoice_form[kids_go_home_alone]" id="invoice_kids_go_home_alone" value="yes">';
 		print '<label class="cart_checkbox" for="invoice_kids_go_home_alone">'. $tag_open .'d2u_courses_kids_go_home_alone'. $tag_close .'</label></p>';
 	}
-	
+
 	print '<p>&nbsp;</p>';
 	if(rex_config::get('d2u_courses', 'article_id_conditions', 0) > 0) {
 		print '<p class="cart_checkbox">';
@@ -501,4 +509,3 @@ else {
 		print '</div>';
 	}
 }
-?>

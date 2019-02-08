@@ -73,6 +73,7 @@ class d2u_courses_lang_helper extends \D2U_Helper\ALangHelper {
 		'd2u_courses_search_results' => 'Search results for',
 		'd2u_courses_statistic' => 'Statistical data',
 		'd2u_courses_street' => 'Street, No.',
+		'd2u_courses_vacation_pass' => 'Ferienpass Nummer',
 		'd2u_courses_wait_list' => 'wait list',
 		'd2u_courses_zipcode' => 'ZIP code',
 	];

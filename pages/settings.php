@@ -23,6 +23,7 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 
 	// Checkbox also need special treatment if empty
 	$settings['ask_kids_go_home_alone'] = array_key_exists('ask_kids_go_home_alone', $settings) ? "active" : "inactive";
+	$settings['ask_vacation_pass'] = array_key_exists('ask_vacation_pass', $settings) ? "active" : "inactive";
 	$settings['forward_single_course'] = array_key_exists('forward_single_course', $settings) ? "active" : "inactive";
 	$settings['lang_wildcard_overwrite'] = array_key_exists('lang_wildcard_overwrite', $settings) ? "true" : "false";
 	if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
@@ -273,6 +274,9 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 						];
 						d2u_addon_backend_helper::form_select('d2u_courses_payment', 'settings[payment_options][]', $options_paymant, $this->getConfig('payment_options'), 3, TRUE);
 						d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_ask_kids_go_home_alone', 'settings[ask_kids_go_home_alone]', 'active', $this->getConfig('ask_kids_go_home_alone') == 'active');
+						if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() === FALSE) {
+							d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_ask_vacation_pass', 'settings[ask_vacation_pass]', 'active', $this->getConfig('ask_vacation_pass') == 'active');
+						}
 					?>
 				</div>
 			</fieldset>
