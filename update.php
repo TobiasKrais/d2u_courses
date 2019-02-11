@@ -11,6 +11,12 @@ if($sql->getRows() == 0) {
 		$sql->next();
 	}
 }
+
+// Update database to 3.0.5
+$sql->setQuery("ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+$sql->setQuery("ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+$sql->setQuery("ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_2_categories` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+
 // 3.0.1 Config Update
 if(!rex_config::has('d2u_courses', 'payment_options')) {
 	rex_config::set('d2u_courses', 'payment_options', ["bank_transfer", "cash", "direct_debit"]);

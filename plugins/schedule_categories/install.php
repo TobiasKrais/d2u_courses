@@ -3,19 +3,19 @@ $sql = rex_sql::factory();
 // START install database
 $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_schedule_categories` (
 	`schedule_category_id` int(10) unsigned NOT NULL auto_increment,
-	`name` varchar(255) collate utf8_general_ci default NULL,
-	`picture` varchar(255) collate utf8_general_ci default NULL,
+	`name` varchar(255) collate utf8mb4_unicode_ci default NULL,
+	`picture` varchar(255) collate utf8mb4_unicode_ci default NULL,
 	`priority` int(10) default NULL,
 	`parent_schedule_category_id` int(10) default NULL,
 	`updatedate` int(11) default NULL,
 	PRIMARY KEY (`schedule_category_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1;");
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
 
 $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_2_schedule_categories` (
 	`course_id` int(10) NOT NULL,
 	`schedule_category_id` int(10) NOT NULL,
 	PRIMARY KEY (`course_id`, `schedule_category_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1;");
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
 // END install database
 
 // START create views for url addon

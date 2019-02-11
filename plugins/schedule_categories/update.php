@@ -68,3 +68,7 @@ if (rex_string::versionCompare($this->getVersion(), '3.0.4', '<')) {
 		UrlGenerator::generatePathFile([]);
 	}
 }
+
+// Update database to 3.0.5
+$sql->setQuery("ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_schedule_categories` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+$sql->setQuery("ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_2_schedule_categories` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");

@@ -3,51 +3,51 @@ $sql = rex_sql::factory();
 // START install database
 $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_categories` (
 	`category_id` int(10) unsigned NOT NULL auto_increment,
-	`name` varchar(255) collate utf8_general_ci default NULL,
-	`description` text collate utf8_general_ci default NULL,
-	`color` varchar(255) collate utf8_general_ci default NULL,
-	`picture` varchar(255) collate utf8_general_ci default NULL,
+	`name` varchar(255) collate utf8mb4_unicode_ci default NULL,
+	`description` text collate utf8mb4_unicode_ci default NULL,
+	`color` varchar(255) collate utf8mb4_unicode_ci default NULL,
+	`picture` varchar(255) collate utf8mb4_unicode_ci default NULL,
 	`parent_category_id` int(10) default NULL,
 	`priority` int(10) default NULL,
 	`updatedate` int(11) default NULL,
 	PRIMARY KEY (`category_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1;");
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
 
 $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_courses` (
 	`course_id` int(10) unsigned NOT NULL auto_increment,
-	`name` varchar(255) collate utf8_general_ci default NULL,
-	`teaser` text collate utf8_general_ci default NULL,
-	`description` text collate utf8_general_ci default NULL,
-	`details_course` text collate utf8_general_ci default NULL,
-	`details_deadline` text collate utf8_general_ci default NULL,
-	`details_age` varchar(255) collate utf8_general_ci default NULL,
-	`picture` varchar(255) collate utf8_general_ci default NULL,
+	`name` varchar(255) collate utf8mb4_unicode_ci default NULL,
+	`teaser` text collate utf8mb4_unicode_ci default NULL,
+	`description` text collate utf8mb4_unicode_ci default NULL,
+	`details_course` text collate utf8mb4_unicode_ci default NULL,
+	`details_deadline` text collate utf8mb4_unicode_ci default NULL,
+	`details_age` varchar(255) collate utf8mb4_unicode_ci default NULL,
+	`picture` varchar(255) collate utf8mb4_unicode_ci default NULL,
 	`price` decimal(5,2) default NULL,
 	`price_discount` decimal(5,2) default NULL,
-	`date_start` varchar(10) collate utf8_general_ci default NULL,
-	`date_end` varchar(10) collate utf8_general_ci default NULL,
-	`time` varchar(255) collate utf8_general_ci default NULL,
+	`date_start` varchar(10) collate utf8mb4_unicode_ci default NULL,
+	`date_end` varchar(10) collate utf8mb4_unicode_ci default NULL,
+	`time` varchar(255) collate utf8mb4_unicode_ci default NULL,
 	`category_id` int(10) default NULL,
 	`participants_number` int(10) default NULL,
 	`participants_max` int(10) default NULL,
 	`participants_min` int(10) default NULL,
 	`participants_wait_list` int(10) default NULL,
-	`registration_possible` varchar(10) collate utf8_general_ci default NULL,
-	`online_status` varchar(7) collate utf8_general_ci default NULL,
-	`url_external` varchar(255) collate utf8_general_ci default NULL,
+	`registration_possible` varchar(10) collate utf8mb4_unicode_ci default NULL,
+	`online_status` varchar(7) collate utf8mb4_unicode_ci default NULL,
+	`url_external` varchar(255) collate utf8mb4_unicode_ci default NULL,
 	`redaxo_article` int(10) NULL default NULL,
-	`instructor` varchar(255) collate utf8_general_ci default NULL,
-	`course_number` varchar(50) collate utf8_general_ci default NULL,
-	`downloads` text collate utf8_general_ci default NULL,
+	`instructor` varchar(255) collate utf8mb4_unicode_ci default NULL,
+	`course_number` varchar(50) collate utf8mb4_unicode_ci default NULL,
+	`downloads` text collate utf8mb4_unicode_ci default NULL,
 	`updatedate` int(11) default NULL,
   PRIMARY KEY (`course_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1;");
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
 
 $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_2_categories` (
 	`course_id` int(10) NOT NULL,
 	`category_id` int(10) NOT NULL,
 	PRIMARY KEY (`course_id`, `category_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1;");
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
 // END install database
 
 // START create views for url addon

@@ -3,28 +3,28 @@ $sql = rex_sql::factory();
 // START install database
 $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_location_categories` (
 	`location_category_id` int(10) unsigned NOT NULL auto_increment,
-	`name` varchar(255) collate utf8_general_ci default NULL,
-	`picture` varchar(255) collate utf8_general_ci default NULL,
+	`name` varchar(255) collate utf8mb4_unicode_ci default NULL,
+	`picture` varchar(255) collate utf8mb4_unicode_ci default NULL,
 	`zoom_level` int(10) default NULL,
 	`updatedate` int(11) default NULL,
 	PRIMARY KEY (`location_category_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1;");
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
 
 $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_locations` (
 	`location_id` int(10) unsigned NOT NULL auto_increment,
-	`name` varchar(255) collate utf8_general_ci default NULL,
+	`name` varchar(255) collate utf8mb4_unicode_ci default NULL,
     `latitude` decimal(14,10),
     `longitude` decimal(14,10),
-	`street` varchar(255) collate utf8_general_ci default NULL,
-	`zip_code` varchar(10) collate utf8_general_ci default NULL,
-	`city` varchar(255) collate utf8_general_ci default NULL,
-	`picture` varchar(255) collate utf8_general_ci default NULL,
-	`site_plan` varchar(255) collate utf8_general_ci default NULL,
+	`street` varchar(255) collate utf8mb4_unicode_ci default NULL,
+	`zip_code` varchar(10) collate utf8mb4_unicode_ci default NULL,
+	`city` varchar(255) collate utf8mb4_unicode_ci default NULL,
+	`picture` varchar(255) collate utf8mb4_unicode_ci default NULL,
+	`site_plan` varchar(255) collate utf8mb4_unicode_ci default NULL,
 	`location_category_id` int(10) default NULL,
-	`redaxo_users` varchar(255) collate utf8_general_ci default NULL,
+	`redaxo_users` varchar(255) collate utf8mb4_unicode_ci default NULL,
 	`updatedate` int(11) default NULL,
 	PRIMARY KEY (`location_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1;");
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
 
 // Alter machine table
 $sql->setQuery("SHOW COLUMNS FROM ". \rex::getTablePrefix() ."d2u_courses_courses LIKE 'location_id';");
@@ -35,7 +35,7 @@ if($sql->getRows() == 0) {
 $sql->setQuery("SHOW COLUMNS FROM ". \rex::getTablePrefix() ."d2u_courses_courses LIKE 'room';");
 if($sql->getRows() == 0) {
 	$sql->setQuery("ALTER TABLE ". \rex::getTablePrefix() ."d2u_courses_courses "
-		. "ADD `room` varchar(255) collate utf8_general_ci default NULL;");
+		. "ADD `room` varchar(255) collate utf8mb4_unicode_ci default NULL;");
 }
 // END install database
 

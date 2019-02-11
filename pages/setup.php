@@ -102,7 +102,7 @@ if(rex_request('import', 'string') == "d2u_courses" && $old_tables_available) {
 	// Normal tables
 	$sql->setQuery("RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_orte_kategorien` TO `". rex::getTablePrefix() ."d2u_courses_location_categories`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_location_categories` CHANGE `ort_kategorie_id` `location_category_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_location_categories` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_location_categories` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_location_categories` CHANGE `zoomstufe` `zoom_level` INT(10) NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_location_categories` ENGINE = InnoDB;");
 
@@ -110,73 +110,73 @@ if(rex_request('import', 'string') == "d2u_courses" && $old_tables_available) {
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `ort_id` `location_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `laengengrad` `longitude` decimal(14,10),;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `breitengrad` `latitude` decimal(14,10),;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `strasse` `street` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `plz` `zip_code` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `ort` `city` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `lageplan` `site_plan` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `strasse` `street` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `plz` `zip_code` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `ort` `city` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `lageplan` `site_plan` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `ort_kategorie_id` `location_category_id` INT(10) NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `redaxo_benutzer` `redaxo_users` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` CHANGE `redaxo_benutzer` `redaxo_users` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_locations` ENGINE = InnoDB;");
 
 	$sql->setQuery("RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_zielgruppen` TO `". rex::getTablePrefix() ."d2u_courses_target_groups`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_target_groups` CHANGE `zielgruppe_id` `target_group_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_target_groups` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_target_groups` CHANGE `kufer_zielgruppe_name` `kufer_target_group_name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_target_groups` CHANGE `kufer_kategorien_bezeichnungsstrukturen` `kufer_categories` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_target_groups` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_target_groups` CHANGE `kufer_zielgruppe_name` `kufer_target_group_name` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_target_groups` CHANGE `kufer_kategorien_bezeichnungsstrukturen` `kufer_categories` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
 		DELETE FROM `". rex::getTablePrefix() ."d2u_courses_target_groups` WHERE `eltern_zielgruppe_id` > 0;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_target_groups` DROP `eltern_zielgruppe_id`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_target_groups` ENGINE = InnoDB;");
 
 	$sql->setQuery("RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_kategorien` TO `". rex::getTablePrefix() ."d2u_courses_categories`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CHANGE `kurskategorie_id` `category_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` ADD `description` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `name`;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CHANGE `farbe` `color` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` ADD `description` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL AFTER `name`;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CHANGE `farbe` `color` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
 		UPDATE `". rex::getTablePrefix() ."d2u_courses_categories` SET `color` = CONCAT('#', `color`);
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CHANGE `eltern_kurskategorie_id` `parent_category_id` INT(10) NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` ADD `priority` INT(10) NULL DEFAULT 0 AFTER `parent_category_id`;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CHANGE `kufer_kategorien_bezeichnungsstrukturen` `kufer_categories` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` CHANGE `kufer_kategorien_bezeichnungsstrukturen` `kufer_categories` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_categories` ENGINE = InnoDB;");
 
 	$sql->setQuery("RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_terminkategorien` TO `". rex::getTablePrefix() ."d2u_courses_schedule_categories`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_schedule_categories` CHANGE `terminkategorie_id` `schedule_category_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_schedule_categories` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_schedule_categories` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_schedule_categories` CHANGE `eltern_terminkategorie_id` `parent_schedule_category_id` INT(10) NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_schedule_categories` CHANGE `kufer_kategorien_bezeichnungsstrukturen` `kufer_categories` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_schedule_categories` CHANGE `kufer_kategorien_bezeichnungsstrukturen` `kufer_categories` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_schedule_categories` ENGINE = InnoDB;");
 
 	$sql->setQuery("RENAME TABLE `". rex::getTablePrefix() ."d2u_kurse_kurse` TO `". rex::getTablePrefix() ."d2u_courses_courses`;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `kurs_id` `course_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `titel` `name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `beschreibung` `description` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `kursinfos` `details_course` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `meldeschluss` `details_deadline` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `alter` `details_age` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `titel` `name` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `beschreibung` `description` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `kursinfos` `details_course` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `meldeschluss` `details_deadline` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `alter` `details_age` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `bild` `picture` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `kosten` `price` decimal(5,2) NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `kosten_erm` `price_discount` decimal(5,2) NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `datum_von` `date_start` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `datum_bis` `date_end` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `uhrzeit` `time` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `datum_von` `date_start` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `datum_bis` `date_end` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `uhrzeit` `time` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `kurskategorie_id` `category_id` INT(10) NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `ort_id` `location_id` INT(10) NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `raum` `room` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `raum` `room` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `teilnehmer_angemeldet` `participants_number` INT(10) NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `teilnehmer_max` `participants_max` INT(10) NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `teilnehmer_min` `participants_min` INT(10) NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `teilnehmer_warteliste` `participants_wait_list` INT(10) NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `anmeldung_moeglich` `registration_possible` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `anmeldung_moeglich` `registration_possible` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
 		UPDATE `". rex::getTablePrefix() ."d2u_courses_courses` SET `registration_possible` = 'yes' WHERE `registration_possible` = 'ja';
 		UPDATE `". rex::getTablePrefix() ."d2u_courses_courses` SET `registration_possible` = 'no' WHERE `registration_possible` = 'nein';
 		UPDATE `". rex::getTablePrefix() ."d2u_courses_courses` SET `registration_possible` = 'booked' WHERE `registration_possible` = 'ausgebucht';
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `status` `online_status` VARCHAR(7) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `url_extern` `url_external` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `redaxo_artikel` `redaxo_article` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `kursleiter` `instructor` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `kursnummer` `course_number` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `dokumente` `downloads` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `import` `import_type` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `status` `online_status` VARCHAR(7) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `url_extern` `url_external` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `redaxo_artikel` `redaxo_article` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `kursleiter` `instructor` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `kursnummer` `course_number` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `dokumente` `downloads` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `import` `import_type` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
 		ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses`
 			DROP `zielgruppen_ids`,
 			DROP `sekundaere_kurskategorie_ids`,
@@ -226,6 +226,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.5-DEV:</p>
 <ul>
+	<li>Konvertierung der Datenbanktabellen zu utf8mb4.</li>
 	<li>Option zur Eingabe einer Ferienpass Nummer in den Einstellungen / Warenkorb hinzugefügt.</li>
 	<li>PHP Warning im Warenkorb entfernt.</li>
 </ul>
