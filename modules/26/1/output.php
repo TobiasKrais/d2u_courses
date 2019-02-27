@@ -294,7 +294,12 @@ else if(count($courses) > 0) {
 	}
 	foreach($courses as $list_course) {
 		print '<div class="col-12">';
-		print '<a href="'. $list_course->getURL(TRUE) .'" title="'. $list_course->name .'" class="course_row_a">';
+		$title = $list_course->name;
+		if($list_course->registration_possible == "booked") {
+			$title .= ' - '. $tag_open .'d2u_courses_booked_complete'. $tag_close;
+		}
+
+		print '<a href="'. $list_course->getURL(TRUE) .'" title="'. $title .'" class="course_row_a">';
 		print '<div class="row course_row" data-match-height>';
 		
 		print '<div class="col-12 col-md-6 spacer_box">';
