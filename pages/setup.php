@@ -230,6 +230,7 @@ else if($old_tables_available) {
 	<li>Konvertierung der Datenbanktabellen zu utf8mb4.</li>
 	<li>Option zur Eingabe einer Ferienpass Nummer in den Einstellungen / Warenkorb hinzugefügt.</li>
 	<li>PHP Warning im Warenkorb entfernt.</li>
+	<li>Bugfix schedule_categories Plugin: schedule_category::getAllParents() gibt nun auch Eltern mit Kindern zurück.</li>
 </ul>
 <p>3.0.4:</p>
 <ul>

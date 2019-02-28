@@ -214,18 +214,15 @@ class ScheduleCategory {
 	 * @return ScheduleCategory[] Array with ScheduleCategory objects.
 	 */
 	static function getAllParents($online_only = FALSE) {
-		$query = "SELECT schedule_category_id FROM ". \rex::getTablePrefix() ."d2u_courses_schedule_categories"
-			." WHERE parent_schedule_category_id <= 0 ";
-		if($online_only) {
-			$query = "SELECT schedule_category_id FROM ". \rex::getTablePrefix() ."d2u_courses_url_schedule_categories "
-				." WHERE parent_schedule_category_id <= 0 ";
-		}
-		if(\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority') {
-			$query .= 'ORDER BY priority';
-		}
-		else {
-			$query .= 'ORDER BY name';
-		}
+		$query = 'SELECT schedule_category_id, name, priority FROM '.
+					\rex::getTablePrefix() . ($online_only ? 'd2u_courses_url_schedule_categories' : 'd2u_courses_schedule_categories')
+				.' WHERE parent_schedule_category_id <= 0
+				UNION
+				SELECT parent_scheds.schedule_category_id, parent_scheds.name, parent_scheds.priority FROM '. \rex::getTablePrefix() .'d2u_courses_url_schedule_categories AS scheds
+				LEFT JOIN '. \rex::getTablePrefix() .'d2u_courses_schedule_categories AS parent_scheds ON scheds.parent_schedule_category_id = parent_scheds.schedule_category_id
+				WHERE scheds.parent_schedule_category_id > 0
+				GROUP BY scheds.schedule_category_id
+				ORDER BY '. (\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority' ? 'priority' : 'name');
 		$result =  \rex_sql::factory();
 		$result->setQuery($query);
 		$num_rows = $result->getRows();
