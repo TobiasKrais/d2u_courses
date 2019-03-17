@@ -226,6 +226,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.5-DEV:</p>
 <ul>
+	<li>YRewrite Multidomain support.</li>
 	<li>Modul 26-1 mit verbesserter Ausgabe des Buchungsstatus.</li>
 	<li>Konvertierung der Datenbanktabellen zu utf8mb4.</li>
 	<li>Option zur Eingabe einer Ferienpass Nummer in den Einstellungen / Warenkorb hinzugefügt.</li>
