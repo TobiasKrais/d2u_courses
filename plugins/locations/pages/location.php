@@ -192,7 +192,7 @@ if ($func == '') {
 		.'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_location_categories as categories '
 			.'ON locations.location_category_id = categories.location_category_id '
 		.'ORDER BY name ASC';
-    $list = rex_list::factory($query);
+    $list = rex_list::factory($query, 1000);
 
     $list->addTableAttribute('class', 'table-striped table-hover');
 

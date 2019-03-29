@@ -115,7 +115,7 @@ if ($func == '') {
 	$query = 'SELECT location_category_id, name '
 		. 'FROM '. rex::getTablePrefix() .'d2u_courses_location_categories '
 		.'ORDER BY name ASC';
-    $list = rex_list::factory($query);
+    $list = rex_list::factory($query, 1000);
 
     $list->addTableAttribute('class', 'table-striped table-hover');
 
