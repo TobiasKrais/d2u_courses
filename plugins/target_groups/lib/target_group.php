@@ -49,9 +49,9 @@ class TargetGroup {
 	var $kufer_categories = [];
 	
 	/**
-	 * @var int Update UNIX timestamp
+	 * @var string Update timestamp
 	 */
-	var $updatedate = 0;
+	var $updatedate = "";
 
 	/**
 	 * @var string URL
@@ -329,7 +329,7 @@ class TargetGroup {
 			$query .= \rex::getTablePrefix().'d2u_courses_target_groups SET '
 				.'`name` = "'. addslashes($this->name) .'", '
 				.'picture = "'. $this->picture .'", '
-				.'updatedate = "'. time() .'"';
+				.'updatedate = CURRENT_TIMESTAMP ';
 			if(\rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
 				$query .= ', kufer_categories = "'. implode(PHP_EOL, $this->kufer_categories) .'"'
 					.', kufer_target_group_name = "'. $this->kufer_target_group_name .'"';

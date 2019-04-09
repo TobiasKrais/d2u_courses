@@ -9,7 +9,7 @@ $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_cours
 	`picture` varchar(255) collate utf8mb4_unicode_ci default NULL,
 	`parent_category_id` int(10) default NULL,
 	`priority` int(10) default NULL,
-	`updatedate` int(11) default NULL,
+	`updatedate` DATETIME default NULL,
 	PRIMARY KEY (`category_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
 
@@ -39,7 +39,7 @@ $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_cours
 	`instructor` varchar(255) collate utf8mb4_unicode_ci default NULL,
 	`course_number` varchar(50) collate utf8mb4_unicode_ci default NULL,
 	`downloads` text collate utf8mb4_unicode_ci default NULL,
-	`updatedate` int(11) default NULL,
+	`updatedate` DATETIME default NULL,
   PRIMARY KEY (`course_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
 
@@ -51,7 +51,7 @@ $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_cours
 // END install database
 
 // START create views for url addon
-// Online categories (changes need to be done here and pages/settings.php)
+// Online categories (changes need to be done in install.php, update.php and pages/settings.php)
 $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_categories AS
 	SELECT categories.category_id, CONCAT_WS(" - ", parents.name, categories.name) AS name, CONCAT_WS(" - ", parents.name, categories.name) AS seo_title, categories.picture, courses.updatedate, categories.parent_category_id
 	FROM '. rex::getTablePrefix() .'d2u_courses_categories AS categories
@@ -88,30 +88,72 @@ $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_ur
 			WHERE categories.parent_category_id = categories_max.parent_category_id AND courses_max.online_status = "online" AND (date_start = "" OR date_start > CURDATE())
 		)
 	GROUP BY category_id, name, seo_title, picture, updatedate, parent_category_id;');
-// Online courses (changes need to be done here and pages/settings.php)
+// Online courses (changes need to be done in install.php, update.php and pages/settings.php)
 $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_courses AS
-	SELECT course_id, name, name AS seo_title, teaser, picture, updatedate, category_id
+	SELECT course_id, courses.name, courses.name AS seo_title, teaser, courses.picture, courses.updatedate, courses.category_id, categories.parent_category_id
 	FROM '. rex::getTablePrefix() .'d2u_courses_courses AS courses
+	LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_categories AS categories
+		ON courses.category_id = categories.category_id
 	WHERE courses.online_status = "online"
 		AND (date_start = "" OR date_start > CURDATE());');
 // END create views for url addon
 
 // Insert url schemes
 if(\rex_addon::get('url')->isAvailable()) {
-	// Courses
-	$sql->setQuery("SELECT * FROM ". rex::getTablePrefix() ."url_generate WHERE `table` = '1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses'");
 	$clang_id = count(rex_clang::getAllIds()) == 1 ? rex_clang::getStartId() : 0;
-	if($sql->getRows() == 0) {
-		$sql->setQuery("INSERT INTO `". rex::getTablePrefix() ."url_generate` (`article_id`, `clang_id`, `url`, `table`, `table_parameters`, `relation_table`, `relation_table_parameters`, `relation_insert`, `createdate`, `createuser`, `updatedate`, `updateuser`)
-			VALUES(". rex_config::get('d2u_courses', 'article_id_courses', rex_article::getSiteStartArticleId()) .", ". $clang_id .", '', '1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses', '{\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_field_1\":\"course_id\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_field_2\":\"name\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_field_3\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_id\":\"course_id\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_clang_id\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_restriction_field\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_restriction_operator\":\"=\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_restriction_value\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_url_param_key\":\"course_id\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_seo_title\":\"name\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_seo_description\":\"teaser\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_seo_image\":\"picture\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_sitemap_add\":\"1\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_sitemap_frequency\":\"always\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_sitemap_priority\":\"1.0\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_sitemap_lastmod\":\"updatedate\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_path_names\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_path_categories\":\"0\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_relation_field\":\"category_id\"}', '1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_url_categories', '{\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_url_categories_field_1\":\"name\",\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_url_categories_field_2\":\"\",\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_url_categories_field_3\":\"\",\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_url_categories_id\":\"category_id\",\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_url_categories_clang_id\":\"\"}', 'before', UNIX_TIMESTAMP(), 'd2u_courses_addon_installer', UNIX_TIMESTAMP(), 'd2u_courses_addon_installer');");
+	$article_id = rex_config::get('d2u_courses', 'article_id_courses', 0) > 0 ? rex_config::get('d2u_courses', 'article_id_courses') : rex_article::getSiteStartArticleId(); 
+	if(rex_string::versionCompare(\rex_addon::get('url')->getVersion(), '1.5', '>=')) {
+		// Insert url schemes Version 2.x
+		$sql->setQuery("DELETE FROM ". \rex::getTablePrefix() ."rex_url_generator_profile WHERE `namespace` = 'course_id';");
+		$sql->setQuery("INSERT INTO `rex_url_generator_profile` (`namespace`, `article_id`, `clang_id`, `table_name`, `table_parameters`, `relation_1_table_name`, `relation_1_table_parameters`, `relation_2_table_name`, `relation_2_table_parameters`, `relation_3_table_name`, `relation_3_table_parameters`, `createdate`, `createuser`, `updatedate`, `updateuser`) VALUES
+			('course_id', "
+			. $article_id .", "
+			. $clang_id .", "
+			. "'1_xxx_rex_d2u_courses_url_courses', "
+			. "'{\"column_id\":\"course_id\",\"column_clang_id\":\"\",\"restriction_1_column\":\"\",\"restriction_1_comparison_operator\":\"=\",\"restriction_1_value\":\"\",\"restriction_2_logical_operator\":\"\",\"restriction_2_column\":\"\",\"restriction_2_comparison_operator\":\"=\",\"restriction_2_value\":\"\",\"restriction_3_logical_operator\":\"\",\"restriction_3_column\":\"\",\"restriction_3_comparison_operator\":\"=\",\"restriction_3_value\":\"\",\"column_segment_part_1\":\"course_id\",\"column_segment_part_2_separator\":\"-\",\"column_segment_part_2\":\"name\",\"column_segment_part_3_separator\":\"\\/\",\"column_segment_part_3\":\"\",\"relation_1_column\":\"parent_category_id\",\"relation_1_position\":\"BEFORE\",\"relation_2_column\":\"category_id\",\"relation_2_position\":\"BEFORE\",\"relation_3_column\":\"\",\"relation_3_position\":\"BEFORE\",\"append_user_paths\":\"\",\"append_structure_categories\":\"0\",\"column_seo_title\":\"seo_title\",\"column_seo_description\":\"teaser\",\"column_seo_image\":\"picture\",\"sitemap_add\":\"1\",\"sitemap_frequency\":\"always\",\"sitemap_priority\":\"1.0\",\"column_sitemap_lastmod\":\"updatedate\"}', "
+			. "'relation_1_xxx_1_xxx_rex_d2u_courses_categories', "
+			. "'{\"column_id\":\"category_id\",\"column_clang_id\":\"\",\"column_segment_part_1\":\"name\",\"column_segment_part_2_separator\":\"\\/\",\"column_segment_part_2\":\"\",\"column_segment_part_3_separator\":\"\\/\",\"column_segment_part_3\":\"\"}', "
+			. "'relation_2_xxx_1_xxx_rex_d2u_courses_categories', "
+			. "'{\"column_id\":\"category_id\",\"column_clang_id\":\"\",\"column_segment_part_1\":\"name\",\"column_segment_part_2_separator\":\"\\/\",\"column_segment_part_2\":\"\",\"column_segment_part_3_separator\":\"\\/\",\"column_segment_part_3\":\"\"}', "
+			. "'', '[]', CURRENT_TIMESTAMP, '". rex::getUser()->getValue('login') ."', CURRENT_TIMESTAMP, '". rex::getUser()->getValue('login') ."');");
+		$sql->setQuery("DELETE FROM ". \rex::getTablePrefix() ."rex_url_generator_profile WHERE `namespace` = 'courses_category_id';");
+		$sql->setQuery("INSERT INTO `rex_url_generator_profile` (`namespace`, `article_id`, `clang_id`, `table_name`, `table_parameters`, `relation_1_table_name`, `relation_1_table_parameters`, `relation_2_table_name`, `relation_2_table_parameters`, `relation_3_table_name`, `relation_3_table_parameters`, `createdate`, `createuser`, `updatedate`, `updateuser`) VALUES
+			('courses_category_id', "
+			. $article_id .", "
+			. $clang_id .", "
+			. "'1_xxx_rex_d2u_courses_url_categories', "
+			. "'{\"column_id\":\"category_id\",\"column_clang_id\":\"\",\"restriction_1_column\":\"\",\"restriction_1_comparison_operator\":\"=\",\"restriction_1_value\":\"\",\"restriction_2_logical_operator\":\"\",\"restriction_2_column\":\"\",\"restriction_2_comparison_operator\":\"=\",\"restriction_2_value\":\"\",\"restriction_3_logical_operator\":\"\",\"restriction_3_column\":\"\",\"restriction_3_comparison_operator\":\"=\",\"restriction_3_value\":\"\",\"column_segment_part_1\":\"name\",\"column_segment_part_2_separator\":\"\\/\",\"column_segment_part_2\":\"\",\"column_segment_part_3_separator\":\"\\/\",\"column_segment_part_3\":\"\",\"relation_1_column\":\"parent_category_id\",\"relation_1_position\":\"BEFORE\",\"relation_2_column\":\"\",\"relation_2_position\":\"BEFORE\",\"relation_3_column\":\"\",\"relation_3_position\":\"BEFORE\",\"append_user_paths\":\"\",\"append_structure_categories\":\"0\",\"column_seo_title\":\"seo_title\",\"column_seo_description\":\"\",\"column_seo_image\":\"picture\",\"sitemap_add\":\"1\",\"sitemap_frequency\":\"weekly\",\"sitemap_priority\":\"0.7\",\"column_sitemap_lastmod\":\"updatedate\"}', "
+			. "'relation_1_xxx_1_xxx_rex_d2u_courses_categories', "
+			. "'{\"column_id\":\"category_id\",\"column_clang_id\":\"\",\"column_segment_part_1\":\"name\",\"column_segment_part_2_separator\":\"\\/\",\"column_segment_part_2\":\"\",\"column_segment_part_3_separator\":\"\\/\",\"column_segment_part_3\":\"\"}', "
+			. "'', '[]', '', '[]', CURRENT_TIMESTAMP, '". rex::getUser()->getValue('login') ."', CURRENT_TIMESTAMP, '". rex::getUser()->getValue('login') ."');");
+
+		// TODO Cache generieren
 	}
-	// Categories
-	$sql->setQuery("SELECT * FROM ". rex::getTablePrefix() ."url_generate WHERE `table` = '1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories'");
-	if($sql->getRows() == 0) {
+	else {
+		// Insert url schemes Version 1.x
+		// Courses
+		$sql->setQuery("DELETE FROM ". rex::getTablePrefix() ."url_generate WHERE `table` = '1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses';");
 		$sql->setQuery("INSERT INTO `". rex::getTablePrefix() ."url_generate` (`article_id`, `clang_id`, `url`, `table`, `table_parameters`, `relation_table`, `relation_table_parameters`, `relation_insert`, `createdate`, `createuser`, `updatedate`, `updateuser`)
-			VALUES(". rex_config::get('d2u_courses','article_id_courses', rex_article::getSiteStartArticleId()) .", ". $clang_id .", '', '1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories', '{\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_field_1\":\"name\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_field_2\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_field_3\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_id\":\"category_id\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_clang_id\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_restriction_field\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_restriction_operator\":\"=\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_restriction_value\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_url_param_key\":\"courses_category_id\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_seo_title\":\"name\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_seo_description\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_seo_image\":\"picture\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_sitemap_add\":\"1\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_sitemap_frequency\":\"weekly\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_sitemap_priority\":\"0.7\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_sitemap_lastmod\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_path_names\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_path_categories\":\"0\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_relation_field\":\"\"}', '', '[]', 'before', UNIX_TIMESTAMP(), 'd2u_courses_addon_installer', UNIX_TIMESTAMP(), 'd2u_courses_addon_installer');");
+			VALUES(". $article_id .", "
+			. $clang_id .", "
+			. "'', "
+			. "'1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses', "
+			. "'{\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_field_1\":\"course_id\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_field_2\":\"name\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_field_3\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_id\":\"course_id\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_clang_id\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_restriction_field\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_restriction_operator\":\"=\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_restriction_value\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_url_param_key\":\"course_id\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_seo_title\":\"name\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_seo_description\":\"teaser\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_seo_image\":\"picture\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_sitemap_add\":\"1\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_sitemap_frequency\":\"always\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_sitemap_priority\":\"1.0\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_sitemap_lastmod\":\"updatedate\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_path_names\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_path_categories\":\"0\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_courses_relation_field\":\"category_id\"}', "
+			. "'1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_url_categories', "
+			. "'{\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_url_categories_field_1\":\"name\",\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_url_categories_field_2\":\"\",\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_url_categories_field_3\":\"\",\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_url_categories_id\":\"category_id\",\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_url_categories_clang_id\":\"\"}', "
+			. "'before', UNIX_TIMESTAMP(), '". rex::getUser()->getValue('login') ."', UNIX_TIMESTAMP(), '". rex::getUser()->getValue('login') ."');");
+		// Categories
+		$sql->setQuery("DELETE FROM ". rex::getTablePrefix() ."url_generate WHERE `table` = '1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories';");
+		$sql->setQuery("INSERT INTO `". rex::getTablePrefix() ."url_generate` (`article_id`, `clang_id`, `url`, `table`, `table_parameters`, `relation_table`, `relation_table_parameters`, `relation_insert`, `createdate`, `createuser`, `updatedate`, `updateuser`)
+			VALUES(". $article_id .", "
+			. $clang_id .", "
+			. "'', "
+			. "'1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories', "
+			. "'{\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_field_1\":\"name\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_field_2\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_field_3\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_id\":\"category_id\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_clang_id\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_restriction_field\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_restriction_operator\":\"=\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_restriction_value\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_url_param_key\":\"courses_category_id\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_seo_title\":\"name\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_seo_description\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_seo_image\":\"picture\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_sitemap_add\":\"1\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_sitemap_frequency\":\"weekly\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_sitemap_priority\":\"0.7\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_sitemap_lastmod\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_path_names\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_path_categories\":\"0\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_relation_field\":\"\"}', "
+			. "'', '[]', 'before', UNIX_TIMESTAMP(), '". rex::getUser()->getValue('login') ."', UNIX_TIMESTAMP(), '". rex::getUser()->getValue('login') ."');");
+
+		\UrlGenerator::generatePathFile([]);
 	}
-	UrlGenerator::generatePathFile([]);
 }
 
 // START default settings

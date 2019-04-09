@@ -226,6 +226,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.5-DEV:</p>
 <ul>
+	<li>Anpassungen an URL Addon Version 2.x.</li>
 	<li>Listen im Backend werden jetzt nicht mehr in Seiten unterteilt.</li>
 	<li>YRewrite Multidomain support.</li>
 	<li>Modul 26-1 mit verbesserter Ausgabe des Buchungsstatus.</li>

@@ -58,7 +58,7 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 			
 			// START update views for url addon
 			$sql = rex_sql::factory();
-			// Online categories (changes need to be done here and install.php)
+			// Online courses (changes need to be done in install.php, update.php and pages/settings.php)
 			$sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_categories AS
 				SELECT categories.category_id, CONCAT_WS(" - ", parents.name, categories.name) AS name, CONCAT_WS(" - ", parents.name, categories.name) AS seo_title, categories.picture, courses.updatedate, categories.parent_category_id
 				FROM '. rex::getTablePrefix() .'d2u_courses_categories AS categories
@@ -95,10 +95,12 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 						WHERE categories.parent_category_id = categories_max.parent_category_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
 					)
 				GROUP BY category_id, name, seo_title, picture, updatedate, parent_category_id;');
-			// Online courses (changes need to be done here and install.php)
+			// Online courses (changes need to be done in install.php, update.php and pages/settings.php)
 			$sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_courses AS
-				SELECT course_id, name, name AS seo_title, teaser, picture, updatedate, category_id
+				SELECT course_id, courses.name, courses.name AS seo_title, teaser, courses.picture, courses.updatedate, courses.category_id, categories.parent_category_id
 				FROM '. rex::getTablePrefix() .'d2u_courses_courses AS courses
+				LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_categories AS categories
+					ON courses.category_id = categories.category_id
 				WHERE courses.online_status = "online"
 					AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .');');
 			if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
@@ -212,7 +214,7 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 			}
 			// END update views for url addon
 
-			UrlGenerator::generatePathFile([]);
+			\UrlGenerator::generatePathFile([]);
 		}
 		
 		// Install / update language replacements

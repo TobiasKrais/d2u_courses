@@ -162,9 +162,9 @@ class Course {
 	var $downloads = [];
 
 	/**
-	 * @var int Update UNIX timestamp
+	 * @var string Update timestamp
 	 */
-	var $updatedate = 0;
+	var $updatedate = "";
 
 	/**
 	 * @var string In case object was imported, this string contains import
@@ -453,7 +453,7 @@ class Course {
 			.'instructor = "'. $this->instructor .'", '
 			.'course_number = "'. $this->course_number .'", '
 			.'downloads = "'. implode(",", $this->downloads) .'", '
-			.'updatedate = '. time() .' ';
+			.'updatedate = CURRENT_TIMESTAMP ';
 		if(\rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
 			$query .= ', location_id = '. ($this->location !== FALSE ? $this->location->location_id : 0) .', '
 				.'`room` = "'. addslashes($this->room) .'" ';

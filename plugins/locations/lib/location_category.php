@@ -32,9 +32,9 @@ class LocationCategory {
 	var $zoom_level = 10;
 
 	/**
-	 * @var int Upadte UNIX timestamp
+	 * @var string Upadte timestamp
 	 */
-	var $updatedate = 0;
+	var $updatedate = "";
 
 	/**
 	 * @var string URL
@@ -223,7 +223,7 @@ class LocationCategory {
 			.'`name` = "'. addslashes($this->name) .'", '
 			.'picture = "'. $this->picture .'", '
 			.'zoom_level = '. $this->zoom_level .', '
-			.'updatedate = "'. time() .'"';
+			.'updatedate = CURRENT_TIMESTAMP ';
 		if($this->location_category_id > 0) {			
 			$query .= " WHERE location_category_id = ". $this->location_category_id;
 		}

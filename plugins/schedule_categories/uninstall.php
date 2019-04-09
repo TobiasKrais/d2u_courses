@@ -3,7 +3,12 @@ $sql = rex_sql::factory();
 
 // Delete url schemes
 if(\rex_addon::get('url')->isAvailable()) {
-	$sql->setQuery("DELETE FROM `". rex::getTablePrefix() ."url_generate` WHERE `table` LIKE '%d2u_courses_url_schedule_categories%'");
+	if(rex_string::versionCompare(\rex_addon::get('url')->getVersion(), '1.5', '>=')) {
+		$sql->setQuery("DELETE FROM ". \rex::getTablePrefix() ."rex_url_generator_profile WHERE `namespace` = 'schedule_category_id';");
+	}
+	else {
+		$sql->setQuery("DELETE FROM `". rex::getTablePrefix() ."url_generate` WHERE `table` LIKE '%d2u_courses_url_schedule_categories%'");
+	}
 }
 
 // Delete views

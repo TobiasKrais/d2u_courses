@@ -54,9 +54,9 @@ class Category {
 	var $kufer_categories = [];
 	
 	/**
-	 * @var int Update UNIX timestamp
+	 * @var string Update timestamp
 	 */
-	var $updatedate = 0;
+	var $updatedate = "";
 
 	/**
 	 * @var string URL
@@ -399,7 +399,7 @@ class Category {
 			.'color = "'. $this->color .'", '
 			.'picture = "'. $this->picture .'", '
 			.'parent_category_id = '. ($this->parent_category !== FALSE ? $this->parent_category->category_id : 0) .', '
-			.'updatedate = "'. time() .'"';
+			.'updatedate = CURRENT_TIMESTAMP';
 		if(\rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
 			$query .= ', kufer_categories = "'. implode(PHP_EOL, $this->kufer_categories) .'"';
 		}

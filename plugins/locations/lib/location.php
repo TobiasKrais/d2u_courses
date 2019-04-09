@@ -68,9 +68,9 @@ class Location {
 	var $redaxo_users = [];
 
 	/**
-	 * @var int Update UNIX Timestamp
+	 * @var string Update timestamp
 	 */
-	var $updatedate = 0;
+	var $updatedate = "";
 
 	/**
 	 * @var string URL
@@ -268,7 +268,7 @@ class Location {
 			.'redaxo_users = "'. implode('|', $this->redaxo_users) .'", '
 			.'picture = "'. $this->picture .'", '
 			.'site_plan = "'. $this->site_plan .'", '
-			.'updatedate = "'. time() .'"';
+			.'updatedate = CURRENT_TIMESTAMP ';
 		if($this->location_id > 0) {			
 			$query .= " WHERE location_id = ". $this->location_id;
 		}
