@@ -72,8 +72,6 @@ if(\rex_addon::get('url')->isAvailable()) {
 			. "'relation_1_xxx_1_xxx_rex_d2u_courses_schedule_categories', "
 			. "'{\"column_id\":\"schedule_category_id\",\"column_clang_id\":\"\",\"column_segment_part_1\":\"name\",\"column_segment_part_2_separator\":\"\\/\",\"column_segment_part_2\":\"\",\"column_segment_part_3_separator\":\"\\/\",\"column_segment_part_3\":\"\"}', "
 			. "'', '[]', '', '[]', CURRENT_TIMESTAMP, '". rex::getUser()->getValue('login') ."', CURRENT_TIMESTAMP, '". rex::getUser()->getValue('login') ."');");
-
-		// TODO Cache generieren
 	}
 	else {
 		// Insert url schemes Version 1.x
@@ -88,9 +86,9 @@ if(\rex_addon::get('url')->isAvailable()) {
 			. "'1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_schedule_categories', "
 			. "'{\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_schedule_categories_field_1\":\"name\",\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_schedule_categories_field_2\":\"\",\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_schedule_categories_field_3\":\"\",\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_schedule_categories_id\":\"schedule_category_id\",\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_schedule_categories_clang_id\":\"\"}', "
 			. "'before', UNIX_TIMESTAMP(), '". rex::getUser()->getValue('login') ."', UNIX_TIMESTAMP(), '". rex::getUser()->getValue('login') ."');");
-
-		\UrlGenerator::generatePathFile([]);
 	}
+
+	d2u_addon_backend_helper::generateUrlCache();
 }
 
 // START default settings
