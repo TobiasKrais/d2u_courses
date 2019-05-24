@@ -145,7 +145,7 @@ if(class_exists('D2UModuleManager')) {
 			5);
 		$modules[] = new D2UModule("26-2",
 			"D2U Veranstaltungen - Warenkorb",
-			3);
+			4);
 	$d2u_module_manager = new D2UModuleManager($modules);
 	$d2u_module_manager->autoupdate();
 }

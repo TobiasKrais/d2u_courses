@@ -230,6 +230,7 @@ else if($old_tables_available) {
 	<li>Listen im Backend werden jetzt nicht mehr in Seiten unterteilt.</li>
 	<li>YRewrite Multidomain support.</li>
 	<li>Modul 26-1 mit verbesserter Ausgabe des Buchungsstatus.</li>
+	<li>Modul 26-2 Warenkorb: Beim Speichern des Warenkorbs wird nun auf die Kursseite weitergeleitet.</li>
 	<li>Konvertierung der Datenbanktabellen zu utf8mb4.</li>
 	<li>Option zur Eingabe einer Ferienpass Nummer in den Einstellungen / Warenkorb hinzugefügt.</li>
 	<li>PHP Warning im Warenkorb entfernt.</li>

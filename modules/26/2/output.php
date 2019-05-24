@@ -38,6 +38,12 @@ foreach($cart->getCourseIDs() as $course_id) {
 	}
 }
 
+// Forward so start page if cart is saved and shopping should be continued
+if(isset($form_data['participant_save'])) {
+	header('Location: '. rex_getUrl(rex_config::get('d2u_courses', 'article_id_courses')));
+   	exit();
+}
+
 $sprog = rex_addon::get("sprog");
 $tag_open = $sprog->getConfig('wildcard_open_tag');
 $tag_close = $sprog->getConfig('wildcard_close_tag');
