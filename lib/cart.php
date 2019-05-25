@@ -468,6 +468,11 @@ class Cart {
 	 * @return int[] Course IDs
 	 */
 	public static function getCourseIDs() {
+		// Session is needed
+		if (session_status() == PHP_SESSION_NONE) {
+			session_start();
+		}
+
 		$course_ids = [];
 		foreach($_SESSION['cart'] as $course_id => $participants) {
 			$course_ids[] = $course_id;
