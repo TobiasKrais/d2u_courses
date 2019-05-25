@@ -474,8 +474,10 @@ class Cart {
 		}
 
 		$course_ids = [];
-		foreach($_SESSION['cart'] as $course_id => $participants) {
-			$course_ids[] = $course_id;
+		if(isset($_SESSION['cart'])) {
+			foreach($_SESSION['cart'] as $course_id => $participants) {
+				$course_ids[] = $course_id;
+			}
 		}
 		return $course_ids;
 	}
