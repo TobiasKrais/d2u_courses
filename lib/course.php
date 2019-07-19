@@ -441,7 +441,7 @@ class Course {
 			.'date_start = "'. $this->date_start .'", '
 			.'date_end = "'. $this->date_end .'", '
 			.'`time` = "'. $this->time .'", '
-			.'category_id = '. $this->category->category_id .', '
+			.'category_id = '. ($this->category !== FALSE ? $this->category->category_id : 0) .', '
 			.'participants_max = '. ($this->participants_max > 0 ? $this->participants_max : 0) .', '
 			.'participants_min = '. ($this->participants_min > 0 ? $this->participants_min : 0) .', '
 			.'participants_number = '. ($this->participants_number > 0 ? $this->participants_number : 0) .', '
