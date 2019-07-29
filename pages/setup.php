@@ -224,7 +224,11 @@ else if($old_tables_available) {
 <p>Fehlermeldungen bitte im Git Projekt unter
 	<a href="https://github.com/TobiasKrais/d2u_courses/issues" target="_blank">https://github.com/TobiasKrais/d2u_courses/issues</a> melden.</p>
 <h2>Changelog</h2>
-<p>3.0.5-DEV:</p>
+<p>3.0.6-DEV:</p>
+<ul>
+	<li>...</li>
+</ul>
+<p>3.0.5:</p>
 <ul>
 	<li>Fehler beim Speichern eines Kurses wenn noch keine Kategorie angelegt wurde behoben.</li>
 	<li>Anpassungen an URL Addon Version 2.x.</li>
