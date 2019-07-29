@@ -576,8 +576,8 @@ if($course !== FALSE) {
 			print '<div class="col-12 course_row">';
 			print '<div class="course_box spacer_box">';
 			$api_key = "";
-			if($d2u_helper->hasConfig("maps_key")) {
-				$api_key = $d2u_helper->getConfig("maps_key");
+			if(rex_config::has('d2u_helper', 'maps_key')) {
+				$api_key = rex_config::get('d2u_helper', 'maps_key');
 			}
 			?>
 			<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo $api_key; ?>"></script> 
