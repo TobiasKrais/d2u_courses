@@ -368,6 +368,9 @@ else if(filter_input(INPUT_POST, 'course_search') != "") {
 
 // Course
 if($course !== FALSE) {
+	print '<div class="col-12">';
+	print '<div class="row">';
+	
 	print '<div class="col-12 spacer_box">';
 	print '<div class="course_row_title" style="background-color: '. $course->category->color.'">';
 	print '<h1>'. $course->name;
@@ -385,7 +388,6 @@ if($course !== FALSE) {
 	print '</div>';
 
 	print '</div>'; // End row
-	
 	
 	$box_details = '';
 

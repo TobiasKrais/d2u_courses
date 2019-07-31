@@ -226,7 +226,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.6-DEV:</p>
 <ul>
-	<li>...</li>
+	<li>Modul 26-1 fehlten in der Kursdetailansicht zwei div's.</li>
 </ul>
 <p>3.0.5:</p>
 <ul>
