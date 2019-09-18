@@ -226,6 +226,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.6-DEV:</p>
 <ul>
+	<li>Bugfix: das Löschen eines Bildes im Medienpool wurde unter Umständen mit der Begründung verhindet, dass das Bild in Benutzung sei, obwohl das nicht der Fall war.</li>
 	<li>Modul 26-1 fehlten in der Kursdetailansicht zwei div's.</li>
 </ul>
 <p>3.0.5:</p>

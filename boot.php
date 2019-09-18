@@ -72,7 +72,7 @@ function rex_d2u_courses_media_is_in_use(rex_extension_point $ep) {
 	// Courses
 	$sql_courses = \rex_sql::factory();
 	$sql_courses->setQuery('SELECT course_id, name FROM `' . \rex::getTablePrefix() . 'd2u_courses_courses` '
-		.'WHERE downloads LIKE "%'. $filename .'%" OR picture = "'. $filename .'" OR description LIKE "%'. $filename .'%"');
+		.'WHERE FIND_IN_SET("'. $filename .'", downloads) OR picture = "'. $filename .'" OR description LIKE "%'. $filename .'%"');
 	
 	// Categories
 	$sql_categories = \rex_sql::factory();
