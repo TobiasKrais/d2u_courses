@@ -387,7 +387,7 @@ class Category {
 	 */
 	public function save() {
 		// save priority, but only if new or changed
-		$pre_save_category = new Category($this->category_id, $this->clang_id);
+		$pre_save_object = new self($this->category_id);
 
 		$query = "INSERT INTO ";
 		if($this->category_id > 0) {
@@ -408,16 +408,25 @@ class Category {
 		}
 		$result = \rex_sql::factory();
 		$result->setQuery($query);
+		$error = $result->hasError();
 
 		if($this->category_id == 0) {
 			$this->category_id = $result->getLastId();
 		}
 
-		if($this->priority != $pre_save_category->priority) {
+		if($this->priority != $pre_save_object->priority) {
 			$this->setPriority();
 		}
 		
-		return !$result->hasError();
+		if(!$error && $pre_save_object->name != $this->name) {
+			\d2u_addon_backend_helper::generateUrlCache('courses_category_id');
+			\d2u_addon_backend_helper::generateUrlCache('course_id');
+			if(\rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
+				\d2u_addon_backend_helper::generateUrlCache('target_group_child_id');		
+			}
+		}
+		
+		return !$error;
 	}
 	
 	/**

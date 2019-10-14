@@ -424,6 +424,8 @@ class Course {
 	 * @return boolean TRUE if successful.
 	 */
 	public function save() {
+		$pre_save_object = new self($this->course_id);
+
 		$query = "INSERT INTO ";
 		if($this->course_id > 0) {
 			$query = "UPDATE ";
@@ -469,6 +471,9 @@ class Course {
 
 		if($this->course_id == 0) {
 			$this->course_id = $result->getLastId();
+		}
+		if(!$result->hasError() && $pre_save_object->name != $this->name) {
+			\d2u_addon_backend_helper::generateUrlCache('course_id');
 		}
 		
 		// Save secondary category IDs

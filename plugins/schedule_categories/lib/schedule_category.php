@@ -355,6 +355,8 @@ class ScheduleCategory {
 	 * @return boolean TRUE if successful.
 	 */
 	public function save() {
+		$pre_save_object = new self($this->course_id);
+
 		$query = "INSERT INTO ";
 		if($this->schedule_category_id > 0) {
 			$query = "UPDATE ";
@@ -379,6 +381,10 @@ class ScheduleCategory {
 		
 		if($this->priority != $pre_save_category->priority) {
 			$this->setPriority();
+		}
+		
+		if(!$result->hasError() && $pre_save_object->name != $this->name) {
+			\d2u_addon_backend_helper::generateUrlCache('schedule_category_id');
 		}
 		
 		return !$result->hasError();

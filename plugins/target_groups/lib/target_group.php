@@ -322,6 +322,8 @@ class TargetGroup {
 	public function save() {
 		// Do not save children, because they are fake objects
 		if($this->parent_target_group === FALSE) {
+			$pre_save_object = new self($this->course_id);
+
 			$query = "INSERT INTO ";
 			if($this->target_group_id > 0) {
 				$query = "UPDATE ";
@@ -347,7 +349,12 @@ class TargetGroup {
 			if($this->priority != $pre_save_category->priority) {
 				$this->setPriority();
 			}
-
+			
+			if(!$result->hasError() && $pre_save_object->name != $this->name) {
+				\d2u_addon_backend_helper::generateUrlCache('target_group_id');
+				\d2u_addon_backend_helper::generateUrlCache('target_group_child_id');
+			}
+		
 			return !$result->hasError();
 		}
 		else {

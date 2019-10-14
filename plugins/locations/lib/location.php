@@ -253,6 +253,8 @@ class Location {
 	 * @return boolean TRUE if successful.
 	 */
 	public function save() {
+		$pre_save_object = new self($this->course_id);
+
 		$query = "INSERT INTO ";
 		if($this->location_id > 0) {
 			$query = "UPDATE ";
@@ -278,6 +280,10 @@ class Location {
 
 		if($this->location_id == 0) {
 			$this->location_id = $result->getLastId();
+		}
+		
+		if(!$result->hasError() && $pre_save_object->name != $this->name) {
+			\d2u_addon_backend_helper::generateUrlCache('location_id');
 		}
 		
 		return !$result->hasError();
