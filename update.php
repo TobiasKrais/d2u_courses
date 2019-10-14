@@ -109,6 +109,8 @@ if(\rex_addon::get('url')->isAvailable()) {
 			. "'relation_1_xxx_1_xxx_". rex::getTablePrefix() ."d2u_courses_categories', "
 			. "'{\"column_id\":\"category_id\",\"column_clang_id\":\"\",\"column_segment_part_1\":\"name\",\"column_segment_part_2_separator\":\"\\/\",\"column_segment_part_2\":\"\",\"column_segment_part_3_separator\":\"\\/\",\"column_segment_part_3\":\"\"}', "
 			. "'', '[]', '', '[]', CURRENT_TIMESTAMP, '". rex::getUser()->getValue('login') ."', CURRENT_TIMESTAMP, '". rex::getUser()->getValue('login') ."');");
+		\d2u_addon_backend_helper::generateUrlCache('course_id');
+		\d2u_addon_backend_helper::generateUrlCache('courses_category_id');
 	}
 	else {
 		// Insert url schemes Version 1.x
@@ -132,9 +134,8 @@ if(\rex_addon::get('url')->isAvailable()) {
 			. "'1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories', "
 			. "'{\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_field_1\":\"name\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_field_2\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_field_3\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_id\":\"category_id\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_clang_id\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_restriction_field\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_restriction_operator\":\"=\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_restriction_value\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_url_param_key\":\"courses_category_id\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_seo_title\":\"name\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_seo_description\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_seo_image\":\"picture\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_sitemap_add\":\"1\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_sitemap_frequency\":\"weekly\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_sitemap_priority\":\"0.7\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_sitemap_lastmod\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_path_names\":\"\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_path_categories\":\"0\",\"1_xxx_". rex::getTablePrefix() ."d2u_courses_url_categories_relation_field\":\"\"}', "
 			. "'', '[]', 'before', UNIX_TIMESTAMP(), '". rex::getUser()->getValue('login') ."', UNIX_TIMESTAMP(), '". rex::getUser()->getValue('login') ."');");
+		\d2u_addon_backend_helper::generateUrlCache();
 	}
-
-	\d2u_addon_backend_helper::generateUrlCache();
 }
 
 // Update modules
