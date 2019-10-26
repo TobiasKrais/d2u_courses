@@ -235,7 +235,7 @@ else if($course === FALSE) {
 }
 
 // Course list
-if(rex_config::get('d2u_courses', 'forward_single_course', 'inactive') =="active" && count($courses) == 1 && filter_input(INPUT_POST, 'course_search') == "") {
+if(rex_config::get('d2u_courses', 'forward_single_course', 'inactive') == "active" && count($courses) == 1 && filter_input(INPUT_POST, 'course_search') == "") {
 	foreach($courses as $course) {
 		header('Location: '. $course->getURL());
 		exit;
@@ -343,7 +343,7 @@ else if(count($courses) > 0) {
 		if(rex_plugin::get('d2u_courses', 'locations')->isAvailable() && $list_course->location !== FALSE) {
 			print $list_course->location->location_category->name;
 		}
-		if($list_course->registration_possible == "yes") {
+		if($list_course->registration_possible == "yes" || $list_course->registration_possible == "yes_number") {
 			print ' <div class="open"></div>';
 		}
 		else if($list_course->registration_possible == "booked") {
@@ -377,10 +377,10 @@ if($course !== FALSE) {
 	if($course->course_number != "") {
 		print ' ('. $course->course_number .')';
 	}
-	if($course->registration_possible == "yes") {
+	if($course->registration_possible == "yes" || $course->registration_possible == "yes_number") {
 		print ' <div class="open"></div>';
 	}
-	else if($course->anmeldung_moeglich == "ausgebucht") {
+	else if($list_course->registration_possible == "booked") {
 		print ' <div class="closed"></div>';
 	}
 	print '</h1>'. $course->details_age;
@@ -523,7 +523,7 @@ if($course !== FALSE) {
 		$box_details .= '</div>';
 	}
 
-	if($course->registration_possible == "yes" || $course->registration_possible == "booked") {
+	if($course->registration_possible == "yes" || $course->registration_possible == "yes_number" || $course->registration_possible == "booked") {
 		$box_details .= '<div class="col-12 course_row">';
 		$box_details .= '<div class="course_box spacer_box add_cart">';
 		if(D2U_Courses\Cart::getCart()->hasCourse($course->course_id)) {

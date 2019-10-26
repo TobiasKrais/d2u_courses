@@ -127,7 +127,8 @@ class Course {
 	var $participants_wait_list = 0;
 	
 	/**
-	 * @var string Is online registration possible "yes", "no" oder "booked".
+	 * @var string Is online registration possible "yes", "yes_number" (= ask
+	 * only for number participants) "no" oder "booked".
 	 */
 	var $registration_possible = "";
 	

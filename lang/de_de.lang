@@ -41,7 +41,8 @@ d2u_courses_registration_possible = Anmeldung möglich?
 d2u_courses_teaser = Kurzbeschreibung
 d2u_courses_time = Uhrzeit
 d2u_courses_url_external = Externe URL
-d2u_courses_yes = Ja
+d2u_courses_yes = Ja, für jeden Teilnehmer Name, Geburtsdatum und Geschlecht erfragen
+d2u_courses_yes_number = Ja, nur Anzahl Teilnehmer erfragen
 
 d2u_courses_settings_article_conditions = Redaxo Artikel AGBs
 d2u_courses_settings_article_courses = Redaxo Artikel Kurse

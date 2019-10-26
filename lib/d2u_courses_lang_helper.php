@@ -55,6 +55,7 @@ class d2u_courses_lang_helper extends \D2U_Helper\ALangHelper {
 		'd2u_courses_max' => 'maximum',
 		'd2u_courses_min' => 'minimum',
 		'd2u_courses_multinewsletter' => 'Please inform me by e-mail newsletter about our new program. You will receive 2 to 4 newsletters per year. You can revoke your registration at any time under the unsubscribe link provided in the newsletter.',
+		'd2u_courses_participant_number' => 'Anzahl Anmeldungen',
 		'd2u_courses_oclock' => "o'clock",
 		'd2u_courses_order_overview' => 'Order overview',
 		'd2u_courses_participants' => 'Participants',

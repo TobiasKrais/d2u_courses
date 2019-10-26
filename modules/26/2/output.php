@@ -5,8 +5,14 @@ $cart = D2U_Courses\Cart::getCart();
 if(filter_input(INPUT_GET, 'delete', FILTER_VALIDATE_INT, ['options' => ['default'=> 0]]) > 0) {
 	$delete_course_id = filter_input(INPUT_GET, 'delete', FILTER_VALIDATE_INT);
 	$delete_participant_id = filter_input(INPUT_GET, 'participant', FILTER_VALIDATE_INT);
-	// Delete participant
-	$cart->deleteParticipant($delete_course_id, $delete_participant_id);
+	if(is_null($delete_participant_id)) {
+		// Delete course
+		$cart->deleteCourse($delete_course_id);
+	}
+	else {
+		// Delete participant
+		$cart->deleteParticipant($delete_course_id, $delete_participant_id);
+	}
 }
 
 // Add course
@@ -26,6 +32,7 @@ if(isset($form_data['participant_add'])) {
 // Add participant data
 foreach($cart->getCourseIDs() as $course_id) {
 	if(isset($form_data['participant_'. $course_id])) {
+		// courses with person details
 		foreach($form_data['participant_'. $course_id] as $participant_id => $patricipant_data) {
 			$participant_data = [
 				"firstname" => trim(filter_var($patricipant_data["firstname"])),
@@ -35,6 +42,10 @@ foreach($cart->getCourseIDs() as $course_id) {
 			];
 			$cart->updateParticipant($course_id, $participant_id, $participant_data);
 		}
+	}
+	if(isset($form_data['participant_number_'. $course_id])) {
+		// courses with person number only
+		$cart->updateParticipantNumber($course_id, $form_data['participant_number_'. $course_id]);		
 	}
 }
 
@@ -339,14 +350,22 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 				print ' ('. $tag_open .'d2u_courses_discount'. $tag_close .': '. number_format($course->price_discount, 2, ",", ".") .' €)' .'<br>';
 			}
 		}
-		print '<ul>';
-		foreach($cart->getCourseParticipants($course_id) as $id => $participant) {
-			print '<li>'. $participant['firstname'] .' '. $participant['lastname'] .' ('. $tag_open .'d2u_courses_birthdate'. $tag_close .': '. D2U_Courses\Cart::formatCourseDate($participant['birthday']) .', '. ($participant["gender"] == "M" ? $tag_open .'d2u_courses_male'. $tag_close : $tag_open .'d2u_courses_female'. $tag_close) .')</li>';
-			if($cart::calculateAge($participant['birthday']) < 18) {
-				$has_minor_participants = TRUE;
+		if($course->registration_possible == "yes") {
+			// registration with person details
+			print '<ul>';
+			foreach($cart->getCourseParticipants($course_id) as $id => $participant) {
+				print '<li>'. $participant['firstname'] .' '. $participant['lastname'] .' ('. $tag_open .'d2u_courses_birthdate'. $tag_close .': '. D2U_Courses\Cart::formatCourseDate($participant['birthday']) .', '. ($participant["gender"] == "M" ? $tag_open .'d2u_courses_male'. $tag_close : $tag_open .'d2u_courses_female'. $tag_close) .')</li>';
+				if($cart::calculateAge($participant['birthday']) < 18) {
+					$has_minor_participants = TRUE;
+				}
 			}
+			print '</ul>';
 		}
-		print '</ul>';
+		else if($course->registration_possible == "yes_number") {
+			print '<ul>';
+			print '<li>'. $tag_open .'d2u_courses_participant_number'. $tag_close .': '. $cart->getCourseParticipants($course_id) .'</li>';
+			print '</ul>';
+		}
 		print '</div>';
 		print '</div>';
 		print '</div>';
@@ -453,46 +472,69 @@ else {
 					print ' ('. $tag_open .'d2u_courses_discount'. $tag_close .': '. number_format($course->price_discount, 2, ",", ".") .' €)' .'<br>';
 				}
 			}
-			print '<br><table>';
-			print '<tr>';
-			print '<td style="width: 25%">'. $tag_open .'d2u_courses_firstname'. $tag_close .'</td>'
-				. '<td style="width: 25%">'. $tag_open .'d2u_courses_lastname'. $tag_close .'</td>'
-				. '<td style="width: 25%">'. $tag_open .'d2u_courses_birthdate'. $tag_close .'</td>'
-				. '<td style="width: 20%">'. $tag_open .'d2u_courses_gender'. $tag_close .'</td>'
-				. '<td style="width: 5%">&nbsp;</td>';
-			print '</tr>';
-			foreach($cart->getCourseParticipants($course_id) as $participant_id => $participant_data) {
+			
+			if($course->registration_possible == "yes") {
+				// registration with person details
+				print '<br><table class="participants">';
 				print '<tr>';
-				$input_style = ' style="border-right: 10px solid '. ($course->category !== FALSE ? $course->category->color : 'grey') .'"';
-				print '<td><div class="div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][firstname]" value="'. $participant_data['firstname'] .'" required maxlength="20"></div></td>';
-				print '<td><div class="div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][lastname]" value="'. $participant_data['lastname'] .'" required maxlength="20"></div></td>';
-				print '<td><div class="div_cart"><input type="date" class="date" name="participant_'. $course_id .'['. $participant_id .'][birthday]" value="'. $participant_data['birthday'] .'" required placeholder="'. $tag_open .'d2u_courses_date_placeholder'. $tag_close .'" min="1900-01-01" max="'. (date("Y") - 5) .'-01-01"></div></td>';
-				print '<td><div class="div_cart"><select class="participant" name="participant_'. $course_id .'['. $participant_id .'][gender]">';
-				if($participant_data["gender"] == "M") {
-					print '<option value="M" selected>'. $tag_open .'d2u_courses_male'. $tag_close .'</option>';
-					print '<option value="W">'. $tag_open .'d2u_courses_female'. $tag_close .'</option>';
-				}
-				else {
-					print '<option value="M">'. $tag_open .'d2u_courses_male'. $tag_close .'</option>';
-					print '<option value="W" selected>'. $tag_open .'d2u_courses_female'. $tag_close .'</option>';
-				}
-				print '</select></div></td>';
-				print '<td align="right"><div class="div_cart">';
-				$ask_delete = "";
-				if(count($cart->getCourseParticipants($course_id)) == 1) {
-					$ask_delete = ' onclick="return window.confirm(\''. $tag_open .'d2u_courses_cart_delete_course'. $tag_close .'\');"';
-				}
-				print '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'?delete='. $course_id .'&participant='. $participant_id .'" '. $ask_delete .'>';
-				print '<img src="'. rex_addon::get("d2u_courses")->getAssetsUrl("delete.png") .'" alt="'. $tag_open .'d2u_courses_cart_delete'. $tag_close .'" class="delete_participant"></a>';
-				print '</div></td>';
+				print '<td style="width: 25%">'. $tag_open .'d2u_courses_firstname'. $tag_close .'</td>'
+					. '<td style="width: 25%">'. $tag_open .'d2u_courses_lastname'. $tag_close .'</td>'
+					. '<td style="width: 25%">'. $tag_open .'d2u_courses_birthdate'. $tag_close .'</td>'
+					. '<td style="width: 20%">'. $tag_open .'d2u_courses_gender'. $tag_close .'</td>'
+					. '<td style="width: 5%">&nbsp;</td>';
 				print '</tr>';
+				foreach($cart->getCourseParticipants($course_id) as $participant_id => $participant_data) {
+					print '<tr>';
+					$input_style = ' style="border-right: 10px solid '. ($course->category !== FALSE ? $course->category->color : 'grey') .'"';
+					print '<td><div class="div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][firstname]" value="'. $participant_data['firstname'] .'" required maxlength="20"></div></td>';
+					print '<td><div class="div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][lastname]" value="'. $participant_data['lastname'] .'" required maxlength="20"></div></td>';
+					print '<td><div class="div_cart"><input type="date" class="date" name="participant_'. $course_id .'['. $participant_id .'][birthday]" value="'. $participant_data['birthday'] .'" required placeholder="'. $tag_open .'d2u_courses_date_placeholder'. $tag_close .'" min="1900-01-01" max="'. (date("Y") - 5) .'-01-01"></div></td>';
+					print '<td><div class="div_cart"><select class="participant" name="participant_'. $course_id .'['. $participant_id .'][gender]">';
+					if($participant_data["gender"] == "M") {
+						print '<option value="M" selected>'. $tag_open .'d2u_courses_male'. $tag_close .'</option>';
+						print '<option value="W">'. $tag_open .'d2u_courses_female'. $tag_close .'</option>';
+					}
+					else {
+						print '<option value="M">'. $tag_open .'d2u_courses_male'. $tag_close .'</option>';
+						print '<option value="W" selected>'. $tag_open .'d2u_courses_female'. $tag_close .'</option>';
+					}
+					print '</select></div></td>';
+					print '<td align="right"><div class="div_cart">';
+					$ask_delete = "";
+					if(count($cart->getCourseParticipants($course_id)) == 1) {
+						$ask_delete = ' onclick="return window.confirm(\''. $tag_open .'d2u_courses_cart_delete_course'. $tag_close .'\');"';
+					}
+					print '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'?delete='. $course_id .'&participant='. $participant_id .'" '. $ask_delete .'>';
+					print '<img src="'. rex_addon::get("d2u_courses")->getAssetsUrl("delete.png") .'" alt="'. $tag_open .'d2u_courses_cart_delete'. $tag_close .'" class="delete_participant"></a>';
+					print '</div></td>';
+					print '</tr>';
+				}
+				print '<tr>';
+				print '<td>';
+				print '<input type="submit" class="add_participant" name="participant_add['. $course_id .']" value="['. $tag_open .'d2u_courses_cart_add_participant'. $tag_close .']">';
+				print '</td>';
+				print '</tr>';
+				print '</table>';
 			}
-			print '<tr>';
-			print '<td>';
-			print '<input type="submit" class="add_participant" name="participant_add['. $course_id .']" value="['. $tag_open .'d2u_courses_cart_add_participant'. $tag_close .']">';
-			print '</td>';
-			print '</tr>';
-			print '</table>';
+			else if($course->registration_possible == "yes_number") {
+				// registration without person details
+				$number_participants = is_array($cart->getCourseParticipants($course_id)) ? 1 : $cart->getCourseParticipants($course_id);
+				print '<br><table class="participants">';
+				print '<tr>';
+				print '<td style="width: 25%">'. $tag_open .'d2u_courses_participant_number'. $tag_close .'</td>'
+					. '<td style="width: 25%"><div class="div_cart"><input type="number" class="text_cart" name="participant_number_'. $course_id .'" value="'. $number_participants .'" min="1" max="50"></div></td>'
+					. '<td style="width: 45%"></td>'
+					. '<td style="width: 5%"><div class="div_cart">';
+					$ask_delete = "";
+					if(count($cart->getCourseParticipants($course_id)) == 1) {
+						$ask_delete = ' onclick="return window.confirm(\''. $tag_open .'d2u_courses_cart_delete_course'. $tag_close .'\');"';
+					}
+					print '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'?delete='. $course_id .'" '. $ask_delete .'>';
+					print '<img src="'. rex_addon::get("d2u_courses")->getAssetsUrl("delete.png") .'" alt="'. $tag_open .'d2u_courses_cart_delete'. $tag_close .'" class="delete_participant"></a>';
+					print '</div></td>';
+				print '</tr>';
+				print '</table>';
+			}
 			print '</div>';
 			print '</div>';
 			print '</div>';

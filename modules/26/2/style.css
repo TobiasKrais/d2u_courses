@@ -55,7 +55,11 @@
 	padding: 0 0 5px 0;
 }
 .delete_participant {
+	float: right;
 	margin: 5px 5px 7px;
+}
+.participants {
+	width: 100%;
 }
 
 .registration_header {
