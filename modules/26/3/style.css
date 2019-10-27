@@ -1,0 +1,156 @@
+.spacer {
+	padding-bottom: 2em;
+}
+.view {
+	overflow: hidden;
+    position: relative;
+}
+.view img {
+	height: auto;
+	width: 100%;
+}
+.view:hover img {
+	height: auto;
+	-webkit-transition: all 0.2s ease-out;
+	opacity: 0.7;
+    transition: all 0.2s ease-out;
+	width: 100%;
+}
+.category_box {
+	 height: 100%;
+}
+.category_box a:hover {
+	text-decoration: none;
+}
+
+
+
+@media screen and (min-width: 992px) {
+	.box_title {
+		font-size: 1.4em;
+	}
+}
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+	.box_title {
+		font-size: 1.1em;
+	}
+}
+@media screen and (max-width: 991px) {
+	.box_title {
+		font-size: 0.8em;
+	}
+}
+
+.box_title {
+	color: white;
+	font-weight: bold;
+	padding: 10px 15px;
+	word-wrap: break-word;
+}
+.page_title {
+	color: white;
+	font-size: 1.8em;
+	font-weight: bold;
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+.page_title_bg {
+    background-color: #fdb813;
+    padding: 1px 10px 10px 10px;
+}
+
+.spacer_box {
+	padding-bottom: 5px;
+}
+.course_box {
+	background-color: #f4f4f4;
+	padding: 5px;
+}
+a .course_box {
+	color: #4f4c4c;
+}
+.course_row {
+	margin-bottom: 5px;
+}
+.course_row_title {
+	color: white;
+	padding: 5px;
+}
+a.course_row_a:hover {
+	color: white;
+	border-bottom: 1px solid white;
+	text-decoration: underline;
+}
+.course_row_title h1 {
+	color: white;
+	font-size: 1.3em;
+	font-weight: bold;
+	margin-top: auto;
+	margin-bottom: 1rem;
+}
+.course_row_title select {
+	background: none;
+    border: 1px solid white;
+}
+.course_picture img {
+	width: 100%;
+}
+
+.open, .closed {
+    border-radius: 10px;
+	float: right;
+    height: 16px;
+	margin-right: 10px;
+    width: 16px;
+}
+.open {
+	background-color: #41b23b;
+}
+.closed {
+	background-color: #ed1c24;
+}
+
+.add_cart {
+	background-color: #a49f9f;
+	border: 0px;
+	color: white;
+	font-weight: bold;
+	cursor: pointer;
+	text-align: left;
+	width: 100%;
+}
+.add_cart a {
+	color: white !important;
+}
+
+.search_div {
+	float: right;
+	width: 100%;
+}
+.search_box {
+	border: 1px solid #a49f9f;
+	border-right: transparent;
+	height: 2em;
+	width: 90%;
+}
+.search_button {
+	border: 1px solid #a49f9f;
+	border-left: transparent;
+	height: 2em;
+	width: 10%;
+}
+.search_button {
+	min-width: 11px;
+}
+.search_title {
+	background-color: #a49f9f;
+	padding: 0.5em;
+}
+.search_title h1 {
+	color: white;
+	font-size: 1.75em;
+}
+
+.registration_header h1 {
+	background: transparent;
+}

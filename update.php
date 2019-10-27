@@ -141,12 +141,15 @@ if(\rex_addon::get('url')->isAvailable()) {
 // Update modules
 if(class_exists('D2UModuleManager')) {
 	$modules = [];
-		$modules[] = new D2UModule("26-1",
-			"D2U Veranstaltungen - Ausgabe Veranstaltungen",
-			6);
-		$modules[] = new D2UModule("26-2",
-			"D2U Veranstaltungen - Warenkorb",
-			4);
+	$modules[] = new D2UModule("26-1",
+		"D2U Veranstaltungen - Ausgabe Veranstaltungen",
+		6);
+	$modules[] = new D2UModule("26-2",
+		"D2U Veranstaltungen - Warenkorb",
+		4);
+	$modules[] = new D2UModule("26-3",
+		"D2U Veranstaltungen - Ausgabe Veranstaltungen einer Kategorie in Boxen",
+		1);
 	$d2u_module_manager = new D2UModuleManager($modules);
 	$d2u_module_manager->autoupdate();
 }
