@@ -229,8 +229,9 @@ else if($old_tables_available) {
 	<li>Für jeden Kurs Option hinzugefügt, dass im Warenkorb nur nach Anzahl Teilnehmer gefragt wird, anstatt Teilnehmerdetails.</li>
 	<li>Weitere Anpassungen an URL Addon Version 2.x.</li>
 	<li>Bugfix: das Löschen eines Bildes im Medienpool wurde unter Umständen mit der Begründung verhindet, dass das Bild in Benutzung sei, obwohl das nicht der Fall war.</li>
+	<li>Modul 26-1 "D2U Veranstaltungen - Ausgabe Veranstaltungen" mit neuer Option: Kursliste als Kacheln darstellen.</li>
+	<li>Modul 26-1 "D2U Veranstaltungen - Ausgabe Veranstaltungen" fehlten in der Kursdetailansicht zwei div's.</li>
 	<li>Modul 26-3 "D2U Veranstaltungen - Ausgabe Veranstaltungen einer Kategorie in Boxen" hinzugefügt.</li>
-	<li>Modul 26-1 fehlten in der Kursdetailansicht zwei div's.</li>
 </ul>
 <p>3.0.5:</p>
 <ul>

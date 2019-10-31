@@ -41,6 +41,17 @@
 <div class="row">
 	<div class="col-xs-12">&nbsp;</div>
 </div>
+<div class="row">
+	<div class="col-xs-4">
+		<input type="checkbox" name="REX_INPUT_VALUE[4]" value="true" <?php echo "REX_VALUE[4]" == 'true' ? ' checked="checked"' : ''; ?> style="float: right;" />
+	</div>
+	<div class="col-xs-8">
+		Veranstaltungen in einer Kategorie nicht als Liste, sondern als Kacheln darstellen<br />
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">&nbsp;</div>
+</div>
 <?php
 if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
 ?>
@@ -67,4 +78,4 @@ if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
 	<div class="col-xs-12">
 		<p>Kurse, Kategorien, Einstellung, usw. werden im <a href="index.php?page=d2u_courses">D2U Kurse Addon</a> verwaltet.</p>
 	</div>
-</div>	
+</div>

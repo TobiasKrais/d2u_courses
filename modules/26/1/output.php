@@ -289,72 +289,81 @@ else if(count($courses) > 0) {
 			print '</div>';
 		}
 	}
+	
+	$course_list_box_style = "REX_VALUE[4]" == 'true' ? TRUE : FALSE;
 	foreach($courses as $list_course) {
-		print '<div class="col-12">';
-		$title = $list_course->name;
-		if($list_course->registration_possible == "booked") {
-			$title .= ' - '. $tag_open .'d2u_courses_booked_complete'. $tag_close;
-		}
-
-		print '<a href="'. $list_course->getURL(TRUE) .'" title="'. $title .'" class="course_row_a">';
-		print '<div class="row course_row" data-match-height>';
-		
-		print '<div class="col-12 col-md-6 spacer_box">';
-		print '<div class="course_row_title" style="background-color: '. $list_course->category->color .'" data-height-watch>';
-		print $list_course->name .'<br />';
-		if($list_course->date_start != "") {
-			print formatCourseDate($list_course->date_start);
-		}
-		if($list_course->date_end != "") {
-			print ' - '. formatCourseDate($list_course->date_end);
-		}
-		print '</div>';
-		print '</div>';
-
-		print '<div class="col-8 col-md-4">';
-		print '<div class="course_box spacer_box" data-height-watch>';
-		if($category !== FALSE && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-			// Show target groups if category name is in headline ...
-			$counter_target_groups = 0;
-			foreach($list_course->target_group_ids as $target_group_id) {
-				$course_target_group = new D2U_Courses\TargetGroup($target_group_id);
-				if($counter_target_groups > 0) {
-					print '<br>';
-				}
-				print $course_target_group->name;
-				$counter_target_groups++;
-			}
-		}
-		else if($category === FALSE) {
-			// ... otherwise show category name
-			if($list_course->category->parent_category !== FALSE) {
-				print $list_course->category->parent_category->name .': ';
-			}
-			print $list_course->category->name;
+		if($course_list_box_style) {
+			$title = $list_course->name ."<br><small>"
+				. formatCourseDate($list_course->date_start) ."</small>";
+			printBox($title, $list_course->picture, $list_course->category->color, $list_course->getURL(TRUE));
 		}
 		else {
-			print $list_course->teaser;
-		}
-		print '</div>';
-		print '</div>';
-		
-		print '<div class="col-4 col-md-2 course_row">';
-		print '<div class="course_box spacer_box" data-height-watch>';
-		if(rex_plugin::get('d2u_courses', 'locations')->isAvailable() && $list_course->location !== FALSE) {
-			print $list_course->location->location_category->name;
-		}
-		if($list_course->registration_possible == "yes" || $list_course->registration_possible == "yes_number") {
-			print ' <div class="open"></div>';
-		}
-		else if($list_course->registration_possible == "booked") {
-			print ' <div class="closed"></div>';
-		}
-		print '</div>';
-		print '</div>';
+			print '<div class="col-12">';
+			$title = $list_course->name;
+			if($list_course->registration_possible == "booked") {
+				$title .= ' - '. $tag_open .'d2u_courses_booked_complete'. $tag_close;
+			}
 
-		print '</div>';
-		print '</a>';
-		print '</div>';
+			print '<a href="'. $list_course->getURL(TRUE) .'" title="'. $title .'" class="course_row_a">';
+			print '<div class="row course_row" data-match-height>';
+
+			print '<div class="col-12 col-md-6 spacer_box">';
+			print '<div class="course_row_title" style="background-color: '. $list_course->category->color .'" data-height-watch>';
+			print $list_course->name .'<br />';
+			if($list_course->date_start != "") {
+				print formatCourseDate($list_course->date_start);
+			}
+			if($list_course->date_end != "") {
+				print ' - '. formatCourseDate($list_course->date_end);
+			}
+			print '</div>';
+			print '</div>';
+
+			print '<div class="col-8 col-md-4">';
+			print '<div class="course_box spacer_box" data-height-watch>';
+			if($category !== FALSE && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
+				// Show target groups if category name is in headline ...
+				$counter_target_groups = 0;
+				foreach($list_course->target_group_ids as $target_group_id) {
+					$course_target_group = new D2U_Courses\TargetGroup($target_group_id);
+					if($counter_target_groups > 0) {
+						print '<br>';
+					}
+					print $course_target_group->name;
+					$counter_target_groups++;
+				}
+			}
+			else if($category === FALSE) {
+				// ... otherwise show category name
+				if($list_course->category->parent_category !== FALSE) {
+					print $list_course->category->parent_category->name .': ';
+				}
+				print $list_course->category->name;
+			}
+			else {
+				print $list_course->teaser;
+			}
+			print '</div>';
+			print '</div>';
+
+			print '<div class="col-4 col-md-2 course_row">';
+			print '<div class="course_box spacer_box" data-height-watch>';
+			if(rex_plugin::get('d2u_courses', 'locations')->isAvailable() && $list_course->location !== FALSE) {
+				print $list_course->location->location_category->name;
+			}
+			if($list_course->registration_possible == "yes" || $list_course->registration_possible == "yes_number") {
+				print ' <div class="open"></div>';
+			}
+			else if($list_course->registration_possible == "booked") {
+				print ' <div class="closed"></div>';
+			}
+			print '</div>';
+			print '</div>';
+
+			print '</div>';
+			print '</a>';
+			print '</div>';
+		}
 	}
 }
 else if(filter_input(INPUT_POST, 'course_search') != "") {
