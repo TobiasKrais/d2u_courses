@@ -32,14 +32,14 @@ class Cart {
 	 */
 	public function addCourse($course_id) {
 		$course = new Course($course_id);
-		if($course->registration_possible == "yes") {
+		if($course->registration_possible == "yes_number") {
+			// registration with participant number only
+			$_SESSION['cart'][$course_id] = 1;
+		}
+		else {
 			// registration with person details
 			$_SESSION['cart'][$course_id] = [];
 			$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "", "gender" => ""];
-		}
-		else if($course->registration_possible == "yes_number") {
-			// registration with participant number only
-			$_SESSION['cart'][$course_id] = 1;
 		}
 	}
 
