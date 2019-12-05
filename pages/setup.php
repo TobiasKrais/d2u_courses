@@ -224,12 +224,12 @@ else if($old_tables_available) {
 <p>Fehlermeldungen bitte im Git Projekt unter
 	<a href="https://github.com/TobiasKrais/d2u_courses/issues" target="_blank">https://github.com/TobiasKrais/d2u_courses/issues</a> melden.</p>
 <h2>Changelog</h2>
-<p>3.0.6-DEV:</p>
+<p>3.0.6:</p>
 <ul>
 	<li>Backend: Einstellungen und Setup Tabs rechts eingeordnet um sie vom Inhalt besser zu unterscheiden.</li>
 	<li>Für jeden Kurs Option hinzugefügt, dass im Warenkorb nur nach Anzahl Teilnehmer gefragt wird, anstatt Teilnehmerdetails.</li>
 	<li>Weitere Anpassungen an URL Addon Version 2.x.</li>
-	<li>Bugfix: das Löschen eines Bildes im Medienpool wurde unter Umständen mit der Begründung verhindet, dass das Bild in Benutzung sei, obwohl das nicht der Fall war.</li>
+	<li>Bugfix: das Löschen eines Bildes im Medienpool wurde unter Umständen mit der Begründung verhindert, dass das Bild in Benutzung sei, obwohl das nicht der Fall war.</li>
 	<li>Modul 26-1 "D2U Veranstaltungen - Ausgabe Veranstaltungen" mit neuer Option: Kursliste als Kacheln darstellen.</li>
 	<li>Modul 26-1 "D2U Veranstaltungen - Ausgabe Veranstaltungen" fehlten in der Kursdetailansicht zwei div's.</li>
 	<li>Modul 26-3 "D2U Veranstaltungen - Ausgabe Veranstaltungen einer Kategorie in Boxen" hinzugefügt.</li>
