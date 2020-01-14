@@ -143,7 +143,7 @@ if(class_exists('D2UModuleManager')) {
 	$modules = [];
 	$modules[] = new D2UModule("26-1",
 		"D2U Veranstaltungen - Ausgabe Veranstaltungen",
-		6);
+		7);
 	$modules[] = new D2UModule("26-2",
 		"D2U Veranstaltungen - Warenkorb",
 		4);

@@ -226,7 +226,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.7-DEV:</p>
 <ul>
-	<li>...</li>
+	<li>Modul 26-1 "D2U Veranstaltungen - Ausgabe Veranstaltungen" gibt im Plugin target_groups nun auch die Beschreibung einer Kategorie aus.</li>
 </ul>
 <p>3.0.6:</p>
 <ul>

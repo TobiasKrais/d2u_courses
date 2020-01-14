@@ -258,6 +258,11 @@ else if(count($courses) > 0) {
 		print $target_group->name;
 		print '</h1>';
 		print '</div></div>';
+		if(trim($target_group->description) != "") {
+			print '<div class="col-12 course_row spacer">';
+			print '<div class="course_box spacer_box">'. $target_group->description .'</div>';
+			print '</div>';
+		}
 	}
 	else if($schedule_category !== FALSE) {
 		print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2') .' !important">';

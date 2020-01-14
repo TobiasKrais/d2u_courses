@@ -22,6 +22,11 @@ class TargetGroup {
 	var $name = "";
 	
 	/**
+	 * @var string Description
+	 */
+	var $description = "";
+	
+	/**
 	 * @var string Picture
 	 */
 	var $picture = "";
@@ -153,6 +158,7 @@ class TargetGroup {
 		$target_child->target_group_id = $category_id;
 		$category = new Category($category_id);
 		$target_child->name = $category->name;
+		$target_child->description = $category->description;
 		$target_child->picture = $category->picture;
 		$target_child->updatedate = $category->updatedate;
 		return $target_child;
