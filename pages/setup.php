@@ -227,6 +227,7 @@ else if($old_tables_available) {
 <p>3.0.7-DEV:</p>
 <ul>
 	<li>Modul 26-1 "D2U Veranstaltungen - Ausgabe Veranstaltungen" gibt im Plugin target_groups nun auch die Beschreibung einer Kategorie aus.</li>
+	<li>Backend: Beim online stellen einer Veranstaltung in der Veranstaltungsliste gab es beim Aufruf im Frontend einen Fatal Error, da der URL cache nicht neu generiert wurde.</li>
 </ul>
 <p>3.0.6:</p>
 <ul>
