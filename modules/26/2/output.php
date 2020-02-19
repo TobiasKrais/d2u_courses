@@ -380,12 +380,18 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 	}
 
 	print '<p>&nbsp;</p>';
-	if(rex_config::get('d2u_courses', 'article_id_conditions', 0) > 0) {
+	if(rex_config::get('d2u_courses', 'article_id_conditions', 0) > 0 || rex_config::get('d2u_courses', 'article_id_terms_of_participation', 0) > 0) {
 		print '<p class="cart_checkbox">';
 		print '<input type="checkbox" class="cart_checkbox" name="invoice_form[conditions]" id="invoice_form-conditions" value="yes" required>';
-		print '<label class="cart_checkbox" for="invoice_form-conditions"><a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_conditions')) .'" target="blank">'. $tag_open .'d2u_courses_accept_conditions'. $tag_close .'</a>';
+		print '<label class="cart_checkbox" for="invoice_form-conditions">';
+		if(rex_config::get('d2u_courses', 'article_id_conditions', 0) > 0) {
+			print '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_conditions')) .'" target="blank">'. $tag_open .'d2u_courses_accept_conditions'. $tag_close .'</a>';
+		}
+		if(rex_config::get('d2u_courses', 'article_id_conditions', 0) > 0 && rex_config::get('d2u_courses', 'article_id_terms_of_participation', 0) > 0) {
+			print '<br>';
+		}
 		if(rex_config::get('d2u_courses', 'article_id_terms_of_participation', 0) > 0) {
-			print '<br><a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_terms_of_participation')) .'" target="blank">'. $tag_open .'d2u_courses_accept_terms_of_participation'. $tag_close .'</a>';
+			print '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_terms_of_participation')) .'" target="blank">'. $tag_open .'d2u_courses_accept_terms_of_participation'. $tag_close .'</a>';
 		}
 		print ' *</label></p>';
 	}

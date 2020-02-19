@@ -10,7 +10,7 @@ class d2u_courses_lang_helper extends \D2U_Helper\ALangHelper {
 	protected $replacements_english = [
 		'd2u_courses_accept_conditions' => 'I accept the conditions.',
 		'd2u_courses_accept_privacy_policy' => 'I have read the privacy policy and accept it.',
-		'd2u_courses_accept_terms_of_participation' => 'And I also accept the terms of participations.',
+		'd2u_courses_accept_terms_of_participation' => 'I accept the terms of participations.',
 		'd2u_courses_birthdate' => 'Date of birth',
 		'd2u_courses_booked' => 'booked',
 		'd2u_courses_booked_complete' => 'booked up',
@@ -87,7 +87,7 @@ class d2u_courses_lang_helper extends \D2U_Helper\ALangHelper {
 	protected $replacements_german = [
 		'd2u_courses_accept_conditions' => 'Hiermit stimme ich den AGBs zu.',
 		'd2u_courses_accept_privacy_policy' => 'Hiermit bestätige ich die Datenschutzbestimmungen gelesen zu haben und stimme ihr zu.',
-		'd2u_courses_accept_terms_of_participation' => 'Und stimme ich den Teilnahmebedingungen zu.',
+		'd2u_courses_accept_terms_of_participation' => 'Hiermit stimme ich den Teilnahmebedingungen zu.',
 		'd2u_courses_birthdate' => 'Geburtsdatum',
 		'd2u_courses_booked' => 'gebucht',
 		'd2u_courses_booked_complete' => 'ausgebucht',
