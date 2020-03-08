@@ -55,53 +55,59 @@ if(!function_exists('printBox')) {
 	}
 }
 
-// Course list
-if(rex_config::get('d2u_courses', 'forward_single_course', 'inactive') == "active" && count($courses) == 1 && filter_input(INPUT_POST, 'course_search') == "") {
-	foreach($courses as $course) {
-		header('Location: '. $course->getURL());
-		exit;
-	}
+if(rex::isBackend()) {
+	print "Ausgabe Veranstaltungen der Kategorie <b>". $category->name ."</b>";
 }
-else if(count($courses) > 0) {
-	if($category !== FALSE) {
-		if("REX_VALUE[2]" == 'true') {
-			print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. $category->color .' !important">';
-			print '<h1 class="page_title">';
-			if($category->parent_category !== FALSE) {
-				print $category->parent_category->name .": ";
-			}
-			print $category->name;
-			print '</h1>';
-			print '</div></div>';
-		}
-		if("REX_VALUE[3]" == 'true' && trim($category->description) != "") {
-			print '<div class="col-12 course_row spacer">';
-			print '<div class="course_box spacer_box">'. $category->description .'</div>';
-			print '</div>';
+else {
+	// Course list
+	if(rex_config::get('d2u_courses', 'forward_single_course', 'inactive') == "active" && count($courses) == 1 && filter_input(INPUT_POST, 'course_search') == "") {
+		foreach($courses as $course) {
+			header('Location: '. $course->getURL());
+			exit;
 		}
 	}
-	foreach($courses as $list_course) {
-		$title = $list_course->name ."<br><small>"
-			. ("REX_VALUE[3]" == 'true' && $list_course->teaser != "" ? $list_course->teaser ."<br>" : "")
-			. formatCourseDate($list_course->date_start) ."</small>";
-		printBox($title, $list_course->picture, $list_course->category->color, $list_course->getURL(TRUE));
-	}
-}
-?>
-<script>
-	$(window).on("load",
-		function(e) {
-			$("[data-match-height]").each(
-				function() {
-					var e=$(this),
-						t=$(this).find("[data-height-watch]"),
-						n=t.map(function() {
-							return $(this).innerHeight();
-						}).get(),
-						i=Math.max.apply(Math,n);
-					t.css("min-height", i+1);
+	else if(count($courses) > 0) {
+		if($category !== FALSE) {
+			if("REX_VALUE[2]" == 'true') {
+				print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. $category->color .' !important">';
+				print '<h1 class="page_title">';
+				if($category->parent_category !== FALSE) {
+					print $category->parent_category->name .": ";
 				}
-			);
+				print $category->name;
+				print '</h1>';
+				print '</div></div>';
+			}
+			if("REX_VALUE[3]" == 'true' && trim($category->description) != "") {
+				print '<div class="col-12 course_row spacer">';
+				print '<div class="course_box spacer_box">'. $category->description .'</div>';
+				print '</div>';
+			}
 		}
-	);
-</script>
+		foreach($courses as $list_course) {
+			$title = $list_course->name ."<br><small>"
+				. ("REX_VALUE[3]" == 'true' && $list_course->teaser != "" ? $list_course->teaser ."<br>" : "")
+				. formatCourseDate($list_course->date_start) ."</small>";
+			printBox($title, $list_course->picture, $list_course->category->color, $list_course->getURL(TRUE));
+		}
+	}
+	?>
+	<script>
+		$(window).on("load",
+			function(e) {
+				$("[data-match-height]").each(
+					function() {
+						var e=$(this),
+							t=$(this).find("[data-height-watch]"),
+							n=t.map(function() {
+								return $(this).innerHeight();
+							}).get(),
+							i=Math.max.apply(Math,n);
+						t.css("min-height", i+1);
+					}
+				);
+			}
+		);
+	</script>
+<?php
+}
