@@ -102,6 +102,9 @@ if ($func == 'edit' || $func == 'add') {
 					foreach(D2U_Courses\Category::getAllParents() as $parent) {
                         if($parent->category_id != $category->category_id) {
                             $options_parents[$parent->category_id] = $parent->name;
+							foreach($parent->getChildren() as $child) {
+	                            $options_parents[$child->category_id] = $parent->name ." → ". $child->name;
+							}
                         }
 					}
 					d2u_addon_backend_helper::form_select('d2u_courses_categories_parent_category', 'form[parent_category_id]', $options_parents, ($category->parent_category === FALSE ? [-1] : [$category->parent_category->category_id]), 1, FALSE, $readonly);
@@ -141,10 +144,12 @@ if ($func == 'edit' || $func == 'add') {
 }
 
 if ($func == '') {
-	$query = 'SELECT category.category_id, CONCAT_WS(" → ", parents.name, category.name) AS full_name, category.priority '
+	$query = 'SELECT category.category_id, CONCAT_WS(" → ", grand_parents.name, parents.name, category.name) AS full_name, category.priority '
 		. 'FROM '. rex::getTablePrefix() .'d2u_courses_categories AS category '
 		. 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_categories AS parents '
-			. 'ON category.parent_category_id = parents.category_id ';
+			. 'ON category.parent_category_id = parents.category_id '
+		. 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_categories AS grand_parents '
+			. 'ON parents.parent_category_id = grand_parents.category_id ';
 	if($this->getConfig('default_category_sort') == 'priority') {
 		$query .= 'ORDER BY priority ASC';
 	}

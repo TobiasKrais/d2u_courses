@@ -147,7 +147,7 @@ else {
 		$courses = D2U_Courses\Course::search(filter_input(INPUT_POST, 'course_search'));
 	}
 	// Deal with categories
-	else if($category !== FALSE) {
+	else if($category) {
 		if(count($category->getChildren(TRUE)) > 0) {
 			// Are child categories available?
 			print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. $category->color .' !important">';
@@ -169,7 +169,7 @@ else {
 		}
 	}
 	// Deal with location categories
-	else if(rex_plugin::get ('d2u_courses', 'locations')->isAvailable () && $location_category !== FALSE) {
+	else if(rex_plugin::get ('d2u_courses', 'locations')->isAvailable() && $location_category) {
 		print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'location_bg_color', '#41b23b') .' !important">';
 		print '<h1 class="page_title">'. $location_category->name .'</h1>';
 		print '</div></div>';
@@ -178,11 +178,11 @@ else {
 		}
 	}
 	// Deal with locations
-	else if(rex_plugin::get ('d2u_courses', 'locations')->isAvailable () && $location !== FALSE) {
+	else if(rex_plugin::get ('d2u_courses', 'locations')->isAvailable () && $location) {
 		$courses = $location->getCourses(TRUE);
 	}
 	// Deal with schedule categories
-	else if($schedule_category !== FALSE) {
+	else if($schedule_category) {
 		if(count($schedule_category->getChildren(TRUE)) > 0) {
 			print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2') .' !important">';
 			print '<h1 class="page_title">'. $schedule_category->name .'</h1>';
@@ -197,7 +197,7 @@ else {
 		}
 	}
 	// Deal with target groups
-	else if($target_group !== FALSE) {
+	else if($target_group) {
 		if(count($target_group->getChildren(TRUE)) > 0) {
 			print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a') .' !important">';
 			print '<h1 class="page_title">'. $target_group->name .'</h1>';

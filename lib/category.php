@@ -122,7 +122,8 @@ class Category {
 	}
 
 	/**
-	 * Is category online? It is online if there are online courses in it.
+	 * Is category online? It is online if there are online courses in it or one
+	 * of its children.
 	 * @return boolean TRUE, if online, FALSE if offline
 	 */
 	public function isOnline() {
@@ -135,7 +136,7 @@ class Category {
 		$result->setQuery($query);
 		$num_rows = $result->getRows();
 
-		if($num_rows > 0) {
+		if($num_rows > 0 || count($this->getChildren()) > 0) {
 			return TRUE;
 		}
 		else {
@@ -247,6 +248,8 @@ class Category {
 		$query = 'SELECT CONCAT_WS(" → ", parent.name, child.name) AS name, child.category_id FROM ' . \rex::getTablePrefix() . 'd2u_courses_categories AS child '
 			.'LEFT JOIN ' . \rex::getTablePrefix() . 'd2u_courses_categories AS parent '
 				.'ON child.parent_category_id = parent.category_id '
+			.'LEFT JOIN ' . \rex::getTablePrefix() . 'd2u_courses_categories AS grand_parent '
+				.'ON parent.parent_category_id = grand_parent.category_id '
 			.'WHERE (child.name, child.category_id) NOT IN '
 				.'(SELECT parent_not.name, parent_not.category_id FROM ' . \rex::getTablePrefix() . 'd2u_courses_categories AS child_not '
 					.'LEFT JOIN ' .\rex::getTablePrefix() . 'd2u_courses_categories AS parent_not '
@@ -273,7 +276,7 @@ class Category {
 	}
 
 	/**
-	 * Get all parent categories
+	 * Get all root parent categories
 	 * @param boolean $online_only If true only online categories are returned
 	 * @return Category[] Array with category objects.
 	 */
@@ -424,6 +427,7 @@ class Category {
 			if(\rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
 				\d2u_addon_backend_helper::generateUrlCache('target_group_child_id');		
 			}
+			\d2u_addon_backend_helper::update_searchit_url_index();
 		}
 		
 		return !$error;

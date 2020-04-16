@@ -29,6 +29,9 @@ class d2u_courses_frontend_helper {
 			if($course_id > 0) {
 				$course = new D2U_Courses\Course($course_id);
 				if($course->category->parent_category !== FALSE) {
+					if($course->category->parent_category->parent_category !== FALSE) {
+						$breadcrumbs[] = '<a href="' . $course->category->parent_category->parent_category->getUrl() . '">' . $course->category->parent_category->parent_category->name . '</a>';
+					}
 					$breadcrumbs[] = '<a href="' . $course->category->parent_category->getUrl() . '">' . $course->category->parent_category->name . '</a>';
 				}
 				$breadcrumbs[] = '<a href="' . $course->category->getUrl() . '">' . $course->category->name . '</a>';
@@ -42,6 +45,9 @@ class d2u_courses_frontend_helper {
 			if($category_id > 0) {
 				$category = new D2U_Courses\Category($category_id);
 				if($category->parent_category !== FALSE) {
+					if($category->parent_category->parent_category !== FALSE) {
+						$breadcrumbs[] = '<a href="' . $category->parent_category->parent_category->getUrl() . '">' . $category->parent_category->parent_category->name . '</a>';
+					}
 					$breadcrumbs[] = '<a href="' . $category->parent_category->getUrl() . '">' . $category->parent_category->name . '</a>';
 				}
 				$breadcrumbs[] = '<a href="' . $category->getUrl() . '">' . $category->name . '</a>';

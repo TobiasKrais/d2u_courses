@@ -159,9 +159,9 @@ if ($func == 'edit' || $func == 'clone' || $func == 'add') {
 						<?php
 							$options_categories = [];
 							foreach(D2U_Courses\Category::getAllNotParents() as $category) {
-								$options_categories[$category->category_id] = ($category->parent_category !== FALSE ? $category->parent_category->name ." → " : "" ). $category->name;
+								$options_categories[$category->category_id] = ($category->parent_category ? ($category->parent_category->parent_category ? $category->parent_category->parent_category->name ." → " : "" ). $category->parent_category->name ." → " : "" ). $category->name;
 							}
-							d2u_addon_backend_helper::form_select('d2u_courses_category_primary', 'form[category_id]', $options_categories, ($course->category === FALSE ? [] : [$course->category->category_id]), 1, FALSE, $readonly);
+							d2u_addon_backend_helper::form_select('d2u_courses_category_primary', 'form[category_id]', $options_categories, ($course->category ? [$course->category->category_id] : []), 1, FALSE, $readonly);
 							d2u_addon_backend_helper::form_select('d2u_courses_category_secondary', 'form[secondary_category_ids][]', $options_categories, $course->secondary_category_ids, 10, TRUE, $readonly);
 							// Schedule categories plugin
 							if(rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {

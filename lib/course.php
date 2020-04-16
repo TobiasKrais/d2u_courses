@@ -278,9 +278,9 @@ class Course {
 			$this->online_status = "online";			
 		}
 		
-		// Don't forget to regenerate URL cache to make online machine available
-		if(rex_addon::get("url")->isAvailable()) {
-			d2u_addon_backend_helper::generateUrlCache();
+		// Don't forget to regenerate URL cache to make online course available
+		if(\rex_addon::get("url")->isAvailable()) {
+			\d2u_addon_backend_helper::generateUrlCache();
 		}
 	}
 	
@@ -480,6 +480,7 @@ class Course {
 		}
 		if(!$result->hasError() && $pre_save_object->name != $this->name) {
 			\d2u_addon_backend_helper::generateUrlCache('course_id');
+			\d2u_addon_backend_helper::update_searchit_url_index();
 		}
 		
 		// Save secondary category IDs
