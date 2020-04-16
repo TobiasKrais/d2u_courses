@@ -279,9 +279,9 @@ class Course {
 		}
 		
 		// Don't forget to regenerate URL cache to make online course available
-		if(\rex_addon::get("url")->isAvailable()) {
-			\d2u_addon_backend_helper::generateUrlCache();
-		}
+		\d2u_addon_backend_helper::generateUrlCache();
+		// And regenerate search_it index
+		\d2u_addon_backend_helper::update_searchit_url_index();
 	}
 	
 	/**
@@ -313,6 +313,11 @@ class Course {
 						.'WHERE course_id = '. $this->course_id;
 				$result->setQuery($query);
 			}
+			
+			// Don't forget to regenerate URL cache
+			\d2u_addon_backend_helper::generateUrlCache('course_id');
+			// And regenerate search_it index
+			\d2u_addon_backend_helper::update_searchit_url_index();
 			
 			return $return;
 		}
