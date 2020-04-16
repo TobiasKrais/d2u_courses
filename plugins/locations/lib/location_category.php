@@ -75,8 +75,6 @@ class LocationCategory {
 			// Don't forget to regenerate URL cache
 			\d2u_addon_backend_helper::generateUrlCache('location_category_id');
 			\d2u_addon_backend_helper::generateUrlCache('location_id');
-			// And regenerate search_it index
-			\d2u_addon_backend_helper::update_searchit_url_index();
 			
 			return ($result->hasError() ? FALSE : TRUE);
 		}
@@ -245,7 +243,6 @@ class LocationCategory {
 		if(!$result->hasError() && $pre_save_object->name != $this->name) {
 			\d2u_addon_backend_helper::generateUrlCache('location_category_id');
 			\d2u_addon_backend_helper::generateUrlCache('location_id');
-			\d2u_addon_backend_helper::update_searchit_url_index();
 		}
 		
 		return !$result->hasError();

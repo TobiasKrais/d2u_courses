@@ -111,8 +111,6 @@ class TargetGroup {
 			// Don't forget to regenerate URL cache
 			\d2u_addon_backend_helper::generateUrlCache('target_group_id');
 			\d2u_addon_backend_helper::generateUrlCache('target_group_child_id');
-			// And regenerate search_it index
-			\d2u_addon_backend_helper::update_searchit_url_index();
 
 			return $return;
 		}
@@ -365,7 +363,6 @@ class TargetGroup {
 			if(!$result->hasError() && $pre_save_object->name != $this->name) {
 				\d2u_addon_backend_helper::generateUrlCache('target_group_id');
 				\d2u_addon_backend_helper::generateUrlCache('target_group_child_id');
-				\d2u_addon_backend_helper::update_searchit_url_index();
 			}
 		
 			return !$result->hasError();

@@ -107,4 +107,5 @@ if(\rex_addon::get('url')->isAvailable()) {
 			. "'{\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_schedule_categories_field_1\":\"name\",\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_schedule_categories_field_2\":\"\",\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_schedule_categories_field_3\":\"\",\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_schedule_categories_id\":\"schedule_category_id\",\"1_xxx_relation_". rex::getTablePrefix() ."d2u_courses_schedule_categories_clang_id\":\"\"}', "
 			. "'before', UNIX_TIMESTAMP(), '". rex::getUser()->getValue('login') ."', UNIX_TIMESTAMP(), '". rex::getUser()->getValue('login') ."');");
 	}
+	\d2u_addon_backend_helper::update_searchit_url_index();
 }
