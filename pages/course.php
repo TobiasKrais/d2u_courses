@@ -61,7 +61,6 @@ if (filter_input(INPUT_POST, "btn_save") == 1 || filter_input(INPUT_POST, "btn_a
 	// message output
 	$message = 'form_save_error';
 	if($course->save()) {
-		\d2u_addon_backend_helper::update_searchit_url_index();
 		$message = 'form_saved';
 	}
 	
@@ -84,7 +83,6 @@ else if(filter_input(INPUT_POST, "btn_delete") == 1 || $func == 'delete') {
 	$course = new D2U_Courses\Course($course_id);
 
 	if($course->delete()) {
-		\d2u_addon_backend_helper::update_searchit_url_index();
 		print rex_view::success(rex_i18n::msg('d2u_helper_deleted') . $message);
 	}
 	else {
@@ -98,8 +96,6 @@ else if($func == 'changestatus') {
 	$course = new D2U_Courses\Course($entry_id);
 	$course->changeStatus();
 
-	\d2u_addon_backend_helper::update_searchit_url_index();
-	
 	header("Location: ". rex_url::currentBackendPage());
 	exit;
 }

@@ -243,7 +243,6 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 			// END update views for url addon
 
 			\d2u_addon_backend_helper::generateUrlCache();
-			\d2u_addon_backend_helper::update_searchit_url_index();
 		}
 		
 		// Install / update language replacements

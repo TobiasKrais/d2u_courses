@@ -24,9 +24,6 @@ if (filter_input(INPUT_POST, "btn_save") == 1 || filter_input(INPUT_POST, "btn_a
 	// message output
 	$message = 'form_save_error';
 	if($location_category->save()) {
-		// And regenerate search_it index
-		\d2u_addon_backend_helper::update_searchit_url_index();
-		
 		$message = 'form_saved';
 	}
 	
@@ -53,9 +50,6 @@ else if(filter_input(INPUT_POST, "btn_delete") == 1 || $func == 'delete') {
 
 	if(count($uses_locations) == 0) {
 		$location_category->delete();
-
-		// And regenerate search_it index
-		\d2u_addon_backend_helper::update_searchit_url_index();
 
 		print rex_view::success(rex_i18n::msg('d2u_helper_deleted') . $message);
 	}
