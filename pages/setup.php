@@ -239,6 +239,7 @@ else if($old_tables_available) {
 	<li>Aktualisiert beim Speichern automatisch den search_it index.</li>
 	<li>Bugfix: beim Reinstallieren des Addons wurden die Einstellungen wie lange ein Kurs angezeigt werden soll überschrieben.</li>
 	<li>Elternkategorien können nun Großelternkategorien haben. Damit ist eine Kategorietiefe von 3 möglich.</li>
+	<li>Modul 26-1 "D2U Veranstaltungen - Ausgabe Veranstaltungen" leitet Offlinekurse auf die Fehlerseite weiter.</li>
 	<li>Modul 26-1 "D2U Veranstaltungen - Ausgabe Veranstaltungen" gibt im Plugin target_groups nun auch die Beschreibung einer Kategorie aus.</li>
 	<li>Modul 26-1 "D2U Veranstaltungen - Ausgabe Veranstaltungen" hatte unter bestimmten Umständen Backendseite ins Frontend weitergeleitet.</li>
 	<li>Modul 26-2 "D2U Veranstaltungen - Warenkorb" kann jetzt die Teilnahmebedingungen anzeigen ohne dass ein AGB Artikel festgelegt wurde.</li>

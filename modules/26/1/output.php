@@ -28,6 +28,10 @@ if(filter_input(INPUT_GET, 'course_id', FILTER_VALIDATE_INT, ['options' => ['def
 
 	if($course_id > 0) {
 		$course = new D2U_Courses\Course($course_id);
+		// Redirect if object is not online
+		if($course->online_status != "online") {
+			\rex_redirect(rex_article::getNotfoundArticleId(), rex_clang::getCurrentId());
+		}
 	}
 }
 // Categories
