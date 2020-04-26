@@ -155,16 +155,16 @@ class Category {
 	 * @return Category[] Array with category objects.
 	 */
 	static function getAll($online_only = FALSE, $parent_category_id = 0) {
-		$query = "SELECT category_id FROM ". \rex::getTablePrefix() ."d2u_courses_categories ";
+		$query = "SELECT category_id, priority FROM ". \rex::getTablePrefix() ."d2u_courses_categories AS categories ";
 		if($parent_category_id > 0) {
 			$query .= "WHERE parent_category_id = ". $parent_category_id ." ";
 		}
 		if($online_only) {
-			$query = "SELECT courses.category_id FROM ". \rex::getTablePrefix() ."d2u_courses_courses AS courses ";
+			$query = "SELECT courses.category_id, categories.priority FROM ". \rex::getTablePrefix() ."d2u_courses_courses AS courses "
+					."LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_categories AS categories "
+						."ON courses.category_id = categories.category_id ";
 			if($parent_category_id > 0) {
-				$query .= "LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_categories AS categories "
-						."ON courses.category_id = categories.category_id "
-					."WHERE parent_category_id = ". $parent_category_id ." "
+				$query .= "WHERE parent_category_id = ". $parent_category_id ." "
 						."AND online_status = 'online' ";
 			}
 			else {
@@ -174,7 +174,7 @@ class Category {
 					."GROUP BY category_id ";
 		}
 		if(\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority') {
-			$query .= 'ORDER BY priority';
+			$query .= 'ORDER BY categories.priority';
 		}
 		else {
 			$query .= 'ORDER BY name';
@@ -187,12 +187,6 @@ class Category {
 		$ids = [];
 		for($i = 0; $i < $num_rows; $i++) {
 			$category = new Category($result->getValue("category_id"));
-			if(!in_array($category->category_id, $ids)) {
-				$ids[] = $category->category_id;
-				$categories[] = $category;
-			}
-			$result->next();
-
 			// Add parent categories if no special parent category is selected - parent categores contain no courses
 			if($parent_category_id == 0 && $category->parent_category !== FALSE
 					&& $category->parent_category->category_id > 0 && !in_array($category->parent_category->category_id, $ids)) {
@@ -200,6 +194,12 @@ class Category {
 				$categories[] = $category;
 				$ids[] = $category->category_id;
 			}
+
+			if(!in_array($category->category_id, $ids)) {
+				$ids[] = $category->category_id;
+				$categories[] = $category;
+			}
+			$result->next();
 		}
 
 		return $categories;
