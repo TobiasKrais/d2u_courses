@@ -73,6 +73,35 @@ if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
 </div>
 <?php
 }
+if(rex_addon::get('d2u_news')->isAvailable()) {
+	$categories = \D2U_News\Category::getAll(rex_clang::getCurrentId(), TRUE);
+	if (count($categories) > 0) {
+?>
+		<div class="row">
+			<div class="col-xs-12 col-sm-4">Auf der Übersichtsseite News aus dem Newsadon anzeigen?</div>
+			<div class="col-xs-12 col-sm-8">
+				<div class="rex-select-style">
+				<?php
+					print '<select name="REX_INPUT_VALUE[5]" class="form-control">';
+					print '<option value="0">Keine News anzeigen</option>';
+					foreach ($categories as $category) {
+						echo '<option value="'. $category->category_id .'" ';
+						if ("REX_VALUE[5]" == $category->category_id) {
+							echo 'selected="selected" ';
+						}
+						echo '>'. $category->name .'</option>';
+					}
+					print '</select>';
+				?>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">&nbsp;</div>
+		</div>
+<?php
+	}
+}
 ?>
 <div class="row">
 	<div class="col-xs-12">

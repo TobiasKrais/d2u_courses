@@ -15,6 +15,13 @@ $target_group = FALSE;
 
 $startpage = "REX_VALUE[1]";
 
+$news_category_id = "REX_VALUE[5]";
+$news = [];
+if($news_category_id > 0) {
+	$new_category = new \D2U_News\Category($news_category_id, rex_clang::getCurrentId());
+	$news = $new_category->getNews(TRUE);
+}
+
 $sprog = rex_addon::get("sprog");
 $tag_open = $sprog->getConfig('wildcard_open_tag');
 $tag_close = $sprog->getConfig('wildcard_close_tag');
@@ -107,9 +114,10 @@ if(!function_exists('printBox')) {
 	 * @param string $picture_filename mediapool picture filename
 	 * @param string $color Background color (Hex)
 	 * @param string $url Link target url
+	 * @param string $three_column if TRUE, box is printed in 3 column format, if FALSE, only 2 columns are shown
 	 */
-	function printBox($title, $picture_filename, $color, $url) {
-		print '<div class="col-6 col-md-4 spacer">';
+	function printBox($title, $picture_filename, $color, $url, $three_column = TRUE) {
+		print '<div class="col-6'. ($three_column ? ' col-md-4' : '') .' spacer">';
 		print '<div class="category_box" style="background-color: '. ($color == "" ? "grey" : "". $color) .'" data-height-watch>';
 		print '<a href="'. $url .'">';
 		print '<div class="view">';
@@ -128,7 +136,7 @@ if(!function_exists('printBox')) {
 }
 
 if(rex::isBackend()) {
-	print "Ausgabe Veranstaltungen des D2U Veranstaltungen Addons";
+	print "Ausgabe Veranstaltungen des D2U Veranstaltungen Addons". ($news_category_id > 0 ? " mit News aus dem News Addon" : "");
 }
 else {
 	// Course search box
@@ -216,29 +224,61 @@ else {
 		}
 	}
 	// Nothing requested: selected startpage
-	else if($startpage == "locations" && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-		$location_categories = D2U_Courses\LocationCategory::getAll(TRUE);
-		foreach ($location_categories as $location_category) {
-			printBox($location_category->name, $location_category->picture, rex_config::get('d2u_courses', 'location_bg_color', '#41b23b'), $location_category->getURL());		
+	else {
+		$three_column = TRUE;
+		if(count($news) > 0) {
+			$three_column = FALSE;
+			print '<div class="col-12 col-lg-8" data-match-height>';
+			print '<div class="row">';
 		}
-	}
-	else if($startpage == "schedule_categories" && rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
-		$schedule_categories = D2U_Courses\ScheduleCategory::getAllParents(TRUE);
-		foreach ($schedule_categories as $schedule_category) {
-			printBox($schedule_category->name, $schedule_category->picture, rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2'), $schedule_category->getURL());		
+		if($startpage == "locations" && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
+			$location_categories = D2U_Courses\LocationCategory::getAll(TRUE);
+			foreach ($location_categories as $location_category) {
+				printBox($location_category->name, $location_category->picture, rex_config::get('d2u_courses', 'location_bg_color', '#41b23b'), $location_category->getURL(), $three_column);		
+			}
 		}
-	}
-	else if($startpage == "target_groups" && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-		$target_groups = D2U_Courses\TargetGroup::getAll(TRUE);
-		foreach ($target_groups as $target_group) {
-			printBox($target_group->name, $target_group->picture, rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a'), $target_group->getURL());		
+		else if($startpage == "schedule_categories" && rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
+			$schedule_categories = D2U_Courses\ScheduleCategory::getAllParents(TRUE);
+			foreach ($schedule_categories as $schedule_category) {
+				printBox($schedule_category->name, $schedule_category->picture, rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2'), $schedule_category->getURL(), $three_column);		
+			}
 		}
-	}
-	else if($course === FALSE) {
-		// Only show default if no course should be shown
-		$categories = D2U_Courses\Category::getAllParents(TRUE);
-		foreach ($categories as $category) {
-			printBox($category->name, $category->picture, $category->color, $category->getURL());
+		else if($startpage == "target_groups" && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
+			$target_groups = D2U_Courses\TargetGroup::getAll(TRUE);
+			foreach ($target_groups as $target_group) {
+				printBox($target_group->name, $target_group->picture, rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a'), $target_group->getURL(), $three_column);		
+			}
+		}
+		else if($course === FALSE) {
+			// Only show default if no course should be shown
+			$categories = D2U_Courses\Category::getAllParents(TRUE);
+			foreach ($categories as $category) {
+				printBox($category->name, $category->picture, $category->color, $category->getURL(), $three_column);
+			}
+		}
+		if(count($news) > 0) {
+			print '</div>';
+			print '</div>';
+			print '<div class="col-12 col-lg-4">';
+			print '<div class="row">';
+			foreach($news as $selected_news) {
+				print '<div class="col-12 col-md-6 col-lg-12 spacer">';
+				print '<div class="news_box" data-height-watch>';
+				$url = $selected_news->getUrl();
+				if($url) {
+					print '<a href="'. $selected_news->getUrl() .'">';
+				}
+				print '<div class="box_title">'. $selected_news->name .'</div>';
+				print '<div class="box_description">'. $selected_news->teaser .'</div>';
+				if($url) {
+					print '</a>';
+				}
+				print '</div>';
+				print '</div>';
+			}
+			print '</div>';
+			print '</div>';
+			print '</div>';
 		}
 	}
 

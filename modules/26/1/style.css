@@ -23,7 +23,16 @@
 	text-decoration: none;
 }
 
-
+.news_box {
+	background-color: article_color_box;
+}
+.news_box .box_title {
+	background-color: article_color_box;
+}
+.news_box .box_description {
+	padding: 10px 15px;
+	word-wrap: break-word;
+}
 
 @media screen and (min-width: 992px) {
 	.box_title {
