@@ -78,7 +78,7 @@ if(rex_addon::get('d2u_news')->isAvailable()) {
 	if (count($categories) > 0) {
 ?>
 		<div class="row">
-			<div class="col-xs-12 col-sm-4">Auf der Übersichtsseite News aus dem Newsadon anzeigen?</div>
+			<div class="col-xs-12 col-sm-4">Auf der Übersichtsseite News aus dem D2U News Addon anzeigen?</div>
 			<div class="col-xs-12 col-sm-8">
 				<div class="rex-select-style">
 				<?php
@@ -87,6 +87,35 @@ if(rex_addon::get('d2u_news')->isAvailable()) {
 					foreach ($categories as $category) {
 						echo '<option value="'. $category->category_id .'" ';
 						if ("REX_VALUE[5]" == $category->category_id) {
+							echo 'selected="selected" ';
+						}
+						echo '>'. $category->name .'</option>';
+					}
+					print '</select>';
+				?>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">&nbsp;</div>
+		</div>
+<?php
+	}
+}
+if(rex_addon::get('d2u_linkbox')->isAvailable()) {
+	$categories = \D2U_Linkbox\Category::getAll(rex_clang::getCurrentId(), TRUE);
+	if (count($categories) > 0) {
+?>
+		<div class="row">
+			<div class="col-xs-12 col-sm-4">Auf der Übersichtsseite Linkboxen aus dem D2U Linkbox Addon anzeigen?</div>
+			<div class="col-xs-12 col-sm-8">
+				<div class="rex-select-style">
+				<?php
+					print '<select name="REX_INPUT_VALUE[6]" class="form-control">';
+					print '<option value="0">Keine Linkboxen anzeigen</option>';
+					foreach ($categories as $category) {
+						echo '<option value="'. $category->category_id .'" ';
+						if ("REX_VALUE[6]" == $category->category_id) {
 							echo 'selected="selected" ';
 						}
 						echo '>'. $category->name .'</option>';

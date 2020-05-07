@@ -21,6 +21,12 @@ if($news_category_id > 0) {
 	$new_category = new \D2U_News\Category($news_category_id, rex_clang::getCurrentId());
 	$news = $new_category->getNews(TRUE);
 }
+$linkbox_category_id = "REX_VALUE[6]";
+$linkboxes = [];
+if($linkbox_category_id > 0) {
+	$new_category = new \D2U_Linkbox\Category($linkbox_category_id, rex_clang::getCurrentId());
+	$linkboxes = $new_category->getLinkboxes(TRUE);
+}
 
 $sprog = rex_addon::get("sprog");
 $tag_open = $sprog->getConfig('wildcard_open_tag');
@@ -136,7 +142,9 @@ if(!function_exists('printBox')) {
 }
 
 if(rex::isBackend()) {
-	print "Ausgabe Veranstaltungen des D2U Veranstaltungen Addons". ($news_category_id > 0 ? " mit News aus dem News Addon" : "");
+	print "Ausgabe Veranstaltungen des D2U Veranstaltungen Addons"
+		. ($new_category > 0 ? " / mit News aus dem D2U News Addon" : "")
+		. ($linkbox_category_id > 0 ? " / mit Linxboxen aus dem D2U Linkbox Addon" : "");
 }
 else {
 	// Course search box
@@ -254,6 +262,11 @@ else {
 			$categories = D2U_Courses\Category::getAllParents(TRUE);
 			foreach ($categories as $category) {
 				printBox($category->name, $category->picture, $category->color, $category->getURL(), $three_column);
+			}
+		}
+		if(count($linkboxes) > 0) {
+			foreach($linkboxes as $linkbox) {
+				printBox($linkbox->title, $linkbox->picture, $linkbox->background_color, $linkbox->getURL(), $three_column);
 			}
 		}
 		if(count($news) > 0) {
