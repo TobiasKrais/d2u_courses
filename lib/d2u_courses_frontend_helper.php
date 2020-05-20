@@ -30,6 +30,9 @@ class d2u_courses_frontend_helper {
 				$course = new D2U_Courses\Course($course_id);
 				if($course->category->parent_category !== FALSE) {
 					if($course->category->parent_category->parent_category !== FALSE) {
+						if($course->category->parent_category->parent_category->parent_category !== FALSE) {
+							$breadcrumbs[] = '<a href="' . $course->category->parent_category->parent_category->parent_category->getUrl() . '">' . $course->category->parent_category->parent_category->parent_category->name . '</a>';
+						}
 						$breadcrumbs[] = '<a href="' . $course->category->parent_category->parent_category->getUrl() . '">' . $course->category->parent_category->parent_category->name . '</a>';
 					}
 					$breadcrumbs[] = '<a href="' . $course->category->parent_category->getUrl() . '">' . $course->category->parent_category->name . '</a>';
