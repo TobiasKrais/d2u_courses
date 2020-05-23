@@ -3,7 +3,7 @@ $sql = rex_sql::factory();
 
 // Delete url schemes
 if(\rex_addon::get('url')->isAvailable()) {
-	if(rex_string::versionCompare(\rex_addon::get('url')->getVersion(), '1.5', '>=')) {
+	if(rex_version::compare(\rex_addon::get('url')->getVersion(), '1.5', '>=')) {
 		$sql->setQuery("DELETE FROM ". \rex::getTablePrefix() ."url_generator_profile WHERE `namespace` = 'course_id';");
 		$sql->setQuery("DELETE FROM ". \rex::getTablePrefix() ."url_generator_profile WHERE `namespace` = 'courses_category_id';");		
 	}

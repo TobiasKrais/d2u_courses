@@ -14,7 +14,7 @@ if($sql->getRows() == 0) {
 }
 
 // 3.0.3 / 3.0.4 Database update
-if (rex_string::versionCompare($this->getVersion(), '3.0.4', '<')) {
+if (rex_version::compare($this->getVersion(), '3.0.4', '<')) {
 	$config_show_time = rex_config::get('d2u_courses', 'show_time', 'day_one_start');
 	// Track changes of WHERE statement in d2u_courses_frontend_helper::getShowTimeWhere()
 	$where = 'date_start = "" OR date_start > CURDATE()';
@@ -75,7 +75,7 @@ $sql->setQuery("ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_2_target_gro
 if(\rex_addon::get('url')->isAvailable()) {
 	$clang_id = count(rex_clang::getAllIds()) == 1 ? rex_clang::getStartId() : 0;
 	$article_id = rex_config::get('d2u_courses', 'article_id_target_groups', 0) > 0 ? rex_config::get('d2u_courses', 'article_id_target_groups') : rex_article::getSiteStartArticleId(); 
-	if(rex_string::versionCompare(\rex_addon::get('url')->getVersion(), '1.5', '>=')) {
+	if(rex_version::compare(\rex_addon::get('url')->getVersion(), '1.5', '>=')) {
 		// Insert url schemes Version 2.x
 		$sql->setQuery("DELETE FROM ". \rex::getTablePrefix() ."url_generator_profile WHERE `namespace` = 'target_group_child_id';");
 		$sql->setQuery("INSERT INTO ". \rex::getTablePrefix() ."url_generator_profile (`namespace`, `article_id`, `clang_id`, `table_name`, `table_parameters`, `relation_1_table_name`, `relation_1_table_parameters`, `relation_2_table_name`, `relation_2_table_parameters`, `relation_3_table_name`, `relation_3_table_parameters`, `createdate`, `createuser`, `updatedate`, `updateuser`) VALUES

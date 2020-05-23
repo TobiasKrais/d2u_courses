@@ -236,6 +236,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.0.7-DEV:</p>
 <ul>
+	<li>Benötigt Redaxo >= 5.10, da die neue Klasse rex_version verwendet wird.</li>
 	<li>Klonen von Kategorien möglich.</li>
 	<li>Aktualisiert beim Speichern automatisch den search_it index.</li>
 	<li>Bugfix: beim Reinstallieren des Addons wurden die Einstellungen wie lange ein Kurs angezeigt werden soll überschrieben.</li>
