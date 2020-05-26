@@ -42,18 +42,18 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 
 		// Update url schemes
 		if(\rex_addon::get('url')->isAvailable()) {
-			d2u_addon_backend_helper::update_url_scheme(\rex::getTablePrefix() ."d2u_courses_url_courses", $settings['article_id_courses']);
-			d2u_addon_backend_helper::update_url_scheme(\rex::getTablePrefix() ."d2u_courses_url_categories", $settings['article_id_courses']);
+			d2u_addon_backend_helper::update_url_scheme("course_id", $settings['article_id_courses']);
+			d2u_addon_backend_helper::update_url_scheme("courses_category_id", $settings['article_id_courses']);
 			if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-				d2u_addon_backend_helper::update_url_scheme(\rex::getTablePrefix() ."d2u_courses_url_location_categories", $settings['article_id_locations']);
-				d2u_addon_backend_helper::update_url_scheme(\rex::getTablePrefix() ."d2u_courses_url_locations", $settings['article_id_locations']);
+				d2u_addon_backend_helper::update_url_scheme("location_id", $settings['article_id_locations']);
+				d2u_addon_backend_helper::update_url_scheme("location_category_id", $settings['article_id_locations']);
 			}
 			if(rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
-				d2u_addon_backend_helper::update_url_scheme(\rex::getTablePrefix() ."d2u_courses_url_schedule_categories", $settings['article_id_schedule_categories']);
+				d2u_addon_backend_helper::update_url_scheme("schedule_category_id", $settings['article_id_schedule_categories']);
 			}
 			if(rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-				d2u_addon_backend_helper::update_url_scheme(\rex::getTablePrefix() ."d2u_courses_url_target_groups", $settings['article_id_target_groups']);
-				d2u_addon_backend_helper::update_url_scheme(\rex::getTablePrefix() ."d2u_courses_url_target_group_childs", $settings['article_id_target_groups']);
+				d2u_addon_backend_helper::update_url_scheme("target_group_child_id", $settings['article_id_target_groups']);
+				d2u_addon_backend_helper::update_url_scheme("target_group_id", $settings['article_id_target_groups']);
 			}
 			
 			// START update views for url addon
@@ -104,7 +104,7 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 				GROUP BY category_id, name, seo_title, picture, updatedate, parent_category_id, grand_parent_category_id '
 				// Grandparents of categories with courses
 				.'UNION
-				SELECT grand_parents.category_id, grand_parents.name, great_grand_parents.name AS parent_name, grand_parents.name AS seo_title, grand_parents.picture, courses.updatedate, IF(parents.parent_category_id > 0, parents.parent_category_id, -1) AS parent_category_id, -1 AS grand_parent_category_id, -1 AS great_grand_parent_category_id
+				SELECT grand_parents.category_id, grand_parents.name, great_grand_parents.name AS parent_name, grand_parents.name AS seo_title, grand_parents.picture, courses.updatedate, IF(grand_parents.parent_category_id > 0, grand_parents.parent_category_id, -1) AS parent_category_id, -1 AS grand_parent_category_id, -1 AS great_grand_parent_category_id
 				FROM '. rex::getTablePrefix() .'d2u_courses_categories AS categories
 				LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_2_categories AS c2c
 					ON categories.category_id = c2c.category_id
@@ -415,7 +415,7 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 							d2u_addon_backend_helper::form_input('d2u_courses_import_settings_xml_url', 'settings[kufer_sync_xml_url]', $this->getConfig('kufer_sync_xml_url'), TRUE, FALSE, 'text');
 							$options_categories = [];
 							foreach(\D2U_Courses\Category::getAllNotParents() as $category) {
-								$options_categories[$category->category_id] = ($category->parent_category !== FALSE ? $category->parent_category->name ." → " : "" ). $category->name;
+								$options_categories[$category->category_id] = ($category->parent_category ? ($category->parent_category->parent_category ? ($category->parent_category->parent_category->parent_category ? $category->parent_category->parent_category->parent_category->name ." → " : "" ). $category->parent_category->parent_category->name ." → " : "" ). $category->parent_category->name ." → " : "" ). $category->name;
 							}
 							d2u_addon_backend_helper::form_select('d2u_courses_import_settings_default_category', 'settings[kufer_sync_default_category_id]', $options_categories, [$this->getConfig('kufer_sync_default_category_id')], 1, FALSE, FALSE);
 							if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {

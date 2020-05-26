@@ -45,8 +45,14 @@ class KuferSync {
 		$counter_update = 0;
 
 		$course_categories = Category::getAll(FALSE);
-		$schedule_categories = ScheduleCategory::getAll(FALSE);
-		$target_groups = TargetGroup::getAll(FALSE);
+		$schedule_categories = [];
+		if(\rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
+			$schedule_categories = ScheduleCategory::getAll(FALSE);
+		}
+		$target_groups = [];
+		if(\rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
+			$target_groups = TargetGroup::getAll(FALSE);
+		}
 
 		foreach ($kufer_courses->kurs as $kufer_course) {
 			// Cancelled courses will not be imported ...

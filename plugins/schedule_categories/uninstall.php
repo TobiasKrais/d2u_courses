@@ -9,6 +9,9 @@ if(\rex_addon::get('url')->isAvailable()) {
 	else {
 		$sql->setQuery("DELETE FROM `". rex::getTablePrefix() ."url_generate` WHERE `table` LIKE '%d2u_courses_url_schedule_categories%'");
 	}
+	
+	// Delete URL Cache
+	rex_delete_cache();
 }
 
 // Delete views

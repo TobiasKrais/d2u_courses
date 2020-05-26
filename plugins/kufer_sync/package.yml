@@ -13,6 +13,3 @@ requires:
         extensions: [xml]
     packages:
         cronjob: '>=2.1.1'
-        d2u_courses/locations: '>=3.0.0'
-        d2u_courses/schedule_categories: '>=3.0.0'
-        d2u_courses/target_groups: '>=3.0.0'

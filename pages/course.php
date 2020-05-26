@@ -226,10 +226,16 @@ if ($func == 'edit' || $func == 'clone' || $func == 'add') {
 }
 
 if ($func == '') {
-	$query = 'SELECT courses.course_id, courses.name, course_number, online_status, categories.name AS cat_name '
+	$query = 'SELECT courses.course_id, courses.name, course_number, online_status, CONCAT_WS(" → ", categories_great_grand_parents.name, categories_grand_parents.name, categories_parents.name, categories.name) AS cat_name '
 		. 'FROM '. rex::getTablePrefix() .'d2u_courses_courses AS courses '
 		. 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_categories AS categories '
-			. 'ON courses.category_id = categories.category_id ';
+			. 'ON courses.category_id = categories.category_id '
+		. 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_categories AS categories_parents '
+			. 'ON categories.parent_category_id = categories_parents.category_id '
+		. 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_categories AS categories_grand_parents '
+			. 'ON categories_parents.parent_category_id = categories_grand_parents.category_id '
+		. 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_categories AS categories_great_grand_parents '
+			. 'ON categories_grand_parents.parent_category_id = categories_great_grand_parents.category_id ';
 	if(!rex::getUser()->isAdmin() && !rex::getUser()->hasPerm('d2u_courses[courses_all]') && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
 		$query .= 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_locations AS locations '
 				. 'ON courses.location_id = locations.location_id '

@@ -234,7 +234,7 @@ else {
 	// Nothing requested: selected startpage
 	else {
 		$three_column = TRUE;
-		if(count($news) > 0) {
+		if(count($news) > 0 && $course === FALSE) {
 			$three_column = FALSE;
 			print '<div class="col-12 col-lg-8" data-match-height>';
 			print '<div class="row">';
@@ -263,35 +263,35 @@ else {
 			foreach ($categories as $category) {
 				printBox($category->name, $category->picture, $category->color, $category->getURL(), $three_column);
 			}
-		}
-		if(count($linkboxes) > 0) {
-			foreach($linkboxes as $linkbox) {
-				printBox($linkbox->title, $linkbox->picture, $linkbox->background_color, $linkbox->getURL(), $three_column);
-			}
-		}
-		if(count($news) > 0) {
-			print '</div>';
-			print '</div>';
-			print '<div class="col-12 col-lg-4">';
-			print '<div class="row">';
-			foreach($news as $selected_news) {
-				print '<div class="col-12 col-md-6 col-lg-12 spacer">';
-				print '<div class="news_box" data-height-watch>';
-				$url = $selected_news->getUrl();
-				if($url) {
-					print '<a href="'. $selected_news->getUrl() .'">';
+			if(count($linkboxes) > 0) {
+				foreach($linkboxes as $linkbox) {
+					printBox($linkbox->title, $linkbox->picture, $linkbox->background_color, $linkbox->getURL(), $three_column);
 				}
-				print '<div class="box_title">'. $selected_news->name .'</div>';
-				print '<div class="box_description">'. $selected_news->teaser .'</div>';
-				if($url) {
-					print '</a>';
+			}
+			if(count($news) > 0) {
+				print '</div>';
+				print '</div>';
+				print '<div class="col-12 col-lg-4">';
+				print '<div class="row">';
+				foreach($news as $selected_news) {
+					print '<div class="col-12 col-md-6 col-lg-12 spacer">';
+					print '<div class="news_box" data-height-watch>';
+					$url = $selected_news->getUrl();
+					if($url) {
+						print '<a href="'. $selected_news->getUrl() .'">';
+					}
+					print '<div class="box_title">'. $selected_news->name .'</div>';
+					print '<div class="box_description">'. $selected_news->teaser .'</div>';
+					if($url) {
+						print '</a>';
+					}
+					print '</div>';
+					print '</div>';
 				}
 				print '</div>';
 				print '</div>';
+				print '</div>';
 			}
-			print '</div>';
-			print '</div>';
-			print '</div>';
 		}
 	}
 

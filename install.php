@@ -100,7 +100,7 @@ $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_ur
 	GROUP BY category_id, name, seo_title, picture, updatedate, parent_category_id, grand_parent_category_id '
 	// Grandparents of categories with courses
 	.'UNION
-	SELECT grand_parents.category_id, grand_parents.name, great_grand_parents.name AS parent_name, grand_parents.name AS seo_title, grand_parents.picture, courses.updatedate, IF(parents.parent_category_id > 0, parents.parent_category_id, -1) AS parent_category_id, -1 AS grand_parent_category_id, -1 AS great_grand_parent_category_id
+	SELECT grand_parents.category_id, grand_parents.name, great_grand_parents.name AS parent_name, grand_parents.name AS seo_title, grand_parents.picture, courses.updatedate, IF(grand_parents.parent_category_id > 0, grand_parents.parent_category_id, -1) AS parent_category_id, -1 AS grand_parent_category_id, -1 AS great_grand_parent_category_id
 	FROM '. rex::getTablePrefix() .'d2u_courses_categories AS categories
 	LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_2_categories AS c2c
 		ON categories.category_id = c2c.category_id
