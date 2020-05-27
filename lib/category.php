@@ -130,16 +130,13 @@ class Category {
 	 * @return boolean TRUE, if online, FALSE if offline
 	 */
 	public function isOnline() {
-		$query = "SELECT * FROM ". \rex::getTablePrefix() ."d2u_courses_2_categories AS c2c "
-			."LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_courses AS courses ON c2c.course_id = courses.course_id "
-				."WHERE c2c.category_id = ". $this->category_id ." "
-					."AND online_status = 'online' "
-					."AND (". \d2u_courses_frontend_helper::getShowTimeWhere() .") ";
+		$query = "SELECT * FROM ". \rex::getTablePrefix() ."d2u_courses_url_categories "
+				."WHERE category_id = ". $this->category_id;
 		$result =  \rex_sql::factory();
 		$result->setQuery($query);
 		$num_rows = $result->getRows();
 
-		if($num_rows > 0 || count($this->getChildren()) > 0) {
+		if($num_rows > 0) {
 			return TRUE;
 		}
 		else {
