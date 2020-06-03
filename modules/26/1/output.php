@@ -170,7 +170,7 @@ else {
 	else if($category) {
 		if(count($category->getChildren(TRUE)) > 0) {
 			// Are child categories available?
-			print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. $category->color .' !important">';
+			print '<div class="col-12 course-title"><div class="page_title_bg" style="background-color: '. $category->color .' !important">';
 			print '<h1 class="page_title">'. $category->name .'</h1>';
 			print '</div></div>';
 			if(trim($category->description) != "") {
@@ -190,7 +190,7 @@ else {
 	}
 	// Deal with location categories
 	else if(rex_plugin::get ('d2u_courses', 'locations')->isAvailable() && $location_category) {
-		print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'location_bg_color', '#41b23b') .' !important">';
+		print '<div class="col-12 course-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'location_bg_color', '#41b23b') .' !important">';
 		print '<h1 class="page_title">'. $location_category->name .'</h1>';
 		print '</div></div>';
 		foreach ($location_category->getLocations(TRUE) as $location) {
@@ -204,7 +204,7 @@ else {
 	// Deal with schedule categories
 	else if($schedule_category) {
 		if(count($schedule_category->getChildren(TRUE)) > 0) {
-			print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2') .' !important">';
+			print '<div class="col-12 course-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2') .' !important">';
 			print '<h1 class="page_title">'. $schedule_category->name .'</h1>';
 			print '</div></div>';
 			// Children
@@ -219,7 +219,7 @@ else {
 	// Deal with target groups
 	else if($target_group) {
 		if(count($target_group->getChildren(TRUE)) > 0) {
-			print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a') .' !important">';
+			print '<div class="col-12 course-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a') .' !important">';
 			print '<h1 class="page_title">'. $target_group->name .'</h1>';
 			print '</div></div>';
 			// Children
@@ -304,14 +304,14 @@ else {
 	}
 	else if(count($courses) > 0) {
 		if(filter_input(INPUT_POST, 'course_search') != "") {
-			print '<div class="col-12 spacer">';
+			print '<div class="col-12 course-title">';
 			print '<div class="search_title">';	
 			print '<h1>'. $tag_open .'d2u_courses_search_results'. $tag_close .' "'. filter_input(INPUT_POST, 'course_search') .'":</h1>';
 			print '</div>';
 			print '</div>';
 		}
 		else if($target_group !== FALSE) {
-			print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a') .' !important">';
+			print '<div class="col-12 course-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a') .' !important">';
 			print '<h1 class="page_title">';
 			if($target_group->parent_target_group !== FALSE) {
 				print $target_group->parent_target_group->name .": ";
@@ -326,7 +326,7 @@ else {
 			}
 		}
 		else if($schedule_category !== FALSE) {
-			print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2') .' !important">';
+			print '<div class="col-12 course-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2') .' !important">';
 			print '<h1 class="page_title">';
 			if($schedule_category->parent_schedule_category !== FALSE) {
 				print $schedule_category->parent_schedule_category->name .": ";
@@ -336,12 +336,12 @@ else {
 			print '</div></div>';
 		}
 		else if($location !== FALSE) {
-			print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'location_bg_color', '#41b23b') .' !important">';
+			print '<div class="col-12 course-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'location_bg_color', '#41b23b') .' !important">';
 			print '<h1 class="page_title">'. $location->location_category->name .": ". $location->name .'</h1>';
 			print '</div></div>';
 		}
 		else if($category !== FALSE) {
-			print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. $category->color .' !important">';
+			print '<div class="col-12 course-title"><div class="page_title_bg" style="background-color: '. $category->color .' !important">';
 			print '<h1 class="page_title">';
 			if($category->parent_category !== FALSE) {
 				print $category->parent_category->name .": ";
@@ -446,7 +446,7 @@ else {
 		print '<div class="col-12">';
 		print '<div class="row">';
 
-		print '<div class="col-12 spacer_box">';
+		print '<div class="col-12 course-title_box">';
 		print '<div class="course_row_title" style="background-color: '. $course->category->color.'">';
 		print '<h1>'. $course->name;
 		if($course->course_number != "") {
