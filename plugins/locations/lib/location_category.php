@@ -45,7 +45,7 @@ class LocationCategory {
 	 * Constructor
 	 * @param int $location_category_id ID
 	 */
-	 public function __construct($location_category_id) {
+	 public function __construct(int $location_category_id = 0) {
 		$query = "SELECT * FROM ". \rex::getTablePrefix() ."d2u_courses_location_categories "
 				."WHERE location_category_id = ". $location_category_id;
 		$result = \rex_sql::factory();
@@ -219,7 +219,7 @@ class LocationCategory {
 	 * @return boolean TRUE if successful.
 	 */
 	public function save() {
-		$pre_save_object = new self($this->course_id);
+		$pre_save_object = new self($this->location_category_id);
 
 		$query = "INSERT INTO ";
 		if($this->location_category_id > 0) {

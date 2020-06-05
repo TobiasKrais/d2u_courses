@@ -1,6 +1,6 @@
 <?php
 $func = rex_request('func', 'string');
-$entry_id = rex_request('entry_id', 'int');
+$entry_id = rex_request('entry_id', 'int', 0);
 $message = rex_get('message', 'string');
 
 // Print comments
@@ -11,12 +11,11 @@ if($message != "") {
 // save settings
 if (filter_input(INPUT_POST, "btn_save") == 1 || filter_input(INPUT_POST, "btn_apply") == 1) {
 	$form = (array) rex_post('form', 'array', []);
-
+	
 	// Media fields and links need special treatment
 	$input_media = (array) rex_post('REX_INPUT_MEDIA', 'array', []);
 
-	$location_category_id = $form['location_category_id'];
-	$location_category = new D2U_Courses\LocationCategory($location_category_id);
+	$location_category = new D2U_Courses\LocationCategory($form['location_category_id']);
 	$location_category->zoom_level = $form['zoom_level'];
 	$location_category->picture = $input_media[1];
 	$location_category->name = $form['name'];

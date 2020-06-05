@@ -256,7 +256,7 @@ class Location {
 	 * @return boolean TRUE if successful.
 	 */
 	public function save() {
-		$pre_save_object = new self($this->course_id);
+		$pre_save_object = new self($this->location_id);
 
 		$query = "INSERT INTO ";
 		if($this->location_id > 0) {
