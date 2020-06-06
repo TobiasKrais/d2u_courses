@@ -336,6 +336,23 @@ class Category {
 	}
 
 	/**
+	 * Get root parent of this category
+	 * @return Category root parent category
+	 */
+	public function getPartentRoot() {
+		if($this->parent_category !== FALSE) {
+			if($this->parent_category->parent_category !== FALSE) {
+				if($this->parent_category->parent_category->parent_category !== FALSE) {
+					return $this->parent_category->parent_category->parent_category;
+				}
+				return $this->parent_category->parent_category;
+			}
+			return $this->parent_category;
+		}
+		return $this;
+	}
+
+	/**
 	 * Get the <meta rel="alternate" hreflang=""> tags for page header.
 	 * @return Complete tags.
 	 */

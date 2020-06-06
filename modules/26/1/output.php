@@ -311,7 +311,7 @@ else {
 			print '</div>';
 		}
 		else if($target_group !== FALSE) {
-			print '<div class="col-12 course-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a') .' !important">';
+			print '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a') .' !important">';
 			print '<h1 class="page_title">';
 			if($target_group->parent_target_group !== FALSE) {
 				print $target_group->parent_target_group->name .": ";
@@ -326,7 +326,7 @@ else {
 			}
 		}
 		else if($schedule_category !== FALSE) {
-			print '<div class="col-12 course-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2') .' !important">';
+			print '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2') .' !important">';
 			print '<h1 class="page_title">';
 			if($schedule_category->parent_schedule_category !== FALSE) {
 				print $schedule_category->parent_schedule_category->name .": ";
@@ -336,12 +336,12 @@ else {
 			print '</div></div>';
 		}
 		else if($location !== FALSE) {
-			print '<div class="col-12 course-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'location_bg_color', '#41b23b') .' !important">';
+			print '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'location_bg_color', '#41b23b') .' !important">';
 			print '<h1 class="page_title">'. $location->location_category->name .": ". $location->name .'</h1>';
 			print '</div></div>';
 		}
 		else if($category !== FALSE) {
-			print '<div class="col-12 course-title"><div class="page_title_bg" style="background-color: '. $category->color .' !important">';
+			print '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="background-color: '. $category->color .' !important">';
 			print '<h1 class="page_title">';
 			if($category->parent_category !== FALSE) {
 				print $category->parent_category->name .": ";

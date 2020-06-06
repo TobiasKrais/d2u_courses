@@ -439,6 +439,10 @@ else {
 	}
 	else {
 		$ask_age = "REX_VALUE[1]" == "" ? 1 : "REX_VALUE[1]";
+		$ask_age_root_category_id = [];
+		if("REX_VALUE[3]" == 'true') {
+			$ask_age_root_category_id = rex_var::toArray("REX_VALUE[4]");
+		}
 		
 		print '<div class="col-12 col-md-9">';
 		print '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'" method="post">';	
@@ -507,7 +511,7 @@ else {
 				print '<tr>';
 				print '<td style="width: 25%">'. $tag_open .'d2u_courses_firstname'. $tag_close .'</td>'
 					. '<td style="width: 25%">'. $tag_open .'d2u_courses_lastname'. $tag_close .'</td>';
-				if($ask_age > 0) {
+				if(in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_id) && $ask_age > 0) {
 					print '<td style="width: 25%">'. $tag_open .($ask_age == 1 ? 'd2u_courses_birthdate' : 'd2u_courses_age'). $tag_close .'</td>';
 				}
 				print '<td style="width: 20%">'. $tag_open .'d2u_courses_gender'. $tag_close .'</td>'
@@ -518,11 +522,13 @@ else {
 					$input_style = ' style="border-right: 10px solid '. ($course->category !== FALSE ? $course->category->color : 'grey') .'"';
 					print '<td><div class="div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][firstname]" value="'. $participant_data['firstname'] .'" required maxlength="20"></div></td>';
 					print '<td><div class="div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][lastname]" value="'. $participant_data['lastname'] .'" required maxlength="20"></div></td>';
-					if($ask_age == 1) {
-						print '<td><div class="div_cart"><input type="date" class="date" name="participant_'. $course_id .'['. $participant_id .'][birthday]" value="'. $participant_data['birthday'] .'" required placeholder="'. $tag_open .'d2u_courses_date_placeholder'. $tag_close .'" min="1900-01-01" max="'. (date("Y") - 5) .'-01-01"></div></td>';
-					}
-					elseif ($ask_age == 2) {
-						print '<td><div class="div_cart"><input type="number" name="participant_'. $course_id .'['. $participant_id .'][age]" value="'. $participant_data['age'] .'" required></div></td>';
+					if(in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_id)) {
+						if($ask_age == 1) {
+							print '<td><div class="div_cart"><input type="date" class="date" name="participant_'. $course_id .'['. $participant_id .'][birthday]" value="'. $participant_data['birthday'] .'" required placeholder="'. $tag_open .'d2u_courses_date_placeholder'. $tag_close .'" min="1900-01-01" max="'. (date("Y") - 5) .'-01-01"></div></td>';
+						}
+						elseif ($ask_age == 2) {
+							print '<td><div class="div_cart"><input type="number" name="participant_'. $course_id .'['. $participant_id .'][age]" value="'. $participant_data['age'] .'" required></div></td>';
+						}
 					}
 					print '<td><div class="div_cart"><select class="participant" name="participant_'. $course_id .'['. $participant_id .'][gender]">';
 					if($participant_data["gender"] == "M") {
