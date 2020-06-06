@@ -247,6 +247,7 @@ else if($old_tables_available) {
 	<li>Modul 26-1 "D2U Veranstaltungen - Ausgabe Veranstaltungen" hatte unter bestimmten Umständen Backendseite ins Frontend weitergeleitet.</li>
 	<li>Modul 26-1 "D2U Veranstaltungen - Ausgabe Veranstaltungen" kann optional auf der Startseite News aus dem D2U News Addon und Linkboxen aus dem D2U Linkbox Addon einbinden.</li>
 	<li>Modul 26-2 "D2U Veranstaltungen - Warenkorb" kann jetzt die Teilnahmebedingungen anzeigen ohne dass ein AGB Artikel festgelegt wurde.</li>
+	<li>Modul 26-2 "D2U Veranstaltungen - Warenkorb" kann jetzt statt dem Geburtsdatum nach dem Alter zu Veranstaltungsbeginn fragen.</li>
 	<li>Modul 26-3 "D2U Veranstaltungen - Ausgabe Veranstaltungen einer Kategorie in Boxen" hatte unter bestimmten Umständen Backendseite ins Frontend weitergeleitet.</li>
 	<li>Backend: Beim online stellen einer Veranstaltung in der Veranstaltungsliste gab es beim Aufruf im Frontend einen Fatal Error, da der URL cache nicht neu generiert wurde.</li>
 </ul>

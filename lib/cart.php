@@ -39,7 +39,7 @@ class Cart {
 		else {
 			// registration with person details
 			$_SESSION['cart'][$course_id] = [];
-			$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "", "gender" => ""];
+			$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "", "age" => "", "gender" => ""];
 		}
 	}
 
@@ -48,7 +48,7 @@ class Cart {
 	 * @param int $course_id Course ID
 	 */
 	public function addEmptyParticipant($course_id) {
-		$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "", "gender" => ""];
+		$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "","age" => "",  "gender" => ""];
 	}
 
 	/**
@@ -82,6 +82,7 @@ class Cart {
 	 *				[firstname] =>
 	 *				[lastname] =>
 	 *				[birthday] =>
+	 *				[age] =>
 	 *				[gender] =>
 	 *			]
 	 *		]
@@ -132,15 +133,17 @@ class Cart {
 			$city = $xml->createElement("ORT");
 			$city->appendChild($xml->createTextNode(str_pad($invoice_address['zipcode'], 5, 0, STR_PAD_LEFT) .' '. $invoice_address['city']));
 			$stammdaten->appendChild($city);
-			// <GESCHLECHT>M = male, W = female, F = company</GESCHLECHT>
-			$gender = $xml->createElement("GESCHLECHT");
-			$gender->appendChild($xml->createTextNode($invoice_address['gender']));
-			$stammdaten->appendChild($gender);
-			if(isset($invoice_address['birthday']) && $invoice_address['birthday'] != "") {
-				if($registration_type == "selbst") {
-					foreach($cart as $course_id => $participant) {
-						if(is_array($participant)) {
-							foreach($participant as $id => $participant_data) {
+			if(isset($invoice_address['gender']) && $invoice_address['gender'] != "") {
+				// <GESCHLECHT>M = male, W = female, F = company</GESCHLECHT>
+				$gender = $xml->createElement("GESCHLECHT");
+				$gender->appendChild($xml->createTextNode($invoice_address['gender']));
+				$stammdaten->appendChild($gender);
+			}
+			if($registration_type == "selbst") {
+				foreach($cart as $course_id => $participant) {
+					if(is_array($participant)) {
+						foreach($participant as $id => $participant_data) {
+							if(isset($participant_data['birthday']) && $participant_data['birthday'] != "") {
 								// <GEBDATUM>TT.MM.JJJJ</GEBDATUM>
 								$gebdatum = $xml->createElement("GEBDATUM");
 								$gebdatum->appendChild($xml->createTextNode(self::formatCourseDate($participant_data['birthday'])));
@@ -149,13 +152,20 @@ class Cart {
 								$zusatz = $xml->createElement("ZUSATZ");
 								$zusatz->appendChild($xml->createTextNode(self::calculateAge($participant_data['birthday'])));
 								$stammdaten->appendChild($zusatz);
-
-								break 2;
 							}
+							else if(isset($participant_data['age']) && $participant_data['age'] != "") {
+								// <ZUSATZ>Age</ZUSATZ>
+								$zusatz = $xml->createElement("ZUSATZ");
+								$zusatz->appendChild($xml->createTextNode($participant_data['age']));
+								$stammdaten->appendChild($zusatz);
+							}
+							break 2;
 						}
 					}
 				}
-				else {
+			}
+			else { // $registration_type == "kind"
+				if(isset($invoice_address['birthday']) && $invoice_address['birthday'] != "") {
 					// <GEBDATUM>TT.MM.JJJJ</GEBDATUM>
 					$gebdatum = $xml->createElement("GEBDATUM");
 					$gebdatum->appendChild($xml->createTextNode(self::formatCourseDate($invoice_address['birthday'])));
@@ -192,15 +202,22 @@ class Cart {
 						$gender = $xml->createElement("GESCHLECHT");
 						$gender->appendChild($xml->createTextNode($participant_data['gender']));
 						$stammdaten->appendChild($gender);
-						// <GEBDATUM>DD.MM.YYYY</GEBDATUM>
-						$gebdatum = $xml->createElement("GEBDATUM");
-						$gebdatum->appendChild($xml->createTextNode(self::formatCourseDate($participant_data['birthday'])));
-						$stammdaten->appendChild($gebdatum);
-						// <ZUSATZ>Age</ZUSATZ>
-						$zusatz = $xml->createElement("ZUSATZ");
-						$zusatz->appendChild($xml->createTextNode(self::calculateAge($participant_data['birthday'])));
-						$stammdaten->appendChild($zusatz);
-
+						if(isset($participant_data['birthday']) && $participant_data['birthday'] != "") {
+							// <GEBDATUM>DD.MM.YYYY</GEBDATUM>
+							$gebdatum = $xml->createElement("GEBDATUM");
+							$gebdatum->appendChild($xml->createTextNode(self::formatCourseDate($participant_data['birthday'])));
+							$stammdaten->appendChild($gebdatum);
+							// <ZUSATZ>Age</ZUSATZ>
+							$zusatz = $xml->createElement("ZUSATZ");
+							$zusatz->appendChild($xml->createTextNode(self::calculateAge($participant_data['birthday'])));
+							$stammdaten->appendChild($zusatz);
+						}
+						elseif(isset($participant_data['age'])) {
+							// <ZUSATZ>Age</ZUSATZ>
+							$zusatz = $xml->createElement("ZUSATZ");
+							$zusatz->appendChild($xml->createTextNode($participant_data['age']));
+							$stammdaten->appendChild($zusatz);
+						}
 						break 2;
 					}
 				}
@@ -348,7 +365,7 @@ class Cart {
 						$weitereanm->appendChild($weiteranm);
 						// <TYP>K = child registration, M = registrate multiple participants</TYP>
 						$typ = $xml->createElement("TYP");
-						if(date("Y") - $participant_data['birthday'] < 18) {
+						if((isset($participant_data['birthday']) && date("Y") - $participant_data['birthday'] < 18) || (isset($participant_data['age']) && $participant_data['age'] < 18)) {
 							$typ->appendChild($xml->createTextNode("K"));
 						}
 						else {
@@ -386,18 +403,26 @@ class Cart {
 						$firstname = $xml->createElement("VORNAME");
 						$firstname->appendChild($xml->createTextNode($participant_data['firstname']));				
 						$weiterstamm->appendChild($firstname);
-						// <GEBDATUM>DD.MM.YYYY</GEBDATUM>
-						$gebdatum = $xml->createElement("GEBDATUM");
-						$gebdatum->appendChild($xml->createTextNode(self::formatCourseDate($participant_data['birthday'])));
-						$weiterstamm->appendChild($gebdatum);
+						if(isset($participant_data['birthday'])) {
+							// <GEBDATUM>DD.MM.YYYY</GEBDATUM>
+							$gebdatum = $xml->createElement("GEBDATUM");
+							$gebdatum->appendChild($xml->createTextNode(self::formatCourseDate($participant_data['birthday'])));
+							$weiterstamm->appendChild($gebdatum);
+							// <ZUSATZ>Age</ZUSATZ>
+							$zusatz = $xml->createElement("ZUSATZ");
+							$zusatz->appendChild($xml->createTextNode(self::calculateAge($invoice_address['birthday'])));
+							$weiterstamm->appendChild($zusatz);
+						}
+						else if(isset($participant_data['age'])) {
+							// <ZUSATZ>Age</ZUSATZ>
+							$zusatz = $xml->createElement("ZUSATZ");
+							$zusatz->appendChild($xml->createTextNode(self::calculateAge($invoice_address['age'])));
+							$weiterstamm->appendChild($zusatz);
+						}
 						// <GESCHLECHT>M = male, W = female</GESCHLECHT>
 						$gender = $xml->createElement("GESCHLECHT");
 						$gender->appendChild($xml->createTextNode($participant_data['gender']));
 						$weiterstamm->appendChild($gender);
-						// <ZUSATZ>Age</ZUSATZ>
-						$zusatz = $xml->createElement("ZUSATZ");
-						$zusatz->appendChild($xml->createTextNode(self::calculateAge($invoice_address['birthday'])));
-						$weiterstamm->appendChild($zusatz);
 
 						$counter++;
 					}
@@ -532,11 +557,12 @@ class Cart {
 	 * Send registrations via mail
 	 * @param mixed[] $cart Format:
 	 * Array(
-	 *		$course_id] => [
+	 *		$course_id => [
 	 *			[0] => [
 	 *				[firstname] =>
 	 *				[lastname] =>
 	 *				[birthday] =>
+	 *				[age] =>
 	 *				[gender] =>
 	 *			]
 	 *		]
@@ -603,7 +629,12 @@ class Cart {
 				foreach($participant as $id => $participant_data) {
 					$body .= "Vorname: ". $participant_data['firstname']  ."<br>";
 					$body .= "Nachname: ". $participant_data['lastname']  ."<br>";
-					$body .= "Geburtsdatum: ". self::formatCourseDate($participant_data['birthday'])  ."<br>";
+					if(isset($participant_data['birthday']) && $participant_data['birthday'] != "") {
+						$body .= "Geburtsdatum: ". self::formatCourseDate($participant_data['birthday'])  ."<br>";
+					}
+					else if(isset($participant_data['age']) && $participant_data['age'] != "") {
+						$body .= "Alter bei Veranstaltungsbeginn: ". $participant_data['age']  ."<br>";
+					}
 					$body .= "Geschlecht: ". $participant_data['gender']  ."<br>";
 					$body .= "<br>";
 				}
@@ -637,7 +668,7 @@ class Cart {
 	 * @param int $course_id Course ID
 	 * @param int $participant_id Participant ID
 	 * @param string[] $participant_data Array with participant data. Allowed keys
-	 * are "firstname", "lastname", "birthday", "gender"
+	 * are "firstname", "lastname", "birthday", "age", "gender"
 	 */
 	public function updateParticipant($course_id, $participant_id, $participant_data) {
 		foreach($participant_data as $key => $value) {

@@ -38,6 +38,7 @@ foreach($cart->getCourseIDs() as $course_id) {
 				"firstname" => trim(filter_var($patricipant_data["firstname"])),
 				"lastname" => trim(filter_var($patricipant_data["lastname"])),
 				"birthday" => trim(filter_var($patricipant_data["birthday"])),
+				"age" => trim(filter_var($patricipant_data["age"])),
 				"gender" => trim(filter_var($patricipant_data["gender"])),
 			];
 			$cart->updateParticipant($course_id, $participant_id, $participant_data);
@@ -226,7 +227,7 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 	print '<br>';
 	
 	// Kufer Sync Plugin needs statistic values
-	if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
+	if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && "REX_VALUE[2]" == 'true') {
 		print '<div class="registration_header cart_row_title">'. $tag_open .'d2u_courses_statistic'. $tag_close .'</div>';
 
 		print '<p>';
@@ -437,6 +438,8 @@ else {
 		print '</div>';
 	}
 	else {
+		$ask_age = "REX_VALUE[1]" == "" ? 1 : "REX_VALUE[1]";
+		
 		print '<div class="col-12 col-md-9">';
 		print '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'" method="post">';	
 		print '<div class="row" data-match-height>';
@@ -503,9 +506,11 @@ else {
 				print '<br><table class="participants">';
 				print '<tr>';
 				print '<td style="width: 25%">'. $tag_open .'d2u_courses_firstname'. $tag_close .'</td>'
-					. '<td style="width: 25%">'. $tag_open .'d2u_courses_lastname'. $tag_close .'</td>'
-					. '<td style="width: 25%">'. $tag_open .'d2u_courses_birthdate'. $tag_close .'</td>'
-					. '<td style="width: 20%">'. $tag_open .'d2u_courses_gender'. $tag_close .'</td>'
+					. '<td style="width: 25%">'. $tag_open .'d2u_courses_lastname'. $tag_close .'</td>';
+				if($ask_age > 0) {
+					print '<td style="width: 25%">'. $tag_open .($ask_age == 1 ? 'd2u_courses_birthdate' : 'd2u_courses_age'). $tag_close .'</td>';
+				}
+				print '<td style="width: 20%">'. $tag_open .'d2u_courses_gender'. $tag_close .'</td>'
 					. '<td style="width: 5%">&nbsp;</td>';
 				print '</tr>';
 				foreach($cart->getCourseParticipants($course_id) as $participant_id => $participant_data) {
@@ -513,7 +518,12 @@ else {
 					$input_style = ' style="border-right: 10px solid '. ($course->category !== FALSE ? $course->category->color : 'grey') .'"';
 					print '<td><div class="div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][firstname]" value="'. $participant_data['firstname'] .'" required maxlength="20"></div></td>';
 					print '<td><div class="div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][lastname]" value="'. $participant_data['lastname'] .'" required maxlength="20"></div></td>';
-					print '<td><div class="div_cart"><input type="date" class="date" name="participant_'. $course_id .'['. $participant_id .'][birthday]" value="'. $participant_data['birthday'] .'" required placeholder="'. $tag_open .'d2u_courses_date_placeholder'. $tag_close .'" min="1900-01-01" max="'. (date("Y") - 5) .'-01-01"></div></td>';
+					if($ask_age == 1) {
+						print '<td><div class="div_cart"><input type="date" class="date" name="participant_'. $course_id .'['. $participant_id .'][birthday]" value="'. $participant_data['birthday'] .'" required placeholder="'. $tag_open .'d2u_courses_date_placeholder'. $tag_close .'" min="1900-01-01" max="'. (date("Y") - 5) .'-01-01"></div></td>';
+					}
+					elseif ($ask_age == 2) {
+						print '<td><div class="div_cart"><input type="number" name="participant_'. $course_id .'['. $participant_id .'][age]" value="'. $participant_data['age'] .'" required></div></td>';
+					}
 					print '<td><div class="div_cart"><select class="participant" name="participant_'. $course_id .'['. $participant_id .'][gender]">';
 					if($participant_data["gender"] == "M") {
 						print '<option value="M" selected>'. $tag_open .'d2u_courses_male'. $tag_close .'</option>';
