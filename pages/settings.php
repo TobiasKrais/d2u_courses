@@ -42,18 +42,18 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 
 		// Update url schemes
 		if(\rex_addon::get('url')->isAvailable()) {
-			d2u_addon_backend_helper::update_url_scheme("course_id", $settings['article_id_courses']);
-			d2u_addon_backend_helper::update_url_scheme("courses_category_id", $settings['article_id_courses']);
+			d2u_addon_backend_helper::update_url_scheme(\rex::getTablePrefix() ."d2u_courses_url_courses", $settings['article_id_courses']);
+			d2u_addon_backend_helper::update_url_scheme(\rex::getTablePrefix() ."d2u_courses_url_categories", $settings['article_id_courses']);
 			if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-				d2u_addon_backend_helper::update_url_scheme("location_id", $settings['article_id_locations']);
-				d2u_addon_backend_helper::update_url_scheme("location_category_id", $settings['article_id_locations']);
+				d2u_addon_backend_helper::update_url_scheme(\rex::getTablePrefix() ."d2u_courses_url_location_categories", $settings['article_id_locations']);
+				d2u_addon_backend_helper::update_url_scheme(\rex::getTablePrefix() ."d2u_courses_url_locations", $settings['article_id_locations']);
 			}
 			if(rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
-				d2u_addon_backend_helper::update_url_scheme("schedule_category_id", $settings['article_id_schedule_categories']);
+				d2u_addon_backend_helper::update_url_scheme(\rex::getTablePrefix() ."d2u_courses_url_schedule_categories", $settings['article_id_schedule_categories']);
 			}
 			if(rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-				d2u_addon_backend_helper::update_url_scheme("target_group_child_id", $settings['article_id_target_groups']);
-				d2u_addon_backend_helper::update_url_scheme("target_group_id", $settings['article_id_target_groups']);
+				d2u_addon_backend_helper::update_url_scheme(\rex::getTablePrefix() ."d2u_courses_url_target_groups", $settings['article_id_target_groups']);
+				d2u_addon_backend_helper::update_url_scheme(\rex::getTablePrefix() ."d2u_courses_url_target_group_childs", $settings['article_id_target_groups']);
 			}
 			
 			// START update views for url addon
