@@ -85,17 +85,20 @@ a .course_box {
 	color: white;
 	padding: 5px;
 }
+.course_title {
+	color: white;
+	padding: 1rem 5px;
+}
 a.course_row_a:hover {
 	color: white;
 	border-bottom: 1px solid white;
 	text-decoration: underline;
 }
-.course_row_title h1 {
+.course_title h1 {
 	color: white;
 	font-size: 1.3em;
 	font-weight: bold;
-	margin-top: auto;
-	margin-bottom: 1rem;
+	margin: 0;
 }
 .course_row_title select {
 	background: none;

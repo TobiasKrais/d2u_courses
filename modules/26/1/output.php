@@ -99,20 +99,6 @@ else if(filter_input(INPUT_GET, 'target_group_child_id', FILTER_VALIDATE_INT, ['
 /*
  * Function stuff
  */
-if(!function_exists('formatCourseDate')) {
-	/**
-	 * Converts date string 2015-12-31 to 31. December 2015
-	 * @param string $date date string (format: 2015-12-31)
-	 * @return string converted date, eg. 31. December 2015
-	 */
-	function formatCourseDate($date) {
-		$d = explode("-", $date);
-		$unix = mktime(0, 0, 0, $d[1], $d[2], $d[0]);
-
-		return date("d.m.Y", $unix);
-	}
-}
-
 if(!function_exists('printBox')) {
 	/**
 	 * Print box
@@ -313,9 +299,6 @@ else {
 		else if($target_group !== FALSE) {
 			print '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a') .' !important">';
 			print '<h1 class="page_title">';
-			if($target_group->parent_target_group !== FALSE) {
-				print $target_group->parent_target_group->name .": ";
-			}
 			print $target_group->name;
 			print '</h1>';
 			print '</div></div>';
@@ -328,9 +311,6 @@ else {
 		else if($schedule_category !== FALSE) {
 			print '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2') .' !important">';
 			print '<h1 class="page_title">';
-			if($schedule_category->parent_schedule_category !== FALSE) {
-				print $schedule_category->parent_schedule_category->name .": ";
-			}
 			print $schedule_category->name;
 			print '</h1>';
 			print '</div></div>';
@@ -343,9 +323,6 @@ else {
 		else if($category !== FALSE) {
 			print '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="background-color: '. $category->color .' !important">';
 			print '<h1 class="page_title">';
-			if($category->parent_category !== FALSE) {
-				print $category->parent_category->name .": ";
-			}
 			print $category->name;
 			print '</h1>';
 			print '</div></div>';
@@ -360,7 +337,7 @@ else {
 		foreach($courses as $list_course) {
 			if($course_list_box_style) {
 				$title = $list_course->name ."<br><small>"
-					. formatCourseDate($list_course->date_start) ."</small>";
+					. (new DateTime($list_course->date_start))->format('d.m.Y') ."</small>";
 				printBox($title, $list_course->picture, $list_course->category->color, $list_course->getURL(TRUE));
 			}
 			else {
@@ -375,36 +352,19 @@ else {
 
 				print '<div class="col-12 col-md-6 spacer_box">';
 				print '<div class="course_row_title" style="background-color: '. $list_course->category->color .'" data-height-watch>';
-				print $list_course->name .'<br />';
-				if($list_course->date_start != "") {
-					print formatCourseDate($list_course->date_start);
-				}
-				if($list_course->date_end != "") {
-					print ' - '. formatCourseDate($list_course->date_end);
-				}
+				print $list_course->name;
 				print '</div>';
 				print '</div>';
 
 				print '<div class="col-8 col-md-4">';
 				print '<div class="course_box spacer_box" data-height-watch>';
-				if($category !== FALSE && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-					// Show target groups if category name is in headline ...
-					$counter_target_groups = 0;
-					foreach($list_course->target_group_ids as $target_group_id) {
-						$course_target_group = new D2U_Courses\TargetGroup($target_group_id);
-						if($counter_target_groups > 0) {
-							print '<br>';
-						}
-						print $course_target_group->name;
-						$counter_target_groups++;
-					}
+				if($list_course->date_start) {
+					print (new DateTime($list_course->date_start))->format('d.m.Y')
+						.($list_course->date_end ? ' - '. (new DateTime($list_course->date_end))->format('d.m.Y') : '')
+						.($list_course->time ? '<br>'. $list_course->time .'' : '');
 				}
-				else if($category === FALSE) {
-					// ... otherwise show category name
-					if($list_course->category->parent_category !== FALSE) {
-						print $list_course->category->parent_category->name .': ';
-					}
-					print $list_course->category->name;
+				else if($list_course->time) {
+					print $list_course->time;
 				}
 				else {
 					print $list_course->teaser;
@@ -447,7 +407,7 @@ else {
 		print '<div class="row">';
 
 		print '<div class="col-12 course-title_box">';
-		print '<div class="course_row_title" style="background-color: '. $course->category->color.'">';
+		print '<div class="course_title" style="background-color: '. $course->category->color.'">';
 		print '<h1>'. $course->name;
 		if($course->course_number != "") {
 			print ' ('. $course->course_number .')';
@@ -458,7 +418,7 @@ else {
 		else if($list_course->registration_possible == "booked") {
 			print ' <div class="closed"></div>';
 		}
-		print '</h1>'. $course->details_age;
+		print '</h1>'. ($course->details_age ? '<div class="details_age">'. $course->details_age .'</div>' : '');
 		print '</div>';
 		print '</div>';
 
@@ -478,10 +438,10 @@ else {
 			if($course->date_start != "" || $course->date_end != "" || $course->time != "") {
 				$date = '';
 				if($course->date_start != "") {
-					$date .= formatCourseDate($course->date_start);
+					$date .= (new DateTime($course->date_start))->format('d.m.Y');
 				}
 				if($course->date_end != "") {
-					$date .= ' - '. formatCourseDate($course->date_end);
+					$date .= ' - '. (new DateTime($course->end))->format('d.m.Y');
 				}
 				if($course->time != "") {
 					if($date != "") {

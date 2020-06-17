@@ -14,20 +14,6 @@ $tag_close = $sprog->getConfig('wildcard_close_tag');
 /*
  * Function stuff
  */
-if(!function_exists('formatCourseDate')) {
-	/**
-	 * Converts date string 2015-12-31 to 31. December 2015
-	 * @param string $date date string (format: 2015-12-31)
-	 * @return string converted date, eg. 31. December 2015
-	 */
-	function formatCourseDate($date) {
-		$d = explode("-", $date);
-		$unix = mktime(0, 0, 0, $d[1], $d[2], $d[0]);
-
-		return date("d.m.Y", $unix);
-	}
-}
-
 if(!function_exists('printBox')) {
 	/**
 	 * Print box
@@ -87,7 +73,7 @@ else {
 		foreach($courses as $list_course) {
 			$title = $list_course->name ."<br><small>"
 				. ("REX_VALUE[3]" == 'true' && $list_course->teaser != "" ? $list_course->teaser ."<br>" : "")
-				. formatCourseDate($list_course->date_start) ."</small>";
+				. (new DateTime($list_course->date_start))->format('d.m.Y') ."</small>";
 			printBox($title, $list_course->picture, $list_course->category->color, $list_course->getURL(TRUE));
 		}
 	}
