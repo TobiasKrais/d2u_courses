@@ -241,11 +241,13 @@ else if($old_tables_available) {
 	<li>Aktualisiert beim Speichern automatisch den search_it index.</li>
 	<li>Bugfix: beim Reinstallieren des Addons wurden die Einstellungen wie lange ein Kurs angezeigt werden soll überschrieben.</li>
 	<li>Bugfix: Fehler beim Speichern von Örtlichkeiten und deren Kategorien behoben.</li>
+	<li>Bugfix kufer_import Plugin: Import berücksichtigt nun auch Einstellungen wie lange Kurse angezeigt werden.</li>
 	<li>Elternkategorien können nun Großeltern- und Urgroßelternkategorien haben. Damit ist eine Kategorietiefe von 4 möglich.</li>
 	<li>Modul 26-1 "D2U Veranstaltungen - Ausgabe Veranstaltungen" leitet Offlinekurse auf die Fehlerseite weiter.</li>
 	<li>Modul 26-1 "D2U Veranstaltungen - Ausgabe Veranstaltungen" gibt im Plugin target_groups nun auch die Beschreibung einer Kategorie aus.</li>
 	<li>Modul 26-1 "D2U Veranstaltungen - Ausgabe Veranstaltungen" hatte unter bestimmten Umständen Backendseite ins Frontend weitergeleitet.</li>
 	<li>Modul 26-1 "D2U Veranstaltungen - Ausgabe Veranstaltungen" kann optional auf der Startseite News aus dem D2U News Addon und Linkboxen aus dem D2U Linkbox Addon einbinden.</li>
+	<li>Modul 26-1 "D2U Veranstaltungen - Ausgabe Veranstaltungen" Veranstaltungslisten zeigen nun einheitlich das Datum mit Uhrzeit, bzw. als Ersatz die Kurzbeschreibung.</li>
 	<li>Modul 26-2 "D2U Veranstaltungen - Warenkorb" kann jetzt die Teilnahmebedingungen anzeigen ohne dass ein AGB Artikel festgelegt wurde.</li>
 	<li>Modul 26-2 "D2U Veranstaltungen - Warenkorb" kann jetzt statt dem Geburtsdatum nach dem Alter zu Veranstaltungsbeginn fragen.</li>
 	<li>Modul 26-2 "D2U Veranstaltungen - Warenkorb" kann jetzt Wurzelkategorien auswählen, in denen Teilnehmer nach dem Alter gefragt werden.</li>

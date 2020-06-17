@@ -59,15 +59,31 @@ class KuferSync {
 			if(isset($kufer_course->ausfall)) {
 				continue;
 			}
-			// ... also courses that already started
+			// ... also courses that already started / ended (see settings
 			if(isset($kufer_course->beginndat) && $kufer_course->beginndat != "") {
-				$d = explode(".", $kufer_course->beginndat);
-				$beginndat_time = mktime(0, 0, 0, $d[1], $d[0], $d[2]);
-				if(strtotime("-1 day") > $beginndat_time) {
+				$beginndat = self::formatDate($kufer_course->beginndat);
+				$endedat = self::formatDate($kufer_course->endedat);
+				
+				$config_show_time = \rex_config::get('d2u_courses', 'show_time', 'day_one_start');
+dump($kufer_course->titelkurz);
+dump($config_show_time);
+dump($beginndat);
+dump($endedat);
+dump(date('Y-m-d'));
+				if($config_show_time === 'day_one_start' && date('Y-m-d', mktime(0, 0, 0, date("m"), date("d")-1,   date("Y"))) > $beginndat) {
+					continue;
+				}
+				else if($config_show_time === 'day_one_end' && date('Y-m-d') > $beginndat) {
+					continue;
+				}
+				else if($config_show_time === 'day_x_start' && date('Y-m-d', mktime(0, 0, 0, date("m"), date("d")-1,   date("Y"))) > $endedat) {
+					continue;
+				}
+				else if($config_show_time === 'day_x_end' && date('Y-m-d') > $endedat) {
 					continue;
 				}
 			}
-			
+
 			$new_course = Course::factory();
 			// Was course imported last time?
 			if(isset($kufer_course->knr)) {
