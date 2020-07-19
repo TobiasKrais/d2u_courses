@@ -234,7 +234,7 @@ else if($old_tables_available) {
 </fieldset>
 
 <h2>Changelog</h2>
-<p>3.0.7-DEV:</p>
+<p>3.1.0:</p>
 <ul>
 	<li>Benötigt Redaxo >= 5.10, da die neue Klasse rex_version verwendet wird.</li>
 	<li>Klonen von Kategorien möglich.</li>
