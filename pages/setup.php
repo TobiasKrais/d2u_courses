@@ -234,6 +234,10 @@ else if($old_tables_available) {
 </fieldset>
 
 <h2>Changelog</h2>
+<p>3.1.1:</p>
+<ul>
+	<li>Modul 26-1 "Ausgabe Veranstaltungen": Bugfix. Kursdetailansicht zeigt nun korrektes Enddatum an.</li>
+</ul>
 <p>3.1.0:</p>
 <ul>
 	<li>Benötigt Redaxo >= 5.10, da die neue Klasse rex_version verwendet wird.</li>

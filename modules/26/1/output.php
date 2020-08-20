@@ -441,7 +441,7 @@ else {
 					$date .= (new DateTime($course->date_start))->format('d.m.Y');
 				}
 				if($course->date_end != "") {
-					$date .= ' - '. (new DateTime($course->end))->format('d.m.Y');
+					$date .= ' - '. (new DateTime($course->date_end))->format('d.m.Y');
 				}
 				if($course->time != "") {
 					if($date != "") {
