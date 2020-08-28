@@ -237,6 +237,7 @@ else if($old_tables_available) {
 <p>3.1.1:</p>
 <ul>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": Bugfix. Kursdetailansicht zeigt nun korrektes Enddatum an.</li>
+	<li>Modul 26-1 "Ausgabe Veranstaltungen": Bugfix. Plugin wurde nicht immer korrekt auf Vorhandensein geprüft.</li>
 </ul>
 <p>3.1.0:</p>
 <ul>
