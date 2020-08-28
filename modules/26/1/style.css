@@ -89,6 +89,9 @@ a .course_box {
 	color: white;
 	padding: 1rem 5px;
 }
+.course-list-title, .course-title_box {
+	margin-bottom: 1em;
+}
 a.course_row_a:hover {
 	color: white;
 	border-bottom: 1px solid white;
