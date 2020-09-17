@@ -224,7 +224,7 @@ if ($func == '') {
     $list->setNoRowsMessage(rex_i18n::msg('d2u_courses_location_no_locations_found'));
 
     $fragment = new rex_fragment();
-    $fragment->setVar('title', rex_i18n::msg('d2u_courses_location_categories'), false);
+    $fragment->setVar('title', rex_i18n::msg('d2u_courses_locations'), false);
     $fragment->setVar('content', $list->get(), false);
     echo $fragment->parse('core/page/section.php');
 }
