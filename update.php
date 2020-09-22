@@ -33,6 +33,10 @@ if(!rex_config::has('d2u_courses', 'payment_options')) {
 	rex_config::set('d2u_courses', 'payment_options', ["bank_transfer", "cash", "direct_debit"]);
 }
 
+// Update database to 3.1.1
+$sql->setQuery("ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `price` `price` DECIMAL(7,2) NULL DEFAULT NULL;");
+$sql->setQuery("ALTER TABLE `". rex::getTablePrefix() ."d2u_courses_courses` CHANGE `price_discount` `price_discount` DECIMAL(7,2) NULL DEFAULT NULL;");
+
 // START create views for url addon
 // Online categories (changes need to be done in install.php, update.php and pages/settings.php)
 $showTimeWhere = 'date_start = "" OR date_start > CURDATE()';
