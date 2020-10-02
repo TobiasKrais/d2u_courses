@@ -239,6 +239,7 @@ else if($old_tables_available) {
 	<li>Bugfix beim Speichern von Kursen deren Gebühren über 999,- € lagen.</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": Bugfix. Kursdetailansicht zeigt nun korrektes Enddatum an.</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": Bugfix. Plugin wurde nicht immer korrekt auf Vorhandensein geprüft.</li>
+	<li>Modul 26-2 "Warenkorb": Anrede wird abgefragt.</li>
 </ul>
 <p>3.1.0:</p>
 <ul>

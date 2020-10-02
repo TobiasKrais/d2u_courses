@@ -184,6 +184,14 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 	print '</div>';
 
 	print '<p>';
+	print '<label class="cart_select" for="invoice_form-gender">'. $tag_open .'d2u_courses_title'. $tag_close .'</label>';
+	print '<select class="cart_select" id="invoice_form-gender" name="invoice_form[gender]" size="1">';
+	print '<option value="W">'. $tag_open .'d2u_courses_title_female'. $tag_close .'</option>';
+	print '<option value="M">'. $tag_open .'d2u_courses_title_male'. $tag_close .'</option>';
+	print '</select>';
+	print '</p>';
+
+	print '<p>';
     print '<label class="cart_text" for="invoice_form-firstname">'. $tag_open .'d2u_courses_firstname'. $tag_close .' *</label>';
     print '<input type="text" class="cart_text" name="invoice_form[firstname]" id="invoice_form-firstname" value="" maxlength="35" required>';
 	print '</p>';
@@ -234,14 +242,6 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 		print '<label class="cart_text" for="invoice_form-birthday">'. $tag_open .'d2u_courses_birthdate'. $tag_close .'</label>';
 		print '<input type="date" class="cart_date" name="invoice_form[birthday]" placeholder="'. $tag_open .'d2u_courses_date_placeholder'. $tag_close .'" min="1900-01-01" max="'. (date("Y") - 5) .'-01-01">';
 		print '</p>';
-
-		print '<p>';
-		print '<label class="cart_select" for="invoice_form-gender">'. $tag_open .'d2u_courses_gender'. $tag_close .'</label>';
-		print '<select class="cart_select" id="invoice_form-gender" name="invoice_form[gender]" size="1">';
-		print '<option value="W">'. $tag_open .'d2u_courses_female'. $tag_close .'</option>';
-		print '<option value="M">'. $tag_open .'d2u_courses_male'. $tag_close .'</option>';
-		print '</select>';
-		print '</p><br>';
 	}
 	
 	if(count($payment_options) > 0) {
