@@ -375,6 +375,27 @@ class Course {
 	}
 
 	/**
+	 * Get course as structured data JSON LD code for Google course carousel.
+	 * @return string JSON LD code including script tag
+	 */
+	public function getJsonLdCourseCarouselCode() {
+		$json_job ='<script type="application/ld+json">'. PHP_EOL
+			.'{'.PHP_EOL
+				.'"@context" : "https://schema.org/",'. PHP_EOL
+				.'"@type" : "Course",'. PHP_EOL
+				.'"name" : "'. addslashes($this->name) .'",'. PHP_EOL
+				.'"description" : "'. ($this->teaser != "" ? addslashes($this->teaser) : addslashes($this->name)) .'",'. PHP_EOL
+				.'"provider" : {'. PHP_EOL
+					.'"@type" : "Organization",'. PHP_EOL
+					.'"name" : "'. addslashes(\rex_config::get('d2u_courses', 'company_name', '')) .'",'. PHP_EOL
+					.'"sameAs" : "'. (\rex_addon::get('yrewrite')->isAvailable() ? \rex_yrewrite::getCurrentDomain()->getUrl() : rex::getServer()) .'",'. PHP_EOL
+				.'},'. PHP_EOL
+			.'}'. PHP_EOL
+		.'</script>';
+		return $json_job;
+	}
+
+	/**
 	 * Get the <meta rel="alternate" hreflang=""> tags for page header.
 	 * @return Complete tags.
 	 */
