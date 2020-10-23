@@ -234,6 +234,10 @@ else if($old_tables_available) {
 </fieldset>
 
 <h2>Changelog</h2>
+<p>3.2.1-DEV:</p>
+<ul>
+	<li>...</li>
+</ul>
 <p>3.2.0:</p>
 <ul>
 	<li>Bugfix beim Speichern von Kursen deren Gebühren über 999,- € lagen.</li>
