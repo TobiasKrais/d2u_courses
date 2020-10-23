@@ -74,3 +74,7 @@ if(\rex_addon::get('url')->isAvailable()) {
 		\d2u_addon_backend_helper::generateUrlCache();
 	}
 }
+
+rex_sql_table::get(rex::getTable('d2u_courses_locations'))
+	->ensureColumn(new \rex_sql_column('country_code', 'varchar(3)', true, "DE"))
+	->alter();

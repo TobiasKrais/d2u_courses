@@ -212,6 +212,11 @@ if(\rex_addon::get('url')->isAvailable()) {
 	\rex_delete_cache();
 }
 
+// Update database columns
+rex_sql_table::get(rex::getTable('d2u_courses_courses'))
+	->ensureColumn(new \rex_sql_column('google_type', 'varchar(10)', true, null))
+	->alter();
+
 // Update modules
 if(class_exists('D2UModuleManager')) {
 	$modules = [];

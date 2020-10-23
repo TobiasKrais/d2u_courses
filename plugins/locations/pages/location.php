@@ -22,6 +22,7 @@ if (filter_input(INPUT_POST, "btn_save") == 1 || filter_input(INPUT_POST, "btn_a
 	$location->longitude = $form['longitude'];
 	$location->city = $form['city'];
 	$location->zip_code = $form['zip_code'];
+	$location->country_code = $form['country_code'];
 	$location->street = $form['street'];
 	$location->location_category = $form['location_category_id'] > 0 ? new D2U_Courses\LocationCategory($form['location_category_id']) : FALSE;
 	$location->redaxo_users = isset($form['redaxo_users']) ? $form['redaxo_users'] : [];
@@ -96,6 +97,7 @@ if ($func == 'edit' || $func == 'add') {
 					d2u_addon_backend_helper::form_input('d2u_courses_location_street', 'form[street]', $location->street, TRUE, $readonly, 'text');
 					d2u_addon_backend_helper::form_input('d2u_courses_location', 'form[city]', $location->city, TRUE, $readonly, 'text');
 					d2u_addon_backend_helper::form_input('d2u_courses_location_zip_code', 'form[zip_code]', $location->zip_code, TRUE, $readonly, 'text');
+					d2u_addon_backend_helper::form_input('d2u_courses_location_country_code', 'form[country_code]', $location->country_code, TRUE, $readonly, 'text');
 					
 					$d2u_helper = rex_addon::get("d2u_helper");
 					$api_key = "";

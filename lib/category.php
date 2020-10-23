@@ -54,6 +54,12 @@ class Category {
 	var $kufer_categories = [];
 	
 	/**
+	 * @var string Course type for Google JSON+LD Format: "event", "course"
+	 * or simply empty.
+	 */
+	var $google_type = "";
+	
+	/**
 	 * @var string Update timestamp
 	 */
 	var $updatedate = "";
@@ -89,6 +95,7 @@ class Category {
 			$this->updatedate = $result->getValue("updatedate");
 			if(\rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
 				$this->kufer_categories = array_map('trim', preg_grep('/^\s*$/s', explode(PHP_EOL, $result->getValue("kufer_categories")), PREG_GREP_INVERT));
+				$this->google_type = $result->getValue("google_type");
 			}
 		}
 	}
@@ -421,7 +428,8 @@ class Category {
 			.'parent_category_id = '. ($this->parent_category !== FALSE ? $this->parent_category->category_id : 0) .', '
 			.'updatedate = CURRENT_TIMESTAMP';
 		if(\rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-			$query .= ', kufer_categories = "'. implode(PHP_EOL, $this->kufer_categories) .'"';
+			$query .= ', kufer_categories = "'. implode(PHP_EOL, $this->kufer_categories) .'"'
+				.', google_type = "'. $this->google_type .'"';
 		}
 		if($this->category_id > 0) {			
 			$query .= " WHERE category_id = ". $this->category_id;

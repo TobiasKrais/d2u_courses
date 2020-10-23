@@ -39,6 +39,7 @@ if (filter_input(INPUT_POST, "btn_save") == 1 || filter_input(INPUT_POST, "btn_a
 	$course->participants_wait_list = $form['participants_wait_list'];
 	$course->registration_possible = $form['registration_possible'];
 	$course->online_status = array_key_exists('online_status', $form) ? "online" : "offline";
+	$course->google_type = $form['google_type'];
 	$course->url_external = $form['url_external'];
 	$course->redaxo_article = $input_link['1'];
 	$course->instructor = $form['instructor'];
@@ -163,6 +164,15 @@ if ($func == 'edit' || $func == 'clone' || $func == 'add') {
 							}
 							d2u_addon_backend_helper::form_select('d2u_courses_category_primary', 'form[category_id]', $options_categories, ($course->category ? [$course->category->category_id] : []), 1, FALSE, $readonly);
 							d2u_addon_backend_helper::form_select('d2u_courses_category_secondary', 'form[secondary_category_ids][]', $options_categories, $course->secondary_category_ids, 10, TRUE, $readonly);
+							$options_google_type = [
+								"" => rex_i18n::msg('d2u_courses_google_type_none'),
+								"course" => rex_i18n::msg('d2u_courses_google_type_course'),
+								"event" => rex_i18n::msg('d2u_courses_google_type_event'),
+							];
+							d2u_addon_backend_helper::form_select('d2u_courses_google_type', 'form[google_type]', $options_google_type, [$course->google_type], 1, FALSE, $readonly);
+							if(!rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
+								d2u_addon_backend_helper::form_infotext('d2u_courses_google_type_event_hint', 'google_type_event_hint');
+							}
 							// Schedule categories plugin
 							if(rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
 								$options_schedule_categories = [];

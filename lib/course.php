@@ -138,6 +138,12 @@ class Course {
 	var $online_status = "";
 	
 	/**
+	 * @var string Course type for Google JSON+LD Format: "event", "course"
+	 * or simply empty.
+	 */
+	var $google_type = "";
+	
+	/**
 	 * @var string External web page link
 	 */
 	var $url_external = "";
@@ -216,6 +222,7 @@ class Course {
 				$this->participants_wait_list = $result->getValue("participants_wait_list");
 				$this->registration_possible = $result->getValue("registration_possible");
 				$this->online_status = $result->getValue("online_status");
+				$this->google_type = $result->getValue("google_type");
 				$this->url_external = $result->getValue("url_external");
 				$this->redaxo_article = $result->getValue("redaxo_article");
 				$this->instructor = $result->getValue("instructor");
@@ -379,20 +386,96 @@ class Course {
 	 * @return string JSON LD code including script tag
 	 */
 	public function getJsonLdCourseCarouselCode() {
-		$json_job ='<script type="application/ld+json">'. PHP_EOL
+		$json_data ='<script type="application/ld+json">'. PHP_EOL
 			.'{'.PHP_EOL
 				.'"@context" : "https://schema.org/",'. PHP_EOL
 				.'"@type" : "Course",'. PHP_EOL
-				.'"name" : "'. addslashes($this->name) .'",'. PHP_EOL
-				.'"description" : "'. ($this->teaser != "" ? addslashes($this->teaser) : addslashes($this->name)) .'",'. PHP_EOL
+				.'"name" : "'. addcslashes($this->name, '"') .'",'. PHP_EOL
+				.'"description" : "'. ($this->teaser != "" ? addcslashes($this->teaser, '"') : addcslashes($this->name, '"')) .'",'. PHP_EOL
 				.'"provider" : {'. PHP_EOL
 					.'"@type" : "Organization",'. PHP_EOL
-					.'"name" : "'. addslashes(\rex_config::get('d2u_courses', 'company_name', '')) .'",'. PHP_EOL
-					.'"sameAs" : "'. (\rex_addon::get('yrewrite')->isAvailable() ? \rex_yrewrite::getCurrentDomain()->getUrl() : rex::getServer()) .'",'. PHP_EOL
-				.'},'. PHP_EOL
+					.'"name" : "'. addcslashes(\rex_config::get('d2u_courses', 'company_name', ''), '"') .'",'. PHP_EOL
+					.'"sameAs" : "'. (\rex_addon::get('yrewrite')->isAvailable() ? \rex_yrewrite::getCurrentDomain()->getUrl() : rex::getServer()) .'"'. PHP_EOL
+				.'}'. PHP_EOL
 			.'}'. PHP_EOL
 		.'</script>';
-		return $json_job;
+		return $json_data;
+	}
+
+	/**
+	 * Get course as structured data JSON LD code for Google events.
+	 * @return string JSON LD code including script tag
+	 */
+	public function getJsonLdEventCode() {
+		// Only return content if minimum requirements are matched
+		if($this->date_start == "" || $this->location === false) {
+			return '';
+		}
+
+		// Get start and end time
+		$time_start = "";
+		$time_end = "";
+		if($this->time != "") {
+			preg_match_all("@(\d*:\d*)@", $this->time, $matches);
+			$time_start = isset($matches[0][0]) ? $matches[0][0] : "";
+			$time_end = isset($matches[0][count($matches[0]) - 1]) ? $matches[0][count($matches[0]) - 1] : "";
+		}
+		
+		$json_data = '<script type="application/ld+json">'. PHP_EOL
+			.'{'.PHP_EOL
+				.'"@context" : "https://schema.org/",'. PHP_EOL
+				.'"@type" : "Event",'. PHP_EOL
+				.'"name" : "'. addcslashes($this->name, '"') .'",'. PHP_EOL
+				.'"startDate" : "'. (new \DateTime($this->date_start .($time_start != "" ? ''. $time_start : '') ))->format('c') .'",'. PHP_EOL
+				.'"endDate" : "'. (new \DateTime(($this->date_end ?? $this->date_start) .($time_start != "" ? ''. $time_start : '') ))->format('c') .'",'. PHP_EOL
+				// eventAttendanceMode options: OfflineEventAttendanceMode, OnlineEventAttendanceMode, MixedEventAttendanceMode
+				.'"eventAttendanceMode" : "https://schema.org/OfflineEventAttendanceMode",'. PHP_EOL
+				.'"eventStatus" : "https://schema.org/EventScheduled",'. PHP_EOL
+				.'"location" : {'. PHP_EOL
+					.'"@type" : "Place",'. PHP_EOL
+					.'"name" : "'. addcslashes($this->location->name, '"') .'",'. PHP_EOL
+					.'"address" : {'. PHP_EOL
+						.'"@type" : "PostalAddress"'
+						.($this->location->street == "" ?: ','. PHP_EOL .'"streetAddress" : "'. addcslashes($this->location->street, '"') .'"')
+						.($this->location->city == "" ?: ','. PHP_EOL .'"addressLocality" : "'. addcslashes($this->location->city, '"') .'"')
+						.($this->location->zip_code == "" ?: ','. PHP_EOL .'"postalCode" : "'. $this->location->zip_code .'"')
+						.($this->location->country_code == "" ?: ','. PHP_EOL .'"addressCountry" : "'. $this->location->country_code .'"')
+					. PHP_EOL.'}'. PHP_EOL
+				.'},'. PHP_EOL;
+		if($this->picture != "") {
+			$json_data .= '"image": ['
+				.'"'. \rex_yrewrite::getCurrentDomain()->getUrl() . ltrim(\rex_url::media($this->picture), '/') .'"'
+				.'],'. PHP_EOL;
+		}
+		$json_data .= '"description" : "'. ($this->teaser != "" ? addcslashes($this->teaser, '"') : addcslashes($this->name, '"')) .'",'. PHP_EOL
+				.'"offers" : {'. PHP_EOL
+					.'"@type" : "Offer",'. PHP_EOL
+					.'"url" : "'. $this->getURL(true) .'",'. PHP_EOL;
+		if($this->price != "") {
+			$json_data .= '"price" : "'. $this->price .'",'. PHP_EOL
+					.'"priceCurrency" : "EUR"';
+		}
+		if($this->registration_possible == "yes" || $this->registration_possible == "yes_number") {
+			$json_data .= ','. PHP_EOL .'"availability" : "https://schema.org/InStock"'. PHP_EOL;
+		}
+		else if($this->registration_possible == "booked") {
+			$json_data .= ','. PHP_EOL .'"availability" : "https://schema.org/SoldOut"'. PHP_EOL;
+		}
+		$json_data .= PHP_EOL .'},'. PHP_EOL;
+		if($this->instructor != "") {
+			$json_data .= '"performer" : {'. PHP_EOL
+					.'"@type" : "PerformingGroup",'. PHP_EOL
+					.'"name" : "'. $this->instructor .'"'. PHP_EOL
+				.'},'. PHP_EOL;
+		}
+		$json_data .= '"organizer" : {'. PHP_EOL
+					.'"@type" : "Organization",'. PHP_EOL
+					.'"name" : "'. addcslashes(\rex_config::get('d2u_courses', 'company_name', ''), '"') .'",'. PHP_EOL
+					.'"url" : "'. \rex_yrewrite::getCurrentDomain()->getUrl() .'"'. PHP_EOL
+				.'}'. PHP_EOL
+			.'}'. PHP_EOL
+			.'</script>';
+		return $json_data;
 	}
 
 	/**
@@ -478,6 +561,7 @@ class Course {
 			.'participants_wait_list = '. ($this->participants_wait_list ?: 0) .', '
 			.'registration_possible = "'. $this->registration_possible .'", '
 			.'online_status = "'. $this->online_status .'", '
+			.'google_type = "'. $this->google_type .'", '
 			.'url_external = "'. $this->url_external .'", '
 			.'redaxo_article = '. ($this->redaxo_article ?: 0) .', '
 			.'instructor = "'. $this->instructor .'", '

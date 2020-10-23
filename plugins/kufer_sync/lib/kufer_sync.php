@@ -304,6 +304,9 @@ class KuferSync {
 			
 			// Importiert durch Kufer SQL
 			$new_course->import_type = self::$import_name;
+			
+			// Set google type
+			$new_course->google_type = $new_course->category->google_type;
 
 			// Kurs speichern und Ergebnis loggen
 			if($new_course->course_id == 0) {

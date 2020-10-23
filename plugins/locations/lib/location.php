@@ -47,6 +47,11 @@ class Location {
 	var $city = "";
 	
 	/**
+	 * @var string ISO country code
+	 */
+	var $country_code = "";
+	
+	/**
 	 * @var string Picture
 	 */
 	var $picture = "";
@@ -94,6 +99,7 @@ class Location {
 			$this->longitude = $result->getValue("longitude");
 			$this->city = $result->getValue("city");
 			$this->zip_code = $result->getValue("zip_code");
+			$this->country_code = $result->getValue("country_code");
 			$this->street = $result->getValue("street");
 			if($result->getValue("location_category_id") > 0) {
 				$this->location_category = new LocationCategory($result->getValue("location_category_id"));
@@ -268,6 +274,7 @@ class Location {
 			.'longitude = "'. $this->longitude .'", '
 			.'city = "'. $this->city .'", '
 			.'zip_code = "'. $this->zip_code .'", '
+			.'country_code = "'. $this->country_code .'", '
 			.'street = "'. $this->street .'", '
 			.'location_category_id = '. ($this->location_category !== FALSE ? $this->location_category->location_category_id : 0) .', '
 			.'redaxo_users = "'. implode('|', $this->redaxo_users) .'", '

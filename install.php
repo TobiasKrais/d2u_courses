@@ -36,6 +36,7 @@ $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_cours
 	`online_status` varchar(7) collate utf8mb4_unicode_ci default NULL,
 	`url_external` varchar(255) collate utf8mb4_unicode_ci default NULL,
 	`redaxo_article` int(10) NULL default NULL,
+	`google_type` varchar(10) collate utf8mb4_unicode_ci default NULL,
 	`instructor` varchar(255) collate utf8mb4_unicode_ci default NULL,
 	`course_number` varchar(50) collate utf8mb4_unicode_ci default NULL,
 	`downloads` text collate utf8mb4_unicode_ci default NULL,

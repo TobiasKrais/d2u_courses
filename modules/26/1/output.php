@@ -692,6 +692,14 @@ else {
 		print '</div>'; // End row
 
 		print '</div>';
+		
+		// Google JSON+LD code
+		if($course->google_type == "course") {
+			print $course->getJsonLdCourseCarouselCode();
+		}
+		else if($course->google_type == "event") {
+			print $course->getJsonLdEventCode();
+		}
 	}
 	?>
 	<script>

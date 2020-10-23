@@ -23,6 +23,7 @@ if (filter_input(INPUT_POST, "btn_save") == 1 || filter_input(INPUT_POST, "btn_a
 	$category->priority = $form['priority'];
 	if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
 		$category->kufer_categories = array_map('trim', preg_grep('/^\s*$/s', explode(PHP_EOL, $form['kufer_categories']), PREG_GREP_INVERT));
+		$category->google_type = $form['google_type'];
 	}
 	$category->name = $form['name'];
 	$category->description = $form['description'];
@@ -114,6 +115,15 @@ if ($func == 'edit' || $func == 'clone' || $func == 'add') {
 					d2u_addon_backend_helper::form_input('header_priority', 'form[priority]', $category->priority, TRUE, $readonly, 'number');
 					if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
 						d2u_addon_backend_helper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $category->kufer_categories), 5, FALSE, $readonly, FALSE);
+						$options_google_type = [
+							"" => rex_i18n::msg('d2u_courses_google_type_none'),
+							"course" => rex_i18n::msg('d2u_courses_google_type_course'),
+							"event" => rex_i18n::msg('d2u_courses_google_type_event'),
+						];
+						d2u_addon_backend_helper::form_select('d2u_courses_google_type', 'form[google_type]', $options_google_type, [$category->google_type], 1, FALSE, $readonly);
+						if(!rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
+							d2u_addon_backend_helper::form_infotext('d2u_courses_google_type_event_hint', 'google_type_event_hint');
+						}
 					}
 				?>
 			</div>

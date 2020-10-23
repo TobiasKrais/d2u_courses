@@ -18,6 +18,7 @@ $sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_cours
 	`street` varchar(255) collate utf8mb4_unicode_ci default NULL,
 	`zip_code` varchar(10) collate utf8mb4_unicode_ci default NULL,
 	`city` varchar(255) collate utf8mb4_unicode_ci default NULL,
+	`country_code` varchar(3) collate utf8mb4_unicode_ci default NULL,
 	`picture` varchar(255) collate utf8mb4_unicode_ci default NULL,
 	`site_plan` varchar(255) collate utf8mb4_unicode_ci default NULL,
 	`location_category_id` int(10) default NULL,

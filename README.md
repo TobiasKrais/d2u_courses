@@ -14,6 +14,9 @@ Für Kurse, Kategorien, Orte, … werden sprechende URLs generiert (braucht daf�
 Ein Warenkorb mit E-Mailanmeldung kann zum Buchen genutzt werden.
 Wenn das MultiNewsletter Addon installiert ist, kann im Buchungsvorgang ein Newsletter bestellt werden.
 
+Die Angebote können im JSON+LD Format für die Google Suche ausgegeben werden. Veranstaltungen benötigen hierzu
+ein aktiviertes "locations" Plugin. Für Kurse ist das nicht nötig.
+
 Außerdem gibt es ein Plugin für die Synchronisation mit der Software Kufer SQL. Die Kufer
 Software kann einen XML Export erstellen (Lizenz erforderlich, nicht im Basisprogramm enthalten)
 der mit diesem Plugin eingelesen werden kann – auch automatisch per CronJob. Für die importierten

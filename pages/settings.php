@@ -320,6 +320,14 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 				</div>
 			</fieldset>
 			<fieldset>
+				<legend><small><i class="rex-icon fa-google"></i></small> <?php echo rex_i18n::msg('d2u_courses_settings_google'); ?></legend>
+				<div class="panel-body-wrapper slide">
+					<?php
+						d2u_addon_backend_helper::form_input('d2u_courses_settings_company_name', 'settings[company_name]', $this->getConfig('company_name'), TRUE, FALSE, "text");
+					?>
+				</div>
+			</fieldset>
+			<fieldset>
 				<legend><small><i class="rex-icon fa-shopping-cart"></i></small> <?php echo rex_i18n::msg('d2u_courses_cart'); ?></legend>
 				<div class="panel-body-wrapper slide">
 					<?php
@@ -364,14 +372,6 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 						}
 					?>
 				</div>
-			<fieldset>
-				<legend><small><i class="rex-icon fa-google"></i></small> <?php echo rex_i18n::msg('d2u_courses_settings_google'); ?></legend>
-				<div class="panel-body-wrapper slide">
-					<?php
-						d2u_addon_backend_helper::form_input('d2u_courses_settings_company_name', 'settings[company_name]', $this->getConfig('company_name'), TRUE, FALSE, "text");
-					?>
-				</div>
-			</fieldset>
 			</fieldset>
 			<?php
 				if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
