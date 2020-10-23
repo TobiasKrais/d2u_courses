@@ -234,9 +234,10 @@ else if($old_tables_available) {
 </fieldset>
 
 <h2>Changelog</h2>
-<p>3.1.1:</p>
+<p>3.2.0:</p>
 <ul>
 	<li>Bugfix beim Speichern von Kursen deren Gebühren über 999,- € lagen.</li>
+	<li>Bugfix beim Update des Addons und aktiviertem Autoupdate der Beispielmodule gingen die Moduldaten verloren.</li>
 	<li>Kurse können nun im JSON+LD Format für das Kurskarussell in der Google Suche oder für Events in Google Maps ausgegeben werden. Für die Nutzung von Events wird das locations Plugin installiert und aktiviert sein.</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": Bugfix. Kursdetailansicht zeigt nun korrektes Enddatum an.</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": Bugfix. Plugin wurde nicht immer korrekt auf Vorhandensein geprüft.</li>
