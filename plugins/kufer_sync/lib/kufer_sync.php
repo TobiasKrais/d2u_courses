@@ -320,7 +320,6 @@ class KuferSync {
 		
 		// Delete cache to solve URL addon issues
 		rex_delete_cache();
-		\d2u_addon_backend_helper::update_searchit_url_index();
 		
 		print \rex_view::success("Kufer Import Ergebnis: ");
 		print "<ul>";
