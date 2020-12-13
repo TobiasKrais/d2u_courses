@@ -138,7 +138,6 @@ if(isset($form_data['invoice_form'])) {
 				rex_clang::getCurrentId()
 			);
 		}
-dump($form_data['invoice_form']['multinewsletter']);
 		$user->group_ids = $form_data['invoice_form']['multinewsletter'];
 		$user->status = 0;
 		$user->subscriptiontype = 'web';
