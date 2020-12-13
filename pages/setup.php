@@ -236,7 +236,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.2.1-DEV:</p>
 <ul>
-	<li>...</li>
+	<li>Modul 26-2 "Warenkorb": Es können nun mehrere Newsletter bestellt werden. Die angebotenen Newsletter können in den Einstellungen angepasst werden.</li>
 </ul>
 <p>3.2.0:</p>
 <ul>

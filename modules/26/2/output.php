@@ -118,7 +118,7 @@ if(isset($form_data['invoice_form'])) {
 	}
 	
 	// MultiNewsletter Anmeldemail senden
-	if(rex_addon::get('multinewsletter') && $form_data['invoice_form']['multinewsletter'] == "yes") {
+	if(rex_addon::get('multinewsletter')->isAvailable() && is_array($form_data['invoice_form']['multinewsletter']) && count($form_data['invoice_form']['multinewsletter']) > 0) {
 		$user = MultinewsletterUser::initByMail(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL));
 		$anrede = $form_data['invoice_form']['gender'] == "W" ? 1 : 0;
 
@@ -138,9 +138,11 @@ if(isset($form_data['invoice_form'])) {
 				rex_clang::getCurrentId()
 			);
 		}
-		$user->group_ids[] = rex_config::get('d2u_courses', 'multinewsletter_group');
+dump($form_data['invoice_form']['multinewsletter']);
+		$user->group_ids = $form_data['invoice_form']['multinewsletter'];
 		$user->status = 0;
 		$user->subscriptiontype = 'web';
+		$user->privacy_policy_accepted = 1;
 		$user->activationkey = rand(100000, 999999);
 		$user->save();
 
@@ -405,10 +407,22 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 		print '</p>';
 	}
 
-	if(rex_addon::get('multinewsletter')->isAvailable() && rex_config::get('d2u_courses', 'multinewsletter_subscribe', 'hide') == 'show' && rex_config::get('d2u_courses', 'multinewsletter_group', 0) > 0) {
+	if(rex_addon::get('multinewsletter')->isAvailable() && rex_config::get('d2u_courses', 'multinewsletter_subscribe', 'hide') == 'show') {
 		print '<p class="cart_checkbox">';
-		print '<input type="checkbox" class="cart_checkbox" name="invoice_form[multinewsletter]" id="invoice_form-multinewsletter" value="yes">';
-		print '<label class="cart_checkbox" for="invoice_form-multinewsletter">'. $tag_open .'d2u_courses_multinewsletter'. $tag_close .'</label>';
+		if(count(rex_config::get('d2u_courses', 'multinewsletter_group', [])) == 1) {
+			print '<input type="checkbox" class="cart_checkbox" name="invoice_form[multinewsletter][]" id="invoice_form-multinewsletter" value="'. rex_config::get('d2u_courses', 'multinewsletter_group', [])[0] .'">';
+			print '<label class="cart_checkbox" for="invoice_form-multinewsletter">'. $tag_open .'d2u_courses_multinewsletter'. $tag_close .'</label>';
+		}
+		else if(count(rex_config::get('d2u_courses', 'multinewsletter_group', [])) > 1) {
+			print $tag_open .'d2u_courses_multinewsletter'. $tag_close .'<br>';
+			foreach(rex_config::get('d2u_courses', 'multinewsletter_group', []) as $newsletter_group_id) {
+				$multinewsletter_group = new MultinewsletterGroup($newsletter_group_id);
+				if($multinewsletter_group && $multinewsletter_group->id > 0) {
+					print '<input type="checkbox" class="cart_checkbox" name="invoice_form[multinewsletter][]" id="invoice_form-multinewsletter" value="'. $multinewsletter_group->id .'">';
+					print '<label class="cart_checkbox" for="invoice_form-multinewsletter">'. $multinewsletter_group->name .'</label><br>';
+				}
+			}
+		}
 		print '</p>';
 	}
 
