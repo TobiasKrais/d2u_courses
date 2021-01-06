@@ -152,7 +152,7 @@ if ($func == 'edit' || $func == 'add') {
 					d2u_addon_backend_helper::form_select('d2u_helper_category', 'form[location_category_id]', $options_categories, ($location->location_category === FALSE ? [-1] : [$location->location_category->location_category_id]), 1, FALSE, $readonly);
 					$options_users = [];
 					$user_result = \rex_sql::factory();
-					$user_result->setQuery('SELECT login, name FROM '. rex::getTablePrefix() .'user');
+					$user_result->setQuery('SELECT login, name FROM '. rex::getTablePrefix() .'user ORDER BY name');
 					for($i = 0; $i < $user_result->getRows(); $i++) {
 						$options_users[$user_result->getValue('login')] = $user_result->getValue('name');
 						$user_result->next();

@@ -237,6 +237,7 @@ else if($old_tables_available) {
 <p>3.2.1-DEV:</p>
 <ul>
 	<li>Modul 26-2 "Warenkorb": Es können nun mehrere Newsletter bestellt werden. Die angebotenen Newsletter können in den Einstellungen angepasst werden.</li>
+	<li>locations Plugin: Redaxo Nutzer für die Rechtevergabe sind nun alphabetisch sortiert.</li>
 </ul>
 <p>3.2.0:</p>
 <ul>
