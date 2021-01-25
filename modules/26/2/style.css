@@ -8,6 +8,7 @@
 .cart_course_title, .cart_course_title:hover {
 	color: white !important;
 	font-size: 1.25rem;
+	font-weight: bold;
 }
 #cart_empty {
 	background-color: #f4f4f4;

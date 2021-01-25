@@ -550,7 +550,7 @@ class Course {
 			.'details_age = "'. $this->details_age .'", '
 			.'picture = "'. $this->picture .'", '
 			.'price = '. number_format(($this->price > 0 ? $this->price : 0), 2, '.', '') .', '
-			.'price_discount = '. number_format(($this->price_discount ?: 0), 2, '.', '') .', '
+			.'price_discount = '. number_format(($this->price_discount > 0 ? $this->price_discount: 0), 2, '.', '') .', '
 			.'date_start = "'. $this->date_start .'", '
 			.'date_end = "'. $this->date_end .'", '
 			.'`time` = "'. $this->time .'", '

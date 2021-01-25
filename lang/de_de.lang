@@ -46,7 +46,7 @@ d2u_courses_registration_possible = Anmeldung möglich?
 d2u_courses_teaser = Kurzbeschreibung
 d2u_courses_time = Uhrzeit
 d2u_courses_url_external = Externe URL
-d2u_courses_yes = Ja, für jeden Teilnehmer Name, Geburtsdatum und Geschlecht erfragen
+d2u_courses_yes = Ja, für jeden Teilnehmer Details erfragen
 d2u_courses_yes_number = Ja, nur Anzahl Teilnehmer erfragen
 
 d2u_courses_settings_article_conditions = Redaxo Artikel AGBs
@@ -56,6 +56,7 @@ d2u_courses_settings_article_terms_of_participation = Redaxo Artikel Teilnahmebe
 d2u_courses_settings_ask_kids_go_home_alone = Wenn Minderjährige angemeldet werden fragen, ob sie nach der Veranstaltung ohne Begleitung nach Hause gehen dürfen.
 d2u_courses_settings_ask_vacation_pass = Nach Ferienpass fragen
 d2u_courses_settings_company_name = Anbietername
+d2u_courses_settings_email_text = Zusätzlicher Text in Anmeldungsmail
 d2u_courses_settings_forward_single_course = Wenn Kursliste einer Kategorie nur einen Kurs beinhaltet, direkt den Kurs anzeigen
 d2u_courses_settings_google = Einstellungen für Google
 d2u_courses_settings_multinewsletter_group = Angebotene Newsletter

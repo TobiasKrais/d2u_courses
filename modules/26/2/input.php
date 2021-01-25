@@ -27,8 +27,6 @@
 	<div class="col-xs-8">
 		Altersabfrage auf ausgewählte Hauptkategorien begrenzen?<br />
 	</div>
-</div>
-<div class="row">
 	<div class="col-xs-12">&nbsp;</div>
 </div>
 <div class="row" id="categories">
@@ -44,8 +42,6 @@
 		?>
 		</div>
 	</div>
-</div>
-<div class="row">
 	<div class="col-xs-12">&nbsp;</div>
 </div>
 <script>
@@ -78,6 +74,21 @@
 	</div>
 	<div class="col-xs-8">
 		Im Anmeldeprozess statistischen Angaben abfragen<br />
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">&nbsp;</div>
+</div>
+<?php
+	}
+	else {
+?>
+<div class="row">
+	<div class="col-xs-4">
+		<input type="checkbox" name="REX_INPUT_VALUE[5]" value="true" <?php echo "REX_VALUE[5]" == 'true' ? ' checked="checked"' : ''; ?> style="float: right;" />
+	</div>
+	<div class="col-xs-8">
+		Im Anmeldeprozess <b>nicht</b> nach dem Geschlecht fragen?<br />
 	</div>
 </div>
 <div class="row">

@@ -586,8 +586,11 @@ class Cart {
 	
 		$mail->Subject = "Webanmeldung zu Kurs";
 		
-		$body .= "<p>Die Anmeldung wird erst nach Bestätigung rechtsverbindlich.</p><br>";
-		$body .= "<b>Rechnungsadresse:</b><br>";
+		$body .= "<p>Vielen Dank für Ihre Anmeldung, die erst nach Zahlungseingang und Bestätigung durch uns rechtsverbindlich ist.</p>";
+		if(\rex_config::get('d2u_courses', 'email_text', '') !== '') {
+			$body .= \rex_config::get('d2u_courses', 'email_text');
+		}
+		$body .= "<br><b>Rechnungsadresse:</b><br>";
 		$body .= $invoice_address['firstname'] ." ". $invoice_address['lastname'] ."<br>";
 		$body .= $invoice_address['address']  ."<br>";
 		$body .= str_pad($invoice_address['zipcode'], 5, 0, STR_PAD_LEFT) .' '. $invoice_address['city']  ."<br>";
@@ -635,7 +638,9 @@ class Cart {
 					else if(isset($participant_data['age']) && $participant_data['age'] != "") {
 						$body .= "Alter bei Veranstaltungsbeginn: ". $participant_data['age']  ."<br>";
 					}
-					$body .= "Geschlecht: ". $participant_data['gender']  ."<br>";
+					if(isset($participant_data['gender']) && $participant_data['gender'] != "") {
+						$body .= "Geschlecht: ". $participant_data['gender']  ."<br>";
+					}
 					$body .= "<br>";
 				}
 			}

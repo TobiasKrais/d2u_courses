@@ -308,7 +308,7 @@ class Category {
 
 		$categories = [];
 		for($i = 0; $i < $num_rows; $i++) {
-			$categories[] = new Category($result->getValue("category_id"));
+			$categories[$result->getValue("category_id")] = new Category($result->getValue("category_id"));
 			$result->next();
 		}
 
