@@ -588,7 +588,7 @@ else {
 					print '</tr>';
 				}
 				print '<tr>';
-				print '<td>';
+				print '<td colspan="2">';
 				print '<input type="submit" class="add_participant" name="participant_add['. $course_id .']" value="['. $tag_open .'d2u_courses_cart_add_participant'. $tag_close .']">';
 				print '</td>';
 				print '</tr>';
