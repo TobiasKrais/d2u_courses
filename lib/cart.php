@@ -587,33 +587,7 @@ class Cart {
 		$mail->Subject = "Webanmeldung zu Kurs";
 		
 		$body .= "<p>Vielen Dank für Ihre Anmeldung, die erst nach Zahlungseingang und Bestätigung durch uns rechtsverbindlich ist.</p>";
-		if(\rex_config::get('d2u_courses', 'email_text', '') !== '') {
-			$body .= \rex_config::get('d2u_courses', 'email_text');
-		}
-		$body .= "<br><b>Rechnungsadresse:</b><br>";
-		$body .= $invoice_address['firstname'] ." ". $invoice_address['lastname'] ."<br>";
-		$body .= $invoice_address['address']  ."<br>";
-		$body .= str_pad($invoice_address['zipcode'], 5, 0, STR_PAD_LEFT) .' '. $invoice_address['city']  ."<br>";
-		$body .= $invoice_address['phone'] ."<br>";
-		$body .= '<a href="'. $invoice_address['e-mail'] .'">'. $invoice_address['e-mail']  ."</a><br>";
-		$body .= "Gewünscht Zahlungsart: ";
-		if(isset($invoice_address['payment']) && $invoice_address['payment'] == "L") {
-			$body .= "Lastschrift<br>";
-			$body .= "Name der Bank: ". $invoice_address['bank']  ."<br>";
-			$body .= "Kontoinhaber: ". $invoice_address['account_owner']  ."<br>";
-			$body .= "BIC: ". $invoice_address['bic']  ."<br>";
-			$body .= "IBAN: ". $invoice_address['iban'];		
-		}
-		else if(isset($invoice_address['payment']) && $invoice_address['payment'] == "Ü"){
-			$body .= "Überweisung";
-		}
-		else if(isset($invoice_address['payment']) && $invoice_address['payment'] == "B") {
-			$body .= "Barzahlung";
-		}
-		$body .=  "<br>";
-		if(isset($invoice_address['vacation_pass']) && (int) $invoice_address['vacation_pass'] > 0) {
-			$body .= "<br>Ferienpass: ". ((int) $invoice_address['vacation_pass']) ."<br>";
-		}
+
 		foreach($cart as $course_id => $participant) {
 			$body .=  "<br>";
 			$course = new Course($course_id);
@@ -650,6 +624,35 @@ class Cart {
 		}
 		if(isset($invoice_address['kids_go_home_alone']) && $invoice_address['kids_go_home_alone'] == 'yes') {
 			$body .= "<br><br>". \Sprog\Wildcard::get('d2u_courses_kids_go_home_alone');
+		}
+
+		$body .= "<br><b>Rechnungsadresse:</b><br>";
+		$body .= $invoice_address['firstname'] ." ". $invoice_address['lastname'] ."<br>";
+		$body .= $invoice_address['address']  ."<br>";
+		$body .= str_pad($invoice_address['zipcode'], 5, 0, STR_PAD_LEFT) .' '. $invoice_address['city']  ."<br>";
+		$body .= $invoice_address['phone'] ."<br>";
+		$body .= '<a href="'. $invoice_address['e-mail'] .'">'. $invoice_address['e-mail']  ."</a><br>";
+		$body .= "Gewünscht Zahlungsart: ";
+		if(isset($invoice_address['payment']) && $invoice_address['payment'] == "L") {
+			$body .= "Lastschrift<br>";
+			$body .= "Name der Bank: ". $invoice_address['bank']  ."<br>";
+			$body .= "Kontoinhaber: ". $invoice_address['account_owner']  ."<br>";
+			$body .= "BIC: ". $invoice_address['bic']  ."<br>";
+			$body .= "IBAN: ". $invoice_address['iban'];		
+		}
+		else if(isset($invoice_address['payment']) && $invoice_address['payment'] == "Ü"){
+			$body .= "Überweisung";
+		}
+		else if(isset($invoice_address['payment']) && $invoice_address['payment'] == "B") {
+			$body .= "Barzahlung";
+		}
+		$body .=  "<br>";
+		if(isset($invoice_address['vacation_pass']) && (int) $invoice_address['vacation_pass'] > 0) {
+			$body .= "<br>Ferienpass: ". ((int) $invoice_address['vacation_pass']) ."<br>";
+		}
+		
+		if(\rex_config::get('d2u_courses', 'email_text', '') !== '') {
+			$body .= \rex_config::get('d2u_courses', 'email_text');
 		}
 		
 		$mail->Body = $body;
