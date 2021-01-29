@@ -602,7 +602,9 @@ class Cart {
 				$body .= " (". $course->course_number .")";
 			}
 			$body .=  "</b><br>";
-			$body .= "Datum: ". $course->date_start . ($course->date_end != "" ? " - ". $course->date_end : "") . ($course->time != "" ? ", ". $course->time : "") ."<br>";
+			if($course->date_start !== "") {
+				$body .= "Datum: ". (new \DateTime($course->date_start))->format('d.m.Y') . ($course->date_end != "" ? " - ". (new \DateTime($course->date_end))->format('d.m.Y') : "") . ($course->time != "" ? ", ". $course->time : "") ."<br>";
+			}
 			if(is_array($participant)) {
 				foreach($participant as $id => $participant_data) {
 					$body .= "Vorname: ". $participant_data['firstname']  ."<br>";
