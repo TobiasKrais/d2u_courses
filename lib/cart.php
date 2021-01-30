@@ -588,6 +588,7 @@ class Cart {
 		
 		$body .= "<p>Vielen Dank für Ihre Anmeldung, die erst nach Zahlungseingang und Bestätigung durch uns rechtsverbindlich ist.</p>";
 
+		// Course information
 		foreach($cart as $course_id => $participant) {
 			$body .=  "<br>";
 			$course = new Course($course_id);
@@ -629,6 +630,7 @@ class Cart {
 			$body .= "<br><br>". \Sprog\Wildcard::get('d2u_courses_kids_go_home_alone');
 		}
 
+		// invoice data
 		$body .= "<br><b>Rechnungsadresse:</b><br>";
 		$body .= $invoice_address['firstname'] ." ". $invoice_address['lastname'] ."<br>";
 		$body .= $invoice_address['address']  ."<br>";
@@ -654,6 +656,7 @@ class Cart {
 			$body .= "<br>Ferienpass: ". ((int) $invoice_address['vacation_pass']) ."<br>";
 		}
 		
+		// custom text
 		if(\rex_config::get('d2u_courses', 'email_text', '') !== '') {
 			$body .= \rex_config::get('d2u_courses', 'email_text');
 		}
