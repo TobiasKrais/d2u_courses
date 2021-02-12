@@ -6,7 +6,7 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 	// Linkmap Link and media needs special treatment
 	$link_ids = filter_input_array(INPUT_POST, array('REX_INPUT_LINK'=> array('filter' => FILTER_VALIDATE_INT, 'flags' => FILTER_REQUIRE_ARRAY)));
 
-	$settings['article_id_courses'] = $link_ids["REX_INPUT_LINK"][1]  > 0 ? $link_ids["REX_INPUT_LINK"][5] : rex_article::getSiteStartArticleId();
+	$settings['article_id_courses'] = $link_ids["REX_INPUT_LINK"][1]  > 0 ? $link_ids["REX_INPUT_LINK"][1] : rex_article::getSiteStartArticleId();
 	$settings['article_id_shopping_cart'] = $link_ids["REX_INPUT_LINK"][2];
 	$settings['article_id_conditions'] = $link_ids["REX_INPUT_LINK"][3];
 	$settings['article_id_terms_of_participation'] = $link_ids["REX_INPUT_LINK"][4];

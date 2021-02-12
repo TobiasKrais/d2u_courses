@@ -136,7 +136,7 @@ class d2u_courses_lang_helper extends \D2U_Helper\ALangHelper {
 		'd2u_courses_mandatory_fields' => 'Pflichtfelder',
 		'd2u_courses_max' => 'maximal',
 		'd2u_courses_min' => 'minimal',
-		'd2u_courses_multinewsletter' => 'Bitte informieren Sie mich per E-Mail Newsletter wenn ein neues Programm erscheint. Sie erhalten 2 bis 4 Newsletter pro Jahr. Ihre Anmeldung können Sie jederzeit unter den im Newsletter angegebenen Abmeldelink widerrufen.',
+		'd2u_courses_multinewsletter' => 'Bitte informieren Sie mich per E-Mail-Newsletter wenn ein neues Programm erscheint. Sie erhalten 2 bis 4 Newsletter pro Jahr. Ihre Anmeldung können Sie jederzeit unter den im Newsletter angegebenen Abmeldelink widerrufen.',
 		'd2u_courses_oclock' => 'Uhr',
 		'd2u_courses_order_overview' => 'Bestellübersicht',
 		'd2u_courses_participants' => 'Anzahl Plätze',
