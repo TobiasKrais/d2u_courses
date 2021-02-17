@@ -217,6 +217,10 @@ else if($old_tables_available) {
 		skiclub-loerrach.de</a>.</li>
 	<li>D2U Veranstaltungen Addon ohne Plugins: <a href="https://tuttikiesi.de/" target="_blank">
 		tuttikiesi.de</a>.</li>
+	<li>D2U Veranstaltungen Addon ohne Plugins: <a href="https://gingkoblatt.de/" target="_blank">
+		Naturheilpraxis am Lehbühl</a>.</li>
+	<li>D2U Veranstaltungen Addon ohne Plugins: <a href="https://frauenfasten.de/" target="_blank">
+		Naturzentrum am Lehbühl</a>.</li>
 	<li>D2U Veranstaltungen Addon: <a href="https://kaltenbach-stiftung.de/" target="_blank">
 		kaltenbach-stiftung.de</a>.</li>
 </ul>
