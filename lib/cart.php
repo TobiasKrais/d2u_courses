@@ -642,7 +642,7 @@ class Cart {
 		$body .= str_pad($invoice_address['zipcode'], 5, 0, STR_PAD_LEFT) .' '. $invoice_address['city']  ."<br>";
 		$body .= $invoice_address['phone'] ."<br>";
 		$body .= '<a href="'. $invoice_address['e-mail'] .'">'. $invoice_address['e-mail']  ."</a><br>";
-		$body .= "Gewünscht Zahlungsart: ";
+		$body .= "Gewünschte Zahlungsart: ";
 		if(isset($invoice_address['payment']) && $invoice_address['payment'] == "L") {
 			$body .= "Lastschrift<br>";
 			$body .= "Name der Bank: ". $invoice_address['bank']  ."<br>";
