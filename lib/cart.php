@@ -588,6 +588,7 @@ class Cart {
 		
 		$body .= "<p>Vielen Dank für Ihre Anmeldung, die erst nach Zahlungseingang und Bestätigung durch uns rechtsverbindlich ist.</p>";
 
+		$price_full = 0;
 		// Course information
 		foreach($cart as $course_id => $participant) {
 			$body .=  "<br>";
@@ -605,6 +606,10 @@ class Cart {
 			$body .=  "</b><br>";
 			if($course->date_start !== "") {
 				$body .= "Datum: ". (new \DateTime($course->date_start))->format('d.m.Y') . ($course->date_end != "" ? " - ". (new \DateTime($course->date_end))->format('d.m.Y') : "") . ($course->time != "" ? ", ". $course->time : "") ."<br>";
+			}
+			if($course->price > 0) {
+				$body .= "Preis pro Teilnehmer: ". $course->price  ." €". ($course->price_discount > 0 ? " (mögliche Ermäßigungen nicht mit einberechnet" : "") ."<br>";
+				$price_full = $price_full + (is_array($participant) ? count($participant) * $course->price : $participant * $course->price);
 			}
 			if(is_array($participant)) {
 				foreach($participant as $id => $participant_data) {
@@ -654,6 +659,9 @@ class Cart {
 		$body .=  "<br>";
 		if(isset($invoice_address['vacation_pass']) && (int) $invoice_address['vacation_pass'] > 0) {
 			$body .= "<br>Ferienpass: ". ((int) $invoice_address['vacation_pass']) ."<br>";
+		}
+		if($price_full > 0) {
+			$body .= "Gesamtpreis: ". $price_full  ." €<br>";
 		}
 		
 		// custom text

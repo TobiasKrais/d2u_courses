@@ -240,7 +240,7 @@ else if($old_tables_available) {
 	<li>Modul 26-2 "Warenkorb": Wenn das kufer_sync Plugin nicht installiert ist, kann die Frage nach dem Geschlecht der Kursteilnehmer optional dekativiert werden.</li>
 	<li>locations Plugin: Redaxo Nutzer für die Rechtevergabe sind nun alphabetisch sortiert.</li>
 	<li>In den Einstellungen gibt es neu ein Textfeld für einen Text in der Bestätigungsmail.</li>
-	<li>Bestätigungsmail enthält nun auch das Datum und die Uhrzeit der Veranstaltung.</li>
+	<li>Bestätigungsmail enthält nun auch den Presi, das Datum und die Uhrzeit der Veranstaltung.</li>
 	<li>Bugfix: in einigen Fällen wurde der Redaxo Artikel in den Einstellungen nicht korrekt gespeichert.</li>
 	<li>Bugfix: in einigen Fällen konnten mehrere gleiche Kategorien nebeneinander ausgegeben werden.</li>
 </ul>
