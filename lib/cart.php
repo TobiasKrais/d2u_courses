@@ -586,7 +586,8 @@ class Cart {
 	
 		$mail->Subject = "Webanmeldung zu Kurs";
 		
-		$body .= "<p>Vielen Dank für Ihre Anmeldung, die erst nach Zahlungseingang und Bestätigung durch uns rechtsverbindlich ist.</p>";
+		$body .= "<p>Sehr ". ($invoice_address['gender'] == "W" ? "geehrte Frau" : "geehrter Herr") ." ". $invoice_address['lastname'] .",</p>";
+		$body .= "<p>vielen Dank für Ihre Anmeldung. Nachfolgend die Details der Anmeldung:</p>";
 
 		$price_full = 0;
 		// Course information
