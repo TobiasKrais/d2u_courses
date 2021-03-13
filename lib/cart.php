@@ -587,7 +587,7 @@ class Cart {
 		$mail->Subject = "Webanmeldung zu Kurs";
 		
 		$body .= "<p>Sehr ". ($invoice_address['gender'] == "W" ? "geehrte Frau" : "geehrter Herr") ." ". $invoice_address['lastname'] .",</p>";
-		$body .= "<p>vielen Dank für Ihre Anmeldung. Nachfolgend die Details der Anmeldung:</p>";
+		$body .= "<p>vielen Dank für Ihre Anmeldung / Bestellung. Nachfolgend die Details:</p>";
 
 		$price_full = 0;
 		// Course information
@@ -600,7 +600,7 @@ class Cart {
 			else {
 				continue;
 			}
-			$body .= '<b>Anmeldung zu Kurs "'. $course->name .'"';
+			$body .= '<b>Anmeldung / Bestellung: "'. $course->name .'"';
 			if($course->course_number != "" && $course->name != "") {
 				$body .= " (". $course->course_number .")";
 			}
@@ -609,7 +609,7 @@ class Cart {
 				$body .= "Datum: ". (new \DateTime($course->date_start))->format('d.m.Y') . ($course->date_end != "" ? " - ". (new \DateTime($course->date_end))->format('d.m.Y') : "") . ($course->time != "" ? ", ". $course->time : "") ."<br>";
 			}
 			if($course->price > 0) {
-				$body .= "Preis pro Teilnehmer: ". $course->price  ." €". ($course->price_discount > 0 ? " (mögliche Ermäßigungen nicht mit einberechnet" : "") ."<br>";
+				$body .= "Einzelpreis: ". $course->price  ." €". ($course->price_discount > 0 ? " (mögliche Ermäßigungen nicht mit einberechnet" : "") ."<br>";
 				$price_full = $price_full + (is_array($participant) ? count($participant) * $course->price : $participant * $course->price);
 			}
 			if(is_array($participant)) {
