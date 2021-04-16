@@ -352,7 +352,7 @@ else {
 
 				print '<div class="col-12 col-md-6 spacer_box">';
 				print '<div class="course_row_title" style="background-color: '. $list_course->category->color .'" data-height-watch>';
-				print $list_course->name;
+				print $title;
 				print '</div>';
 				print '</div>';
 

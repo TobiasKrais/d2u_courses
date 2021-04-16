@@ -240,6 +240,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.2.1-DEV:</p>
 <ul>
+	<li>Modul 26-1 "Ausgabe Veranstaltungen" Usability: In Liste wird "ausgebucht" angezeigt, wenn Veranstaltung ausgebucht ist.</li>
 	<li>Modul 26-2 "Warenkorb": Es können nun mehrere Newsletter bestellt werden. Die angebotenen Newsletter können in den Einstellungen angepasst werden.</li>
 	<li>Modul 26-2 "Warenkorb": Wenn das kufer_sync Plugin nicht installiert ist, kann die Frage nach dem Geschlecht der Kursteilnehmer optional dekativiert werden.</li>
 	<li>locations Plugin: Redaxo Nutzer für die Rechtevergabe sind nun alphabetisch sortiert.</li>
