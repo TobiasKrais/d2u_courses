@@ -54,6 +54,7 @@
 	border: 0;
 	color: white;
 	padding: 0 0 5px 0;
+	text-align: left;
 }
 .delete_participant {
 	float: right;

@@ -108,15 +108,17 @@ class Cart {
 		$stammdaten = $xml->createElement("STAMMDATEN");
 		$registration->appendChild($stammdaten);
 		if($registration_type == "selbst" || $registration_type == "kind") {
-			// <NAME_TITEL>M = Herr, W = Frau, F = Herr</NAME_TITEL>
-			$name_titel = $xml->createElement("NAME_TITEL");
-			if($invoice_address['gender'] == "W") {
-				$name_titel->appendChild($xml->createTextNode("Frau"));
+			if($registration_type == "selbst") {
+				// <NAME_TITEL>M = Herr, W = Frau, F = Herr</NAME_TITEL>
+				$name_titel = $xml->createElement("NAME_TITEL");
+				if($invoice_address['gender'] == "W") {
+					$name_titel->appendChild($xml->createTextNode("Frau"));
+				}
+				else {
+					$name_titel->appendChild($xml->createTextNode("Herr"));
+				}
+				$stammdaten->appendChild($name_titel);
 			}
-			else {
-				$name_titel->appendChild($xml->createTextNode("Herr"));
-			}
-			$stammdaten->appendChild($name_titel);
 			// <NAME>Last name</NAME>
 			$name = $xml->createElement("NAME");
 			$name->appendChild($xml->createTextNode($invoice_address['lastname']));
@@ -133,16 +135,16 @@ class Cart {
 			$city = $xml->createElement("ORT");
 			$city->appendChild($xml->createTextNode(str_pad($invoice_address['zipcode'], 5, 0, STR_PAD_LEFT) .' '. $invoice_address['city']));
 			$stammdaten->appendChild($city);
-			if(isset($invoice_address['gender']) && $invoice_address['gender'] != "") {
-				// <GESCHLECHT>M = male, W = female, F = company</GESCHLECHT>
-				$gender = $xml->createElement("GESCHLECHT");
-				$gender->appendChild($xml->createTextNode($invoice_address['gender']));
-				$stammdaten->appendChild($gender);
-			}
 			if($registration_type == "selbst") {
 				foreach($cart as $course_id => $participant) {
 					if(is_array($participant)) {
 						foreach($participant as $id => $participant_data) {
+							if(isset($participant_data['gender']) && $participant_data['gender'] != "") {
+								// <GESCHLECHT>M = male, W = female, F = company</GESCHLECHT>
+								$gender = $xml->createElement("GESCHLECHT");
+								$gender->appendChild($xml->createTextNode($participant_data['gender']));
+								$stammdaten->appendChild($gender);
+							}
 							if(isset($participant_data['birthday']) && $participant_data['birthday'] != "") {
 								// <GEBDATUM>TT.MM.JJJJ</GEBDATUM>
 								$gebdatum = $xml->createElement("GEBDATUM");
@@ -181,15 +183,17 @@ class Cart {
 			foreach($cart as $course_id => $participant) {
 				if(is_array($participant)) {
 					foreach($participant as $id => $participant_data) {
-						// <NAME_TITEL>M = Herr, W = Frau, F = Herr</NAME_TITEL>
-						$name_titel = $xml->createElement("NAME_TITEL");
-						if($participant_data['gender'] == "W") {
-							$name_titel->appendChild($xml->createTextNode("Frau"));
+						if($participant_data['gender'] !== "") {
+							// <NAME_TITEL>M = Herr, W = Frau, F = Herr</NAME_TITEL>
+							$name_titel = $xml->createElement("NAME_TITEL");
+							if($participant_data['gender'] == "W") {
+								$name_titel->appendChild($xml->createTextNode("Frau"));
+							}
+							else {
+								$name_titel->appendChild($xml->createTextNode("Herr"));
+							}
+							$stammdaten->appendChild($name_titel);
 						}
-						else {
-							$name_titel->appendChild($xml->createTextNode("Herr"));
-						}
-						$stammdaten->appendChild($name_titel);
 						// <NAME>Last name</NAME>
 						$name = $xml->createElement("NAME");
 						$name->appendChild($xml->createTextNode($participant_data['lastname']));
@@ -198,10 +202,12 @@ class Cart {
 						$firstname = $xml->createElement("VORNAME");
 						$firstname->appendChild($xml->createTextNode($participant_data['firstname']));
 						$stammdaten->appendChild($firstname);
-						// <GESCHLECHT>M = male, W = female, F = company</GESCHLECHT>
-						$gender = $xml->createElement("GESCHLECHT");
-						$gender->appendChild($xml->createTextNode($participant_data['gender']));
-						$stammdaten->appendChild($gender);
+						if(isset($participant_data['gender']) && $participant_data['gender'] != "") {
+							// <GESCHLECHT>M = male, W = female, F = company</GESCHLECHT>
+							$gender = $xml->createElement("GESCHLECHT");
+							$gender->appendChild($xml->createTextNode($participant_data['gender']));
+							$stammdaten->appendChild($gender);
+						}
 						if(isset($participant_data['birthday']) && $participant_data['birthday'] != "") {
 							// <GEBDATUM>DD.MM.YYYY</GEBDATUM>
 							$gebdatum = $xml->createElement("GEBDATUM");
@@ -223,8 +229,9 @@ class Cart {
 				}
 			}
 			// <RECHADR1>Invoice receipient full name</RECHADR1>
+			$title = isset($invoice_address['gender']) && $invoice_address['gender'] == "W" ? \Sprog\Wildcard::get('d2u_courses_title_female') : \Sprog\Wildcard::get('d2u_courses_title_male');
 			$strasse = $xml->createElement("RECHADR1");
-			$strasse->appendChild($xml->createTextNode($invoice_address['firstname'] ." ". $invoice_address['lastname']));
+			$strasse->appendChild($xml->createTextNode($title ." ". $invoice_address['firstname'] ." ". $invoice_address['lastname']));
 			$stammdaten->appendChild($strasse);
 			// <RECHADR2>Invoice receipient street and house number</RECHADR2>
 			$strasse2 = $xml->createElement("RECHADR2");

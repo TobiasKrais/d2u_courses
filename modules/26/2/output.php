@@ -362,7 +362,7 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 			print '<ul>';
 			foreach($cart->getCourseParticipants($course_id) as $id => $participant) {
 				print '<li>'. $participant['firstname'] .' '. $participant['lastname'];
-				if((!rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && "REX_VALUE[5]" !== 'true') || (in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_id))) {
+				if("REX_VALUE[5]" !== 'true' || (in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_id))) {
 					print ' (';
 					$age_seperator = false;
 					if($ask_age == 1) {
@@ -373,7 +373,7 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 						print $tag_open .'d2u_courses_age'. $tag_close .': '. D2U_Courses\Cart::formatCourseDate($participant['age']);
 						$age_seperator = true;
 					}
-					if(!rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && "REX_VALUE[5]" !== 'true') {
+					if("REX_VALUE[5]" !== 'true') {
 						if($age_seperator === true ) {
 							print ', ';
 						}
@@ -547,7 +547,7 @@ else {
 				if(in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_id) && $ask_age > 0) {
 					print '<td style="width: 25%">'. $tag_open .($ask_age == 1 ? 'd2u_courses_birthdate' : 'd2u_courses_age'). $tag_close .'</td>';
 				}
-				if(!rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && "REX_VALUE[5]" !== 'true') {
+				if("REX_VALUE[5]" !== 'true') {
 					print '<td style="width: 20%">'. $tag_open .'d2u_courses_gender'. $tag_close .'</td>';
 				}
 				print '<td style="width: 5%">&nbsp;</td>';
@@ -565,7 +565,7 @@ else {
 							print '<td><div class="div_cart"><input type="number" name="participant_'. $course_id .'['. $participant_id .'][age]" value="'. $participant_data['age'] .'" required></div></td>';
 						}
 					}
-					if(!rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && "REX_VALUE[5]" !== 'true') {
+					if("REX_VALUE[5]" !== 'true') {
 						print '<td><div class="div_cart"><select class="participant" name="participant_'. $course_id .'['. $participant_id .'][gender]">';
 						if($participant_data["gender"] == "M") {
 							print '<option value="M" selected>'. $tag_open .'d2u_courses_male'. $tag_close .'</option>';

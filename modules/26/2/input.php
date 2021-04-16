@@ -81,7 +81,6 @@
 </div>
 <?php
 	}
-	else {
 ?>
 <div class="row">
 	<div class="col-xs-4">
@@ -94,9 +93,6 @@
 <div class="row">
 	<div class="col-xs-12">&nbsp;</div>
 </div>
-<?php
-	}
-?>
 <div class="row">
 	<div class="col-xs-12">
 		<p>Einstellung für den Warenkorb werden im <a href="index.php?page=d2u_courses/settings">D2U Kurse Addon > Einstellungen</a> verwaltet.</p>
