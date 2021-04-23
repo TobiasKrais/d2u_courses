@@ -612,79 +612,114 @@ else {
 			if($show_map) {
 				print '<div class="col-12 course_row">';
 				print '<div class="course_box spacer_box">';
-				$api_key = "";
-				if(rex_config::has('d2u_helper', 'maps_key')) {
-					$api_key = rex_config::get('d2u_helper', 'maps_key');
-				}
-				?>
-				<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo $api_key; ?>"></script> 
-				<div id="map_canvas" style="display: block; width: 100%; height: 400px"></div> 
-				<script> 
-				<?php
-					// If longitude and latitude is available: create map
-					if($course->location->latitude != 0 && $course->location->longitude != 0) {
-				?>
-					var myLatlng = new google.maps.LatLng(<?php print $course->location->latitude .",". $course->location->longitude; ?>);
-					var myOptions = {
-						zoom: <?php echo $course->location->location_category->zoom_level; ?>,
-						center: myLatlng,
-						mapTypeId: google.maps.MapTypeId.ROADMAP
-					};
-					var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
-					var marker = new google.maps.Marker({
-						position: myLatlng, 
-						map: map
-					});
-
-					var infowindow = new google.maps.InfoWindow({
-						content: "<?php print $course->location->name; ?>",
-						position: myLatlng
-					});
-					infowindow.open(map, marker);
-					google.maps.event.addListener(marker, 'click', function() {
-						infowindow.open(map,marker);
-					});
-				<?php
+				$map_type = "REX_VALUE[1]" == '' ? 'google' : "REX_VALUE[1]"; // Backward compatibility
+				if($map_type == 'google') {
+					$api_key = "";
+					if(rex_config::has('d2u_helper', 'maps_key')) {
+						$api_key = rex_config::get('d2u_helper', 'maps_key');
 					}
-					// Fallback on geocoding
-					else {
-				?>
-					var geocoder = new google.maps.Geocoder();
-					var map; 
-					var address = "<?php print $course->location->street .', '. $course->location->zip_code .' '. $course->location->city; ?>";
-					if (geocoder) {
-						geocoder.geocode( { 'address': address}, function(results, status) {
-							if (status === google.maps.GeocoderStatus.OK) {
-								map.setCenter(results[0].geometry.location);
-								var marker = new google.maps.Marker({
-									map: map,
-									position: results[0].geometry.location
-								});
-								var infowindow = new google.maps.InfoWindow({
-									content: "<?php print $course->location->name; ?>",
-									position: results[0].geometry.location
-								});
-								infowindow.open(map, marker);
-								google.maps.event.addListener(marker, 'click', function() {
-									infowindow.open(map,marker);
-								});
-							} else {
-								alert("Geocode was not successful for the following reason: " + status);
-							}
+					?>
+					<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo $api_key; ?>"></script> 
+					<div id="map_canvas" style="display: block; width: 100%; height: 400px"></div> 
+					<script> 
+					<?php
+						// If longitude and latitude is available: create map
+						if($course->location->latitude != 0 && $course->location->longitude != 0) {
+					?>
+						var myLatlng = new google.maps.LatLng(<?php print $course->location->latitude .",". $course->location->longitude; ?>);
+						var myOptions = {
+							zoom: <?php echo $course->location->location_category->zoom_level; ?>,
+							center: myLatlng,
+							mapTypeId: google.maps.MapTypeId.ROADMAP
+						};
+						var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+						var marker = new google.maps.Marker({
+							position: myLatlng, 
+							map: map
 						});
-					}
 
-					var myOptions = {
-						zoom: <?php echo $course->location->location_category->zoom_level; ?>,
-						mapTypeId: google.maps.MapTypeId.ROADMAP
-					};
-					map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+						var infowindow = new google.maps.InfoWindow({
+							content: "<?php print $course->location->name; ?>",
+							position: myLatlng
+						});
+						infowindow.open(map, marker);
+						google.maps.event.addListener(marker, 'click', function() {
+							infowindow.open(map,marker);
+						});
+					<?php
+						}
+						// Fallback on geocoding
+						else {
+					?>
+						var geocoder = new google.maps.Geocoder();
+						var map; 
+						var address = "<?php print $course->location->street .', '. $course->location->zip_code .' '. $course->location->city; ?>";
+						if (geocoder) {
+							geocoder.geocode( { 'address': address}, function(results, status) {
+								if (status === google.maps.GeocoderStatus.OK) {
+									map.setCenter(results[0].geometry.location);
+									var marker = new google.maps.Marker({
+										map: map,
+										position: results[0].geometry.location
+									});
+									var infowindow = new google.maps.InfoWindow({
+										content: "<?php print $course->location->name; ?>",
+										position: results[0].geometry.location
+									});
+									infowindow.open(map, marker);
+									google.maps.event.addListener(marker, 'click', function() {
+										infowindow.open(map,marker);
+									});
+								} else {
+									alert("Geocode was not successful for the following reason: " + status);
+								}
+							});
+						}
+
+						var myOptions = {
+							zoom: <?php echo $course->location->location_category->zoom_level; ?>,
+							mapTypeId: google.maps.MapTypeId.ROADMAP
+						};
+						map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+					<?php
+						}
+					?>
+					</script>
 				<?php
-					}
+				}
+				else {
+					$map_id = rand();
+
+					$leaflet_js_file = 'modules/04-2/leaflet.js';
+					print '<script src="'. rex_url::addonAssets('d2u_helper', $leaflet_js_file) .'?buster='. filemtime(rex_path::addonAssets('d2u_helper', $leaflet_js_file)) .'"></script>' . PHP_EOL;
+
 				?>
-				</script>
+					<div id="map-<?php echo $map_id; ?>" style="width:100%;height:400px"></div>
+					<script type="text/javascript" async="async">
+						var map = L.map('map-<?php echo $map_id; ?>').setView([<?= $course->location->latitude .','. $course->location->longitude; ?>], <?php echo $course->location->location_category->zoom_level; ?>);
+						L.tileLayer('/?osmtype=german&z={z}&x={x}&y={y}', {
+							attribution: 'Map data &copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+						}).addTo(map);
+						map.scrollWheelZoom.disable();
+						var myIcon = L.icon({
+							iconUrl: '<?php echo rex_url::addonAssets('d2u_helper', 'modules/04-2/marker-icon.png'); ?>',
+							shadowUrl: '<?php echo rex_url::addonAssets('d2u_helper', 'modules/04-2/marker-shadow.png'); ?>',
+
+							iconSize:     [25, 41], // size of the icon
+							shadowSize:   [41, 41], // size of the shadow
+							iconAnchor:   [12, 40], // point of the icon which will correspond to marker's location
+							shadowAnchor: [13, 40], // the same for the shadow
+							popupAnchor:  [0, -41]  // point from which the popup should open relative to the iconAnchor
+						});
+						var marker = L.marker([<?= $course->location->latitude .','. $course->location->longitude; ?>], {
+							draggable: false,
+							icon: myIcon
+						}).addTo(map).bindPopup('<?php echo addslashes($course->location->name); ?>').openPopup();
+					</script>
 				<?php
+				}
 				print '</div>';
 				print '</div>';
 			}

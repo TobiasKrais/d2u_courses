@@ -57,17 +57,54 @@ if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
 ?>
 <div class="row">
 	<div class="col-xs-4">
-		<input type="checkbox" name="REX_INPUT_VALUE[2]" value="true" <?php echo "REX_VALUE[2]" == 'true' ? ' checked="checked"' : ''; ?> style="float: right;" />
+		<input type="checkbox" name="REX_INPUT_VALUE[2]" value="true" <?php echo "REX_VALUE[2]" == 'true' ? ' checked="checked"' : ''; ?> style="float: right;" onChange="toggleMapDetails()"/>
 	</div>
 	<div class="col-xs-8">
-		Google Maps Karte anzeigen
-		<?php
-			if(rex_config::get('d2u_helper', 'maps_key', '') == '') {
-				print '<span style="color:red;">(in den Einstellung des <a href="index.php?page=d2u_helper/settings">D2U Helper Addon</a> muss hierfür noch ein Google Maps API Key eingegeben werden)';
-			}
-		?>
+		Karte anzeigen
 	</div>
 </div>
+<div class="row">
+	<div class="col-xs-12">&nbsp;</div>
+</div>
+<div class="row">
+	<div class="col-xs-4">Art der Karte:</div>
+	<div class="col-xs-8">
+		<div class="rex-select-style">
+			<?php 
+				$map_types = ["osm" => "OpenStreetMap". (rex_addon::get('osmproxy')->isAvailable() ? "" : " (osmproxy Addon muss noch installiert werden)"),
+					"google" => "Google Maps". (rex_config::get('d2u_helper', 'maps_key', '') != '') ? "" : " (in den Einstellung des D2U Helper Addons muss hierfür noch ein Google Maps API Key eingegeben werden)"];
+
+				if(count($map_types) > 0) {
+					print ' <select name="REX_INPUT_VALUE[7]" class="form-control">';
+					foreach ($map_types as $map_type_id => $map_type_name) {
+						echo '<option value="'. $map_type_id .'" ';
+
+						if ("REX_VALUE[7]" == $map_type_id) {
+							echo 'selected="selected" ';
+						}
+						echo '>'. $map_type_name .'</option>';
+					}
+					print '</select>';
+				}
+			?>
+		</div>
+	</div>
+</div>
+<script>
+	function toggleMapDetails() {
+		if ($("input[name='REX_INPUT_VALUE[2]']").is(':checked')) {
+			$("select[name='REX_INPUT_VALUE[7]']").parent().parent().parent().slideDown();
+		}
+		else {
+			$("select[name='REX_INPUT_VALUE[7]']").parent().parent().parent().slideUp();
+		}
+	}
+
+	// Hide on document load
+	$(document).ready(function() {
+		toggleMapDetails();
+	});
+</script>
 <div class="row">
 	<div class="col-xs-12">&nbsp;</div>
 </div>
