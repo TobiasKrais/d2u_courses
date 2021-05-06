@@ -72,7 +72,7 @@ if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
 		<div class="rex-select-style">
 			<?php 
 				$map_types = ["osm" => "OpenStreetMap". (rex_addon::get('osmproxy')->isAvailable() ? "" : " (osmproxy Addon muss noch installiert werden)"),
-					"google" => "Google Maps". (rex_config::get('d2u_helper', 'maps_key', '') != '') ? "" : " (in den Einstellung des D2U Helper Addons muss hierfür noch ein Google Maps API Key eingegeben werden)"];
+					"google" => "Google Maps". (rex_config::get('d2u_helper', 'maps_key', '') != '' ? "" : " (in den Einstellung des D2U Helper Addons muss hierfür noch ein Google Maps API Key eingegeben werden)")];
 
 				if(count($map_types) > 0) {
 					print ' <select name="REX_INPUT_VALUE[7]" class="form-control">';

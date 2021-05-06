@@ -87,7 +87,7 @@
 		<input type="checkbox" name="REX_INPUT_VALUE[5]" value="true" <?php echo "REX_VALUE[5]" == 'true' ? ' checked="checked"' : ''; ?> style="float: right;" />
 	</div>
 	<div class="col-xs-8">
-		Im Anmeldeprozess <b>nicht</b> nach dem Geschlecht fragen?<br />
+		Im Anmeldeprozess <b>nicht</b> nach dem Geschlecht fragen
 	</div>
 </div>
 <div class="row">
