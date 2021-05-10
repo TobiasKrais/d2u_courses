@@ -566,7 +566,7 @@ class Cart {
 				
 		$mail->AddAddress(\rex_config::get('d2u_courses', 'request_form_email'));
 	
-		$mail->Subject = "Webanmeldung zu Kurs";
+		$mail->Subject = "Anmeldung / Bestellung";
 		
 		$body .= "<p>Sehr ". ($invoice_address['gender'] == "W" ? "geehrte Frau" : "geehrter Herr") ." ". $invoice_address['lastname'] .",</p>";
 		$body .= "<p>vielen Dank für Ihre Anmeldung / Bestellung. Nachfolgend die Details:</p>";
@@ -644,7 +644,7 @@ class Cart {
 			$body .= "<br>Ferienpass: ". ((int) $invoice_address['vacation_pass']) ."<br>";
 		}
 		if($price_full > 0) {
-			$body .= "Gesamtpreis: ". $price_full  ." €<br>";
+			$body .= "Gesamtpreis: ". number_format($price_full, 2)  ." €<br>";
 		}
 		
 		// custom text
