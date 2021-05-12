@@ -179,7 +179,13 @@ class KuferSync {
 			
 			// Location: take from settings
 			if(\rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-				$new_course->location = new Location(\rex_config::get('d2u_courses', 'kufer_sync_default_location_id', 0));
+				if(isset($kufer_course->ortid) && $kufer_course->ortid > 0) {
+					$new_course->location = Location::getByKuferLocationId($kufer_course->ortid);
+				}
+				if($new_course->location === FALSE) {
+					$new_course->location = new Location(\rex_config::get('d2u_courses', 'kufer_sync_default_location_id', 0));
+				}
+				
 				// room name
 				if(isset($kufer_course->ortraumname) && $kufer_course->ortraumname != "") {
 					$new_course->room = str_replace('"', "'", $kufer_course->ortraumname);

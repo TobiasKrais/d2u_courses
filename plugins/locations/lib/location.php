@@ -17,47 +17,47 @@ class Location {
 	var $location_id = 0;
 	
 	/**
-	 * @var string Name
+	 * @var String Name
 	 */
 	var $name = "";
 	
 	/**
-	 * @var string Longitude
+	 * @var String Longitude
 	 */
 	var $longitude = "";
 	
 	/**
-	 * @var string Latitude
+	 * @var String Latitude
 	 */
 	var $latitude = "";
 	
 	/**
-	 * @var string Street
+	 * @var String Street
 	 */
 	var $street = "";
 	
 	/**
-	 * @var string ZIP code
+	 * @var String ZIP code
 	 */
 	var $zip_code = "";
 	
 	/**
-	 * @var string City
+	 * @var String City
 	 */
 	var $city = "";
 	
 	/**
-	 * @var string ISO country code
+	 * @var String ISO country code
 	 */
 	var $country_code = "";
 	
 	/**
-	 * @var string Picture
+	 * @var String Picture
 	 */
 	var $picture = "";
 	
 	/**
-	 * @var string Site plan
+	 * @var String Site plan
 	 */
 	var $site_plan = "";
 	
@@ -67,18 +67,24 @@ class Location {
 	var $location_category = FALSE;
 	
 	/**
-	 * @var string[] Redaxo usernames that are allowed to create courses for this
+	 * @var String[] Redaxo usernames that are allowed to create courses for this
 	 * location
 	 */
 	var $redaxo_users = [];
 
 	/**
-	 * @var string Update timestamp
+	 * @var String Update timestamp
 	 */
 	var $updatedate = "";
 
 	/**
-	 * @var string URL
+	 * @var int Update timestamp
+	 */
+	var $kufer_location_id = 0;
+	
+	
+	/**
+	 * @var String URL
 	 */
 	private $url = "";
 
@@ -107,6 +113,9 @@ class Location {
 			$this->redaxo_users = preg_grep('/^\s*$/s', explode("|", $result->getValue("redaxo_users")), PREG_GREP_INVERT);
 			$this->picture = $result->getValue("picture");
 			$this->site_plan = $result->getValue("site_plan");
+			if(\rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
+				$this->kufer_location_id = $result->getValue("kufer_location_id");
+			}
 			$this->updatedate = $result->getValue("updatedate");
 		}
 	}
@@ -173,6 +182,21 @@ class Location {
 			$result->next();
 		}
 		return $locations;
+	}
+
+	/**
+	 * Get location by Kufer Ort ID
+	 * @param int $kufer_location_id Kufer Ort ID
+	 * @return Location|boolean location or false if no location with this Kufer Ort ID was found
+	 */
+	static function getByKuferLocationId($kufer_location_id) {
+		$query = "SELECT location_id FROM ". \rex::getTablePrefix() ."d2u_courses_locations WHERE kufer_location_id = ". $kufer_location_id;
+		$result = \rex_sql::factory();
+		$result->setQuery($query);
+		if($result->getRows() > 0) {
+			return new Location($result->getValue("location_id"));
+		}
+		return false;
 	}
 
 	/**
@@ -281,6 +305,9 @@ class Location {
 			.'picture = "'. $this->picture .'", '
 			.'site_plan = "'. $this->site_plan .'", '
 			.'updatedate = CURRENT_TIMESTAMP ';
+			if(\rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
+				$query .= ", kufer_location_id = ". $this->kufer_location_id;
+			}
 		if($this->location_id > 0) {			
 			$query .= " WHERE location_id = ". $this->location_id;
 		}

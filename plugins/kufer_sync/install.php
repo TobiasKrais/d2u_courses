@@ -20,3 +20,9 @@ if(rex_plugin::get('d2u_courses', 'schedule_categories')->isInstalled()) {
 		->ensureColumn(new \rex_sql_column('kufer_categories', 'text', true, null))
 		->alter();
 }
+
+if(rex_plugin::get('d2u_courses', 'locations')->isInstalled()) {
+	rex_sql_table::get(rex::getTable('d2u_courses_locations'))
+		->ensureColumn(new \rex_sql_column('kufer_location_id', 'int(10)', true, null))
+		->alter();
+}

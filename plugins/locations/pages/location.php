@@ -25,6 +25,7 @@ if (filter_input(INPUT_POST, "btn_save") == 1 || filter_input(INPUT_POST, "btn_a
 	$location->country_code = $form['country_code'];
 	$location->street = $form['street'];
 	$location->location_category = $form['location_category_id'] > 0 ? new D2U_Courses\LocationCategory($form['location_category_id']) : FALSE;
+	$location->kufer_location_id = $form['kufer_location_id'];
 	$location->redaxo_users = isset($form['redaxo_users']) ? $form['redaxo_users'] : [];
 	$location->picture = $input_media[1];
 	$location->site_plan = $input_media[2];
@@ -158,6 +159,9 @@ if ($func == 'edit' || $func == 'add') {
 						$user_result->next();
 					}
 					d2u_addon_backend_helper::form_select('d2u_courses_location_rexuser', 'form[redaxo_users][]', $options_users, $location->redaxo_users, 5, TRUE, $readonly);
+					if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
+						d2u_addon_backend_helper::form_input('d2u_courses_kufer_sync_location_id', 'form[kufer_location_id]', $location->kufer_location_id, FALSE, $readonly, 'number');
+					}
 				?>
 			</div>
 			<footer class="panel-footer">
