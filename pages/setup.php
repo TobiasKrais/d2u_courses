@@ -244,6 +244,7 @@ else if($old_tables_available) {
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": es steht nun auch eine OpenStreetMap Karte zur Verfügung.</li>
 	<li>Modul 26-2 "Warenkorb": Es können nun mehrere Newsletter bestellt werden. Die angebotenen Newsletter können in den Einstellungen angepasst werden.</li>
 	<li>Modul 26-2 "Warenkorb": Es kann die Frage nach dem Geschlecht der Kursteilnehmer dekativiert werden.</li>
+	<li>Modul 26-2 "Warenkorb": PHP Warnung entfernt.</li>
 	<li>locations Plugin: Redaxo Nutzer für die Rechtevergabe sind nun alphabetisch sortiert.</li>
 	<li>locations /kufer_sync Plugin: Zuordnung zu Kufer Ort ID möglich.</li>
 	<li>In den Einstellungen gibt es neu ein Textfeld für einen Text in der Bestätigungsmail.</li>

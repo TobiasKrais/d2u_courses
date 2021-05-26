@@ -473,7 +473,7 @@ else {
 	else {
 		$ask_age = "REX_VALUE[1]" == "" ? 1 : "REX_VALUE[1]";
 		$ask_age_root_category_id = [];
-		if("REX_VALUE[3]" == 'true') {
+		if("REX_VALUE[3]" == 'true' && rex_var::toArray("REX_VALUE[4]") !== null) {
 			$ask_age_root_category_id = rex_var::toArray("REX_VALUE[4]");
 		}
 		

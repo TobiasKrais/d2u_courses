@@ -306,7 +306,7 @@ class Location {
 			.'site_plan = "'. $this->site_plan .'", '
 			.'updatedate = CURRENT_TIMESTAMP ';
 			if(\rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-				$query .= ", kufer_location_id = ". $this->kufer_location_id;
+				$query .= ", kufer_location_id = ". ($this->kufer_location_id > 0 ? $this->kufer_location_id : 0);
 			}
 		if($this->location_id > 0) {			
 			$query .= " WHERE location_id = ". $this->location_id;
