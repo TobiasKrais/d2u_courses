@@ -238,7 +238,7 @@ else if($old_tables_available) {
 </fieldset>
 
 <h2>Changelog</h2>
-<p>3.2.1-DEV:</p>
+<p>3.2.1:</p>
 <ul>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen" Usability: In Liste wird "ausgebucht" angezeigt, wenn Veranstaltung ausgebucht ist.</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": es steht nun auch eine OpenStreetMap Karte zur Verfügung.</li>
@@ -251,6 +251,7 @@ else if($old_tables_available) {
 	<li>Bestätigungsmail enthält nun auch den Presi, das Datum und die Uhrzeit der Veranstaltung.</li>
 	<li>Bugfix: in einigen Fällen wurde der Redaxo Artikel in den Einstellungen nicht korrekt gespeichert.</li>
 	<li>Bugfix: in einigen Fällen konnten mehrere gleiche Kategorien nebeneinander ausgegeben werden.</li>
+	<li>Erste FAQs hinzugefügt.</li>
 </ul>
 <p>3.2.0:</p>
 <ul>
