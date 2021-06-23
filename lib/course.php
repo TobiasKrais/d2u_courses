@@ -374,14 +374,6 @@ class Course {
 	}
 
 	/**
-	 * Get the <link rel="canonical"> tag for page header.
-	 * @return Complete tag.
-	 */
-	public function getCanonicalTag() {
-		return '<link rel="canonical" href="'. $this->getURL() .'">';
-	}
-
-	/**
 	 * Get course as structured data JSON LD code for Google course carousel.
 	 * @return string JSON LD code including script tag
 	 */
@@ -478,33 +470,6 @@ class Course {
 		return $json_data;
 	}
 
-	/**
-	 * Get the <meta rel="alternate" hreflang=""> tags for page header.
-	 * @return Complete tags.
-	 */
-	public function getMetaAlternateHreflangTags() {
-		return '<link rel="alternate" type="text/html" hreflang="'. \rex_clang::getCurrent()->getCode() .'" href="'. $this->getURL() .'" title="'. str_replace('"', '', ($this->category !== FALSE && $this->category->parent_category !== FALSE ? $this->category->parent_category->name .': ' : '') . ($this->category !== FALSE ? $this->category->name .': ' : ''). $this->name) .'">';
-	}
-	
-	/**
-	 * Get the <meta name="description"> tag for page header.
-	 * @return Complete tag.
-	 */
-	public function getMetaDescriptionTag() {
-		return '<meta name="description" content="'. $this->teaser .'">';
-	}
-	
-	/**
-	 * Get the <title> tag for page header.
-	 * @return Complete title tag.
-	 */
-	public function getTitleTag() {
-		return '<title>'. $this->name .' / '
-			.($this->category !== FALSE ? $this->category->name .' / ' : '')
-			.($this->category !== FALSE && $this->category->parent_category !== FALSE ? $this->category->parent_category->name .' / ' : '')
-			. \rex::getServerName() .'</title>';
-	}
-		
 	/**
 	 * Returns the URL of this object.
 	 * @param string $including_domain TRUE if Domain name should be included

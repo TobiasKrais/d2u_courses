@@ -240,14 +240,6 @@ class ScheduleCategory {
 	}
 
 	/**
-	 * Get the <link rel="canonical"> tag for page header.
-	 * @return Complete tag.
-	 */
-	public function getCanonicalTag() {
-		return '<link rel="canonical" href="'. $this->getURL() .'">';
-	}
-
-	/**
 	 * Get all child objects orderd by name
 	 * @param boolean $online_only TRUE, if only online children should be returned,
 	 * otherwise FALSE
@@ -302,30 +294,6 @@ class ScheduleCategory {
 			$result->next();
 		}
 		return $courses;
-	}
-
-	/**
-	 * Get the <meta rel="alternate" hreflang=""> tags for page header.
-	 * @return Complete tags.
-	 */
-	public function getMetaAlternateHreflangTags() {
-		return '<link rel="alternate" type="text/html" hreflang="'. \rex_clang::getCurrent()->getCode() .'" href="'. $this->getURL() .'" title="'. str_replace('"', '', ($this->parent_schedule_category !== FALSE ? $this->parent_schedule_category->name .': ' : ''). $this->name) .'">';
-	}
-	
-	/**
-	 * Get the <meta name="description"> tag for page header.
-	 * @return Complete tag.
-	 */
-	public function getMetaDescriptionTag() {
-		return '<meta name="description" content="">';
-	}
-	
-	/**
-	 * Get the <title> tag for page header.
-	 * @return Complete title tag.
-	 */
-	public function getTitleTag() {
-		return '<title>'. $this->name .' / '. ($this->parent_schedule_category !== FALSE ? $this->parent_schedule_category->name .' / ' : ''). \rex::getServerName() .'</title>';
 	}
 		
 	/**

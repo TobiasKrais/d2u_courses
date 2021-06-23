@@ -169,14 +169,6 @@ class TargetGroup {
 	}
 
 	/**
-	 * Get the <link rel="canonical"> tag for page header.
-	 * @return Complete tag.
-	 */
-	public function getCanonicalTag() {
-		return '<link rel="canonical" href="'. $this->getURL() .'">';
-	}
-
-	/**
 	 * Get child courses for this object. If target group is already a child, it
 	 * can not have children and an empty array is returned.
 	 * @return TargetGroup[] Array with target groups
@@ -249,30 +241,6 @@ class TargetGroup {
 			$result->next();
 		}
 		return $courses;
-	}
-
-	/**
-	 * Get the <meta rel="alternate" hreflang=""> tags for page header.
-	 * @return Complete tags.
-	 */
-	public function getMetaAlternateHreflangTags() {
-		return '<link rel="alternate" type="text/html" hreflang="'. \rex_clang::getCurrent()->getCode() .'" href="'. $this->getURL() .'" title="'. str_replace('"', '', ($this->parent_target_group !== FALSE ? $this->parent_target_group->name .': ' : ''). $this->name) .'">';
-	}
-	
-	/**
-	 * Get the <meta name="description"> tag for page header.
-	 * @return Complete tag.
-	 */
-	public function getMetaDescriptionTag() {
-		return '<meta name="description" content="">';
-	}
-	
-	/**
-	 * Get the <title> tag for page header.
-	 * @return Complete title tag.
-	 */
-	public function getTitleTag() {
-		return '<title>'. $this->name .' / '. ($this->parent_target_group !== FALSE ? $this->parent_target_group->name .' / ' : ''). \rex::getServerName() .'</title>';
 	}
 
 	/**

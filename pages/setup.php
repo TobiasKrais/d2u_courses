@@ -238,6 +238,11 @@ else if($old_tables_available) {
 </fieldset>
 
 <h2>Changelog</h2>
+<p>3.2.2-DEV:</p>
+<ul>
+	<li>Methode d2u_courses_frontend_helper::getMetaTags() entfernt, da das URL Addon eine bessere Funktion anbietet.
+		Ebenso die Methoden getMetaAlternateHreflangTags(), getMetaDescriptionTag(), getCanonicalTag und getTitleTag() der aller Klassen, die diese Methoden abgeboten hatten.</li>
+</ul>
 <p>3.2.1:</p>
 <ul>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen" Usability: In Liste wird "ausgebucht" angezeigt, wenn Veranstaltung ausgebucht ist.</li>

@@ -200,14 +200,6 @@ class Location {
 	}
 
 	/**
-	 * Get the <link rel="canonical"> tag for page header.
-	 * @return Complete tag.
-	 */
-	public function getCanonicalTag() {
-		return '<link rel="canonical" href="'. $this->getURL() .'">';
-	}
-	
-	/**
 	 * Get courses hosted by this location orderd by start date
 	 * @param boolean $online_only TRUE, if only online courses are returned.
 	 * @return Courses[] Array with course objects
@@ -230,30 +222,6 @@ class Location {
 			$result->next();
 		}
 		return $courses;
-	}
-
-	/**
-	 * Get the <meta rel="alternate" hreflang=""> tags for page header.
-	 * @return Complete tags.
-	 */
-	public function getMetaAlternateHreflangTags() {
-		return '<link rel="alternate" type="text/html" hreflang="'. \rex_clang::getCurrent()->getCode() .'" href="'. $this->getURL() .'" title="'. str_replace('"', '', ($this->location_category !== FALSE ? $this->location_category->name .': ' : ''). $this->name) .'">';
-	}
-	
-	/**
-	 * Get the <meta name="description"> tag for page header.
-	 * @return Complete tag.
-	 */
-	public function getMetaDescriptionTag() {
-		return '<meta name="description" content="">';
-	}
-	
-	/**
-	 * Get the <title> tag for page header.
-	 * @return Complete title tag.
-	 */
-	public function getTitleTag() {
-		return '<title>'. $this->name .' / '. ($this->location_category !== FALSE ? $this->location_category->name .' / ' : ''). \rex::getServerName() .'</title>';
 	}
 	
 	/**
