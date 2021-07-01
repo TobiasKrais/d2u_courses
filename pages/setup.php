@@ -242,6 +242,7 @@ else if($old_tables_available) {
 <ul>
 	<li>Methode d2u_courses_frontend_helper::getMetaTags() entfernt, da das URL Addon eine bessere Funktion anbietet.
 		Ebenso die Methoden getMetaAlternateHreflangTags(), getMetaDescriptionTag(), getCanonicalTag und getTitleTag() der aller Klassen, die diese Methoden abgeboten hatten.</li>
+	<li>Modul 26-2 "Warenkorb": Fatal Error bei bestimmter Kombination von Einstellungen im Modul behoben.</li>
 </ul>
 <p>3.2.1:</p>
 <ul>

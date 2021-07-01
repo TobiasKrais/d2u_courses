@@ -59,6 +59,11 @@ if(isset($form_data['participant_save'])) {
 $sprog = rex_addon::get("sprog");
 $tag_open = $sprog->getConfig('wildcard_open_tag');
 $tag_close = $sprog->getConfig('wildcard_close_tag');
+$ask_age = "REX_VALUE[1]" == "" ? 1 : "REX_VALUE[1]";
+$ask_age_root_category_id = [];
+if("REX_VALUE[3]" == 'true' && is_array(rex_var::toArray("REX_VALUE[4]"))) {
+	$ask_age_root_category_id = rex_var::toArray("REX_VALUE[4]");
+}	
 
 // Invoice form
 if(isset($form_data['invoice_form'])) {
@@ -362,6 +367,7 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 			print '<ul>';
 			foreach($cart->getCourseParticipants($course_id) as $id => $participant) {
 				print '<li>'. $participant['firstname'] .' '. $participant['lastname'];
+
 				if("REX_VALUE[5]" !== 'true' || (in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_id))) {
 					print ' (';
 					$age_seperator = false;
@@ -471,12 +477,6 @@ else {
 		print '</div>';
 	}
 	else {
-		$ask_age = "REX_VALUE[1]" == "" ? 1 : "REX_VALUE[1]";
-		$ask_age_root_category_id = [];
-		if("REX_VALUE[3]" == 'true' && rex_var::toArray("REX_VALUE[4]") !== null) {
-			$ask_age_root_category_id = rex_var::toArray("REX_VALUE[4]");
-		}
-		
 		print '<div class="col-12 col-md-9">';
 		print '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'" method="post">';	
 		print '<div class="row" data-match-height>';
