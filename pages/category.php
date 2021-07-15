@@ -104,9 +104,13 @@ if ($func == 'edit' || $func == 'clone' || $func == 'add') {
                         if($parent->category_id != $category->category_id) {
                             $options_parents[$parent->category_id] = $parent->name;
 							foreach($parent->getChildren() as $child) {
-	                            $options_parents[$child->category_id] = $parent->name ." → ". $child->name;
-								foreach($child->getChildren() as $grand_child) {
-									$options_parents[$grand_child->category_id] = $parent->name ." → ". $child->name ." → ". $grand_child->name;
+								if($child->category_id != $category->category_id) {
+									$options_parents[$child->category_id] = $parent->name ." → ". $child->name;
+									foreach($child->getChildren() as $grand_child) {
+										if($grand_child->category_id != $category->category_id) {
+											$options_parents[$grand_child->category_id] = $parent->name ." → ". $child->name ." → ". $grand_child->name;
+										}
+									}
 								}
 							}
                         }
