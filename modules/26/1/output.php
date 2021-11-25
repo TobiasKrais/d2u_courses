@@ -466,11 +466,20 @@ else {
 			$box_details .= '</div>';
 		}
 
-		if($course->price > 0) {
+		if($course->price || ($course->price_salery_level && $course->price_salery_level_details)) {
 			$box_details .= '<div class="col-12 course_row">';
-			$box_details .= '<div class="course_box spacer_box"><b>'. $tag_open .'d2u_courses_fee'. $tag_close .':</b> '. number_format($course->price, 2, ",", ".") .' €';
-			if($course->price_discount > 0 && $course->price_discount < $course->price) {
-				$box_details .= ' ('. $tag_open .'d2u_courses_discount'. $tag_close .': '. number_format($course->price_discount, 2, ",", ".") .' €)';
+			$box_details .= '<div class="course_box spacer_box"><b>'. $tag_open .'d2u_courses_fee'. $tag_close .':</b> ';
+			if($course->price_salery_level) {
+				$box_details .= $tag_open. 'd2u_courses_price_salery_level_details'. $tag_close .'<br>';
+				foreach($course->price_salery_level_details as $key => $value) {
+					$box_details .= $key .': '. $value .'<br>';				
+				}
+			}
+			else {
+				$box_details .= number_format($course->price, 2, ",", ".") .' €';
+				if($course->price_discount > 0 && $course->price_discount < $course->price) {
+					$box_details .= ' ('. $tag_open .'d2u_courses_discount'. $tag_close .': '. number_format($course->price_discount, 2, ",", ".") .' €)';
+				}
 			}
 			$box_details .= '</div>';
 			$box_details .= '</div>';

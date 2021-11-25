@@ -1,58 +1,59 @@
 <?php
-$sql = rex_sql::factory();
 // START install database
-$sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_categories` (
-	`category_id` int(10) unsigned NOT NULL auto_increment,
-	`name` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`description` text collate utf8mb4_unicode_ci default NULL,
-	`color` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`picture` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`parent_category_id` int(10) default NULL,
-	`priority` int(10) default NULL,
-	`updatedate` DATETIME default NULL,
-	PRIMARY KEY (`category_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
+\rex_sql_table::get(\rex::getTable('d2u_courses_categories'))
+	->ensureColumn(new rex_sql_column('category_id', 'INT(11) unsigned', false, null, 'auto_increment'))
+	->setPrimaryKey('category_id')
+	->ensureColumn(new \rex_sql_column('name', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('description', 'TEXT', true))
+    ->ensureColumn(new \rex_sql_column('color', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('picture', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('priority', 'INT(11)', true))
+    ->ensureColumn(new \rex_sql_column('updatedate', 'DATETIME'))
+    ->ensure();
 
-$sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_courses` (
-	`course_id` int(10) unsigned NOT NULL auto_increment,
-	`name` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`teaser` text collate utf8mb4_unicode_ci default NULL,
-	`description` text collate utf8mb4_unicode_ci default NULL,
-	`details_course` text collate utf8mb4_unicode_ci default NULL,
-	`details_deadline` text collate utf8mb4_unicode_ci default NULL,
-	`details_age` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`picture` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`price` decimal(7,2) default NULL,
-	`price_discount` decimal(7,2) default NULL,
-	`date_start` varchar(10) collate utf8mb4_unicode_ci default NULL,
-	`date_end` varchar(10) collate utf8mb4_unicode_ci default NULL,
-	`time` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`category_id` int(10) default NULL,
-	`participants_number` int(10) default NULL,
-	`participants_max` int(10) default NULL,
-	`participants_min` int(10) default NULL,
-	`participants_wait_list` int(10) default NULL,
-	`registration_possible` varchar(10) collate utf8mb4_unicode_ci default NULL,
-	`online_status` varchar(7) collate utf8mb4_unicode_ci default NULL,
-	`url_external` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`redaxo_article` int(10) NULL default NULL,
-	`google_type` varchar(10) collate utf8mb4_unicode_ci default NULL,
-	`instructor` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`course_number` varchar(50) collate utf8mb4_unicode_ci default NULL,
-	`downloads` text collate utf8mb4_unicode_ci default NULL,
-	`updatedate` DATETIME default NULL,
-  PRIMARY KEY (`course_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
+\rex_sql_table::get(\rex::getTable('d2u_courses_courses'))
+	->ensureColumn(new rex_sql_column('course_id', 'INT(11) unsigned', false, null, 'auto_increment'))
+	->setPrimaryKey('course_id')
+	->ensureColumn(new \rex_sql_column('name', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('teaser', 'TEXT', true))
+    ->ensureColumn(new \rex_sql_column('description', 'TEXT', true))
+    ->ensureColumn(new \rex_sql_column('details_course', 'TEXT', true))
+    ->ensureColumn(new \rex_sql_column('details_deadline', 'TEXT', true))
+    ->ensureColumn(new \rex_sql_column('details_age', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('picture', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('price', 'DECIMAL(7,2)', true))
+    ->ensureColumn(new \rex_sql_column('price_discount', 'DECIMAL(7,2)', true))
+    ->ensureColumn(new \rex_sql_column('price_salery_level', 'TINYINT(1)', false, '0'))
+    ->ensureColumn(new \rex_sql_column('price_salery_level_details', 'TEXT', true))
+    ->ensureColumn(new \rex_sql_column('date_start', 'VARCHAR(10)', true))
+    ->ensureColumn(new \rex_sql_column('date_end', 'VARCHAR(10)', true))
+    ->ensureColumn(new \rex_sql_column('time', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('category_id', 'INT(11)', true))
+    ->ensureColumn(new \rex_sql_column('participants_number', 'INT(6)', true))
+    ->ensureColumn(new \rex_sql_column('participants_max', 'INT(6)', true))
+    ->ensureColumn(new \rex_sql_column('participants_min', 'INT(6)', true))
+    ->ensureColumn(new \rex_sql_column('participants_wait_list', 'INT(6)', true))
+    ->ensureColumn(new \rex_sql_column('registration_possible', 'VARCHAR(10)', true))
+    ->ensureColumn(new \rex_sql_column('online_status', 'VARCHAR(7)', true))
+    ->ensureColumn(new \rex_sql_column('url_external', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('redaxo_article', 'INT(11)', true))
+    ->ensureColumn(new \rex_sql_column('google_type', 'VARCHAR(10)', true))
+    ->ensureColumn(new \rex_sql_column('instructor', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('course_number', 'VARCHAR(50)', true))
+    ->ensureColumn(new \rex_sql_column('downloads', 'TEXT', true))
+    ->ensureColumn(new \rex_sql_column('updatedate', 'DATETIME'))
+    ->ensure();
 
-$sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_2_categories` (
-	`course_id` int(10) NOT NULL,
-	`category_id` int(10) NOT NULL,
-	PRIMARY KEY (`course_id`, `category_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
+\rex_sql_table::get(\rex::getTable('d2u_courses_2_categories'))
+	->ensureColumn(new rex_sql_column('course_id', 'INT(11)'))
+	->ensureColumn(new rex_sql_column('category_id', 'INT(11)'))
+	->setPrimaryKey(['course_id', 'category_id'])
+    ->ensure();
 // END install database
 
 // START create views for url addon
-// Online categories (changes need to be done in install.php, update.php and pages/settings.php)
+// Online categories (changes need to be done in install.php and pages/settings.php)
+$sql = rex_sql::factory();
 $showTimeWhere = 'date_start = "" OR date_start > CURDATE()';
 if(class_exists('d2u_courses_frontend_helper') && method_exists('d2u_courses_frontend_helper', 'getShowTimeWhere')) {
 	$showTimeWhere = d2u_courses_frontend_helper::getShowTimeWhere();

@@ -1,46 +1,37 @@
 <?php
-$sql = rex_sql::factory();
-// START install database
-$sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_location_categories` (
-	`location_category_id` int(10) unsigned NOT NULL auto_increment,
-	`name` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`picture` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`zoom_level` int(10) default NULL,
-	`updatedate` DATETIME default NULL,
-	PRIMARY KEY (`location_category_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
+\rex_sql_table::get(\rex::getTable('d2u_courses_location_categories'))
+	->ensureColumn(new rex_sql_column('location_category_id', 'INT(11) unsigned', false, null, 'auto_increment'))
+	->setPrimaryKey('location_category_id')
+	->ensureColumn(new \rex_sql_column('name', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('picture', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('zoom_level', 'INT(10)', true))
+    ->ensureColumn(new \rex_sql_column('updatedate', 'DATETIME'))
+    ->ensure();
 
-$sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_locations` (
-	`location_id` int(10) unsigned NOT NULL auto_increment,
-	`name` varchar(255) collate utf8mb4_unicode_ci default NULL,
-    `latitude` decimal(14,10),
-    `longitude` decimal(14,10),
-	`street` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`zip_code` varchar(10) collate utf8mb4_unicode_ci default NULL,
-	`city` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`country_code` varchar(3) collate utf8mb4_unicode_ci default NULL,
-	`picture` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`site_plan` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`location_category_id` int(10) default NULL,
-	`redaxo_users` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`updatedate` DATETIME default NULL,
-	PRIMARY KEY (`location_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
+\rex_sql_table::get(\rex::getTable('d2u_courses_locations'))
+	->ensureColumn(new rex_sql_column('location_id', 'INT(11) unsigned', false, null, 'auto_increment'))
+	->setPrimaryKey('location_id')
+	->ensureColumn(new \rex_sql_column('name', 'VARCHAR(255)', true))
+	->ensureColumn(new \rex_sql_column('latitude', 'DECIMAL(14,10)', true, 0))
+	->ensureColumn(new \rex_sql_column('longitude', 'DECIMAL(14,10)', true, 0))
+	->ensureColumn(new \rex_sql_column('street', 'VARCHAR(255)', true))
+	->ensureColumn(new \rex_sql_column('zip_code', 'VARCHAR(10)', true))
+	->ensureColumn(new \rex_sql_column('city', 'VARCHAR(255)', true))
+	->ensureColumn(new \rex_sql_column('country_code', 'VARCHAR(3)', true))
+    ->ensureColumn(new \rex_sql_column('picture', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('site_plan', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('location_category_id', 'INT(11)', true))
+    ->ensureColumn(new \rex_sql_column('redaxo_users', 'TEXT', true))
+    ->ensureColumn(new \rex_sql_column('updatedate', 'DATETIME'))
+    ->ensure();
 
-// Alter machine table
-$sql->setQuery("SHOW COLUMNS FROM ". \rex::getTablePrefix() ."d2u_courses_courses LIKE 'location_id';");
-if($sql->getRows() == 0) {
-	$sql->setQuery("ALTER TABLE ". \rex::getTablePrefix() ."d2u_courses_courses "
-		. "ADD location_id INT(10) NULL DEFAULT NULL;");
-}
-$sql->setQuery("SHOW COLUMNS FROM ". \rex::getTablePrefix() ."d2u_courses_courses LIKE 'room';");
-if($sql->getRows() == 0) {
-	$sql->setQuery("ALTER TABLE ". \rex::getTablePrefix() ."d2u_courses_courses "
-		. "ADD `room` varchar(255) collate utf8mb4_unicode_ci default NULL;");
-}
-// END install database
+rex_sql_table::get(rex::getTable('d2u_courses_courses'))
+	->ensureColumn(new \rex_sql_column('location_id', 'INT(11)', true, null))
+	->ensureColumn(new \rex_sql_column('room', 'VARCHAR(255)', true, null))
+	->alter();
 
 // START create views for url addon
+$sql = rex_sql::factory();
 // Online locations (changes need to be done here and addon pages/settings.php)
 $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_locations AS
 	SELECT locations.location_id, locations.name, locations.name AS seo_title, locations.picture, courses.updatedate, locations.location_category_id

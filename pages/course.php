@@ -28,6 +28,14 @@ if (filter_input(INPUT_POST, "btn_save") == 1 || filter_input(INPUT_POST, "btn_a
 	$course->picture = $input_media[1];
 	$course->price = $form['price'];
 	$course->price_discount = $form['price_discount'];
+	$course->price_salery_level = array_key_exists('price_salery_level', $form);
+	$course->price_salery_level_details = [];
+	foreach (explode(PHP_EOL, $form['price_salery_level_details']) as $price_salery_level_details_line) {
+		$line = explode(':', $price_salery_level_details_line);
+		if(count($line) == 2) {
+			$course->price_salery_level_details[trim($line[0])] = trim($line[1]);
+		}
+	}
 	$course->date_start = $form['date_start'];
 	$course->date_end = $form['date_end'];
 	$course->time = $form['time'];
@@ -130,6 +138,15 @@ if ($func == 'edit' || $func == 'clone' || $func == 'add') {
 							d2u_addon_backend_helper::form_input('d2u_courses_details_age', 'form[details_age]', $course->details_age, FALSE, $readonly, 'text');
 							d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $course->picture, $readonly);
 							d2u_addon_backend_helper::form_medialistfield('d2u_courses_downloads', '1', $course->downloads, $readonly);
+							if(!rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && $course->import_type !== "KuferSQL") {
+								d2u_addon_backend_helper::form_checkbox('d2u_courses_price_salery_level', 'form[price_salery_level]', 'true', $course->price_salery_level, $readonly);
+								$price_salery_level_details = '';
+								foreach($course->price_salery_level_details as $key => $value) {
+									$price_salery_level_details .= $key .': '. $value .PHP_EOL;
+								}
+								d2u_addon_backend_helper::form_textarea('d2u_courses_price_salery_level_details', "form[price_salery_level_details]", $price_salery_level_details, 5, FALSE, $readonly, FALSE);
+								d2u_addon_backend_helper::form_infotext('d2u_courses_price_salery_level_details_description', 'd2u_courses_price_salery_level_details_description');
+							}
 							d2u_addon_backend_helper::form_input('d2u_courses_price', 'form[price]', $course->price, FALSE, $readonly, 'text');
 							d2u_addon_backend_helper::form_input('d2u_courses_price_discount', 'form[price_discount]', $course->price_discount, FALSE, $readonly, 'text');
 							d2u_addon_backend_helper::form_input('d2u_courses_date_start', 'form[date_start]', $course->date_start, FALSE, $readonly, 'date');
@@ -152,6 +169,32 @@ if ($func == 'edit' || $func == 'clone' || $func == 'add') {
 							d2u_addon_backend_helper::form_input('d2u_courses_url_external', 'form[url_external]', $course->url_external, FALSE, $readonly, 'text');
 							d2u_addon_backend_helper::form_linkfield('d2u_courses_redaxo_article', '1', $course->redaxo_article, rex_config::get("d2u_helper", "default_lang", rex_clang::getStartId()), $readonly);
 						?>
+						<script>
+							function container_changer() {
+								if ($("input[name='form[price_salery_level]']").is(':checked')) {
+									$("textarea[name='form[price_salery_level_details]']").parent().parent().fadeIn();
+									$("#d2u_courses_price_salery_level_details_description").fadeIn();
+									$("input[name='form[price]']").parent().parent().fadeOut();
+									$("input[name='form[price_discount]']").parent().parent().fadeOut();
+								}
+								else {
+									$("textarea[name='form[price_salery_level_details]']").parent().parent().fadeOut();
+									$("#d2u_courses_price_salery_level_details_description").fadeOut();
+									$("input[name='form[price]']").parent().parent().fadeIn();
+									$("input[name='form[price_discount]']").parent().parent().fadeIn();
+								}
+							}
+
+							// Hide on document load
+							$(document).ready(function() {
+								container_changer();
+							});
+
+							// Hide on selection change
+							$("input[name='form[price_salery_level]']").on('change', function(e) {
+								container_changer();
+							});
+						</script>
 					</div>
 				</fieldset>
 				<fieldset>

@@ -1,24 +1,22 @@
 <?php
+\rex_sql_table::get(\rex::getTable('d2u_courses_target_groups'))
+	->ensureColumn(new rex_sql_column('target_group_id', 'INT(11) unsigned', false, null, 'auto_increment'))
+	->setPrimaryKey('target_group_id')
+	->ensureColumn(new \rex_sql_column('name', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('picture', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('priority', 'INT(10)', true))
+    ->ensureColumn(new \rex_sql_column('updatedate', 'DATETIME'))
+    ->ensure();
+
+\rex_sql_table::get(\rex::getTable('d2u_courses_2_target_groups'))
+	->ensureColumn(new rex_sql_column('course_id', 'INT(11)'))
+	->ensureColumn(new rex_sql_column('target_group_id', 'INT(11)'))
+	->setPrimaryKey(['course_id', 'target_group_id'])
+    ->ensure();
+
 $sql = rex_sql::factory();
-// START install database
-$sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_target_groups` (
-	`target_group_id` int(10) unsigned NOT NULL auto_increment,
-	`name` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`picture` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`priority` int(10) default NULL,
-	`updatedate` DATETIME default NULL,
-	PRIMARY KEY (`target_group_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
-
-$sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_2_target_groups` (
-	`course_id` int(10) NOT NULL,
-	`target_group_id` int(10) NOT NULL,
-	PRIMARY KEY (`course_id`, `target_group_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
-// END install database
-
 // START create views for url addon
-// Online target groups (changes need to be done here, pages/settings.php and update.php)
+// Online target groups (changes need to be done here and pages/settings.php)
 $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_target_groups AS
 	SELECT target.target_group_id, target.name, target.name AS seo_title, target.picture, target.priority, courses.updatedate
 	FROM '. rex::getTablePrefix() .'d2u_courses_target_groups AS target

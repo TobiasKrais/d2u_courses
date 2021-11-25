@@ -39,7 +39,7 @@ class Cart {
 		else {
 			// registration with person details
 			$_SESSION['cart'][$course_id] = [];
-			$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "", "age" => "", "gender" => ""];
+			$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "", "age" => "", "gender" => "", "price" => ""];
 		}
 	}
 
@@ -48,7 +48,7 @@ class Cart {
 	 * @param int $course_id Course ID
 	 */
 	public function addEmptyParticipant($course_id) {
-		$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "","age" => "",  "gender" => ""];
+		$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "","age" => "",  "gender" => "", "price" => ""];
 	}
 
 	/**
@@ -587,14 +587,20 @@ class Cart {
 				$body .= " (". $course->course_number .")";
 			}
 			$body .=  "</b><br>";
-			if($course->date_start !== "") {
+			if($course->date_start) {
 				$body .= "Datum: ". (new \DateTime($course->date_start))->format('d.m.Y') . ($course->date_end != "" ? " - ". (new \DateTime($course->date_end))->format('d.m.Y') : "") . ($course->time != "" ? ", ". $course->time : "") ."<br>";
 			}
-			if($course->price > 0) {
+			if($course->price_salery_level) {
+				if($course->registration_possible == "yes_number") {
+					$body .= "Einzelpreis: ". $participant['participant_price'] ."<br>";
+					$price_full = $price_full + ($participant['participant_number'] * ((float) str_replace(",", ".", str_replace(".", "", $participant['participant_price']))));	
+				}
+			}
+			else if($course->price) {
 				$body .= "Einzelpreis: ". $course->price  ." €". ($course->price_discount > 0 ? " (mögliche Ermäßigungen nicht mit einberechnet" : "") ."<br>";
 				$price_full = $price_full + (is_array($participant) ? count($participant) * $course->price : $participant * $course->price);
 			}
-			if(is_array($participant)) {
+			if(is_array($participant) && $course->registration_possible !== "yes_number") {
 				foreach($participant as $id => $participant_data) {
 					$body .= "Vorname: ". $participant_data['firstname']  ."<br>";
 					$body .= "Nachname: ". $participant_data['lastname']  ."<br>";
@@ -606,6 +612,10 @@ class Cart {
 					}
 					if(isset($participant_data['gender']) && $participant_data['gender'] != "") {
 						$body .= "Geschlecht: ". $participant_data['gender']  ."<br>";
+					}
+					if($course->price_salery_level && isset($participant_data['price']) && $participant_data['price'] != "") {
+						$body .= "Preis nach Preismodell: ". $participant_data['price']  ." (monatliches Familieneinkommen: ". array_flip($course->price_salery_level_details)[$participant_data['price']] .")<br>";
+						$price_full = $price_full + ((float) str_replace(",", ".", str_replace(".", "", $participant_data['price'])));	
 					}
 					$body .= "<br>";
 				}
@@ -682,11 +692,15 @@ class Cart {
 	}
 	
 	/**
-	 * Update course participant number .
+	 * Update course participant number.
 	 * @param int $course_id Course ID
 	 * @param int $participant_number Participant number
 	 */
-	public function updateParticipantNumber($course_id, $participant_number) {
-		$_SESSION['cart'][$course_id] = $participant_number;
+	public function updateParticipantNumber($course_id, $participant_number, $participant_price = null) {
+		$_SESSION['cart'][$course_id] = [];
+		$_SESSION['cart'][$course_id]['participant_number'] = $participant_number;
+		if($participant_price) {
+			$_SESSION['cart'][$course_id]['participant_price'] = $participant_price;
+		}
 	}
 }

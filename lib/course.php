@@ -62,6 +62,16 @@ class Course {
 	var $price_discount = 0;
 	
 	/**
+	 * @var boolean Is price based on salery level
+	 */
+	var $price_salery_level = false;
+	
+	/**
+	 * @var string[] Salery level price details
+	 */
+	var $price_salery_level_details = [];
+	
+	/**
 	 * @var string Course start date
 	 */
 	var $date_start = "";
@@ -206,6 +216,8 @@ class Course {
 				$this->picture = $result->getValue("picture");
 				$this->price = $result->getValue("price");
 				$this->price_discount = $result->getValue("price_discount");
+				$this->price_salery_level = $result->getValue("price_salery_level") > 0 ? true : false;
+				$this->price_salery_level_details = json_decode($result->getValue("price_salery_level_details"), true);
 				$this->date_start = str_replace(".", "-", $result->getValue("date_start"));
 				$this->date_end = str_replace(".", "-", $result->getValue("date_end"));
 				$this->time = $result->getValue("time");
@@ -516,6 +528,8 @@ class Course {
 			.'picture = "'. $this->picture .'", '
 			.'price = '. number_format(($this->price > 0 ? $this->price : 0), 2, '.', '') .', '
 			.'price_discount = '. number_format(($this->price_discount > 0 ? $this->price_discount: 0), 2, '.', '') .', '
+			.'price_salery_level = '. ($this->price_salery_level ? 1 : 0) .', '
+			."price_salery_level_details = '". json_encode($this->price_salery_level_details, JSON_UNESCAPED_UNICODE) ."', "
 			.'date_start = "'. $this->date_start .'", '
 			.'date_end = "'. $this->date_end .'", '
 			.'`time` = "'. $this->time .'", '

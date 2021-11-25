@@ -1,25 +1,23 @@
 <?php
-$sql = rex_sql::factory();
-// START install database
-$sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_schedule_categories` (
-	`schedule_category_id` int(10) unsigned NOT NULL auto_increment,
-	`name` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`picture` varchar(255) collate utf8mb4_unicode_ci default NULL,
-	`priority` int(10) default NULL,
-	`parent_schedule_category_id` int(10) default NULL,
-	`updatedate` DATETIME default NULL,
-	PRIMARY KEY (`schedule_category_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
+\rex_sql_table::get(\rex::getTable('d2u_courses_schedule_categories'))
+	->ensureColumn(new rex_sql_column('schedule_category_id', 'INT(11) unsigned', false, null, 'auto_increment'))
+	->setPrimaryKey('schedule_category_id')
+	->ensureColumn(new \rex_sql_column('name', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('picture', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('priority', 'INT(10)', true))
+    ->ensureColumn(new \rex_sql_column('parent_schedule_category_id', 'INT(10)', true))
+    ->ensureColumn(new \rex_sql_column('updatedate', 'DATETIME'))
+    ->ensure();
 
-$sql->setQuery("CREATE TABLE IF NOT EXISTS `". rex::getTablePrefix() ."d2u_courses_2_schedule_categories` (
-	`course_id` int(10) NOT NULL,
-	`schedule_category_id` int(10) NOT NULL,
-	PRIMARY KEY (`course_id`, `schedule_category_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;");
-// END install database
+\rex_sql_table::get(\rex::getTable('d2u_courses_2_schedule_categories'))
+	->ensureColumn(new rex_sql_column('course_id', 'INT(11)'))
+	->ensureColumn(new rex_sql_column('schedule_category_id', 'INT(11)'))
+	->setPrimaryKey(['course_id', 'schedule_category_id'])
+    ->ensure();
 
 // START create views for url addon
-// Online schedule categories (changes need to be done here, addon pages/settings.php and update.php)
+$sql = rex_sql::factory();
+// Online schedule categories (changes need to be done here, addon pages/settings.php)
 $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_schedule_categories AS
 	SELECT schedules.schedule_category_id, schedules.name, schedules.name AS seo_title, schedules.picture, schedules.priority, courses.updatedate, schedules.parent_schedule_category_id
 	FROM '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS schedules

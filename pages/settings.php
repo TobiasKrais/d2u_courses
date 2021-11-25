@@ -60,7 +60,7 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 			
 			// START update views for url addon
 			$sql = rex_sql::factory();
-			// Online courses (changes need to be done in install.php, update.php and pages/settings.php)
+			// Online courses (changes need to be done in install.php and pages/settings.php)
 			$showTimeWhere = d2u_courses_frontend_helper::getShowTimeWhere();
 			$sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_categories AS '
 				// Categories with courses
