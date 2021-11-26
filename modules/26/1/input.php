@@ -171,6 +171,6 @@ if(rex_addon::get('d2u_linkbox')->isAvailable()) {
 ?>
 <div class="row">
 	<div class="col-xs-12">
-		<p>Kurse, Kategorien, Einstellung, usw. werden im <a href="index.php?page=d2u_courses">D2U Kurse Addon</a> verwaltet.</p>
+		<p>Kurse, Kategorien, Einstellung, usw. werden im <a href="index.php?page=d2u_courses">D2U Veranstaltungen Addon</a> verwaltet.</p>
 	</div>
 </div>

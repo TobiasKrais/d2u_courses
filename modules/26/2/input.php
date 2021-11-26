@@ -95,6 +95,6 @@
 </div>
 <div class="row">
 	<div class="col-xs-12">
-		<p>Einstellung für den Warenkorb werden im <a href="index.php?page=d2u_courses/settings">D2U Kurse Addon > Einstellungen</a> verwaltet.</p>
+		<p>Einstellung für den Warenkorb werden im <a href="index.php?page=d2u_courses/settings">D2U Veranstaltungen Addon > Einstellungen</a> verwaltet.</p>
 	</div>
 </div>
