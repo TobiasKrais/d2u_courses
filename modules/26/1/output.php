@@ -466,14 +466,18 @@ else {
 			$box_details .= '</div>';
 		}
 
+		$box_details .= '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'" method="post">';
+
 		if($course->price || ($course->price_salery_level && $course->price_salery_level_details)) {
 			$box_details .= '<div class="col-12 course_row">';
 			$box_details .= '<div class="course_box spacer_box"><b>'. $tag_open .'d2u_courses_fee'. $tag_close .':</b> ';
 			if($course->price_salery_level) {
 				$box_details .= $tag_open. 'd2u_courses_price_salery_level_details'. $tag_close .'<br>';
+				$box_details .= '<select class="participant" name="participant_price_'. $course_id .'" style="border-color:'. $course->category->color .'">';
 				foreach($course->price_salery_level_details as $key => $value) {
-					$box_details .= $key .': '. $value .'<br>';				
+					$box_details .= '<option value="'. $value .'">'. $key .': '. $value .'</option>';
 				}
+				$box_details .=  '</select>';
 			}
 			else {
 				$box_details .= number_format($course->price, 2, ",", ".") .' €';
@@ -577,11 +581,12 @@ else {
 				$box_details .= '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'" method="post">';
 				$box_details .= '<input type="hidden" name="course_id" value="'. $course->course_id .'">';
 				$box_details .= '<input type="submit" class="add_cart" name="submit" value="'. $tag_open .'d2u_courses_cart_add'. $tag_close .'">';
-				$box_details .= '</form>';
 			}
 			$box_details .= '</div>';
 			$box_details .= '</div>';
 		}
+
+		$box_details .= '</form>';
 
 		if($course->picture != "") {
 			$box_picture = '<div class="col-12 col-md-6 course_row">';

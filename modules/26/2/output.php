@@ -563,8 +563,14 @@ else {
 				if($course->price_salery_level) {
 					print '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_price_salery_level'. $tag_close .'</div>';
 					print '<div class="col-10 col-sm-5 col-md-7 div_cart"><select class="participant" name="participant_price_'. $course_id .'">';
+					$already_selected = false;
 					foreach($course->price_salery_level_details as $key => $value) {
-						print '<option value="'. $value .'"'. ($value == $participants_data['participant_price'] ? 'selected' : '') .'>'. $key .': '. $value .'</option>';
+						$selected = false;
+						if(!$already_selected && ($value == $participants_data['participant_price'] || $value == rex_request('participant_price_'. $course_id))) {
+							$selected = $already_selected = true;
+						}
+
+						print '<option value="'. $value .'"'. ($selected ? 'selected' : '') .'>'. $key .': '. $value .'</option>';
 					}
 					print '</select></div>';
 				}
@@ -619,8 +625,13 @@ else {
 					if($course->price_salery_level) {
 						print '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_price_salery_level'. $tag_close .'</div>';
 						print '<div class="col-10 col-sm-5 col-md-7 div_cart"><select class="participant" name="participant_'. $course_id .'['. $participant_id .'][price]">';
+						$already_selected = false;
 						foreach($course->price_salery_level_details as $key => $value) {
-							print '<option value="'. $value .'"'. ($value == $participant_data['price'] ? 'selected' : '') .'>'. $key .': '. $value .'</option>';
+							$selected = false;
+							if(!$already_selected && ($value == $participant_data['price'] || $value == rex_request('participant_price_'. $course_id))) {
+								$selected = $already_selected = true;
+							}
+							print '<option value="'. $value .'"'. ($selected ? 'selected' : '') .'>'. $key .': '. $value .'</option>';
 						}
 						print '</select></div>';
 					}
