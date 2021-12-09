@@ -44,7 +44,7 @@ if(class_exists('D2UModuleManager')) {
 		6);
 	$modules[] = new D2UModule("26-3",
 		"D2U Veranstaltungen - Ausgabe Veranstaltungen einer Kategorie in Boxen",
-		2);
+		3);
 	$d2u_module_manager = new D2UModuleManager($modules, "", "d2u_courses");
 	$d2u_module_manager->autoupdate();
 }

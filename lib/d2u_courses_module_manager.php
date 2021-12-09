@@ -19,7 +19,7 @@ class D2UCoursesModules {
 			6);
 		$modules[] = new D2UModule("26-3",
 			"D2U Veranstaltungen - Ausgabe Veranstaltungen einer Kategorie in Boxen",
-			2);
+			3);
 		return $modules;
 	}
 }
