@@ -152,7 +152,7 @@ class d2u_courses_lang_helper extends \D2U_Helper\ALangHelper {
 		'd2u_courses_payment_iban' => 'IBAN',
 		'd2u_courses_payment_transfer' => 'Überweisung',
 		'd2u_courses_phone' => 'Telefon',
-		'd2u_courses_price_salery_level' => 'Monatliches Familiebruttoneinkommen',
+		'd2u_courses_price_salery_level' => 'Monatliches Familienbruttoeinkommen',
 		'd2u_courses_price_salery_level_details' => 'Der Preis richtet sich nach dem monatlichen Familienbruttoeinkommen. Wir vertrauen darauf, dass Ihre Einstufung wahrheitsgemäß und ehrlich erfolgt. Eine Überprüfung unsererseits bleibt uns vorbehalten.',
 		'd2u_courses_registration_deadline' => 'An-/Abmeldeschluss',
 		'd2u_courses_search_no_hits' => 'Keine Treffer',
