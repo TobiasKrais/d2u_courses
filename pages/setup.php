@@ -238,10 +238,10 @@ else if($old_tables_available) {
 </fieldset>
 
 <h2>Changelog</h2>
-<p>3.2.2-DEV:</p>
+<p>3.2.2:</p>
 <ul>
 	<li>Methode d2u_courses_frontend_helper::getMetaTags() entfernt, da das URL Addon eine bessere Funktion anbietet.
-		Ebenso die Methoden getMetaAlternateHreflangTags(), getMetaDescriptionTag(), getCanonicalTag und getTitleTag() der aller Klassen, die diese Methoden abgeboten hatten.</li>
+		Ebenso die Methoden getMetaAlternateHreflangTags(), getMetaDescriptionTag(), getCanonicalTag und getTitleTag() der aller Klassen, die diese Methoden angeboten hatten.</li>
 	<li>Bei der Kategorieeingabe konnten Kinder- und Enkelkategorien sich selbst als Elternkategorie zuweisen, was zu einer Weiterleitungsschleife geführt hatte.</li>
 	<li>Einkommensbasiertes Preismodell hinzugefügt.</li>
 	<li>install.php und update.php modernisiert und vereinfacht.</li>
