@@ -13,10 +13,10 @@ class D2UCoursesModules {
 		$modules = [];
 		$modules[] = new D2UModule("26-1",
 			"D2U Veranstaltungen - Ausgabe Veranstaltungen",
-			9);
+			10);
 		$modules[] = new D2UModule("26-2",
 			"D2U Veranstaltungen - Warenkorb",
-			6);
+			7);
 		$modules[] = new D2UModule("26-3",
 			"D2U Veranstaltungen - Ausgabe Veranstaltungen einer Kategorie in Boxen",
 			3);

@@ -238,6 +238,12 @@ else if($old_tables_available) {
 </fieldset>
 
 <h2>Changelog</h2>
+<p>3.2.3-DEV:</p>
+<ul>
+	<li>Bugfix: Anzeige der Preisstufenbeschreibung bei gleichen Preisen nicht immer korrekt.</li>
+	<li>Modul 26-1 "Ausgabe Veranstaltungen": Anzeige der Preisstufenbeschreibung bei gleichen Preisen nicht immer korrekt.</li>
+	<li>Modul 26-2 "Warenkorb": Anzeige der Preisstufenbeschreibung bei gleichen Preisen nicht immer korrekt.</li>
+</ul>
 <p>3.2.2:</p>
 <ul>
 	<li>Methode d2u_courses_frontend_helper::getMetaTags() entfernt, da das URL Addon eine bessere Funktion anbietet.
