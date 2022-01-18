@@ -31,23 +31,44 @@ if(isset($form_data['participant_add'])) {
 
 // Add participant data
 foreach($cart->getCourseIDs() as $course_id) {
+	$course = new \D2U_Courses\Course($course_id);
+	
 	if(isset($form_data['participant_'. $course_id])) {
 		// courses with person details
 		foreach($form_data['participant_'. $course_id] as $participant_id => $patricipant_data) {
+			$participant_price = "";
+			$counter_row_price_salery_level_details = 0;
+			foreach($course->price_salery_level_details as $description => $price) {
+				$counter_row_price_salery_level_details++;
+				if($counter_row_price_salery_level_details == $patricipant_data["price_salery_level_row_number"]) {
+					$participant_price = $price;
+					break;
+				}
+			}
 			$participant_data = [
 				"firstname" => trim(filter_var($patricipant_data["firstname"])),
 				"lastname" => trim(filter_var($patricipant_data["lastname"])),
 				"birthday" => trim(filter_var($patricipant_data["birthday"])),
 				"age" => trim(filter_var($patricipant_data["age"])),
 				"gender" => trim(filter_var($patricipant_data["gender"])),
-				"price" => trim(filter_var($patricipant_data["price"])),
+				"price" => trim($participant_price),
+				"price_salery_level_row_number" => trim(filter_var($patricipant_data["price_salery_level_row_number"])),
 			];
 			$cart->updateParticipant($course_id, $participant_id, $participant_data);
 		}
 	}
 	if(isset($form_data['participant_number_'. $course_id])) {
+		$participant_price = "";
+		$counter_row_price_salery_level_details = 0;
+		foreach($course->price_salery_level_details as $description => $price) {
+			$counter_row_price_salery_level_details++;
+			if($counter_row_price_salery_level_details == $form_data["price_salery_level_row_number"]) {
+				$participant_price = $price;
+				break;
+			}
+		}
 		// courses with person number only
-		$cart->updateParticipantNumber($course_id, $form_data['participant_number_'. $course_id], $form_data['participant_price_'. $course_id]);		
+		$cart->updateParticipantNumber($course_id, $form_data['participant_number_'. $course_id], $participant_price, $form_data['participant_price_salery_level_row_'. $course_id]);
 	}
 }
 
@@ -379,7 +400,14 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 			print '<ul>';
 			print '<li>'. $tag_open .'d2u_courses_participant_number'. $tag_close .': '. $participant_data['participant_number'];
 			if($course->price_salery_level) {
-				print ', '. $tag_open .'d2u_courses_fee'. $tag_close .': '. $participant_data['participant_price'] .' ('. $tag_open .'d2u_courses_price_salery_level'. $tag_close .': '. array_flip($course->price_salery_level_details)[$participant_data['participant_price']] .')';
+				$counter_row_price_salery_level_details = 0;
+				foreach($course->price_salery_level_details as $description => $price) {
+					$counter_row_price_salery_level_details++;
+					if($counter_row_price_salery_level_details == $participant_data["participant_price_salery_level_row_number"]) {
+						print ', '. $tag_open .'d2u_courses_fee'. $tag_close .': '. $participant_data['participant_price'] .' ('. $tag_open .'d2u_courses_price_salery_level'. $tag_close .': '. $description .')';
+						break;
+					}
+				}
 			}
 
 			print '</li>';
@@ -411,7 +439,14 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 					print ')';
 				}
 				if($course->price_salery_level) {
-					print ', '. $tag_open .'d2u_courses_fee'. $tag_close .': '. $participant['price'] .' ('. $tag_open .'d2u_courses_price_salery_level'. $tag_close .': '. array_flip($course->price_salery_level_details)[$participant['price']] .')';
+					$counter_row_price_salery_level_details = 0;
+					foreach($course->price_salery_level_details as $description => $price) {
+						$counter_row_price_salery_level_details++;
+						if($counter_row_price_salery_level_details == $participant["price_salery_level_row_number"]) {
+							print ', '. $tag_open .'d2u_courses_fee'. $tag_close .': '. $participant['price'] .' ('. $tag_open .'d2u_courses_price_salery_level'. $tag_close .': '. $description .')';
+							break;
+						}
+					}
 				}
 				print '</li>';
 				if($cart::calculateAge($participant['birthday']) < 18) {
@@ -505,12 +540,12 @@ else {
 	else {
 		print '<div class="col-12 col-md-9">';
 		print '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'" method="post">';	
-		print '<div class="row" data-match-height>';
+		print '<div class="row">';
 		foreach($cart->getCourseIDs() as $course_id) {
 			$course = new D2U_Courses\Course($course_id);
 			print '<div class="col-12 spacer">';
-			print '<div class="cart_row_title" style="background-color: '. ($course->category !== FALSE ? $course->category->color : 'grey') .'" data-height-watch>';
-			print '<div class="row" data-match-height>';
+			print '<div class="cart_row_title" style="background-color: '. ($course->category !== FALSE ? $course->category->color : 'grey') .'">';
+			print '<div class="row">';
 			print '<div class="col-12">';
 			print '<a href="'. $course->getURL(TRUE) .'" title="'. $course->name .'" class="cart_course_title">';
 			print $course->name;
@@ -553,24 +588,16 @@ else {
 				print '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_participant_number'. $tag_close .'</div>'
 					. '<div class="col-10 col-sm-5 col-md-7 div_cart"><input type="number" class="text_cart" name="participant_number_'. $course_id .'" value="'. ($participants_data['participant_number'] ?: 1) .'" min="1" max="50"></div>';
 				print '<div class="col-2 col-sm-1">';
-				$ask_delete = "";
-				if(count($cart->getCourseParticipants($course_id)) == 1) {
-					$ask_delete = ' onclick="return window.confirm(\''. $tag_open .'d2u_courses_cart_delete_course'. $tag_close .'\');"';
-				}
-				print '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'?delete='. $course_id .'" '. $ask_delete .'>';
+				print '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'?delete='. $course_id .'" onclick="return window.confirm(\''. $tag_open .'d2u_courses_cart_delete_course'. $tag_close .'\');">';
 				print '<img src="'. rex_addon::get("d2u_courses")->getAssetsUrl("delete.png") .'" alt="'. $tag_open .'d2u_courses_cart_delete'. $tag_close .'" class="delete_participant"></a>';
 				print '</div>';
 				if($course->price_salery_level) {
 					print '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_price_salery_level'. $tag_close .'</div>';
-					print '<div class="col-10 col-sm-5 col-md-7 div_cart"><select class="participant" name="participant_price_'. $course_id .'">';
-					$already_selected = false;
+					print '<div class="col-10 col-sm-5 col-md-7 div_cart"><select class="participant" name="participant_price_salery_level_row_'. $course_id .'">';
+					$counter_row_price_salery_level_details = 0;
 					foreach($course->price_salery_level_details as $key => $value) {
-						$selected = false;
-						if(!$already_selected && ($value == $participants_data['participant_price'] || $value == rex_request('participant_price_'. $course_id))) {
-							$selected = $already_selected = true;
-						}
-
-						print '<option value="'. $value .'"'. ($selected ? 'selected' : '') .'>'. $key .': '. $value .'</option>';
+						$counter_row_price_salery_level_details++;
+						print '<option value="'. $counter_row_price_salery_level_details .'"'. ($counter_row_price_salery_level_details == $participants_data['participant_price_salery_level_row_number'] ? 'selected' : '') .'>'. $key .': '. $value .'</option>';
 					}
 					print '</select></div>';
 				}
@@ -588,7 +615,7 @@ else {
 					// Delete button
 					print '<div class="col-2 col-sm-1">';
 					$ask_delete = "";
-					if(count($cart->getCourseParticipants($course_id)) == 1) {
+					if($cart->getCourseParticipantsNumber($course_id) == 1) {
 						$ask_delete = ' onclick="return window.confirm(\''. $tag_open .'d2u_courses_cart_delete_course'. $tag_close .'\');"';
 					}
 					print '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'?delete='. $course_id .'&participant='. $participant_id .'" '. $ask_delete .'>';
@@ -624,14 +651,11 @@ else {
 					// Salery level
 					if($course->price_salery_level) {
 						print '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_price_salery_level'. $tag_close .'</div>';
-						print '<div class="col-10 col-sm-5 col-md-7 div_cart"><select class="participant" name="participant_'. $course_id .'['. $participant_id .'][price]">';
-						$already_selected = false;
+						print '<div class="col-10 col-sm-5 col-md-7 div_cart"><select class="participant" name="participant_'. $course_id .'['. $participant_id .'][price_salery_level_row_number]">';
+						$counter_row_price_salery_level_details = 0;
 						foreach($course->price_salery_level_details as $key => $value) {
-							$selected = false;
-							if(!$already_selected && ($value == $participant_data['price'] || $value == rex_request('participant_price_'. $course_id))) {
-								$selected = $already_selected = true;
-							}
-							print '<option value="'. $value .'"'. ($selected ? 'selected' : '') .'>'. $key .': '. $value .'</option>';
+							$counter_row_price_salery_level_details++;
+							print '<option value="'. $counter_row_price_salery_level_details .'"'. ($counter_row_price_salery_level_details == $participant_data['price_salery_level_row_number'] ? 'selected' : '') .'>'. $key .': '. $value .'</option>';
 						}
 						print '</select></div>';
 					}

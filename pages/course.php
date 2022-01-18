@@ -149,13 +149,6 @@ if ($func == 'edit' || $func == 'clone' || $func == 'add') {
 							}
 							d2u_addon_backend_helper::form_input('d2u_courses_price', 'form[price]', $course->price, FALSE, $readonly, 'text');
 							d2u_addon_backend_helper::form_input('d2u_courses_price_discount', 'form[price_discount]', $course->price_discount, FALSE, $readonly, 'text');
-							d2u_addon_backend_helper::form_input('d2u_courses_date_start', 'form[date_start]', $course->date_start, FALSE, $readonly, 'date');
-							d2u_addon_backend_helper::form_input('d2u_courses_date_end', 'form[date_end]', $course->date_end, FALSE, $readonly, 'date');
-							d2u_addon_backend_helper::form_input('d2u_courses_time', 'form[time]', $course->time, FALSE, $readonly, 'text');
-							d2u_addon_backend_helper::form_input('d2u_courses_participants_number', 'form[participants_number]', $course->participants_number, FALSE, $readonly, 'number');
-							d2u_addon_backend_helper::form_input('d2u_courses_participants_max', 'form[participants_max]', $course->participants_max, FALSE, $readonly, 'number');
-							d2u_addon_backend_helper::form_input('d2u_courses_participants_min', 'form[participants_min]', $course->participants_min, FALSE, $readonly, 'number');
-							d2u_addon_backend_helper::form_input('d2u_courses_participants_wait_list', 'form[participants_wait_list]', $course->participants_wait_list, FALSE, $readonly, 'number');
 							$options_registration = [
 								"yes" => rex_i18n::msg('d2u_courses_yes'),
 								"yes_number" => rex_i18n::msg('d2u_courses_yes_number'),
@@ -166,6 +159,13 @@ if ($func == 'edit' || $func == 'clone' || $func == 'add') {
 								unset($options_registration["yes_number"]);
 							}
 							d2u_addon_backend_helper::form_select('d2u_courses_registration_possible', 'form[registration_possible]', $options_registration, [$course->registration_possible], 1, FALSE, $readonly);
+							d2u_addon_backend_helper::form_input('d2u_courses_participants_number', 'form[participants_number]', $course->participants_number, FALSE, $readonly, 'number');
+							d2u_addon_backend_helper::form_input('d2u_courses_participants_max', 'form[participants_max]', $course->participants_max, FALSE, $readonly, 'number');
+							d2u_addon_backend_helper::form_input('d2u_courses_participants_min', 'form[participants_min]', $course->participants_min, FALSE, $readonly, 'number');
+							d2u_addon_backend_helper::form_input('d2u_courses_participants_wait_list', 'form[participants_wait_list]', $course->participants_wait_list, FALSE, $readonly, 'number');
+							d2u_addon_backend_helper::form_input('d2u_courses_date_start', 'form[date_start]', $course->date_start, FALSE, $readonly, 'date');
+							d2u_addon_backend_helper::form_input('d2u_courses_date_end', 'form[date_end]', $course->date_end, FALSE, $readonly, 'date');
+							d2u_addon_backend_helper::form_input('d2u_courses_time', 'form[time]', $course->time, FALSE, $readonly, 'text');
 							d2u_addon_backend_helper::form_input('d2u_courses_url_external', 'form[url_external]', $course->url_external, FALSE, $readonly, 'text');
 							d2u_addon_backend_helper::form_linkfield('d2u_courses_redaxo_article', '1', $course->redaxo_article, rex_config::get("d2u_helper", "default_lang", rex_clang::getStartId()), $readonly);
 						?>

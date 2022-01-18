@@ -27,19 +27,20 @@ class Cart {
 	}
 	
 	/**
-	 * Adds course.
+	 * Adds course. In case the site requesting this function has a field named
+	 * price_salery_level_row_number, the corresponding field is automatically set.
 	 * @param int $course_id Course ID
 	 */
 	public function addCourse($course_id) {
 		$course = new Course($course_id);
+		$_SESSION['cart'][$course_id] = [];
 		if($course->registration_possible == "yes_number") {
 			// registration with participant number only
-			$_SESSION['cart'][$course_id] = 1;
+			$this->updateParticipantNumber($course_id, 1, null, rex_request('participant_price_salery_level_row_add', 'int', 0));
 		}
 		else {
 			// registration with person details
-			$_SESSION['cart'][$course_id] = [];
-			$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "", "age" => "", "gender" => "", "price" => ""];
+			$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "", "age" => "", "gender" => "", "price" => "", "price_salery_level_row_number" => rex_request('participant_price_salery_level_row_add', 'int', 0)];
 		}
 	}
 
@@ -48,7 +49,7 @@ class Cart {
 	 * @param int $course_id Course ID
 	 */
 	public function addEmptyParticipant($course_id) {
-		$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "","age" => "",  "gender" => "", "price" => ""];
+		$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "","age" => "",  "gender" => "", "price" => "", "price_salery_level_row_number" => 0];
 	}
 
 	/**
@@ -526,6 +527,28 @@ class Cart {
 		return [];
 	}
 
+
+	/**
+	 * Get Cart Courses participant number
+	 * @param int $course_id Course ID
+	 * @return string[]|int Participants, in case only patricipant number is set
+	 * for this course, number of participants is returned
+	 */
+	public static function getCourseParticipantsNumber($course_id) {
+		foreach($_SESSION['cart'] as $cart_course_id => $participants) {
+			if($cart_course_id == $course_id) {
+				$course = new Course($course_id);
+				if($course->registration_possible == "yes_number") {
+					return $participants;
+				}
+				else if(is_array($participants)) {
+					return count($participants);
+				}
+			}
+		}
+		return 0;
+	}
+
 	/**
 	 * Proves if course is already in cart
 	 * @param int $course_id Course ID
@@ -613,8 +636,17 @@ class Cart {
 					if(isset($participant_data['gender']) && $participant_data['gender'] != "") {
 						$body .= "Geschlecht: ". $participant_data['gender']  ."<br>";
 					}
-					if($course->price_salery_level && isset($participant_data['price']) && $participant_data['price'] != "") {
-						$body .= "Preis nach Preismodell: ". $participant_data['price']  ." (monatliches Familieneinkommen: ". array_flip($course->price_salery_level_details)[$participant_data['price']] .")<br>";
+					if($course->price_salery_level && isset($participant_data['price']) && isset($participant_data['price_salery_level_row_number']) && $participant_data['price'] != "") {
+						$price_level_description = "";
+						$price_level_row_counter = 0;
+						foreach ($course->price_salery_level_details as $level_description => $level_price) {
+							$price_level_row_counter++;
+							if($price_level_row_counter == $participant_data['price_salery_level_row_number']) {
+								$price_level_description = $level_description;
+								break;
+							}
+						}
+						$body .= "Preis nach Preismodell: ". $participant_data['price']  ." (monatliches Familieneinkommen: ". $price_level_description .")<br>";
 						$price_full = $price_full + ((float) str_replace(",", ".", str_replace(".", "", $participant_data['price'])));	
 					}
 					$body .= "<br>";
@@ -695,12 +727,28 @@ class Cart {
 	 * Update course participant number.
 	 * @param int $course_id Course ID
 	 * @param int $participant_number Participant number
+	 * @param string $participant_price price per participant, e.g. 30 €
+	 * @param int $participant_price_salery_level_row_number row number of price salery level used as so to say id
 	 */
-	public function updateParticipantNumber($course_id, $participant_number, $participant_price = null) {
+	public function updateParticipantNumber($course_id, $participant_number, $participant_price = null, $participant_price_salery_level_row_number = 0) {
 		$_SESSION['cart'][$course_id] = [];
 		$_SESSION['cart'][$course_id]['participant_number'] = $participant_number;
-		if($participant_price) {
+		if($participant_price || $participant_price_salery_level_row_number) {
+			if($participant_price_salery_level_row_number) {
+				$course = new Course($course_id);
+				if($course->price_salery_level) {
+					$counter_row_price_salery_level_details = 0;
+					foreach($course->price_salery_level_details as $description => $price) {
+						$counter_row_price_salery_level_details++;
+						if($counter_row_price_salery_level_details == $participant_price_salery_level_row_number) {
+							$participant_price = $price;
+							break;
+						}
+					}
+				}
+			}
 			$_SESSION['cart'][$course_id]['participant_price'] = $participant_price;
+			$_SESSION['cart'][$course_id]['participant_price_salery_level_row_number'] = $participant_price_salery_level_row_number;
 		}
 	}
 }

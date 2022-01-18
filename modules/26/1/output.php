@@ -473,9 +473,11 @@ else {
 			$box_details .= '<div class="course_box spacer_box"><b>'. $tag_open .'d2u_courses_fee'. $tag_close .':</b> ';
 			if($course->price_salery_level) {
 				$box_details .= $tag_open. 'd2u_courses_price_salery_level_details'. $tag_close .'<br>';
-				$box_details .= '<select class="participant" name="participant_price_'. $course_id .'" style="border-color:'. $course->category->color .'">';
+				$box_details .= '<select class="participant" name="participant_price_salery_level_row_add" style="border-color:'. $course->category->color .'">';
+				$counter_row_price_salery_level_details = 0;
 				foreach($course->price_salery_level_details as $key => $value) {
-					$box_details .= '<option value="'. $value .'">'. $key .': '. $value .'</option>';
+					$counter_row_price_salery_level_details++;
+					$box_details .= '<option value="'. $counter_row_price_salery_level_details .'">'. $key .': '. $value .'</option>';
 				}
 				$box_details .=  '</select>';
 			}
