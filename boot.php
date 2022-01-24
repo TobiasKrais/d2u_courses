@@ -36,6 +36,7 @@ function rex_d2u_courses_article_is_in_use(rex_extension_point $ep) {
 		if(!in_array($message, $warning)) {
 			$warning[] = $message;
 		}
+		$sql_courses->next();
     }
 	
 	// Settings
@@ -87,6 +88,7 @@ function rex_d2u_courses_media_is_in_use(rex_extension_point $ep) {
 		if(!in_array($message, $warning)) {
 			$warning[] = $message;
 		}
+		$sql_courses->next();
     }
 
 	// Categories
@@ -96,6 +98,7 @@ function rex_d2u_courses_media_is_in_use(rex_extension_point $ep) {
 		if(!in_array($message, $warning)) {
 			$warning[] = $message;
 		}
+		$sql_categories->next();
     }
 	
 	return $warning;
