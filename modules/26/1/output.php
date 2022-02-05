@@ -466,9 +466,11 @@ else {
 			$box_details .= '</div>';
 		}
 
-		$box_details .= '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'" method="post">';
+		if($course->registration_possible == "yes" || $course->registration_possible == "yes_number" || $course->registration_possible == "booked") {
+			$box_details .= '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'" method="post">';
+		}
 
-		if($course->price || ($course->price_salery_level && $course->price_salery_level_details)) {
+		if($course->price > 0 || ($course->price_salery_level && $course->price_salery_level_details)) {
 			$box_details .= '<div class="col-12 course_row">';
 			$box_details .= '<div class="course_box spacer_box"><b>'. $tag_open .'d2u_courses_fee'. $tag_close .':</b> ';
 			if($course->price_salery_level) {
@@ -586,9 +588,10 @@ else {
 			}
 			$box_details .= '</div>';
 			$box_details .= '</div>';
+
+			$box_details .= '</form>';
 		}
 
-		$box_details .= '</form>';
 
 		if($course->picture != "") {
 			$box_picture = '<div class="col-12 col-md-6 course_row">';
