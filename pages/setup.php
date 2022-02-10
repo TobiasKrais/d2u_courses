@@ -240,6 +240,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.2.3-DEV:</p>
 <ul>
+	<li>Anpassungen an Publish Github Release to Redaxo.</li>
 	<li>Bugfix: Anzeige der Preisstufenbeschreibung bei gleichen Preisen nicht immer korrekt.</li>
 	<li>Bugfix: Beim Löschen von Artikeln und Medien die vom Addon verlinkt werden wurde der Name der verlinkenden Quelle in der Warnmeldung nicht immer korrekt angegeben.</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": Anzeige der Preisstufenbeschreibung bei gleichen Preisen nicht immer korrekt.</li>

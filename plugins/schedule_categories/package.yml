@@ -5,5 +5,5 @@ supportpage: http://github.com/tobiaskrais/d2u_courses
 
 page:
     title: 'translate:d2u_courses_schedule_categories'
-    perm: d2u_courses[schedule_categories]
+    perm: 'd2u_courses[schedule_categories]'
     icon: rex-icon fa-calendar

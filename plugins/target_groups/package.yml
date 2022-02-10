@@ -5,5 +5,5 @@ supportpage: http://github.com/tobiaskrais/d2u_courses
 
 page:
     title: 'translate:d2u_courses_target_groups'
-    perm: d2u_courses[target_groups]
+    perm: 'd2u_courses[target_groups]'
     icon: rex-icon fa-bullseye
