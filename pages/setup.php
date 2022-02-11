@@ -238,6 +238,10 @@ else if($old_tables_available) {
 </fieldset>
 
 <h2>Changelog</h2>
+<p>3.2.4-DEV:</p>
+<ul>
+	<li>...</li>
+</ul>
 <p>3.2.3:</p>
 <ul>
 	<li>Anpassungen an Publish Github Release to Redaxo.</li>
