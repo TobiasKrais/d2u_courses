@@ -238,7 +238,7 @@ else if($old_tables_available) {
 </fieldset>
 
 <h2>Changelog</h2>
-<p>3.2.3-DEV:</p>
+<p>3.2.3:</p>
 <ul>
 	<li>Anpassungen an Publish Github Release to Redaxo.</li>
 	<li>Unterstützt nur noch URL Addon >= 2.0.</li>
