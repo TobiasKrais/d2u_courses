@@ -653,7 +653,7 @@ class Cart {
 				}
 			}
 			else {
-					$body .= "Anzahl Anmeldungen: ". $participant  ."<br>";
+					$body .= "Anzahl Anmeldungen: ". $participant['participant_number']  ."<br>";
 			}
 		}
 		if(isset($invoice_address['kids_go_home_alone']) && $invoice_address['kids_go_home_alone'] == 'yes') {
