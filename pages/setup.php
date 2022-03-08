@@ -240,7 +240,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.2.4-DEV:</p>
 <ul>
-	<li>Bugfix: wenn nur Teilnehmerzahl erfragt wurde, war in Bestätigungsmail die Anzahl nicht korrekt angezeigt.</li>
+	<li>Bugfix: wenn nur Teilnehmerzahl erfragt wurde, war in Bestätigungsmail die Anzahl und der Gesamtpreis nicht korrekt angezeigt.</li>
 </ul>
 <p>3.2.3:</p>
 <ul>

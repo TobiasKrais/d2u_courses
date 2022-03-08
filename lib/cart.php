@@ -616,12 +616,12 @@ class Cart {
 			if($course->price_salery_level) {
 				if($course->registration_possible == "yes_number") {
 					$body .= "Einzelpreis: ". $participant['participant_price'] ."<br>";
-					$price_full = $price_full + ($participant['participant_number'] * ((float) str_replace(",", ".", str_replace(".", "", $participant['participant_price']))));	
+					$price_full = $price_full + ($participant['participant_number'] * ((float) str_replace(",", ".", str_replace(".", "", $participant['participant_price']))));
 				}
 			}
 			else if($course->price) {
 				$body .= "Einzelpreis: ". $course->price  ." €". ($course->price_discount > 0 ? " (mögliche Ermäßigungen nicht mit einberechnet" : "") ."<br>";
-				$price_full = $price_full + (is_array($participant) ? count($participant) * $course->price : $participant * $course->price);
+				$price_full = $price_full + (isset($participant['participant_number']) ? $participant['participant_number'] * $course->price : count($participant) * $course->price);
 			}
 			if(is_array($participant) && $course->registration_possible !== "yes_number") {
 				foreach($participant as $id => $participant_data) {
