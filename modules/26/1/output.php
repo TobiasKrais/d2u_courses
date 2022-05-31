@@ -27,6 +27,7 @@ if($linkbox_category_id > 0) {
 	$new_category = new \D2U_Linkbox\Category($linkbox_category_id, rex_clang::getCurrentId());
 	$linkboxes = $new_category->getLinkboxes(TRUE);
 }
+$box_per_line = "REX_VALUE[8]" == 4 ? 4 : 3;
 
 $sprog = rex_addon::get("sprog");
 $tag_open = $sprog->getConfig('wildcard_open_tag');
@@ -106,10 +107,10 @@ if(!function_exists('printBox')) {
 	 * @param string $picture_filename mediapool picture filename
 	 * @param string $color Background color (Hex)
 	 * @param string $url Link target url
-	 * @param string $three_column if TRUE, box is printed in 3 column format, if FALSE, only 2 columns are shown
+	 * @param int $number_columns can be 2, 3 or 4
 	 */
-	function printBox($title, $picture_filename, $color, $url, $three_column = TRUE) {
-		print '<div class="col-6'. ($three_column ? ' col-md-4' : '') .' spacer">';
+	function printBox($title, $picture_filename, $color, $url, $number_columns = 3) {
+		print '<div class="col-6'. ($number_columns >= 3 ? ' col-md-4' : '') . ($number_columns == 4 ? ' col-lg-3' : '') .' spacer">';
 		print '<div class="category_box" style="background-color: '. ($color == "" ? "grey" : "". $color) .'" data-height-watch>';
 		print '<a href="'. $url .'">';
 		print '<div class="view">';
@@ -166,7 +167,7 @@ else {
 			}
 			// Children
 			foreach ($category->getChildren(TRUE) as $child_category) {
-				printBox($child_category->name, $child_category->picture, $child_category->color, $child_category->getURL());
+				printBox($child_category->name, $child_category->picture, $child_category->color, $child_category->getURL(), $box_per_line);
 			}
 		}
 		else {
@@ -180,7 +181,7 @@ else {
 		print '<h1 class="page_title">'. $location_category->name .'</h1>';
 		print '</div></div>';
 		foreach ($location_category->getLocations(TRUE) as $location) {
-			printBox($location->name, $location->picture, rex_config::get('d2u_courses', 'location_bg_color', '#41b23b'), $location->getURL());
+			printBox($location->name, $location->picture, rex_config::get('d2u_courses', 'location_bg_color', '#41b23b'), $location->getURL(), $box_per_line);
 		}
 	}
 	// Deal with locations
@@ -195,7 +196,7 @@ else {
 			print '</div></div>';
 			// Children
 			foreach ($schedule_category->getChildren(TRUE) as $child_schedule_category) {
-				printBox($child_schedule_category->name, $child_schedule_category->picture, rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2'), $child_schedule_category->getURL());
+				printBox($child_schedule_category->name, $child_schedule_category->picture, rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2'), $child_schedule_category->getURL(), $box_per_line);
 			}		
 		}
 		else {
@@ -210,7 +211,7 @@ else {
 			print '</div></div>';
 			// Children
 			foreach ($target_group->getChildren(TRUE) as $child_target_group) {
-				printBox($child_target_group->name, $child_target_group->picture, rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a'), $child_target_group->getURL());
+				printBox($child_target_group->name, $child_target_group->picture, rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a'), $child_target_group->getURL(), $box_per_line);
 			}		
 		}
 		else {
@@ -219,39 +220,39 @@ else {
 	}
 	// Nothing requested: selected startpage
 	else {
-		$three_column = TRUE;
+		$tmp_box_per_line = $box_per_line;
 		if(count($news) > 0 && $course === FALSE) {
-			$three_column = FALSE;
+			$tmp_box_per_line--;
 			print '<div class="col-12 col-lg-8" data-match-height>';
 			print '<div class="row">';
 		}
 		if($startpage == "locations" && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
 			$location_categories = D2U_Courses\LocationCategory::getAll(TRUE);
 			foreach ($location_categories as $location_category) {
-				printBox($location_category->name, $location_category->picture, rex_config::get('d2u_courses', 'location_bg_color', '#41b23b'), $location_category->getURL(), $three_column);		
+				printBox($location_category->name, $location_category->picture, rex_config::get('d2u_courses', 'location_bg_color', '#41b23b'), $location_category->getURL(), $tmp_box_per_line);		
 			}
 		}
 		else if($startpage == "schedule_categories" && rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
 			$schedule_categories = D2U_Courses\ScheduleCategory::getAllParents(TRUE);
 			foreach ($schedule_categories as $schedule_category) {
-				printBox($schedule_category->name, $schedule_category->picture, rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2'), $schedule_category->getURL(), $three_column);		
+				printBox($schedule_category->name, $schedule_category->picture, rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2'), $schedule_category->getURL(), $tmp_box_per_line);		
 			}
 		}
 		else if($startpage == "target_groups" && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
 			$target_groups = D2U_Courses\TargetGroup::getAll(TRUE);
 			foreach ($target_groups as $target_group) {
-				printBox($target_group->name, $target_group->picture, rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a'), $target_group->getURL(), $three_column);		
+				printBox($target_group->name, $target_group->picture, rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a'), $target_group->getURL(), $tmp_box_per_line);		
 			}
 		}
 		else if($course === FALSE) {
 			// Only show default if no course should be shown
 			$categories = D2U_Courses\Category::getAllParents(TRUE);
 			foreach ($categories as $category) {
-				printBox($category->name, $category->picture, $category->color, $category->getURL(), $three_column);
+				printBox($category->name, $category->picture, $category->color, $category->getURL(), $tmp_box_per_line);
 			}
 			if(count($linkboxes) > 0) {
 				foreach($linkboxes as $linkbox) {
-					printBox($linkbox->title, $linkbox->picture, $linkbox->background_color, $linkbox->getURL(), $three_column);
+					printBox($linkbox->title, $linkbox->picture, $linkbox->background_color, $linkbox->getURL(), $tmp_box_per_line);
 				}
 			}
 			if(count($news) > 0) {
@@ -338,7 +339,7 @@ else {
 			if($course_list_box_style) {
 				$title = $list_course->name ."<br><small>"
 					. (new DateTime($list_course->date_start))->format('d.m.Y') ."</small>";
-				printBox($title, $list_course->picture, $list_course->category->color, $list_course->getURL(TRUE));
+				printBox($title, $list_course->picture, $list_course->category->color, $list_course->getURL(TRUE), $box_per_line);
 			}
 			else {
 				print '<div class="col-12">';

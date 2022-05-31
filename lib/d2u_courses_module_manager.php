@@ -13,13 +13,13 @@ class D2UCoursesModules {
 		$modules = [];
 		$modules[] = new D2UModule("26-1",
 			"D2U Veranstaltungen - Ausgabe Veranstaltungen",
-			10);
+			11);
 		$modules[] = new D2UModule("26-2",
 			"D2U Veranstaltungen - Warenkorb",
 			7);
 		$modules[] = new D2UModule("26-3",
 			"D2U Veranstaltungen - Ausgabe Veranstaltungen einer Kategorie in Boxen",
-			3);
+			4);
 		return $modules;
 	}
 }

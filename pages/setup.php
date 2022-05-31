@@ -227,7 +227,7 @@ else if($old_tables_available) {
 <h2>Support</h2>
 <p>Fehlermeldungen bitte im Git Projekt unter
 	<a href="https://github.com/TobiasKrais/d2u_courses/issues" target="_blank">https://github.com/TobiasKrais/d2u_courses/issues</a> melden.</p>
-<fieldset style='background-color: white; padding: 1em; border: 1px solid #dfe3e9;'>
+<fieldset style='padding: 1em; border: 1px solid #dfe3e9;'>
 	<p style="margin-bottom: 0.5em;">Sag einfach Danke oder unterstütze die Weiterentwicklung durch eine Spende:</p>
 	<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 		<input type="hidden" name="cmd" value="_s-xclick" />
@@ -241,6 +241,8 @@ else if($old_tables_available) {
 <p>3.2.4-DEV:</p>
 <ul>
 	<li>Bugfix: wenn nur Teilnehmerzahl erfragt wurde, war in Bestätigungsmail die Anzahl und der Gesamtpreis nicht korrekt angezeigt.</li>
+	<li>Modul 26-1 "Ausgabe Veranstaltungen": nun auch 4 Boxen nebeneinander möglich.</li>
+	<li>Modul 26-3 "Ausgabe Veranstaltungen einer Kategorie in Boxen": nun auch 4 Boxen nebeneinander möglich.</li>
 </ul>
 <p>3.2.3:</p>
 <ul>

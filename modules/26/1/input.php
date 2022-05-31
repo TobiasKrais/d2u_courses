@@ -170,6 +170,20 @@ if(rex_addon::get('d2u_linkbox')->isAvailable()) {
 }
 ?>
 <div class="row">
+	<div class="col-xs-4">Anzahl Linkboxen / Zeile</div>
+	<div class="col-xs-8">
+		<?php
+			print '<select name="REX_INPUT_VALUE[8]" class="form-control">';
+			print '<option value="3" '. ("REX_VALUE[8]" == 3 ? 'selected="selected" ' : '') .'>3</option>';
+			print '<option value="4" '. ("REX_VALUE[8]" == 4 ? 'selected="selected" ' : '') .'>4</option>';
+			print '</select>';
+		?>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">&nbsp;</div>
+</div>
+<div class="row">
 	<div class="col-xs-12">
 		<p>Kurse, Kategorien, Einstellung, usw. werden im <a href="index.php?page=d2u_courses">D2U Veranstaltungen Addon</a> verwaltet.</p>
 	</div>

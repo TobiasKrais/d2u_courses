@@ -5,7 +5,7 @@
 $category_id = "REX_VALUE[1]";
 $category = $category_id > 0 ? new \D2U_Courses\Category($category_id) : FALSE;
 $courses = $category->getCourses(TRUE);
-
+$box_per_line = "REX_VALUE[5]" == 4 ? 4 : 3;
 
 $sprog = rex_addon::get("sprog");
 $tag_open = $sprog->getConfig('wildcard_open_tag');
@@ -21,9 +21,10 @@ if(!function_exists('printBox')) {
 	 * @param string $picture_filename mediapool picture filename
 	 * @param string $color Background color (Hex)
 	 * @param string $url Link target url
+	 * @param string $box_per_line number boxes per line on large screens
 	 */
-	function printBox($title, $picture_filename, $color, $url) {
-		print '<div class="col-6 col-md-4 spacer">';
+	function printBox($title, $picture_filename, $color, $url, $box_per_line = 3) {
+		print '<div class="col-6 col-md-4 col-lg-'. ($box_per_line == 4 ? '3' : '4') .' spacer">';
 		print '<div class="category_box" style="background-color: '. ($color == "" ? "grey" : "". $color) .'" data-height-watch>';
 		print '<a href="'. $url .'">';
 		print '<div class="view">';
@@ -74,7 +75,7 @@ else {
 			$title = $list_course->name ."<br><small>"
 				. ("REX_VALUE[3]" == 'true' && $list_course->teaser != "" ? $list_course->teaser ."<br>" : "")
 				. (new DateTime($list_course->date_start))->format('d.m.Y') ."</small>";
-			printBox($title, $list_course->picture, $list_course->category->color, $list_course->getURL(TRUE));
+			printBox($title, $list_course->picture, $list_course->category->color, $list_course->getURL(TRUE), $box_per_line);
 		}
 	}
 	?>
