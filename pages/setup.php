@@ -238,6 +238,10 @@ else if($old_tables_available) {
 </fieldset>
 
 <h2>Changelog</h2>
+<p>3.2.5-DEV:</p>
+<ul>
+	<li>....</li>
+</ul>
 <p>3.2.4:</p>
 <ul>
 	<li>Bugfix: wenn nur Teilnehmerzahl erfragt wurde, war in Bestätigungsmail die Anzahl und der Gesamtpreis nicht korrekt angezeigt.</li>
