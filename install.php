@@ -7,6 +7,7 @@
     ->ensureColumn(new \rex_sql_column('description', 'TEXT', true))
     ->ensureColumn(new \rex_sql_column('color', 'VARCHAR(255)', true))
     ->ensureColumn(new \rex_sql_column('picture', 'VARCHAR(255)', true))
+    ->ensureColumn(new \rex_sql_column('parent_category_id', 'INT(11)', true))
     ->ensureColumn(new \rex_sql_column('priority', 'INT(11)', true))
     ->ensureColumn(new \rex_sql_column('updatedate', 'DATETIME'))
     ->ensure();

@@ -238,9 +238,10 @@ else if($old_tables_available) {
 </fieldset>
 
 <h2>Changelog</h2>
-<p>3.2.4-DEV:</p>
+<p>3.2.4:</p>
 <ul>
 	<li>Bugfix: wenn nur Teilnehmerzahl erfragt wurde, war in Bestätigungsmail die Anzahl und der Gesamtpreis nicht korrekt angezeigt.</li>
+	<li>Bugfix: Installation ohne vorheriges Update schlug fehl.</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": nun auch 4 Boxen nebeneinander möglich.</li>
 	<li>Modul 26-3 "Ausgabe Veranstaltungen einer Kategorie in Boxen": nun auch 4 Boxen nebeneinander möglich.</li>
 </ul>
