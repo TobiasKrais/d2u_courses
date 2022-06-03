@@ -240,7 +240,7 @@ else if($old_tables_available) {
 <h2>Changelog</h2>
 <p>3.2.5-DEV:</p>
 <ul>
-	<li>....</li>
+	<li>.github Verzeichnis aus Installer Action ausgeschlossen.</li>
 </ul>
 <p>3.2.4:</p>
 <ul>
