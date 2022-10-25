@@ -709,7 +709,7 @@ else {
 					</script>
 				<?php
 				}
-				else {
+				else if($map_type == 'osm' && rex_addon::get('osmproxy')->isAvailable()) {
 					$map_id = rand();
 
 					$leaflet_js_file = 'modules/04-2/leaflet.js';
@@ -739,6 +739,96 @@ else {
 						}).addTo(map).bindPopup('<?php echo addslashes($course->location->name); ?>').openPopup();
 					</script>
 				<?php
+				}
+				else if(rex_addon::get('geolocation')->isAvailable()) {
+					try {
+						if(rex::isFrontend()) {
+							\Geolocation\tools::echoAssetTags();
+						}
+			?>
+				<script>
+					Geolocation.default.positionColor = '<?= str_replace('#', '%23', rex_config::get('d2u_helper', 'article_color_h')); ?>';
+
+					// adjust zoom level
+					Geolocation.Tools.Center = class extends Geolocation.Tools.Template{
+						constructor ( ...args){
+							super(args);
+							this.zoom = this.zoomDefault = Geolocation.default.zoom;
+							this.center = this.centerDefault = L.latLngBounds( Geolocation.default.bounds ).getCenter();
+							return this;
+						}
+						setValue( data ){
+							super.setValue( data );
+							this.center = L.latLng( data[0] ) || this.centerDefault;
+							this.zoom = data[1] || this.zoomDefault;
+							this.radius = data[2];
+							this.circle = null;
+							if( data[2] ) {
+								let options = Geolocation.default.styleCenter;
+								options.color = data[3] || options.color;
+								options.radius = this.radius;
+								this.circle = L.circle( this.center, options );
+							}
+							if( this.map ) this.show( this.map );
+							return this;
+						}
+						show( map ){
+							super.show( map );
+							map.setView( this.center, this.zoom );
+							if( this.circle instanceof L.Circle ) this.circle.addTo( map );
+							return this;
+						}
+						remove(){
+							if( this.circle instanceof L.Circle ) this.circle.remove();
+							super.remove();
+							return this;
+						}
+						getCurrentBounds(){
+							if( this.circle instanceof L.Circle ) {
+								return this.radius ? this.circle.getBounds() : this.circle.getLatLng();
+							}
+							return this.center;
+						}
+					};
+					Geolocation.tools.center = function(...args) { return new Geolocation.Tools.Center(args); };
+
+					// add info box
+					Geolocation.Tools.Infobox = class extends Geolocation.Tools.Position{
+						setValue( dataset ) {
+							// keine Koordinaten => Abbruch
+							if( !dataset[0] ) return this;
+
+							// GGf. Default-Farbe temporär ändern, normalen Position-Marker erzeugen
+							let color = Geolocation.default.positionColor;
+							Geolocation.default.positionColor = dataset[2] || Geolocation.default.positionColor;
+							super.setValue(dataset[0]);
+							Geolocation.default.positionColor = color;
+
+							// Wenn angegeben: Text als Popup hinzufügen
+							if( this.marker && dataset[1] ) {
+								this.marker.bindPopup(dataset[1]);
+								this.marker.on('click', function (e) {
+									this.openPopup();
+								});
+							}
+							return this;
+						}
+					};
+					Geolocation.tools.infobox = function(...args) { return new Geolocation.Tools.Infobox(args); };
+				</script>
+			<?php
+					}
+					catch (Exception $e) {}
+
+					$mapsetId = (int) 'REX_VALUE[9]';
+
+					echo \Geolocation\mapset::take($mapsetId)
+						->attributes('id', $mapsetId)
+						->attributes('style', 'height:400px;width:100%;')
+						->dataset('center', [[$course->location->latitude, $course->location->longitude], $course->location->location_category->zoom_level])
+						->dataset('position', [$course->location->latitude, $course->location->longitude])
+						->dataset('infobox',[[$course->location->latitude, $course->location->longitude], $course->location->name])
+						->parse();
 				}
 				print '</div>';
 				print '</div>';

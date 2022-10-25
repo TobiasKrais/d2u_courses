@@ -32,26 +32,3 @@ if(!rex_config::has('d2u_courses', 'payment_options')) {
 
 // use path relative to __DIR__ to get correct path in update temp dir
 $this->includeFile(__DIR__.'/install.php');
-
-// Update modules
-if(class_exists('D2UModuleManager')) {
-	$modules = [];
-	$modules[] = new D2UModule("26-1",
-		"D2U Veranstaltungen - Ausgabe Veranstaltungen",
-		11);
-	$modules[] = new D2UModule("26-2",
-		"D2U Veranstaltungen - Warenkorb",
-		7);
-	$modules[] = new D2UModule("26-3",
-		"D2U Veranstaltungen - Ausgabe Veranstaltungen einer Kategorie in Boxen",
-		4);
-	$d2u_module_manager = new D2UModuleManager($modules, "", "d2u_courses");
-	$d2u_module_manager->autoupdate();
-}
-
-// Update translations
-if(!class_exists('d2u_courses_lang_helper')) {
-	// Load class in case addon is deactivated
-	require_once 'lib/d2u_courses_lang_helper.php';
-}
-d2u_courses_lang_helper::factory()->install();
