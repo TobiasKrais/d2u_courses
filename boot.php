@@ -66,6 +66,7 @@ function rex_d2u_courses_article_is_in_use(rex_extension_point $ep) {
  * @return string[] Warning message as array
  */
 function rex_d2u_courses_media_is_in_use(rex_extension_point $ep) {
+	/** @var string[] $warning */
 	$warning = $ep->getSubject();
 	$params = $ep->getParams();
 	$filename = addslashes($params['filename']);
