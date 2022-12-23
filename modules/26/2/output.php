@@ -127,21 +127,21 @@ if(isset($form_data['invoice_form'])) {
 		}
 	}
 
-	$error = FALSE;
+	$error = false;
 	// Create Kufer XML registrations
-	if(count($kufer_self) > 0 && $cart->createXMLRegistration($kufer_self, $form_data['invoice_form'], "selbst") == FALSE) {
-		$error = TRUE;
+	if(count($kufer_self) > 0 && $cart->createXMLRegistration($kufer_self, $form_data['invoice_form'], "selbst") == false) {
+		$error = true;
 	}
-	if(count($kufer_children) > 0 && $cart->createXMLRegistration($kufer_children, $form_data['invoice_form'], "kind") == FALSE) {
-		$error = TRUE;
+	if(count($kufer_children) > 0 && $cart->createXMLRegistration($kufer_children, $form_data['invoice_form'], "kind") == false) {
+		$error = true;
 	}
 	foreach($kufer_others as $course_id => $participant) {
 		foreach($participant as $id => $cur_participant) {
 			$cart->createXMLRegistration([$course_id => [$cur_participant]], $form_data['invoice_form'], "andere");
 		}
 	}
-	if(count($mail_registration) > 0 && $cart->sendRegistrations($mail_registration, $form_data['invoice_form']) == FALSE) {
-		$error = TRUE;
+	if(count($mail_registration) > 0 && $cart->sendRegistrations($mail_registration, $form_data['invoice_form']) == false) {
+		$error = true;
 	}
 	
 	// MultiNewsletter Anmeldemail senden
@@ -149,7 +149,7 @@ if(isset($form_data['invoice_form'])) {
 		$user = MultinewsletterUser::initByMail(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL));
 		$anrede = $form_data['invoice_form']['gender'] == "W" ? 1 : 0;
 
-		if($user !== FALSE) {
+		if($user !== false) {
 			$user->title = $anrede;
 			$user->firstname = $form_data['invoice_form']['firstname'];
 			$user->lastname = $form_data['invoice_form']['lastname'];
@@ -181,7 +181,7 @@ if(isset($form_data['invoice_form'])) {
 		);
 	}
 	
-	if($error == FALSE) {
+	if($error == false) {
 		print '<div class="col-12">';
 		print '<h1>'. $tag_open .'d2u_courses_cart_thanks'. $tag_close .'</h1><p>'. $tag_open .'d2u_courses_cart_thanks_details'. $tag_close .'</p>';
 		print '</div>';
@@ -254,7 +254,7 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
     print '<input type="email" class="cart_text" name="invoice_form[e-mail]" id="invoice_form-e-mail" value="" required>';
 	print '</p>';
 	
-	if(rex_config::get('d2u_courses', 'ask_vacation_pass', 'inactive') == 'active' && rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() === FALSE) {
+	if(rex_config::get('d2u_courses', 'ask_vacation_pass', 'inactive') == 'active' && rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() === false) {
 		print '<p>';
 		print '<label class="cart_text" for="invoice_form-vacation_pass">'. $tag_open .'d2u_courses_vacation_pass'. $tag_close .'</label>';
 		print '<input type="number" class="cart_text" name="invoice_form[vacation_pass]" id="invoice_form-vacation_pass" maxlength="5" value="">';
@@ -356,12 +356,12 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 	}
 	// Bestellübersicht
 	print '<div class="registration_header cart_row_title"><h1>'. $tag_open .'d2u_courses_order_overview'. $tag_close .'</h1></div>';
-	$has_minor_participants = FALSE;
+	$has_minor_participants = false;
 	foreach($cart->getCourseIDs() as $course_id) {
 		$course = new D2U_Courses\Course($course_id);
 		print '<div class="row">';
 		print '<div class="col-12 spacer">';
-		print '<div class="cart_row_title" style="background-color: '. ($course->category !== FALSE ? $course->category->color : 'grey') .'">';
+		print '<div class="cart_row_title" style="background-color: '. ($course->category !== false ? $course->category->color : 'grey') .'">';
 		print '<div class="row" data-match-height>';
 		print '<div class="col-12">';
 		print '<b>'. $course->name;
@@ -383,7 +383,7 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 					$date .= ', ';
 				}
 				$date .= $course->time;
-//				if(strpos($course->time, "Uhr") === FALSE) {
+//				if(strpos($course->time, "Uhr") === false) {
 //					$date .= ' Uhr';
 //				}
 			}
@@ -450,7 +450,7 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 				}
 				print '</li>';
 				if($cart::calculateAge($participant['birthday']) < 18) {
-					$has_minor_participants = TRUE;
+					$has_minor_participants = true;
 				}
 			}
 			print '</ul>';
@@ -544,10 +544,10 @@ else {
 		foreach($cart->getCourseIDs() as $course_id) {
 			$course = new D2U_Courses\Course($course_id);
 			print '<div class="col-12 spacer">';
-			print '<div class="cart_row_title" style="background-color: '. ($course->category !== FALSE ? $course->category->color : 'grey') .'">';
+			print '<div class="cart_row_title" style="background-color: '. ($course->category !== false ? $course->category->color : 'grey') .'">';
 			print '<div class="row">';
 			print '<div class="col-12">';
-			print '<a href="'. $course->getURL(TRUE) .'" title="'. $course->name .'" class="cart_course_title">';
+			print '<a href="'. $course->getURL(true) .'" title="'. $course->name .'" class="cart_course_title">';
 			print $course->name;
 			if($course->course_number != "") {
 				print ' ('. $course->course_number .')';
@@ -567,7 +567,7 @@ else {
 						$date .= ', ';
 					}
 					$date .= $course->time;
-//					if(strpos($course->time, "Uhr") === FALSE) {
+//					if(strpos($course->time, "Uhr") === false) {
 //						$date .= ' Uhr';
 //					}
 				}

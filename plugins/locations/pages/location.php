@@ -10,10 +10,10 @@ if($message != "") {
 
 // save settings
 if (intval(filter_input(INPUT_POST, "btn_save")) === 1 || intval(filter_input(INPUT_POST, "btn_apply")) === 1) {
-	$form = (array) rex_post('form', 'array', []);
+	$form = rex_post('form', 'array', []);
 
 	// Media fields and links need special treatment
-	$input_media = (array) rex_post('REX_INPUT_MEDIA', 'array', []);
+	$input_media = rex_post('REX_INPUT_MEDIA', 'array', []);
 
 	$location_id = $form['location_id'];
 	$location = new D2U_Courses\Location($location_id);
@@ -24,7 +24,7 @@ if (intval(filter_input(INPUT_POST, "btn_save")) === 1 || intval(filter_input(IN
 	$location->zip_code = $form['zip_code'];
 	$location->country_code = $form['country_code'];
 	$location->street = $form['street'];
-	$location->location_category = $form['location_category_id'] > 0 ? new D2U_Courses\LocationCategory($form['location_category_id']) : FALSE;
+	$location->location_category = $form['location_category_id'] > 0 ? new D2U_Courses\LocationCategory($form['location_category_id']) : false;
 	$location->kufer_location_id = $form['kufer_location_id'];
 	$location->redaxo_users = isset($form['redaxo_users']) ? $form['redaxo_users'] : [];
 	$location->picture = $input_media[1];
@@ -37,31 +37,31 @@ if (intval(filter_input(INPUT_POST, "btn_save")) === 1 || intval(filter_input(IN
 	}
 
 	// Redirect to make reload and thus double save impossible
-	if(filter_input(INPUT_POST, "btn_apply") == 1 && $location !== FALSE) {
-		header("Location: ". rex_url::currentBackendPage(["entry_id"=>$location->location_id, "func"=>'edit', "message"=>$message], FALSE));
+	if(intval(filter_input(INPUT_POST, "btn_apply", FILTER_VALIDATE_INT)) === 1 &&$location !== false) {
+		header("Location: ". rex_url::currentBackendPage(["entry_id"=>$location->location_id, "func"=>'edit', "message"=>$message], false));
 	}
 	else {
-		header("Location: ". rex_url::currentBackendPage(["message"=>$message], FALSE));
+		header("Location: ". rex_url::currentBackendPage(["message"=>$message], false));
 	}
 	exit;
 }
 // Delete
-else if(filter_input(INPUT_POST, "btn_delete") == 1 || $func == 'delete') {
+else if(intval(filter_input(INPUT_POST, "btn_delete", FILTER_VALIDATE_INT)) === 1 || $func === 'delete') {
 	$location_id = $entry_id;
-	if($location_id == 0) {
-		$form = (array) rex_post('form', 'array', []);
+	if($location_id === 0) {
+		$form = rex_post('form', 'array', []);
 		$location_id = $form['location_id'];
 	}
 	$location = new D2U_Courses\Location($location_id);
 
 	// Check if object is used
-	$uses_courses = $location->getCourses(FALSE);
-	$used_in_settings = FALSE;
+	$uses_courses = $location->getCourses(false);
+	$used_in_settings = false;
 	if(rex_config::get('d2u_courses', 'kufer_sync_default_location_id', 0) == $location->location_id) {
-		$used_in_settings = TRUE;
+		$used_in_settings = true;
 	}
 
-	if(count($uses_courses) == 0 && $used_in_settings == FALSE) {
+	if(count($uses_courses) == 0 && $used_in_settings == false) {
 		$location->delete();
 		
 		print rex_view::success(rex_i18n::msg('d2u_helper_deleted') . $message);
@@ -83,8 +83,8 @@ else if(filter_input(INPUT_POST, "btn_delete") == 1 || $func == 'delete') {
 }
 
 // Form
-if ($func == 'edit' || $func == 'add') {
-	$readonly = FALSE;
+if ($func === 'edit' || $func === 'add') {
+	$readonly = false;
 ?>
 	<form action="<?php print rex_url::currentBackendPage(); ?>" method="post">
 		<div class="panel panel-edit">
@@ -94,11 +94,11 @@ if ($func == 'edit' || $func == 'add') {
 				<?php
 
 					$location = new D2U_Courses\Location($entry_id);
-					d2u_addon_backend_helper::form_input('d2u_helper_name', "form[name]", $location->name, TRUE, $readonly);
-					d2u_addon_backend_helper::form_input('d2u_courses_location_street', 'form[street]', $location->street, TRUE, $readonly, 'text');
-					d2u_addon_backend_helper::form_input('d2u_courses_location', 'form[city]', $location->city, TRUE, $readonly, 'text');
-					d2u_addon_backend_helper::form_input('d2u_courses_location_zip_code', 'form[zip_code]', $location->zip_code, TRUE, $readonly, 'text');
-					d2u_addon_backend_helper::form_input('d2u_courses_location_country_code', 'form[country_code]', $location->country_code, TRUE, $readonly, 'text');
+					d2u_addon_backend_helper::form_input('d2u_helper_name', "form[name]", $location->name, true, $readonly);
+					d2u_addon_backend_helper::form_input('d2u_courses_location_street', 'form[street]', $location->street, true, $readonly, 'text');
+					d2u_addon_backend_helper::form_input('d2u_courses_location', 'form[city]', $location->city, true, $readonly, 'text');
+					d2u_addon_backend_helper::form_input('d2u_courses_location_zip_code', 'form[zip_code]', $location->zip_code, true, $readonly, 'text');
+					d2u_addon_backend_helper::form_input('d2u_courses_location_country_code', 'form[country_code]', $location->country_code, true, $readonly, 'text');
 					
 					$d2u_helper = rex_addon::get("d2u_helper");
 					$api_key = "";
@@ -142,15 +142,15 @@ if ($func == 'edit' || $func == 'add') {
 						}
 					}
 					d2u_addon_backend_helper::form_infotext('d2u_helper_geocode_hint', 'hint_geocoding');
-					d2u_addon_backend_helper::form_input('d2u_courses_location_latitude', 'form[latitude]', $location->latitude, FALSE, $readonly, 'text');
-					d2u_addon_backend_helper::form_input('d2u_courses_location_longitude', 'form[longitude]', $location->longitude, FALSE, $readonly, 'text');
+					d2u_addon_backend_helper::form_input('d2u_courses_location_latitude', 'form[latitude]', $location->latitude, false, $readonly, 'text');
+					d2u_addon_backend_helper::form_input('d2u_courses_location_longitude', 'form[longitude]', $location->longitude, false, $readonly, 'text');
 					d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $location->picture, $readonly);
 					d2u_addon_backend_helper::form_mediafield('d2u_courses_location_site_plan', '2', $location->site_plan, $readonly);
 					$options_categories = [];
-					foreach(D2U_Courses\LocationCategory::getAll(FALSE) as $location_category) {
+					foreach(D2U_Courses\LocationCategory::getAll(false) as $location_category) {
 						$options_categories[$location_category->location_category_id] = $location_category->name;
 					}
-					d2u_addon_backend_helper::form_select('d2u_helper_category', 'form[location_category_id]', $options_categories, ($location->location_category === FALSE ? [-1] : [$location->location_category->location_category_id]), 1, FALSE, $readonly);
+					d2u_addon_backend_helper::form_select('d2u_helper_category', 'form[location_category_id]', $options_categories, ($location->location_category === false ? [-1] : [$location->location_category->location_category_id]), 1, false, $readonly);
 					$options_users = [];
 					$user_result = \rex_sql::factory();
 					$user_result->setQuery('SELECT login, name FROM '. rex::getTablePrefix() .'user ORDER BY name');
@@ -158,9 +158,9 @@ if ($func == 'edit' || $func == 'add') {
 						$options_users[$user_result->getValue('login')] = $user_result->getValue('name');
 						$user_result->next();
 					}
-					d2u_addon_backend_helper::form_select('d2u_courses_location_rexuser', 'form[redaxo_users][]', $options_users, $location->redaxo_users, 5, TRUE, $readonly);
+					d2u_addon_backend_helper::form_select('d2u_courses_location_rexuser', 'form[redaxo_users][]', $options_users, $location->redaxo_users, 5, true, $readonly);
 					if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-						d2u_addon_backend_helper::form_input('d2u_courses_kufer_sync_location_id', 'form[kufer_location_id]', $location->kufer_location_id, FALSE, $readonly, 'number');
+						d2u_addon_backend_helper::form_input('d2u_courses_kufer_sync_location_id', 'form[kufer_location_id]', $location->kufer_location_id, false, $readonly, 'number');
 					}
 				?>
 			</div>
@@ -193,7 +193,7 @@ if ($func == 'edit' || $func == 'add') {
 		print d2u_addon_backend_helper::getJSOpenAll();
 }
 
-if ($func == '') {
+if ($func === '') {
 	$query = 'SELECT location_id, locations.name, categories.name AS category_name '
 		.'FROM '. rex::getTablePrefix() .'d2u_courses_locations AS locations '
 		.'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_location_categories as categories '

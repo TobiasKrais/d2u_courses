@@ -28,9 +28,9 @@ class d2u_courses_frontend_helper {
 
 			if($course_id > 0) {
 				$course = new D2U_Courses\Course($course_id);
-				if($course->category->parent_category !== FALSE) {
-					if($course->category->parent_category->parent_category !== FALSE) {
-						if($course->category->parent_category->parent_category->parent_category !== FALSE) {
+				if($course->category->parent_category !== false) {
+					if($course->category->parent_category->parent_category !== false) {
+						if($course->category->parent_category->parent_category->parent_category !== false) {
 							$breadcrumbs[] = '<a href="' . $course->category->parent_category->parent_category->parent_category->getUrl() . '">' . $course->category->parent_category->parent_category->parent_category->name . '</a>';
 						}
 						$breadcrumbs[] = '<a href="' . $course->category->parent_category->parent_category->getUrl() . '">' . $course->category->parent_category->parent_category->name . '</a>';
@@ -47,8 +47,8 @@ class d2u_courses_frontend_helper {
 
 			if($category_id > 0) {
 				$category = new D2U_Courses\Category($category_id);
-				if($category->parent_category !== FALSE) {
-					if($category->parent_category->parent_category !== FALSE) {
+				if($category->parent_category !== false) {
+					if($category->parent_category->parent_category !== false) {
 						$breadcrumbs[] = '<a href="' . $category->parent_category->parent_category->getUrl() . '">' . $category->parent_category->parent_category->name . '</a>';
 					}
 					$breadcrumbs[] = '<a href="' . $category->parent_category->getUrl() . '">' . $category->parent_category->name . '</a>';
@@ -62,7 +62,7 @@ class d2u_courses_frontend_helper {
 
 			if($location_id > 0 && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
 				$location = new D2U_Courses\Location($location_id);
-				if($location->location_category !== FALSE) {
+				if($location->location_category !== false) {
 					$breadcrumbs[] = '<a href="' . $location->location_category->getUrl() . '">' . $location->location_category->name . '</a>';
 				}
 				$breadcrumbs[] = '<a href="' . $location->getUrl() . '">' . $location->name . '</a>';
@@ -83,7 +83,7 @@ class d2u_courses_frontend_helper {
 
 			if($schedule_category_id > 0 && rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
 				$schedule_category = new D2U_Courses\ScheduleCategory($schedule_category_id);
-				if($schedule_category->parent_schedule_category !== FALSE) {
+				if($schedule_category->parent_schedule_category !== false) {
 					$breadcrumbs[] = '<a href="' . $schedule_category->parent_schedule_category->getUrl() . '">' . $schedule_category->parent_schedule_category->name . '</a>';
 				}
 				$breadcrumbs[] = '<a href="' . $schedule_category->getUrl() . '">' . $schedule_category->name . '</a>';
@@ -104,7 +104,7 @@ class d2u_courses_frontend_helper {
 
 			if($target_group_child_id > 0 && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
 				$target_group_child = D2U_Courses\TargetGroup::getByChildID($target_group_child_id);
-				if($target_group_child->parent_target_group !== FALSE) {
+				if($target_group_child->parent_target_group !== false) {
 					$breadcrumbs[] = '<a href="' . $target_group_child->parent_target_group->getUrl() . '">' . $target_group_child->parent_target_group->name . '</a>';
 				}
 				$breadcrumbs[] = '<a href="' . $target_group_child->getUrl() . '">' . $target_group_child->name . '</a>';

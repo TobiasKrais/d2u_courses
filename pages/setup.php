@@ -18,7 +18,7 @@ $d2u_module_manager->showManagerList();
 // Import from Redaxo 4 D2U Kurse
 $sql = rex_sql::factory();
 $sql->setQuery("SHOW TABLES LIKE '". rex::getTablePrefix() ."d2u_kurse_kurse'");
-$old_tables_available = $sql->getRows() > 0 ? TRUE : FALSE;
+$old_tables_available = $sql->getRows() > 0 ? true : false;
 if(rex_request('import', 'string') == "d2u_courses" && $old_tables_available) {
 	$sql->setQuery("DROP TABLE IF EXISTS `". rex::getTablePrefix() ."d2u_courses_location_categories`;		
 			DROP TABLE IF EXISTS `". rex::getTablePrefix() ."d2u_courses_locations`;		
@@ -206,7 +206,7 @@ else if($old_tables_available) {
 	print "<h2>Import aus Redaxo 4 D2U Kurse Addon</h2>";
 	print "<p>Es wurden die D2U Kurse Addon Tabellen aus Redaxo 4 in der Datenbank gefunden."
 	. "Sollen die Daten importiert werden und die alten Tabellen gelöscht werden? ACHTUNG: dabei werden alle vorhandenen Kurse in Redaxo 5 gelöscht und durch den Import ersetzt!</p>";
-	print '<a href="'. rex_url::currentBackendPage(["import" => "d2u_courses"], FALSE) .'"><button class="btn btn-save">Import und vorhandene Daten löschen</button></a>';
+	print '<a href="'. rex_url::currentBackendPage(["import" => "d2u_courses"], false) .'"><button class="btn btn-save">Import und vorhandene Daten löschen</button></a>';
 	print "</fieldset>";
 }
 

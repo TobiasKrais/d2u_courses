@@ -44,14 +44,14 @@ class KuferSync {
 		$counter_new = 0;
 		$counter_update = 0;
 
-		$course_categories = Category::getAll(FALSE);
+		$course_categories = Category::getAll(false);
 		$schedule_categories = [];
 		if(\rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
-			$schedule_categories = ScheduleCategory::getAll(FALSE);
+			$schedule_categories = ScheduleCategory::getAll(false);
 		}
 		$target_groups = [];
 		if(\rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-			$target_groups = TargetGroup::getAll(FALSE);
+			$target_groups = TargetGroup::getAll(false);
 		}
 
 		foreach ($kufer_courses->kurs as $kufer_course) {
@@ -182,7 +182,7 @@ class KuferSync {
 				if(isset($kufer_course->ortid) && $kufer_course->ortid > 0) {
 					$new_course->location = Location::getByKuferLocationId($kufer_course->ortid);
 				}
-				if($new_course->location === FALSE) {
+				if($new_course->location === false) {
 					$new_course->location = new Location(\rex_config::get('d2u_courses', 'kufer_sync_default_location_id', 0));
 				}
 				
@@ -241,7 +241,7 @@ class KuferSync {
 			}
 
 			// Categories: reset first
-			$new_course->category = FALSE;
+			$new_course->category = false;
 			$new_course->secondary_category_ids = [];
 			$new_course->schedule_category_ids = [];
 			$new_course->target_group_ids = [];
@@ -289,7 +289,7 @@ class KuferSync {
 				}
 			}
 			// In case default course category is still not set
-			if($new_course->category === FALSE) {
+			if($new_course->category === false) {
 				$new_course->category = new Category(\rex_config::get('d2u_courses', 'kufer_sync_default_category_id', 0));
 				$new_course->sekundaere_kurskategorie_ids = [\rex_config::get('d2u_courses', 'kufer_sync_default_category_id', 0)];
 			}
@@ -315,7 +315,7 @@ class KuferSync {
 			$new_course->google_type = $new_course->category->google_type;
 
 			// Kurs speichern und Ergebnis loggen
-			if($new_course->course_id == 0) {
+			if($new_course->course_id === 0) {
 				$counter_new++;
 			}
 			else {

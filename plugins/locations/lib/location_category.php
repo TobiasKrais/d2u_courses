@@ -63,7 +63,7 @@ class LocationCategory {
 
 	/**
 	 * Delete object in database
-	 * @return boolean TRUE if successful, otherwise FALSE.
+	 * @return boolean true if successful, otherwise false.
 	 */
 	public function delete() {
 		if($this->location_category_id > 0) {
@@ -76,17 +76,17 @@ class LocationCategory {
 			\d2u_addon_backend_helper::generateUrlCache('location_category_id');
 			\d2u_addon_backend_helper::generateUrlCache('location_id');
 			
-			return ($result->hasError() ? FALSE : TRUE);
+			return ($result->hasError() ? false : true);
 		}
 		else {
-			return FALSE;
+			return false;
 		}
 	}
 	
 	/**
 	 * Is location category online? It is, if there are locations within this
 	 * category hat host online courses.
-	 * @return boolean TRUE, if online, otherwise FALSE
+	 * @return boolean true, if online, otherwise false
 	 */
 	public function isOnline() {
 		$query = "SELECT * FROM ". \rex::getTablePrefix() ."d2u_courses_courses AS courses "
@@ -98,16 +98,16 @@ class LocationCategory {
 		$result = \rex_sql::factory();
 		$result->setQuery($query);
 
-		return $result->getRows() > 0 ? TRUE : FALSE;
+		return $result->getRows() > 0 ? true : false;
 	}
 
 	/**
 	 * Get all location categories.
-	 * @param boolean $online_only If TRUE, only online location categories are
+	 * @param boolean $online_only If true, only online location categories are
 	 * returned (location categories with locations that host online corses).
 	 * @return LocationCategory[] Array with location category objects.
 	 */
-	static function getAll($online_only = TRUE) {
+	static function getAll($online_only = true) {
 		$query = "SELECT location_category_id FROM ". \rex::getTablePrefix() ."d2u_courses_location_categories ";
 		if($online_only) {
 			$query = "SELECT locations.location_category_id FROM ". \rex::getTablePrefix() ."d2u_courses_courses AS courses "
@@ -134,7 +134,7 @@ class LocationCategory {
 	 * @param boolean $online_only Get only locations hosting online courses.
 	 * @return Location[] Array with locations
 	 */
-	function getLocations($online_only = TRUE) {
+	function getLocations($online_only = true) {
 		$query = "SELECT location_id FROM ". \rex::getTablePrefix() ."d2u_courses_locations "
 			."WHERE location_category_id = ". $this->location_category_id ." ";
 		if($online_only) {
@@ -159,10 +159,10 @@ class LocationCategory {
 	
 	/**
 	 * Returns the URL of this object.
-	 * @param string $including_domain TRUE if Domain name should be included
+	 * @param string $including_domain true if Domain name should be included
 	 * @return string URL
 	 */
-	public function getURL($including_domain = FALSE) {
+	public function getURL($including_domain = false) {
 		if($this->url == "") {
 			$parameterArray = [];
 			$parameterArray['location_category_id'] = $this->location_category_id;
@@ -184,7 +184,7 @@ class LocationCategory {
 			
 	/**
 	 * Save object.
-	 * @return boolean TRUE if successful.
+	 * @return boolean true if successful.
 	 */
 	public function save() {
 		$pre_save_object = new self($this->location_category_id);
@@ -204,8 +204,8 @@ class LocationCategory {
 		$result = \rex_sql::factory();
 		$result->setQuery($query);
 
-		if($this->location_category_id == 0) {
-			$this->location_category_id = $result->getLastId();
+		if($this->location_category_id === 0) {
+			$this->location_category_id = intval($result->getLastId());
 		}
 		
 		if(!$result->hasError() && $pre_save_object->name != $this->name) {

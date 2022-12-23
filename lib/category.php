@@ -39,7 +39,7 @@ class Category {
 	/**
 	 * @var Category Parent category.
 	 */
-	var $parent_category = FALSE;
+	var $parent_category = false;
 	
 	/**
 	 * @var int Sort Priority
@@ -102,7 +102,7 @@ class Category {
 
 	/**
 	 * Delete object in database
-	 * @return boolean TRUE if successful, otherwise FALSE.
+	 * @return boolean true if successful, otherwise false.
 	 */
 	public function delete() {
 		if($this->category_id > 0) {
@@ -112,14 +112,14 @@ class Category {
 					.'WHERE category_id = '. $this->category_id;
 			$result->setQuery($query);
 
-			$return = ($result->hasError() ? FALSE : TRUE);
+			$return = ($result->hasError() ? false : true);
 			
 			$query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_2_categories '
 					.'WHERE category_id = '. $this->category_id;
 			$result->setQuery($query);
 
 			// reset priorities
-			$this->setPriority(TRUE);
+			$this->setPriority(true);
 			
 			// Don't forget to regenerate URL cache
 			\d2u_addon_backend_helper::generateUrlCache();
@@ -127,14 +127,14 @@ class Category {
 			return $return;
 		}
 		else {
-			return FALSE;
+			return false;
 		}
 	}
 
 	/**
 	 * Is category online? It is online if there are online courses in it or one
 	 * of its children.
-	 * @return boolean TRUE, if online, FALSE if offline
+	 * @return boolean true, if online, false if offline
 	 */
 	public function isOnline() {
 		$query = "SELECT * FROM ". \rex::getTablePrefix() ."d2u_courses_url_categories "
@@ -144,10 +144,10 @@ class Category {
 		$num_rows = $result->getRows();
 
 		if($num_rows > 0) {
-			return TRUE;
+			return true;
 		}
 		else {
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -158,7 +158,7 @@ class Category {
 	 * should be returned.
 	 * @return Category[] Array with category objects.
 	 */
-	static function getAll($online_only = FALSE, $parent_category_id = 0) {
+	static function getAll($online_only = false, $parent_category_id = 0) {
 		$query = "SELECT category_id, priority FROM ". \rex::getTablePrefix() ."d2u_courses_categories AS categories ";
 		if($parent_category_id > 0) {
 			$query .= "WHERE parent_category_id = ". $parent_category_id ." ";
@@ -192,7 +192,7 @@ class Category {
 		for($i = 0; $i < $num_rows; $i++) {
 			$category = new Category($result->getValue("category_id"));
 			// Add parent categories if no special parent category is selected - parent categories contain no courses
-			if($parent_category_id == 0 && $category->parent_category !== FALSE
+			if($parent_category_id == 0 && $category->parent_category !== false
 					&& $category->parent_category->category_id > 0 && !in_array($category->parent_category->category_id, $ids)) {
 				$category = new Category($category->parent_category->category_id);
 				$categories[] = $category;
@@ -211,11 +211,11 @@ class Category {
 
 	/**
 	 * Get all child objects orderd by name
-	 * @param boolean $online_only TRUE, if only online children should be returned,
-	 * otherwise FALSE
+	 * @param boolean $online_only true, if only online children should be returned,
+	 * otherwise false
 	 * @return Category[] Array with category objects
 	 */
-	public function getChildren($online_only = FALSE) {
+	public function getChildren($online_only = false) {
 		$query = "SELECT category_id FROM ". \rex::getTablePrefix() ."d2u_courses_categories "
 				."WHERE parent_category_id = ". $this->category_id ." ";
 		if(\rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') == 'priority') {
@@ -279,7 +279,7 @@ class Category {
 	 * @param boolean $online_only If true only online categories are returned
 	 * @return Category[] Array with category objects.
 	 */
-	static function getAllParents($online_only = FALSE) {
+	static function getAllParents($online_only = false) {
 		$query = "SELECT category_id FROM ". \rex::getTablePrefix() ."d2u_courses_categories AS cats"
 			." WHERE parent_category_id <= 0 ";
 		if($online_only) {
@@ -309,11 +309,11 @@ class Category {
 
 	/**
 	 * Get all courses orderd by start date
-	 * @param boolean $online_only TRUE, if only online courses should be returned,
-	 * otherwise FALSE
+	 * @param boolean $online_only true, if only online courses should be returned,
+	 * otherwise false
 	 * @return Course[] Array with course objects
 	 */
-	public function getCourses($online_only = FALSE) {
+	public function getCourses($online_only = false) {
 		$query = "SELECT courses.course_id FROM ". \rex::getTablePrefix() ."d2u_courses_2_categories AS c2c "
 				."LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_courses AS courses ON c2c.course_id = courses.course_id "
 				."WHERE c2c.category_id = ". $this->category_id ." AND courses.course_id  > 0 ";
@@ -339,9 +339,9 @@ class Category {
 	 * @return Category root parent category
 	 */
 	public function getPartentRoot() {
-		if($this->parent_category !== FALSE) {
-			if($this->parent_category->parent_category !== FALSE) {
-				if($this->parent_category->parent_category->parent_category !== FALSE) {
+		if($this->parent_category !== false) {
+			if($this->parent_category->parent_category !== false) {
+				if($this->parent_category->parent_category->parent_category !== false) {
 					return $this->parent_category->parent_category->parent_category;
 				}
 				return $this->parent_category->parent_category;
@@ -353,10 +353,10 @@ class Category {
 
 	/**
 	 * Returns the URL of this object.
-	 * @param string $including_domain TRUE if Domain name should be included
+	 * @param string $including_domain true if Domain name should be included
 	 * @return string URL
 	 */
-	public function getURL($including_domain = FALSE) {
+	public function getURL($including_domain = false) {
 		if($this->url == "") {
 			$parameterArray = [];
 			$parameterArray['courses_category_id'] = $this->category_id;
@@ -378,7 +378,7 @@ class Category {
 		
 	/**
 	 * Save object.
-	 * @return boolean TRUE if successful.
+	 * @return boolean true if successful.
 	 */
 	public function save() {
 		// save priority, but only if new or changed
@@ -393,7 +393,7 @@ class Category {
 			.'description = "'. addslashes($this->description) .'", '
 			.'color = "'. $this->color .'", '
 			.'picture = "'. $this->picture .'", '
-			.'parent_category_id = '. ($this->parent_category !== FALSE ? $this->parent_category->category_id : 0) .', '
+			.'parent_category_id = '. ($this->parent_category !== false ? $this->parent_category->category_id : 0) .', '
 			.'updatedate = CURRENT_TIMESTAMP';
 		if(\rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
 			$query .= ', kufer_categories = "'. implode(PHP_EOL, $this->kufer_categories) .'"'
@@ -406,8 +406,8 @@ class Category {
 		$result->setQuery($query);
 		$error = $result->hasError();
 
-		if($this->category_id == 0) {
-			$this->category_id = $result->getLastId();
+		if($this->category_id === 0) {
+			$this->category_id = intval($result->getLastId());
 		}
 
 		if($this->priority != $pre_save_object->priority) {
@@ -429,7 +429,7 @@ class Category {
 	 * Reassigns priorities in database.
 	 * @param boolean $delete Reorder priority after deletion
 	 */
-	private function setPriority($delete = FALSE) {
+	private function setPriority($delete = false):void {
 		// Pull prios from database
 		$query = "SELECT category_id, priority FROM ". \rex::getTablePrefix() ."d2u_courses_categories "
 			."WHERE category_id <> ". $this->category_id ." ORDER BY priority";
@@ -443,7 +443,7 @@ class Category {
 		
 		// When prio is too high or was deleted, simply add at end 
 		if($this->priority > $result->getRows() || $delete) {
-			$this->priority = $result->getRows() + 1;
+			$this->priority = intval($result->getRows()) + 1;
 		}
 
 		$categories = [];
@@ -456,7 +456,7 @@ class Category {
 		// Save all prios
 		foreach($categories as $prio => $category_id) {
 			$query = "UPDATE ". \rex::getTablePrefix() ."d2u_courses_categories "
-					."SET priority = ". ($prio + 1) ." " // +1 because array_splice recounts at zero
+					."SET priority = ". (intval($prio) + 1) ." " // +1 because array_splice recounts at zero
 					."WHERE category_id = ". $category_id;
 			$result = \rex_sql::factory();
 			$result->setQuery($query);

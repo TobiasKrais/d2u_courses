@@ -10,10 +10,10 @@ if($message != "") {
 
 // save settings
 if (intval(filter_input(INPUT_POST, "btn_save")) === 1 || intval(filter_input(INPUT_POST, "btn_apply")) === 1) {
-	$form = (array) rex_post('form', 'array', []);
+	$form = rex_post('form', 'array', []);
 
 	// Media fields and links need special treatment
-	$input_media = (array) rex_post('REX_INPUT_MEDIA', 'array', []);
+	$input_media = rex_post('REX_INPUT_MEDIA', 'array', []);
 
 	$target_group_id = $form['target_group_id'];
 	$target_group = new D2U_Courses\TargetGroup($target_group_id);
@@ -32,19 +32,19 @@ if (intval(filter_input(INPUT_POST, "btn_save")) === 1 || intval(filter_input(IN
 	}
 	
 	// Redirect to make reload and thus double save impossible
-	if(filter_input(INPUT_POST, "btn_apply") == 1 && $target_group !== FALSE) {
-		header("Location: ". rex_url::currentBackendPage(["entry_id"=>$target_group->target_group_id, "func"=>'edit', "message"=>$message], FALSE));
+	if(intval(filter_input(INPUT_POST, "btn_apply", FILTER_VALIDATE_INT)) === 1 &&$target_group !== false) {
+		header("Location: ". rex_url::currentBackendPage(["entry_id"=>$target_group->target_group_id, "func"=>'edit', "message"=>$message], false));
 	}
 	else {
-		header("Location: ". rex_url::currentBackendPage(["message"=>$message], FALSE));
+		header("Location: ". rex_url::currentBackendPage(["message"=>$message], false));
 	}
 	exit;
 }
 // Delete
-else if(filter_input(INPUT_POST, "btn_delete") == 1 || $func == 'delete') {
+else if(intval(filter_input(INPUT_POST, "btn_delete", FILTER_VALIDATE_INT)) === 1 || $func === 'delete') {
 	$target_group_id = $entry_id;
-	if($target_group_id == 0) {
-		$form = (array) rex_post('form', 'array', []);
+	if($target_group_id === 0) {
+		$form = rex_post('form', 'array', []);
 		$target_group_id = $form['target_group_id'];
 	}
 	$target_group = new D2U_Courses\TargetGroup($target_group_id);
@@ -70,8 +70,8 @@ else if(filter_input(INPUT_POST, "btn_delete") == 1 || $func == 'delete') {
 }
 
 // Form
-if ($func == 'edit' || $func == 'add') {
-	$readonly = FALSE;
+if ($func === 'edit' || $func === 'add') {
+	$readonly = false;
 ?>
 	<form action="<?php print rex_url::currentBackendPage(); ?>" method="post">
 		<div class="panel panel-edit">
@@ -81,12 +81,12 @@ if ($func == 'edit' || $func == 'add') {
 				<?php
 
 					$target_group = new D2U_Courses\TargetGroup($entry_id);
-					d2u_addon_backend_helper::form_input('d2u_helper_name', "form[name]", $target_group->name, TRUE, $readonly);
+					d2u_addon_backend_helper::form_input('d2u_helper_name', "form[name]", $target_group->name, true, $readonly);
 					d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $target_group->picture, $readonly);
-					d2u_addon_backend_helper::form_input('header_priority', 'form[priority]', $target_group->priority, TRUE, $readonly, 'number');
+					d2u_addon_backend_helper::form_input('header_priority', 'form[priority]', $target_group->priority, true, $readonly, 'number');
 					if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-						d2u_addon_backend_helper::form_input('d2u_courses_kufer_categories_target_group_name', "form[kufer_target_group_name]", $target_group->kufer_target_group_name, FALSE, $readonly);
-						d2u_addon_backend_helper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $target_group->kufer_categories), 5, FALSE, $readonly, FALSE);
+						d2u_addon_backend_helper::form_input('d2u_courses_kufer_categories_target_group_name', "form[kufer_target_group_name]", $target_group->kufer_target_group_name, false, $readonly);
+						d2u_addon_backend_helper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $target_group->kufer_categories), 5, false, $readonly, false);
 					}
 				?>
 			</div>
@@ -119,7 +119,7 @@ if ($func == 'edit' || $func == 'add') {
 		print d2u_addon_backend_helper::getJSOpenAll();
 }
 
-if ($func == '') {
+if ($func === '') {
 	$query = 'SELECT target_group_id, name, priority '
 		. 'FROM '. rex::getTablePrefix() .'d2u_courses_target_groups ';
 	if(rex_config::get('d2u_courses', 'default_category_sort', 'name') == 'priority') {

@@ -10,10 +10,10 @@ if($message != "") {
 
 // save settings
 if (intval(filter_input(INPUT_POST, "btn_save")) === 1 || intval(filter_input(INPUT_POST, "btn_apply")) === 1) {
-	$form = (array) rex_post('form', 'array', []);
+	$form = rex_post('form', 'array', []);
 	
 	// Media fields and links need special treatment
-	$input_media = (array) rex_post('REX_INPUT_MEDIA', 'array', []);
+	$input_media = rex_post('REX_INPUT_MEDIA', 'array', []);
 
 	$location_category = new D2U_Courses\LocationCategory($form['location_category_id']);
 	$location_category->zoom_level = $form['zoom_level'];
@@ -27,25 +27,25 @@ if (intval(filter_input(INPUT_POST, "btn_save")) === 1 || intval(filter_input(IN
 	}
 	
 	// Redirect to make reload and thus double save impossible
-	if(filter_input(INPUT_POST, "btn_apply") == 1 && $location_category !== FALSE) {
-		header("Location: ". rex_url::currentBackendPage(["entry_id"=>$location_category->location_category_id, "func"=>'edit', "message"=>$message], FALSE));
+	if(intval(filter_input(INPUT_POST, "btn_apply", FILTER_VALIDATE_INT)) === 1 &&$location_category !== false) {
+		header("Location: ". rex_url::currentBackendPage(["entry_id"=>$location_category->location_category_id, "func"=>'edit', "message"=>$message], false));
 	}
 	else {
-		header("Location: ". rex_url::currentBackendPage(["message"=>$message], FALSE));
+		header("Location: ". rex_url::currentBackendPage(["message"=>$message], false));
 	}
 	exit;
 }
 // Delete
-else if(filter_input(INPUT_POST, "btn_delete") == 1 || $func == 'delete') {
+else if(intval(filter_input(INPUT_POST, "btn_delete", FILTER_VALIDATE_INT)) === 1 || $func === 'delete') {
 	$location_category_id = $entry_id;
-	if($location_category_id == 0) {
-		$form = (array) rex_post('form', 'array', []);
+	if($location_category_id === 0) {
+		$form = rex_post('form', 'array', []);
 		$location_category_id = $form['location_category_id'];
 	}
 	$location_category = new D2U_Courses\LocationCategory($location_category_id);
 
 	// Check if object is used
-	$uses_locations = $location_category->getLocations(FALSE);
+	$uses_locations = $location_category->getLocations(false);
 
 	if(count($uses_locations) == 0) {
 		$location_category->delete();
@@ -66,8 +66,8 @@ else if(filter_input(INPUT_POST, "btn_delete") == 1 || $func == 'delete') {
 }
 
 // Form
-if ($func == 'edit' || $func == 'add') {
-	$readonly = FALSE;
+if ($func === 'edit' || $func === 'add') {
+	$readonly = false;
 ?>
 	<form action="<?php print rex_url::currentBackendPage(); ?>" method="post">
 		<div class="panel panel-edit">
@@ -77,8 +77,8 @@ if ($func == 'edit' || $func == 'add') {
 				<?php
 
 					$location_category = new D2U_Courses\LocationCategory($entry_id);
-					d2u_addon_backend_helper::form_input('d2u_helper_name', "form[name]", $location_category->name, TRUE, $readonly);
-					d2u_addon_backend_helper::form_input('d2u_courses_location_zoomlevel', 'form[zoom_level]', $location_category->zoom_level, TRUE, $readonly, 'number');
+					d2u_addon_backend_helper::form_input('d2u_helper_name', "form[name]", $location_category->name, true, $readonly);
+					d2u_addon_backend_helper::form_input('d2u_courses_location_zoomlevel', 'form[zoom_level]', $location_category->zoom_level, true, $readonly, 'number');
 					d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $location_category->picture, $readonly);
 				?>
 			</div>
@@ -111,7 +111,7 @@ if ($func == 'edit' || $func == 'add') {
 		print d2u_addon_backend_helper::getJSOpenAll();
 }
 
-if ($func == '') {
+if ($func === '') {
 	$query = 'SELECT location_category_id, name '
 		. 'FROM '. rex::getTablePrefix() .'d2u_courses_location_categories '
 		.'ORDER BY name ASC';

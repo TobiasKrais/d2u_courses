@@ -94,7 +94,7 @@ class Course {
 	/**
 	 * @var Category Course category.
 	 */
-	var $category = FALSE;
+	var $category = false;
 	
 	/**
 	 * @var int[] Array containing secondary course category IDs
@@ -104,7 +104,7 @@ class Course {
 	/**
 	 * @var Location Course location
 	 */
-	var $location = FALSE;
+	var $location = false;
 	
 	/**
 	 * @var string Location room (if several rooms are available)
@@ -225,7 +225,7 @@ class Course {
 					$this->category = new Category($result->getValue("category_id"));
 				}
 				if(\rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-					$this->location = $result->getValue("location_id") > 0 ? new Location($result->getValue("location_id")) : FALSE;
+					$this->location = $result->getValue("location_id") > 0 ? new Location($result->getValue("location_id")) : false;
 					$this->room = stripslashes($result->getValue("room"));
 				}
 				$this->participants_max = $result->getValue("participants_max");
@@ -275,8 +275,8 @@ class Course {
 	/**
 	 * Changes the status of a machine
 	 */
-	public function changeStatus() {
-		if($this->online_status == "online") {
+	public function changeStatus():void {
+		if($this->online_status === "online") {
 			if($this->course_id > 0) {
 				$query = "UPDATE ". \rex::getTablePrefix() ."d2u_courses_courses "
 					."SET online_status = 'offline' "
@@ -303,7 +303,7 @@ class Course {
 	
 	/**
 	 * Delete object in database
-	 * @return boolean TRUE if successful, otherwise FALSE.
+	 * @return boolean true if successful, otherwise false.
 	 */
 	public function delete() {
 		if($this->course_id > 0) {
@@ -313,7 +313,7 @@ class Course {
 					.'WHERE course_id = '. $this->course_id;
 			$result->setQuery($query);
 
-			$return = ($result->hasError() ? FALSE : TRUE);
+			$return = ($result->hasError() ? false : true);
 			
 			$query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_2_categories '
 					.'WHERE course_id = '. $this->course_id;
@@ -337,7 +337,7 @@ class Course {
 			return $return;
 		}
 		else {
-			return FALSE;
+			return false;
 		}
 	}
 	
@@ -353,23 +353,23 @@ class Course {
 	/**
 	 * Is course online? To be online, course need status online and start date
 	 * is in future
-	 * @return boolean TRUE if online, otherwise FALSE
+	 * @return boolean true if online, otherwise false
 	 */
 	public function isOnline() {
-		if($this->online_status == "online" && $this->date_start > date("Y-m-d", time())) {
-			return TRUE;
+		if($this->online_status === "online" && $this->date_start > date("Y-m-d", time())) {
+			return true;
 		}
 		else {
-			return FALSE;
+			return false;
 		}
 	}
 
 	/**
 	 * Get all courses
-	 * @param boolean $online_only If TRUE, return only online courses.
+	 * @param boolean $online_only If true, return only online courses.
 	 * @return Course[] Array with Course objects
 	 */
-	static function getAll($online_only = FALSE) {
+	static function getAll($online_only = false) {
 		$query = "SELECT course_id FROM ". \rex::getTablePrefix() ."d2u_courses_courses";
 		if($online_only) {
 			$query .= " WHERE online_status = 'online'";
@@ -484,10 +484,10 @@ class Course {
 
 	/**
 	 * Returns the URL of this object.
-	 * @param string $including_domain TRUE if Domain name should be included
+	 * @param string $including_domain true if Domain name should be included
 	 * @return string URL
 	 */
-	public function getURL($including_domain = FALSE) {
+	public function getURL($including_domain = false) {
 		if($this->url == "") {
 			$parameterArray = [];
 			$parameterArray['course_id'] = $this->course_id;
@@ -509,7 +509,7 @@ class Course {
 	
 	/**
 	 * Save object
-	 * @return boolean TRUE if successful.
+	 * @return boolean true if successful.
 	 */
 	public function save() {
 		$pre_save_object = new self($this->course_id);
@@ -533,7 +533,7 @@ class Course {
 			.'date_start = "'. $this->date_start .'", '
 			.'date_end = "'. $this->date_end .'", '
 			.'`time` = "'. $this->time .'", '
-			.'category_id = '. ($this->category !== FALSE ? $this->category->category_id : 0) .', '
+			.'category_id = '. ($this->category !== false ? $this->category->category_id : 0) .', '
 			.'participants_max = '. ($this->participants_max ?: 0) .', '
 			.'participants_min = '. ($this->participants_min ?: 0) .', '
 			.'participants_number = '. ($this->participants_number ?: 0) .', '
@@ -548,7 +548,7 @@ class Course {
 			.'downloads = "'. implode(",", $this->downloads) .'", '
 			.'updatedate = CURRENT_TIMESTAMP ';
 		if(\rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-			$query .= ', location_id = '. ($this->location !== FALSE ? $this->location->location_id : 0) .', '
+			$query .= ', location_id = '. ($this->location !== false ? $this->location->location_id : 0) .', '
 				.'`room` = "'. addslashes($this->room) .'" ';
 		}
 		if(\rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
@@ -560,8 +560,8 @@ class Course {
 		$result = \rex_sql::factory();
 		$result->setQuery($query);
 
-		if($this->course_id == 0) {
-			$this->course_id = $result->getLastId();
+		if($this->course_id === 0) {
+			$this->course_id = intval($result->getLastId());
 		}
 		if(!$result->hasError() && $pre_save_object->name != $this->name) {
 			\d2u_addon_backend_helper::generateUrlCache('course_id');
@@ -572,7 +572,7 @@ class Course {
 		foreach($this->secondary_category_ids as $secondary_category_id) {
 			$query_category .= 'INSERT INTO '. \rex::getTablePrefix() .'d2u_courses_2_categories SET course_id = '. $this->course_id .', category_id = '. $secondary_category_id .';'. PHP_EOL;
 		}
-		if($this->category !== FALSE) {
+		if($this->category !== false) {
 			$query_category .= 'REPLACE INTO '. \rex::getTablePrefix() .'d2u_courses_2_categories SET course_id = '. $this->course_id .', category_id = '. $this->category->category_id .';'. PHP_EOL;
 		}
 		$result->setQuery($query_category);

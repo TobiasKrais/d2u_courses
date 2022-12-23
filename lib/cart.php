@@ -90,7 +90,7 @@ class Cart {
 	 *	)
 	 * @param string[] $invoice_address Invoice address information
 	 * @param string $registration_type Type of registration: "selbst", "kind" or "andere"
-	 * @return boolean TRUE If XML file is written successfully otherwise FALSE.
+	 * @return boolean true If XML file is written successfully otherwise false.
 	 */
 	public function createXMLRegistration($cart, $invoice_address, $registration_type) {
 		// <?xml version="1.0" encoding="UTF-8">
@@ -420,21 +420,21 @@ class Cart {
 		try {
 			$dir = trim(\rex_config::get('d2u_courses', 'kufer_sync_xml_registration_path'), "/");
 			if(!file_exists($dir)) {
-				mkdir($dir, "0777", TRUE);
+				mkdir($dir, "0777", true);
 			}
 			if(!file_exists($dir ."/.htaccess")) {
 				$handle = fopen($dir ."/.htaccess", 'a');
-				if($handle !== FALSE) {
+				if($handle !== false) {
 					fwrite($handle, "order deny,allow". PHP_EOL ."deny from all");
 				}
 			}
 			if($xml->save($dir ."/". time() .'-'. rand() .'.xml')) {
-				return TRUE;
+				return true;
 			}
 		}
 		catch(Exception $e) {
 			print "Error: ". $e;
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -552,7 +552,7 @@ class Cart {
 	/**
 	 * Proves if course is already in cart
 	 * @param int $course_id Course ID
-	 * @return boolean TRUE if course is in cart available, otherwise FALSE
+	 * @return boolean true if course is in cart available, otherwise false
 	 */
 	public function hasCourse($course_id) {
 		return isset($_SESSION['cart'][$course_id]);
@@ -574,13 +574,13 @@ class Cart {
 	 *	)
 	 * @param mixed $cart
 	 * @param string[] $invoice_address
-	 * @return boolean TRUE if mail was sent successfully
+	 * @return boolean true if mail was sent successfully
 	 */
 	function sendRegistrations($cart, $invoice_address) {
-		$mail_has_content = FALSE;
+		$mail_has_content = false;
 		
 		$mail = new \rex_mailer();
-		$mail->IsHTML(TRUE);
+		$mail->IsHTML(true);
 		$mail->CharSet = "utf-8";
 		$mail->From = \rex_config::get('d2u_courses', 'request_form_sender_email');
 		$mail->Sender = \rex_config::get('d2u_courses', 'request_form_sender_email');
@@ -600,7 +600,7 @@ class Cart {
 			$body .=  "<br>";
 			$course = new Course($course_id);
 			if($course->name != "") {
-				$mail_has_content = TRUE;
+				$mail_has_content = true;
 			}
 			else {
 				continue;

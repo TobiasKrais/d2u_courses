@@ -3,8 +3,8 @@
  * Get parameters
  */
 $category_id = "REX_VALUE[1]";
-$category = $category_id > 0 ? new \D2U_Courses\Category($category_id) : FALSE;
-$courses = $category->getCourses(TRUE);
+$category = $category_id > 0 ? new \D2U_Courses\Category($category_id) : false;
+$courses = $category->getCourses(true);
 $box_per_line = "REX_VALUE[5]" == 4 ? 4 : 3;
 
 $sprog = rex_addon::get("sprog");
@@ -54,11 +54,11 @@ else {
 		}
 	}
 	else if(count($courses) > 0) {
-		if($category !== FALSE) {
+		if($category !== false) {
 			if("REX_VALUE[2]" == 'true') {
 				print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. $category->color .' !important">';
 				print '<h1 class="page_title">';
-				if($category->parent_category !== FALSE) {
+				if($category->parent_category !== false) {
 					print $category->parent_category->name .": ";
 				}
 				print $category->name;
@@ -75,7 +75,7 @@ else {
 			$title = $list_course->name ."<br><small>"
 				. ("REX_VALUE[3]" == 'true' && $list_course->teaser != "" ? $list_course->teaser ."<br>" : "")
 				. (new DateTime($list_course->date_start))->format('d.m.Y') ."</small>";
-			printBox($title, $list_course->picture, $list_course->category->color, $list_course->getURL(TRUE), $box_per_line);
+			printBox($title, $list_course->picture, $list_course->category->color, $list_course->getURL(true), $box_per_line);
 		}
 	}
 	?>

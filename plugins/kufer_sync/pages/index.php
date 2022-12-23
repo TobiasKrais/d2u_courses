@@ -14,7 +14,7 @@ if(trim(\rex_config::get('d2u_courses', 'kufer_sync_xml_url', '')) != '') {
 			<li>Alte Kurse, die nicht im Import vorhanden sind, werden gelöscht.</li>
 		</ul>';
 	
-	print '<a href="'. rex_url::currentBackendPage(["import" => "kufer_sync"], FALSE) .'"><button class="btn btn-save">Import starten</button></a>';
+	print '<a href="'. rex_url::currentBackendPage(["import" => "kufer_sync"], false) .'"><button class="btn btn-save">Import starten</button></a>';
 	print "</fieldset>";
 }
 else {

@@ -64,7 +64,7 @@ class Location {
 	/**
 	 * @var LocationCategory Location category
 	 */
-	var $location_category = FALSE;
+	var $location_category = false;
 	
 	/**
 	 * @var String[] Redaxo usernames that are allowed to create courses for this
@@ -122,7 +122,7 @@ class Location {
 
 	/**
 	 * Delete object in database
-	 * @return boolean TRUE if successful, otherwise FALSE.
+	 * @return boolean true if successful, otherwise false.
 	 */
 	public function delete() {
 		if($this->location_id > 0) {
@@ -134,17 +134,17 @@ class Location {
 			// Don't forget to regenerate URL cache
 			\d2u_addon_backend_helper::generateUrlCache('location_id');
 			
-			return ($result->hasError() ? FALSE : TRUE);
+			return ($result->hasError() ? false : true);
 		}
 		else {
-			return FALSE;
+			return false;
 		}
 	}
 	
 	/**
 	 * Is location online? It is, if there are online courses hosted by this
 	 * location
-	 * @return boolean TRUE if online, otherwise FALSE
+	 * @return boolean true if online, otherwise false
 	 */
 	public function isOnline() {
 		$query = "SELECT * FROM ". \rex::getTablePrefix() ."d2u_courses_courses "
@@ -153,7 +153,7 @@ class Location {
 					."AND (". \d2u_courses_frontend_helper::getShowTimeWhere() .") ";
 		$result = \rex_sql::factory();
 		$result->setQuery($query);
-		return $result->getRows() > 0 ? TRUE : FALSE;
+		return $result->getRows() > 0 ? true : false;
 	}
 
 	/**
@@ -162,7 +162,7 @@ class Location {
 	 * when online courses are hosted by this locations.
 	 * @return Location[] Array containing locations.
 	 */
-	static function getAll($online_only = FALSE) {
+	static function getAll($online_only = false) {
 		$query = "SELECT location_id FROM ". \rex::getTablePrefix() ."d2u_courses_locations ";
 		if($online_only) {
 			$query = "SELECT courses.location_id FROM ". \rex::getTablePrefix() ."d2u_courses_courses AS courses "
@@ -201,10 +201,10 @@ class Location {
 
 	/**
 	 * Get courses hosted by this location orderd by start date
-	 * @param boolean $online_only TRUE, if only online courses are returned.
+	 * @param boolean $online_only true, if only online courses are returned.
 	 * @return Courses[] Array with course objects
 	 */
-	public function getCourses($online_only = TRUE) {
+	public function getCourses($online_only = true) {
 		$query = "SELECT course_id FROM ". \rex::getTablePrefix() ."d2u_courses_courses "
 				."WHERE location_id = ". $this->location_id ." ";
 		if($online_only) {
@@ -226,10 +226,10 @@ class Location {
 	
 	/**
 	 * Returns the URL of this object.
-	 * @param string $including_domain TRUE if Domain name should be included
+	 * @param string $including_domain true if Domain name should be included
 	 * @return string URL
 	 */
-	public function getURL($including_domain = FALSE) {
+	public function getURL($including_domain = false) {
 		if($this->url == "") {
 			$parameterArray = [];
 			$parameterArray['location_id'] = $this->location_id;
@@ -251,7 +251,7 @@ class Location {
 				
 	/**
 	 * Save object.
-	 * @return boolean TRUE if successful.
+	 * @return boolean true if successful.
 	 */
 	public function save() {
 		$pre_save_object = new self($this->location_id);
@@ -268,7 +268,7 @@ class Location {
 			.'zip_code = "'. $this->zip_code .'", '
 			.'country_code = "'. $this->country_code .'", '
 			.'street = "'. $this->street .'", '
-			.'location_category_id = '. ($this->location_category !== FALSE ? $this->location_category->location_category_id : 0) .', '
+			.'location_category_id = '. ($this->location_category !== false ? $this->location_category->location_category_id : 0) .', '
 			.'redaxo_users = "'. implode('|', $this->redaxo_users) .'", '
 			.'picture = "'. $this->picture .'", '
 			.'site_plan = "'. $this->site_plan .'", '
@@ -283,8 +283,8 @@ class Location {
 		$result = \rex_sql::factory();
 		$result->setQuery($query);
 
-		if($this->location_id == 0) {
-			$this->location_id = $result->getLastId();
+		if($this->location_id === 0) {
+			$this->location_id = intval($result->getLastId());
 		}
 		
 		if(!$result->hasError() && $pre_save_object->name != $this->name) {

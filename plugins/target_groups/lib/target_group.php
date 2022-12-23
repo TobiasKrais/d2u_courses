@@ -39,7 +39,7 @@ class TargetGroup {
 	/**
 	 * @var TargetGroup Parent TargetGroup
 	 */
-	var $parent_target_group = FALSE;
+	var $parent_target_group = false;
 	
 	/**
 	 * @var string KuferSQL target group name
@@ -88,25 +88,25 @@ class TargetGroup {
 	 * Delete object in database. Only delete target groups without parent target group id,
 	 * because children are fake target groups. In fact children are category
 	 * objects, thus they cannot be deleted as target group objects.
-	 * @return boolean TRUE if successful, otherwise FALSE.
+	 * @return boolean true if successful, otherwise false.
 	 */
 	public function delete() {
 		// Do not delete children, because they are fake objects
-		if($this->parent_target_group === FALSE && $this->target_group_id > 0) {
+		if($this->parent_target_group === false && $this->target_group_id > 0) {
 			$result = \rex_sql::factory();
 
 			$query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_target_groups '
 					.'WHERE target_group_id = '. $this->target_group_id;
 			$result->setQuery($query);
 
-			$return = ($result->hasError() ? FALSE : TRUE);
+			$return = ($result->hasError() ? false : true);
 
 			$query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_2_target_groups '
 					.'WHERE target_group_id = '. $this->target_group_id;
 			$result->setQuery($query);
 
 			// reset priorities
-			$this->setPriority(TRUE);
+			$this->setPriority(true);
 			
 			// Don't forget to regenerate URL cache
 			\d2u_addon_backend_helper::generateUrlCache('target_group_id');
@@ -115,7 +115,7 @@ class TargetGroup {
 			return $return;
 		}
 		else {
-			return FALSE;
+			return false;
 		}
 	}
 	
@@ -124,7 +124,7 @@ class TargetGroup {
 	 * @param boolean $online_only If true only online categories are returned
 	 * @return TargetGroup[] Array with target group IDs
 	 */
-	static public function getAll($online_only = TRUE, $parent_target_group_id = 0) {
+	static public function getAll($online_only = true, $parent_target_group_id = 0) {
 		$query = "SELECT target_group_id FROM ". \rex::getTablePrefix() ."d2u_courses_target_groups ";
 		if($online_only) {
 			$query = "SELECT target_group_id FROM ". \rex::getTablePrefix() ."d2u_courses_url_target_groups ";
@@ -174,7 +174,7 @@ class TargetGroup {
 	 * @return TargetGroup[] Array with target groups
 	 */
 	public function getChildren() {
-		if($this->parent_target_group != FALSE) {
+		if($this->parent_target_group != false) {
 			return [];
 		}
 		
@@ -207,12 +207,12 @@ class TargetGroup {
 
 	/**
 	 * Get courses for this object
-	 * @param boolean $online_only TRUE, if only online courses are returned.
+	 * @param boolean $online_only true, if only online courses are returned.
 	 * @return Course[] Array with Course objects
 	 */
-	public function getCourses($online_only = FALSE) {
+	public function getCourses($online_only = false) {
 		$query = "";
-		if($this->parent_target_group === FALSE) {
+		if($this->parent_target_group === false) {
 			// If object is NOT a child
 			$query = "SELECT courses.course_id FROM ". \rex::getTablePrefix() ."d2u_courses_2_target_groups AS c2t "
 				."LEFT JOIN ". \rex::getTablePrefix() ."d2u_courses_courses AS courses ON c2t.course_id = courses.course_id "
@@ -246,7 +246,7 @@ class TargetGroup {
 	/**
 	 * Is target group online? It is online if there are online courses in it
 	 * that start in future.
-	 * @return boolean TRUE, if online, FALSE if offline
+	 * @return boolean true, if online, false if offline
 	 */
 	public function isOnline() {
 		$query = "SELECT courses.course_id FROM ". \rex::getTablePrefix() ."d2u_courses_2_target_groups AS c2t "
@@ -257,18 +257,18 @@ class TargetGroup {
 		$result = \rex_sql::factory();
 		$result->setQuery($query);
 
-		return $result->getRows() > 0 ? TRUE : FALSE;
+		return $result->getRows() > 0 ? true : false;
 	}
 
 	/**
 	 * Returns the URL of this object.
-	 * @param string $including_domain TRUE if Domain name should be included
+	 * @param string $including_domain true if Domain name should be included
 	 * @return string URL
 	 */
-	public function getURL($including_domain = FALSE) {
+	public function getURL($including_domain = false) {
 		if($this->url == "") {
 			$parameterArray = [];
-			if($this->parent_target_group !== FALSE) {
+			if($this->parent_target_group !== false) {
 				// Separator is ugly, but needs to consist of digits only
 				$parameterArray['target_group_child_id'] = $this->parent_target_group->target_group_id ."00000". $this->target_group_id;
 			}
@@ -295,11 +295,11 @@ class TargetGroup {
 	 * Save object. Only save target groups without parent target group id,
 	 * because children are fake target groups. In fact children are category
 	 * objects, thus they cannot be saved as target group objects.
-	 * @return boolean TRUE if successful.
+	 * @return boolean true if successful.
 	 */
 	public function save() {
 		// Do not save children, because they are fake objects
-		if($this->parent_target_group === FALSE) {
+		if($this->parent_target_group === false) {
 			$pre_save_object = new self($this->course_id);
 
 			$query = "INSERT INTO ";
@@ -320,8 +320,8 @@ class TargetGroup {
 			$result = \rex_sql::factory();
 			$result->setQuery($query);
 
-			if($this->target_group_id == 0) {
-				$this->target_group_id = $result->getLastId();
+			if($this->target_group_id === 0) {
+				$this->target_group_id = intval($result->getLastId());
 			}
 
 			if($this->priority != $pre_save_category->priority) {
@@ -336,7 +336,7 @@ class TargetGroup {
 			return !$result->hasError();
 		}
 		else {
-			return FALSE;
+			return false;
 		}
 	}
 	
@@ -344,7 +344,7 @@ class TargetGroup {
 	 * Reassigns priority in database.
 	 * @param boolean $delete Reorder priority after deletion
 	 */
-	private function setPriority($delete = FALSE) {
+	private function setPriority($delete = false):void {
 		// Pull prios from database
 		$query = "SELECT target_group_id, priority FROM ". \rex::getTablePrefix() ."d2u_courses_target_groups "
 			."WHERE target_group_id <> ". $this->target_group_id ." ORDER BY priority";
@@ -358,7 +358,7 @@ class TargetGroup {
 		
 		// When prio is too high or was deleted, simply add at end 
 		if($this->priority > $result->getRows() || $delete) {
-			$this->priority = $result->getRows() + 1;
+			$this->priority = intval($result->getRows()) + 1;
 		}
 
 		$target_groups = [];
@@ -371,7 +371,7 @@ class TargetGroup {
 		// Save all prios
 		foreach($target_groups as $prio => $target_group_id) {
 			$query = "UPDATE ". \rex::getTablePrefix() ."d2u_courses_target_groups "
-					."SET priority = ". ($prio + 1) ." " // +1 because array_splice recounts at zero
+					."SET priority = ". (intval($prio) + 1) ." " // +1 because array_splice recounts at zero
 					."WHERE target_group_id = ". $target_group_id;
 			$result = \rex_sql::factory();
 			$result->setQuery($query);
