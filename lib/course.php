@@ -239,7 +239,8 @@ class Course {
 				$this->redaxo_article = $result->getValue("redaxo_article");
 				$this->instructor = $result->getValue("instructor");
 				$this->course_number = $result->getValue("course_number");
-				$this->downloads = preg_grep('/^\s*$/s', explode(",", $result->getValue("downloads")), PREG_GREP_INVERT);
+				$downloads = preg_grep('/^\s*$/s', explode(",", $result->getValue("downloads")), PREG_GREP_INVERT);
+				$this->downloads = is_array($downloads) ? $downloads : [];
 				$this->updatedate = $result->getValue("updatedate");
 
 				if(\rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {

@@ -110,7 +110,8 @@ class Location {
 			if($result->getValue("location_category_id") > 0) {
 				$this->location_category = new LocationCategory($result->getValue("location_category_id"));
 			}
-			$this->redaxo_users = preg_grep('/^\s*$/s', explode("|", $result->getValue("redaxo_users")), PREG_GREP_INVERT);
+			$redaxo_users = preg_grep('/^\s*$/s', explode("|", $result->getValue("redaxo_users")), PREG_GREP_INVERT);
+			$this->redaxo_users = is_array($redaxo_users) ? $redaxo_users : [];
 			$this->picture = $result->getValue("picture");
 			$this->site_plan = $result->getValue("site_plan");
 			if(\rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {

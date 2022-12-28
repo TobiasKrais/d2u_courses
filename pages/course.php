@@ -52,7 +52,8 @@ if (intval(filter_input(INPUT_POST, "btn_save")) === 1 || intval(filter_input(IN
 	$course->redaxo_article = $input_link['1'];
 	$course->instructor = $form['instructor'];
 	$course->course_number = $form['course_number'];
-	$course->downloads = preg_grep('/^\s*$/s', explode(",", $input_media_list['1']), PREG_GREP_INVERT);
+	$downloads = preg_grep('/^\s*$/s', explode(",", $input_media_list['1']), PREG_GREP_INVERT);
+	$course->downloads = is_array($downloads) ? $downloads : [];
 	// Locations plugin
 	if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
 		$course->location = $form['location_id'] > 0 ? new D2U_Courses\Location($form['location_id']) : false;

@@ -36,12 +36,15 @@ if(rex_request('import', 'string') == "d2u_courses" && $old_tables_available) {
 	for($i = 0; $i < $sql->getRows(); $i++) {
 		$course_id = $sql->getValue("kurs_id");
 		$category_id = $sql->getValue("kurskategorie_id");
-		$secondary_category_ids = preg_grep('/^\s*$/s', explode("|", $sql->getValue("sekundaere_kurskategorie_ids")), PREG_GREP_INVERT);
+		$secondary_category_ids_unfiltered = preg_grep('/^\s*$/s', explode("|", $sql->getValue("sekundaere_kurskategorie_ids")), PREG_GREP_INVERT);
+		$secondary_category_ids = is_array($secondary_category_ids_unfiltered) ? array_map('intval', $secondary_category_ids_unfiltered) : [];
 		if(!in_array($category_id, $secondary_category_ids)) {
 			$secondary_category_ids[] = $category_id;
 		}
-		$target_group_ids = preg_grep('/^\s*$/s', explode("|", $sql->getValue("zielgruppen_ids")), PREG_GREP_INVERT);
-		$schedule_category_ids = preg_grep('/^\s*$/s', explode("|", $sql->getValue("terminkategorie_ids")), PREG_GREP_INVERT);
+		$target_group_ids_unfiltered = preg_grep('/^\s*$/s', explode("|", $sql->getValue("zielgruppen_ids")), PREG_GREP_INVERT);
+		$target_group_ids = is_array($target_group_ids_unfiltered) ? array_map('intval', $target_group_ids_unfiltered) : [];
+		$schedule_category_ids_unfiltered = preg_grep('/^\s*$/s', explode("|", $sql->getValue("terminkategorie_ids")), PREG_GREP_INVERT);
+		$schedule_category_ids = is_array($schedule_category_ids_unfiltered) ? array_map('intval', $schedule_category_ids_unfiltered) : [];
 
 		foreach ($target_group_ids as $target_group_id) {
 			$insert_query .= "INSERT INTO `". rex::getTablePrefix() ."d2u_courses_2_target_groups` SET `course_id` = ". $course_id .", `target_group_id` = ". $target_group_id .";". PHP_EOL;
