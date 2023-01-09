@@ -14,65 +14,65 @@ class ScheduleCategory {
 	/**
 	 * @var int ID
 	 */
-	var $schedule_category_id = 0;
+	public int $schedule_category_id = 0;
 	
 	/**
 	 * @var string Name
 	 */
-	var $name = "";
+	public string $name = "";
 	
 	/**
 	 * @var string Picture
 	 */
-	var $picture = "";
+	public string $picture = "";
 	
 	/**
 	 * @var int Sort Priority
 	 */
-	var $priority = 0;
+	public int $priority = 0;
 
 	/**
-	 * @var ScheduleCategory Parent schedule category
+	 * @var ScheduleCategory|bool Parent schedule category
 	 */
-	var $parent_schedule_category = false;
+	public ScheduleCategory|bool $parent_schedule_category = false;
 	
 	/**
-	 * @var string[] KuferSQL category name including parent category name.
+	 * @var array<string> KuferSQL category name including parent category name.
 	 * Devider is " \ ".
 	 * Im Kufer XML export field name "Bezeichnungsstruktur".
 	 */
-	var $kufer_categories = [];
+	public array $kufer_categories = [];
 		
 	/**
 	 * @var string Update timestamp
 	 */
-	var $updatedate = "";
+	public string $updatedate = "";
 
 	/**
 	 * @var string URL
 	 */
-	private $url = "";
+	private string $url = "";
 
 	/**
 	 * Constructor.
 	 * @param int $schedule_category_id ID.
 	 */
-	 public function __construct($schedule_category_id) {
+	 public function __construct($schedule_category_id = 0) {
 		$query = "SELECT * FROM ". \rex::getTablePrefix() ."d2u_courses_schedule_categories "
 				."WHERE schedule_category_id = ". $schedule_category_id;
 		$result = \rex_sql::factory();
 		$result->setQuery($query);
 
 		if($result->getRows() > 0) {
-			$this->schedule_category_id = $result->getValue("schedule_category_id");
-			$this->name = $result->getValue("name");
-			$this->picture = $result->getValue("picture");
-			$this->priority = $result->getValue("priority");
-			if($result->getValue("parent_schedule_category_id") > 0) {
-				$this->parent_schedule_category = new ScheduleCategory($result->getValue("parent_schedule_category_id"));
+			$this->schedule_category_id = (int) $result->getValue("schedule_category_id");
+			$this->name = (string) $result->getValue("name");
+			$this->picture = (string) $result->getValue("picture");
+			$this->priority = (int) $result->getValue("priority");
+			if((int)$result->getValue("parent_schedule_category_id") > 0) {
+				$this->parent_schedule_category = new ScheduleCategory((int) $result->getValue("parent_schedule_category_id"));
 			}
 			$this->kufer_categories = array_map('trim', preg_grep('/^\s*$/s', explode(PHP_EOL, $result->getValue("kufer_categories")), PREG_GREP_INVERT));
-			$this->updatedate = $result->getValue("updatedate");
+			$this->updatedate = (string) $result->getValue("updatedate");
 		}
 	}
 
@@ -170,7 +170,7 @@ class ScheduleCategory {
 		
 		$schedule_categories = [];
 		for($i = 0; $i < $num_rows; $i++) {
-			$schedule_categories[] = new ScheduleCategory($result->getValue("schedule_category_id"));
+			$schedule_categories[] = new ScheduleCategory((int) $result->getValue("schedule_category_id"));
 			$result->next();
 		}
 
@@ -204,7 +204,7 @@ class ScheduleCategory {
 
 		$categories = [];
 		for($i = 0; $i < $num_rows; $i++) {
-			$categories[] = new ScheduleCategory($result->getValue("schedule_category_id"));
+			$categories[] = new ScheduleCategory((int) $result->getValue("schedule_category_id"));
 			$result->next();
 		}
 
@@ -232,7 +232,7 @@ class ScheduleCategory {
 
 		$categories = [];
 		for($i = 0; $i < $num_rows; $i++) {
-			$categories[] = new ScheduleCategory($result->getValue("schedule_category_id"));
+			$categories[] = new ScheduleCategory((int) $result->getValue("schedule_category_id"));
 			$result->next();
 		}
 
@@ -259,7 +259,7 @@ class ScheduleCategory {
 
 		$child_categories = [];
 		for($i = 0; $i < $result->getRows(); $i++) {
-			$child_category = new ScheduleCategory($result->getValue("schedule_category_id"));
+			$child_category = new ScheduleCategory((int) $result->getValue("schedule_category_id"));
 			if(($online_only && $child_category->isOnline()) || !$online_only) {
 				$child_categories[] = $child_category;
 			}
@@ -326,7 +326,7 @@ class ScheduleCategory {
 	 * @return boolean true if successful.
 	 */
 	public function save() {
-		$pre_save_object = new self($this->course_id);
+		$pre_save_object = new self($this->schedule_category_id);
 
 		$query = "INSERT INTO ";
 		if($this->schedule_category_id > 0) {
@@ -350,7 +350,7 @@ class ScheduleCategory {
 			$this->schedule_category_id = intval($result->getLastId());
 		}
 		
-		if($this->priority != $pre_save_category->priority) {
+		if($this->priority !== $pre_save_category->priority) {
 			$this->setPriority();
 		}
 		

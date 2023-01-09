@@ -324,7 +324,7 @@ class TargetGroup {
 				$this->target_group_id = intval($result->getLastId());
 			}
 
-			if($this->priority != $pre_save_category->priority) {
+			if($this->priority !== $pre_save_category->priority) {
 				$this->setPriority();
 			}
 			

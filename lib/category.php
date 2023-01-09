@@ -410,7 +410,7 @@ class Category {
 			$this->category_id = intval($result->getLastId());
 		}
 
-		if($this->priority != $pre_save_object->priority) {
+		if($this->priority !== $pre_save_object->priority) {
 			$this->setPriority();
 		}
 		
