@@ -16,7 +16,7 @@ class D2UCoursesModules {
 			12);
 		$modules[] = new D2UModule("26-2",
 			"D2U Veranstaltungen - Warenkorb",
-			7);
+			8);
 		$modules[] = new D2UModule("26-3",
 			"D2U Veranstaltungen - Ausgabe Veranstaltungen einer Kategorie in Boxen",
 			4);

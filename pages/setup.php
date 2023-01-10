@@ -244,7 +244,9 @@ else if($old_tables_available) {
 <p>3.2.5-DEV:</p>
 <ul>
 	<li>.github Verzeichnis aus Installer Action ausgeschlossen.</li>
+	<li>rexstan Anpassungen</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": Geolocation als Kartenaddon wird ab sofort unterstützt.</li>
+	<li>Modul 26-2 "Warenkorb": Fehlermeldung, wenn ein Newsletter aus dem MultiNewsletter angeboten wurde behoben.</li>
 </ul>
 <p>3.2.4:</p>
 <ul>

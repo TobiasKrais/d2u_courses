@@ -97,7 +97,7 @@ input.cart_text, input.cart_date, input.cart_email, input.cart_number, select.ca
 	padding: 5px;
     width: 300px;
 }
-input:invalid, textarea:invalid {
+.div_cart input:invalid, .div_cart textarea:invalid {
 	background-color: #fff2f4;
 	border-left: 5px solid red;
 }

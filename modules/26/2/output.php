@@ -495,15 +495,23 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 
 	if(rex_addon::get('multinewsletter')->isAvailable() && rex_config::get('d2u_courses', 'multinewsletter_subscribe', 'hide') == 'show') {
 		print '<p class="cart_checkbox">';
-		if(count(rex_config::get('d2u_courses', 'multinewsletter_group', [])) == 1) {
+		$multinewsletter_config = rex_config::get('d2u_courses', 'multinewsletter_group', []);
+		$multinewsletter_group = [];
+		if(is_array($multinewsletter_config)) {
+			$multinewsletter_group = $multinewsletter_config;
+		}
+		else if(intval($multinewsletter_config) > 0) {
+			$multinewsletter_group[] = intval($multinewsletter_config);
+		}
+		if(count($multinewsletter_group) === 1) {
 			print '<input type="checkbox" class="cart_checkbox" name="invoice_form[multinewsletter][]" id="invoice_form-multinewsletter" value="'. rex_config::get('d2u_courses', 'multinewsletter_group', [])[0] .'">';
 			print '<label class="cart_checkbox" for="invoice_form-multinewsletter">'. $tag_open .'d2u_courses_multinewsletter'. $tag_close .'</label>';
 		}
-		else if(count(rex_config::get('d2u_courses', 'multinewsletter_group', [])) > 1) {
+		else if(count($multinewsletter_group) > 1) {
 			print $tag_open .'d2u_courses_multinewsletter'. $tag_close .'<br>';
-			foreach(rex_config::get('d2u_courses', 'multinewsletter_group', []) as $newsletter_group_id) {
+			foreach($multinewsletter_group as $newsletter_group_id) {
 				$multinewsletter_group = new MultinewsletterGroup($newsletter_group_id);
-				if($multinewsletter_group && $multinewsletter_group->id > 0) {
+				if($multinewsletter_group instanceof MultinewsletterGroup && $multinewsletter_group->id > 0) {
 					print '<input type="checkbox" class="cart_checkbox" name="invoice_form[multinewsletter][]" id="invoice_form-multinewsletter" value="'. $multinewsletter_group->id .'">';
 					print '<label class="cart_checkbox" for="invoice_form-multinewsletter">'. $multinewsletter_group->name .'</label><br>';
 				}
@@ -549,11 +557,11 @@ else {
 			print '<div class="col-12">';
 			print '<a href="'. $course->getURL(true) .'" title="'. $course->name .'" class="cart_course_title">';
 			print $course->name;
-			if($course->course_number != "") {
+			if($course->course_number !== "") {
 				print ' ('. $course->course_number .')';
 			}
 			print '</a><br />';
-			if($course->date_start != "" || $course->date_end != "" || $course->time != "") {
+			if($course->date_start !== "" || $course->date_end !== "" || $course->time !== "") {
 				print $tag_open .'d2u_courses_date'. $tag_close .': ';
 				$date = '';
 				if($course->date_start != "") {
@@ -580,7 +588,7 @@ else {
 				}
 			}
 			
-			if($course->registration_possible == "yes_number") {
+			if($course->registration_possible === "yes_number") {
 				// registration without person details
 				$participants_data = $cart->getCourseParticipants($course_id);
 				print '<br>';
