@@ -178,7 +178,7 @@ class d2u_courses_lang_helper extends \D2U_Helper\ALangHelper {
 	/**
 	 * Installs the replacement table for this addon.
 	 */
-	public function install() {
+	public function install():void {
 		foreach($this->replacements_english as $key => $value) {
 			foreach (rex_clang::getAllIds() as $clang_id) {
 				$lang_replacement = rex_config::get('d2u_courses', 'lang_replacement_'. $clang_id, '');

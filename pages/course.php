@@ -4,7 +4,7 @@ $entry_id = rex_request('entry_id', 'int');
 $message = rex_get('message', 'string');
 
 // Print comments
-if($message != "") {
+if($message !== '') {
 	print rex_view::success(rex_i18n::msg($message));
 }
 
@@ -238,7 +238,7 @@ if ($func === 'edit' || $func === 'clone' || $func === 'add') {
 								$options_locations = [];
 								foreach(D2U_Courses\Location::getAll() as $location) {
 									// Add location only if user has the right to edit courses for location
-									if(rex::getUser()->isAdmin() || rex::getUser()->hasPerm('d2u_courses[courses_all]') || in_array(rex::getUser()->getLogin(), $location->redaxo_users)) {
+									if(rex::getUser() instanceof rex_user && (rex::getUser()->isAdmin() || rex::getUser()->hasPerm('d2u_courses[courses_all]') || in_array(rex::getUser()->getLogin(), $location->redaxo_users))) {
 										$options_locations[$location->location_id] = ($location->location_category !== false ? $location->location_category->name ." → " : "" ). $location->name;
 									}
 								}

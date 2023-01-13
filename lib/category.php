@@ -37,7 +37,7 @@ class Category {
 	var $picture = "";
 	
 	/**
-	 * @var Category Parent category.
+	 * @var Category|bool Parent category.
 	 */
 	var $parent_category = false;
 	
@@ -89,7 +89,7 @@ class Category {
 			}
 			$this->picture = $result->getValue("picture");
 			if($result->getValue("parent_category_id") > 0) {
-				$this->parent_category = new Category($result->getValue("parent_category_id"));
+				$this->parent_category = new Category((int) $result->getValue("parent_category_id"));
 			}
 			$this->priority = $result->getValue("priority");
 			$this->updatedate = $result->getValue("updatedate");

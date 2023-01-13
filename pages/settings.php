@@ -1,24 +1,24 @@
 <?php
 // save settings
-if (filter_input(INPUT_POST, "btn_save") == 'save') {
+if (filter_input(INPUT_POST, 'btn_save') === 'save') {
 	$settings = (array) rex_post('settings', 'array', array());
 
 	// Linkmap Link and media needs special treatment
-	$link_ids = filter_input_array(INPUT_POST, array('REX_INPUT_LINK'=> array('filter' => FILTER_VALIDATE_INT, 'flags' => FILTER_REQUIRE_ARRAY)));
+	$link_ids = filter_input_array(INPUT_POST, ['REX_INPUT_LINK'=> ['filter' => FILTER_VALIDATE_INT, 'flags' => FILTER_REQUIRE_ARRAY]]);
 
-	$settings['article_id_courses'] = $link_ids["REX_INPUT_LINK"][1]  > 0 ? $link_ids["REX_INPUT_LINK"][1] : rex_article::getSiteStartArticleId();
-	$settings['article_id_shopping_cart'] = $link_ids["REX_INPUT_LINK"][2];
-	$settings['article_id_conditions'] = $link_ids["REX_INPUT_LINK"][3];
-	$settings['article_id_terms_of_participation'] = $link_ids["REX_INPUT_LINK"][4];
+	$settings['article_id_courses'] = !is_array($link_ids) ? 0 : $link_ids["REX_INPUT_LINK"][1]  > 0 ? $link_ids["REX_INPUT_LINK"][1] : rex_article::getSiteStartArticleId();
+	$settings['article_id_shopping_cart'] = !is_array($link_ids) ? 0 : $link_ids["REX_INPUT_LINK"][2];
+	$settings['article_id_conditions'] = !is_array($link_ids) ? 0 : $link_ids["REX_INPUT_LINK"][3];
+	$settings['article_id_terms_of_participation'] = !is_array($link_ids) ? 0 : $link_ids["REX_INPUT_LINK"][4];
 
 	if(rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-		$settings['article_id_locations'] = $link_ids["REX_INPUT_LINK"][5] > 0 ? $link_ids["REX_INPUT_LINK"][5] : $link_ids["REX_INPUT_LINK"][1];
+		$settings['article_id_locations'] = !is_array($link_ids) ? 0 : $link_ids["REX_INPUT_LINK"][5] > 0 ? $link_ids["REX_INPUT_LINK"][5] : $link_ids["REX_INPUT_LINK"][1];
 	}
 	if(rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
-		$settings['article_id_schedule_categories'] = $link_ids["REX_INPUT_LINK"][6] > 0 ? $link_ids["REX_INPUT_LINK"][6] : $link_ids["REX_INPUT_LINK"][1];
+		$settings['article_id_schedule_categories'] = !is_array($link_ids) ? 0 : $link_ids["REX_INPUT_LINK"][6] > 0 ? $link_ids["REX_INPUT_LINK"][6] : $link_ids["REX_INPUT_LINK"][1];
 	}
 	if(rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-		$settings['article_id_target_groups'] = $link_ids["REX_INPUT_LINK"][7] > 0 ? $link_ids["REX_INPUT_LINK"][7] : $link_ids["REX_INPUT_LINK"][1];
+		$settings['article_id_target_groups'] = !is_array($link_ids) ? 0 : $link_ids["REX_INPUT_LINK"][7] > 0 ? $link_ids["REX_INPUT_LINK"][7] : $link_ids["REX_INPUT_LINK"][1];
 	}
 
 	// Checkbox also need special treatment if empty

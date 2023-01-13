@@ -16,7 +16,7 @@ class kufer_sync_cronjob extends D2U_Helper\ACronJob {
 	/**
 	 * Install CronJob. Its also activated.
 	 */
-	public function install() {
+	public function install():void {
 		$description = 'Imports Kufer XML';
 		$php_code = '<?php \\\\\\\\D2U_Courses\\\\\\\\KuferSync::sync(); ?>';
 		$interval = '{\"minutes\":[0],\"hours\":[21],\"days\":\"all\",\"weekdays\":\"all\",\"months\":\"all\"}';
