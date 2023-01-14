@@ -29,7 +29,7 @@ class Category {
 	/**
 	 * @var string Color (hexadecimal value or CSS keyword)
 	 */
-	var $color = "grey";
+	var $color = "#5e5c64";
 	
 	/**
 	 * @var string Picture

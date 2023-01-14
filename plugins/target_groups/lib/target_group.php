@@ -14,54 +14,54 @@ class TargetGroup {
 	/**
 	 * @var int ID
 	 */
-	var $target_group_id = 0;
+	public int $target_group_id = 0;
 	
 	/**
 	 * @var string Name
 	 */
-	var $name = "";
+	public string $name = "";
 	
 	/**
 	 * @var string Description
 	 */
-	var $description = "";
+	public string $description = "";
 	
 	/**
 	 * @var string Picture
 	 */
-	var $picture = "";
+	public string $picture = "";
 	
 	/**
 	 * @var int Sort Priority
 	 */
-	var $priority = 0;
+	public int $priority = 0;
 
 	/**
-	 * @var TargetGroup Parent TargetGroup
+	 * @var TargetGroup|bool Parent TargetGroup
 	 */
-	var $parent_target_group = false;
+	public TargetGroup|bool $parent_target_group = false;
 	
 	/**
 	 * @var string KuferSQL target group name
 	 */
-	var $kufer_target_group_name = "";
+	public string $kufer_target_group_name = "";
 	
 	/**
-	 * @var string[] KuferSQL category name including parent category name.
+	 * @var array<string> KuferSQL category name including parent category name.
 	 * Devider is " \ ".
 	 * Im Kufer XML export field name "Bezeichnungsstruktur".
 	 */
-	var $kufer_categories = [];
+	public array $kufer_categories = [];
 	
 	/**
 	 * @var string Update timestamp
 	 */
-	var $updatedate = "";
+	public string $updatedate = "";
 
 	/**
 	 * @var string URL
 	 */
-	private $url = "";
+	public string $url = "";
 
 	/**
 	 * Constructor
@@ -74,13 +74,13 @@ class TargetGroup {
 		$result->setQuery($query);
 
 		if($result->getRows() > 0) {
-			$this->target_group_id = $result->getValue("target_group_id");
-			$this->name = $result->getValue("name");
-			$this->picture = $result->getValue("picture");
-			$this->priority = $result->getValue("priority");
-			$this->kufer_target_group_name = $result->getValue("kufer_target_group_name");
-			$this->kufer_categories = array_map('trim', preg_grep('/^\s*$/s', explode(PHP_EOL, $result->getValue("kufer_categories")), PREG_GREP_INVERT));
-			$this->updatedate = $result->getValue("updatedate");
+			$this->target_group_id = (int) $result->getValue("target_group_id");
+			$this->name = (string) $result->getValue("name");
+			$this->picture = (string) $result->getValue("picture");
+			$this->priority = (int) $result->getValue("priority");
+			$this->kufer_target_group_name = (string) $result->getValue("kufer_target_group_name");
+			$this->kufer_categories = array_map('trim', preg_grep('/^\s*$/s', explode(PHP_EOL, (string) $result->getValue("kufer_categories")), PREG_GREP_INVERT));
+			$this->updatedate = (string) $result->getValue("updatedate");
 		}
 	}
 	
@@ -300,7 +300,7 @@ class TargetGroup {
 	public function save() {
 		// Do not save children, because they are fake objects
 		if($this->parent_target_group === false) {
-			$pre_save_object = new self($this->course_id);
+			$pre_save_object = new self($this->target_group_id);
 
 			$query = "INSERT INTO ";
 			if($this->target_group_id > 0) {
