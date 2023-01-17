@@ -67,7 +67,7 @@ class Location {
 	var $location_category = false;
 	
 	/**
-	 * @var String[] Redaxo usernames that are allowed to create courses for this
+	 * @var array<string> Redaxo usernames that are allowed to create courses for this
 	 * location
 	 */
 	var $redaxo_users = [];

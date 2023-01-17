@@ -47,7 +47,7 @@ class Category {
 	var $priority = 0;
 
 	/**
-	 * @var string[] KuferSQL category name including parent category name.
+	 * @var array<string> KuferSQL category name including parent category name.
 	 * Devider is " \ ".
 	 * Im Kufer XML export field name "Bezeichnungsstruktur".
 	 */

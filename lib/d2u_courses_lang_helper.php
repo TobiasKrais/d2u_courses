@@ -7,7 +7,7 @@ class d2u_courses_lang_helper extends \D2U_Helper\ALangHelper {
 	 * @var array<string, string> Array with english replacements. Key is the wildcard,
 	 * value the replacement. 
 	 */
-	protected array $replacements_english = [
+	var $replacements_english = [
 		'd2u_courses_accept_conditions' => 'I accept the conditions.',
 		'd2u_courses_accept_privacy_policy' => 'I have read the privacy policy and accept it.',
 		'd2u_courses_accept_terms_of_participation' => 'I accept the terms of participations.',

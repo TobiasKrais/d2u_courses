@@ -67,7 +67,7 @@ class Course {
 	var $price_salery_level = false;
 	
 	/**
-	 * @var string[] Salery level price details
+	 * @var array<string> Salery level price details
 	 */
 	var $price_salery_level_details = [];
 	
@@ -174,7 +174,7 @@ class Course {
 	var $course_number = "";
 
 	/**
-	 * @var string[] Array with media pool document names
+	 * @var array<string> Array with media pool document names
 	 */
 	var $downloads = [];
 
