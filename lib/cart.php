@@ -16,7 +16,7 @@ class Cart {
 	 */
 	public function __construct() {
 		// Session is needed
-		if (session_status() == PHP_SESSION_NONE) {
+		if (session_status() === PHP_SESSION_NONE) {
 			session_start();
 		}
 		
@@ -31,7 +31,7 @@ class Cart {
 	 * price_salery_level_row_number, the corresponding field is automatically set.
 	 * @param int $course_id Course ID
 	 */
-	public function addCourse($course_id) {
+	public function addCourse($course_id):void {
 		$course = new Course($course_id);
 		$_SESSION['cart'][$course_id] = [];
 		if($course->registration_possible == "yes_number") {
@@ -40,7 +40,7 @@ class Cart {
 		}
 		else {
 			// registration with person details
-			$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "", "age" => "", "gender" => "", "price" => "", "price_salery_level_row_number" => rex_request('participant_price_salery_level_row_add', 'int', 0)];
+			$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "", "age" => "", "emergency_number" => "", "gender" => "", "price" => "", "price_salery_level_row_number" => rex_request('participant_price_salery_level_row_add', 'int', 0)];
 		}
 	}
 
@@ -48,8 +48,8 @@ class Cart {
 	 * Add empty participant to course.
 	 * @param int $course_id Course ID
 	 */
-	public function addEmptyParticipant($course_id) {
-		$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "","age" => "",  "gender" => "", "price" => "", "price_salery_level_row_number" => 0];
+	public function addEmptyParticipant($course_id):void {
+		$_SESSION['cart'][$course_id][] = ["firstname" => "", "lastname" => "", "birthday" => "","age" => "", "emergency_number" => "", "gender" => "", "price" => "", "price_salery_level_row_number" => 0];
 	}
 
 	/**
@@ -71,7 +71,7 @@ class Cart {
 			$d = explode("/", $date);
 			$time = mktime(0, 0, 0, (int) $d[1], (int) $d[0], (int) $d[2]);
 		}
-		return floor((date("Ymd") - date("Ymd", $time)) / 10000);
+		return (int) floor((date("Ymd") - date("Ymd", $time)) / 10000);
 	}
 
 	/**
@@ -84,7 +84,10 @@ class Cart {
 	 *				[lastname] =>
 	 *				[birthday] =>
 	 *				[age] =>
+	 *				[emergency_number] =>
 	 *				[gender] =>
+	 *				[price] =>
+	 *				[price_salery_level_row_number] =>
 	 *			]
 	 *		]
 	 *	)
@@ -123,17 +126,23 @@ class Cart {
 			$stammdaten->appendChild($strasse);
 			// <ORT>City</ORT>
 			$city = $xml->createElement("ORT");
-			$city->appendChild($xml->createTextNode(str_pad($invoice_address['zipcode'], 5, 0, STR_PAD_LEFT) .' '. $invoice_address['city']));
+			$city->appendChild($xml->createTextNode($invoice_address['zipcode'] .' '. $invoice_address['city']));
 			$stammdaten->appendChild($city);
-			// <GESCHLECHT>M = male, W = female, F = company</GESCHLECHT>
-			$gender = $xml->createElement("GESCHLECHT");
-			$gender->appendChild($xml->createTextNode($invoice_address['gender']));
-			$stammdaten->appendChild($gender);
+			// <NATION>Land</NATION>
+			$country = $xml->createElement("NATION");
+			$country->appendChild($xml->createTextNode($invoice_address['country']));
+			$stammdaten->appendChild($country);
+			if(trim($invoice_address['gender']) !== '') {
+				// <GESCHLECHT>M = male, W = female, F = company</GESCHLECHT>
+				$gender = $xml->createElement("GESCHLECHT");
+				$gender->appendChild($xml->createTextNode($invoice_address['gender']));
+				$stammdaten->appendChild($gender);
+			}
 			if($registration_type == "selbst") {
 				foreach($cart as $course_id => $participant) {
 					if(is_array($participant)) {
 						foreach($participant as $id => $participant_data) {
-							if(isset($participant_data['birthday']) && $participant_data['birthday'] != "") {
+							if(isset($participant_data['birthday']) && trim($participant_data['birthday']) !== '') {
 								// <GEBDATUM>TT.MM.JJJJ</GEBDATUM>
 								$gebdatum = $xml->createElement("GEBDATUM");
 								$gebdatum->appendChild($xml->createTextNode(self::formatCourseDate($participant_data['birthday'])));
@@ -143,11 +152,28 @@ class Cart {
 								$zusatz->appendChild($xml->createTextNode(self::calculateAge($participant_data['birthday'])));
 								$stammdaten->appendChild($zusatz);
 							}
-							else if(isset($participant_data['age']) && $participant_data['age'] != "") {
+							else if(isset($participant_data['age']) && trim($participant_data['age']) !== '') {
 								// <ZUSATZ>Age</ZUSATZ>
 								$zusatz = $xml->createElement("ZUSATZ");
 								$zusatz->appendChild($xml->createTextNode($participant_data['age']));
 								$stammdaten->appendChild($zusatz);
+							}
+							if(array_key_exists('emergency_number', $participant_data) && $participant_data['emergency_number'] !== '') {
+								// <KOMMUNIKATIONSEINTRAG>
+								$kommunikationseintrag_emergency = $xml->createElement("KOMMUNIKATIONSEINTRAG");
+								$stammdaten->appendChild($kommunikationseintrag_emergency);
+								// <KOMMART>T</KOMMART>
+								$kommart_emergency = $xml->createElement("KOMMART");
+								$kommart_emergency->appendChild($xml->createTextNode("T"));
+								$kommunikationseintrag_emergency->appendChild($kommart_emergency);
+								// <KOMMBEZ>Notfallnummer</KOMMBEZ>
+								$kommbez_emergency = $xml->createElement("KOMMBEZ");
+								$kommbez_emergency->appendChild($xml->createTextNode(\Sprog\Wildcard::get('d2u_courses_cart_emergency_number')));
+								$kommunikationseintrag_emergency->appendChild($kommbez_emergency);
+								// <KOMMWERT>Nummer</KOMMWERT>
+								$kommwert_emergency = $xml->createElement("KOMMWERT");
+								$kommwert_emergency->appendChild($xml->createTextNode($participant_data['emergency_number']));
+								$kommunikationseintrag_emergency->appendChild($kommwert_emergency);
 							}
 							break 2;
 						}
@@ -155,7 +181,7 @@ class Cart {
 				}
 			}
 			else { // $registration_type == "kind"
-				if(isset($invoice_address['birthday']) && $invoice_address['birthday'] != "") {
+				if(isset($invoice_address['birthday']) && trim($invoice_address['birthday']) !== '') {
 					// <GEBDATUM>TT.MM.JJJJ</GEBDATUM>
 					$gebdatum = $xml->createElement("GEBDATUM");
 					$gebdatum->appendChild($xml->createTextNode(self::formatCourseDate($invoice_address['birthday'])));
@@ -164,6 +190,23 @@ class Cart {
 					$zusatz = $xml->createElement("ZUSATZ");
 					$zusatz->appendChild($xml->createTextNode(self::calculateAge($invoice_address['birthday'])));
 					$stammdaten->appendChild($zusatz);
+					if(array_key_exists('emergency_number', $participant_data) && $participant_data['emergency_number'] !== '') {
+						// <KOMMUNIKATIONSEINTRAG>
+						$kommunikationseintrag_emergency = $xml->createElement("KOMMUNIKATIONSEINTRAG");
+						$stammdaten->appendChild($kommunikationseintrag_emergency);
+						// <KOMMART>T</KOMMART>
+						$kommart_emergency = $xml->createElement("KOMMART");
+						$kommart_emergency->appendChild($xml->createTextNode("T"));
+						$kommunikationseintrag_emergency->appendChild($kommart_emergency);
+						// <KOMMBEZ>Notfallnummer</KOMMBEZ>
+						$kommbez_emergency = $xml->createElement("KOMMBEZ");
+						$kommbez_emergency->appendChild($xml->createTextNode(\Sprog\Wildcard::get('d2u_courses_cart_emergency_number')));
+						$kommunikationseintrag_emergency->appendChild($kommbez_emergency);
+						// <KOMMWERT>Nummer</KOMMWERT>
+						$kommwert_emergency = $xml->createElement("KOMMWERT");
+						$kommwert_emergency->appendChild($xml->createTextNode($participant_data['emergency_number']));
+						$kommunikationseintrag_emergency->appendChild($kommwert_emergency);
+					}
 				}
 			}
 		}
@@ -179,11 +222,13 @@ class Cart {
 						$firstname = $xml->createElement("VORNAME");
 						$firstname->appendChild($xml->createTextNode($participant_data['firstname']));
 						$stammdaten->appendChild($firstname);
-						// <GESCHLECHT>M = male, W = female, F = company</GESCHLECHT>
-						$gender = $xml->createElement("GESCHLECHT");
-						$gender->appendChild($xml->createTextNode($participant_data['gender']));
-						$stammdaten->appendChild($gender);
-						if(isset($participant_data['birthday']) && $participant_data['birthday'] != "") {
+						if(array_key_exists('gender', $participant_data) && $participant_data['gender'] !== '') {
+							// <GESCHLECHT>M = male, W = female, F = company</GESCHLECHT>
+							$gender = $xml->createElement("GESCHLECHT");
+							$gender->appendChild($xml->createTextNode($participant_data['gender']));
+							$stammdaten->appendChild($gender);
+						}
+						if(array_key_exists('birthday', $participant_data) && $participant_data['birthday'] !== '') {
 							// <GEBDATUM>DD.MM.YYYY</GEBDATUM>
 							$gebdatum = $xml->createElement("GEBDATUM");
 							$gebdatum->appendChild($xml->createTextNode(self::formatCourseDate($participant_data['birthday'])));
@@ -193,30 +238,63 @@ class Cart {
 							$zusatz->appendChild($xml->createTextNode(self::calculateAge($participant_data['birthday'])));
 							$stammdaten->appendChild($zusatz);
 						}
-						elseif(isset($participant_data['age'])) {
+						elseif(array_key_exists('age', $participant_data) && $participant_data['age'] !== '') {
 							// <ZUSATZ>Age</ZUSATZ>
 							$zusatz = $xml->createElement("ZUSATZ");
 							$zusatz->appendChild($xml->createTextNode($participant_data['age']));
 							$stammdaten->appendChild($zusatz);
+						}
+						if(array_key_exists('emergency_number', $participant_data) && $participant_data['emergency_number'] !== '') {
+							// <KOMMUNIKATIONSEINTRAG>
+							$kommunikationseintrag_emergency = $xml->createElement("KOMMUNIKATIONSEINTRAG");
+							$stammdaten->appendChild($kommunikationseintrag_emergency);
+							// <KOMMART>T</KOMMART>
+							$kommart_emergency = $xml->createElement("KOMMART");
+							$kommart_emergency->appendChild($xml->createTextNode("T"));
+							$kommunikationseintrag_emergency->appendChild($kommart_emergency);
+							// <KOMMBEZ>Notfallnummer</KOMMBEZ>
+							$kommbez_emergency = $xml->createElement("KOMMBEZ");
+							$kommbez_emergency->appendChild($xml->createTextNode(\Sprog\Wildcard::get('d2u_courses_cart_emergency_number')));
+							$kommunikationseintrag_emergency->appendChild($kommbez_emergency);
+							// <KOMMWERT>Nummer</KOMMWERT>
+							$kommwert_emergency = $xml->createElement("KOMMWERT");
+							$kommwert_emergency->appendChild($xml->createTextNode($participant_data['emergency_number']));
+							$kommunikationseintrag_emergency->appendChild($kommwert_emergency);
 						}
 						break 2;
 					}
 				}
 			}
 		}
+		$rechaddr_field_nr = 1;
 		// <RECHADR1>Invoice receipient full name</RECHADR1>
+		$type = isset($invoice_address['type']) ? $invoice_address['type'] : 'P';
+		if($type === 'B') {
+			$company = $xml->createElement("RECHADR". $rechaddr_field_nr);
+			$company->appendChild($xml->createTextNode($invoice_address['company']));
+			$stammdaten->appendChild($company);
+			$rechaddr_field_nr++;
+		}
+		
 		$title = isset($invoice_address['gender']) && $invoice_address['gender'] == "W" ? \Sprog\Wildcard::get('d2u_courses_title_female') : \Sprog\Wildcard::get('d2u_courses_title_male');
-		$strasse = $xml->createElement("RECHADR1");
-		$strasse->appendChild($xml->createTextNode($title ." ". $invoice_address['firstname'] ." ". $invoice_address['lastname']));
+		$strasse = $xml->createElement('RECHADR'. $rechaddr_field_nr);
+		$strasse->appendChild($xml->createTextNode($title ." ". trim($invoice_address['firstname']) ." ". trim($invoice_address['lastname'])));
 		$stammdaten->appendChild($strasse);
+		$rechaddr_field_nr++;
 		// <RECHADR2>Invoice receipient street and house number</RECHADR2>
-		$strasse2 = $xml->createElement("RECHADR2");
+		$strasse2 = $xml->createElement('RECHADR'. $rechaddr_field_nr);
 		$strasse2->appendChild($xml->createTextNode($invoice_address['address']));
 		$stammdaten->appendChild($strasse2);
+		$rechaddr_field_nr++;
 		// <RECHADR3>Invoice receipient zip code an city</RECHADR3>
-		$city = $xml->createElement("RECHADR3");
-		$city->appendChild($xml->createTextNode(str_pad($invoice_address['zipcode'], 5, 0, STR_PAD_LEFT) .' '. $invoice_address['city']));
+		$city = $xml->createElement('RECHADR'. $rechaddr_field_nr);
+		$city->appendChild($xml->createTextNode($invoice_address['zipcode'] .' '. $invoice_address['city']));
 		$stammdaten->appendChild($city);
+		$rechaddr_field_nr++;
+		// <RECHADR4>Invoice receipient country</RECHADR4>
+		$country = $xml->createElement('RECHADR'. $rechaddr_field_nr);
+		$country->appendChild($xml->createTextNode($invoice_address['country']));
+		$stammdaten->appendChild($country);
 		
 		if(isset($invoice_address['iban']) && $invoice_address['iban'] != "" ) {
 			// <BANKBEZ>Bank name</BANKBEZ>
@@ -386,7 +464,7 @@ class Cart {
 						$firstname = $xml->createElement("VORNAME");
 						$firstname->appendChild($xml->createTextNode($participant_data['firstname']));				
 						$weiterstamm->appendChild($firstname);
-						if(isset($participant_data['birthday'])) {
+						if(array_key_exists('birthday', $participant_data) && $participant_data['birthday'] !== '') {
 							// <GEBDATUM>DD.MM.YYYY</GEBDATUM>
 							$gebdatum = $xml->createElement("GEBDATUM");
 							$gebdatum->appendChild($xml->createTextNode(self::formatCourseDate($participant_data['birthday'])));
@@ -396,7 +474,7 @@ class Cart {
 							$zusatz->appendChild($xml->createTextNode(self::calculateAge($invoice_address['birthday'])));
 							$weiterstamm->appendChild($zusatz);
 						}
-						else if(isset($participant_data['age'])) {
+						else if(array_key_exists('age', $participant_data) && $participant_data['age'] !== '') {
 							// <ZUSATZ>Age</ZUSATZ>
 							$zusatz = $xml->createElement("ZUSATZ");
 							$zusatz->appendChild($xml->createTextNode(self::calculateAge($invoice_address['age'])));
@@ -406,6 +484,24 @@ class Cart {
 						$gender = $xml->createElement("GESCHLECHT");
 						$gender->appendChild($xml->createTextNode($participant_data['gender']));
 						$weiterstamm->appendChild($gender);
+
+						if(array_key_exists('emergency_number', $participant_data) && $participant_data['emergency_number'] !== '') {
+							// <KOMMUNIKATIONSEINTRAG>
+							$kommunikationseintrag_emergency = $xml->createElement("KOMMUNIKATIONSEINTRAG");
+							$weiterstamm->appendChild($kommunikationseintrag_emergency);
+							// <KOMMART>T</KOMMART>
+							$kommart_emergency = $xml->createElement("KOMMART");
+							$kommart_emergency->appendChild($xml->createTextNode("T"));
+							$kommunikationseintrag_emergency->appendChild($kommart_emergency);
+							// <KOMMBEZ>Notfallnummer</KOMMBEZ>
+							$kommbez_emergency = $xml->createElement("KOMMBEZ");
+							$kommbez_emergency->appendChild($xml->createTextNode(\Sprog\Wildcard::get('d2u_courses_cart_emergency_number')));
+							$kommunikationseintrag_emergency->appendChild($kommbez_emergency);
+							// <KOMMWERT>Nummer</KOMMWERT>
+							$kommwert_emergency = $xml->createElement("KOMMWERT");
+							$kommwert_emergency->appendChild($xml->createTextNode($invoice_address['emergency_number']));
+							$kommunikationseintrag_emergency->appendChild($kommwert_emergency);
+						}
 
 						$counter++;
 					}
@@ -611,7 +707,7 @@ class Cart {
 			}
 			$body .=  "</b><br>";
 			if($course->date_start) {
-				$body .= "Datum: ". (new \DateTime($course->date_start))->format('d.m.Y') . ($course->date_end != "" ? " - ". (new \DateTime($course->date_end))->format('d.m.Y') : "") . ($course->time != "" ? ", ". $course->time : "") ."<br>";
+				$body .= "Datum: ". (new \DateTime($course->date_start))->format('d.m.Y') . ($course->date_end !== "" ? " - ". (new \DateTime($course->date_end))->format('d.m.Y') : "") . ($course->time != "" ? ", ". $course->time : "") ."<br>";
 			}
 			if($course->price_salery_level) {
 				if($course->registration_possible == "yes_number") {
@@ -620,23 +716,26 @@ class Cart {
 				}
 			}
 			else if($course->price) {
-				$body .= "Einzelpreis: ". $course->price  ." €". ($course->price_discount > 0 ? " (mögliche Ermäßigungen nicht mit einberechnet" : "") ."<br>";
+				$body .= "Einzelpreis: ". $course->price  ." €". ($course->price_discount > 0 ? " (mögliche Ermäßigungen nicht mit einberechnet)" : "") ."<br>";
 				$price_full = $price_full + (isset($participant['participant_number']) ? $participant['participant_number'] * $course->price : count($participant) * $course->price);
 			}
 			if(is_array($participant) && $course->registration_possible !== "yes_number") {
 				foreach($participant as $id => $participant_data) {
 					$body .= "Vorname: ". $participant_data['firstname']  ."<br>";
 					$body .= "Nachname: ". $participant_data['lastname']  ."<br>";
-					if(isset($participant_data['birthday']) && $participant_data['birthday'] != "") {
+					if(isset($participant_data['birthday']) && $participant_data['birthday'] !== "") {
 						$body .= "Geburtsdatum: ". self::formatCourseDate($participant_data['birthday'])  ."<br>";
 					}
-					else if(isset($participant_data['age']) && $participant_data['age'] != "") {
+					else if(isset($participant_data['age']) && $participant_data['age'] !== "") {
 						$body .= "Alter bei Veranstaltungsbeginn: ". $participant_data['age']  ."<br>";
 					}
-					if(isset($participant_data['gender']) && $participant_data['gender'] != "") {
+					if(array_key_exists('emergency_number', $participant_data) && $participant_data['emergency_number'] !== "") {
+						$body .= "Notfallnummer: ". $participant_data['emergency_number']  ."<br>";
+					}
+					if(isset($participant_data['gender']) && $participant_data['gender'] !== "") {
 						$body .= "Geschlecht: ". $participant_data['gender']  ."<br>";
 					}
-					if($course->price_salery_level && isset($participant_data['price']) && isset($participant_data['price_salery_level_row_number']) && $participant_data['price'] != "") {
+					if($course->price_salery_level && isset($participant_data['price']) && isset($participant_data['price_salery_level_row_number']) && $participant_data['price'] !== "") {
 						$price_level_description = "";
 						$price_level_row_counter = 0;
 						foreach ($course->price_salery_level_details as $level_description => $level_price) {
@@ -662,23 +761,27 @@ class Cart {
 
 		// invoice data
 		$body .= "<br><b>Rechnungsadresse:</b><br>";
-		$body .= $invoice_address['firstname'] ." ". $invoice_address['lastname'] ."<br>";
-		$body .= $invoice_address['address']  ."<br>";
-		$body .= str_pad($invoice_address['zipcode'], 5, 0, STR_PAD_LEFT) .' '. $invoice_address['city']  ."<br>";
-		$body .= $invoice_address['phone'] ."<br>";
+		if(isset($invoice_address['type']) && $invoice_address['type'] === 'B') {
+			$body .= $invoice_address['company'] ."<br>";
+		}
+		$body .= $invoice_address['firstname'] .' '. $invoice_address['lastname'] .'<br>';
+		$body .= $invoice_address['address'] .'<br>';
+		$body .= $invoice_address['zipcode'] .' '. $invoice_address['city']  .'<br>';
+		$body .= $invoice_address['country'] .'<br>';
+		$body .= $invoice_address['phone'] .'<br>';
 		$body .= '<a href="'. $invoice_address['e-mail'] .'">'. $invoice_address['e-mail']  ."</a><br>";
 		$body .= "Gewünschte Zahlungsart: ";
-		if(isset($invoice_address['payment']) && $invoice_address['payment'] == "L") {
+		if(isset($invoice_address['payment']) && $invoice_address['payment'] === "L") {
 			$body .= "Lastschrift<br>";
 			$body .= "Name der Bank: ". $invoice_address['bank']  ."<br>";
 			$body .= "Kontoinhaber: ". $invoice_address['account_owner']  ."<br>";
 			$body .= "BIC: ". $invoice_address['bic']  ."<br>";
 			$body .= "IBAN: ". $invoice_address['iban'];		
 		}
-		else if(isset($invoice_address['payment']) && $invoice_address['payment'] == "Ü"){
+		else if(isset($invoice_address['payment']) && $invoice_address['payment'] === "Ü"){
 			$body .= "Überweisung";
 		}
-		else if(isset($invoice_address['payment']) && $invoice_address['payment'] == "B") {
+		else if(isset($invoice_address['payment']) && $invoice_address['payment'] === "B") {
 			$body .= "Barzahlung";
 		}
 		$body .=  "<br>";
@@ -715,7 +818,7 @@ class Cart {
 	 * @param int $course_id Course ID
 	 * @param int $participant_id Participant ID
 	 * @param string[] $participant_data Array with participant data. Allowed keys
-	 * are "firstname", "lastname", "birthday", "age", "gender"
+	 * are "firstname", "lastname", "birthday", "age", "gender", "emergency_number", "salery_level"
 	 */
 	public function updateParticipant($course_id, $participant_id, $participant_data) {
 		foreach($participant_data as $key => $value) {

@@ -24,7 +24,7 @@ function rex_d2u_courses_target_groups_article_is_in_use(rex_extension_point $ep
 	if($addon->hasConfig("article_id_target_groups") && $addon->getConfig("article_id_target_groups") == $article_id) {
 		$message = '<a href="index.php?page=d2u_courses/settings">'.
 			 rex_i18n::msg('d2u_courses_rights_all') ." - ". rex_i18n::msg('d2u_helper_settings') . '</a>';
-		if(!in_array($message, $warning)) {
+		if(!in_array($message, $warning, true)) {
 			$warning[] = $message;
 		}
 	}
@@ -58,7 +58,7 @@ function rex_d2u_courses_target_groups_media_is_in_use(rex_extension_point $ep) 
 	for($i = 0; $i < $sql_target_groups->getRows(); $i++) {
 		$message = rex_i18n::msg('d2u_courses_rights_all') ." - ". rex_i18n::msg('d2u_courses_target_groups') .': <a href="javascript:openPage(\'index.php?page=d2u_courses/target_groups&func=edit&entry_id='.
 			$sql_target_groups->getValue('target_group_id') .'\')">'. $sql_target_groups->getValue('name') .'</a>';
-		if(!in_array($message, $warning)) {
+		if(!in_array($message, $warning, true)) {
 			$warning[] = $message;
 		}
 		$sql_target_groups->next();

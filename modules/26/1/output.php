@@ -467,10 +467,6 @@ else {
 			$box_details .= '</div>';
 		}
 
-		if($course->registration_possible == "yes" || $course->registration_possible == "yes_number" || $course->registration_possible == "booked") {
-			$box_details .= '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'" method="post">';
-		}
-
 		if($course->price > 0 || ($course->price_salery_level && $course->price_salery_level_details)) {
 			$box_details .= '<div class="col-12 course_row">';
 			$box_details .= '<div class="course_box spacer_box"><b>'. $tag_open .'d2u_courses_fee'. $tag_close .':</b> ';
@@ -578,14 +574,14 @@ else {
 
 		if($course->registration_possible == "yes" || $course->registration_possible == "yes_number" || $course->registration_possible == "booked") {
 			$box_details .= '<div class="col-12 course_row">';
-			$box_details .= '<div class="course_box spacer_box add_cart">';
+			$box_details .= '<div class="course_box spacer_box add_cart" style="background-color: '. $course->category->color.'">';
 			if(D2U_Courses\Cart::getCart()->hasCourse($course->course_id)) {
 				$box_details .= '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'">'. $tag_open .'d2u_courses_cart_course_already_in'. $tag_close .' - '. $tag_open .'d2u_courses_cart_go_to'. $tag_close .'</a>';
 			}
 			else {
 				$box_details .= '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'" method="post">';
 				$box_details .= '<input type="hidden" name="course_id" value="'. $course->course_id .'">';
-				$box_details .= '<input type="submit" class="add_cart" name="submit" value="'. $tag_open .'d2u_courses_cart_add'. $tag_close .'">';
+				$box_details .= '<input type="submit" class="add_cart" name="submit" value="'. $tag_open .'d2u_courses_cart_add'. $tag_close .'" style="background-color: '. $course->category->color.'">';
 			}
 			$box_details .= '</div>';
 			$box_details .= '</div>';

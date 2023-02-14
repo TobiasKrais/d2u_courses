@@ -17,8 +17,10 @@
 .cart_row {
 	margin-bottom: 5px;
 }
-.cart_row_title, .cart_row_title h1 {
+.cart_row_title, .cart_row_title h1, .cart_row_title b {
 	color: white;
+}
+.cart_row_title, .cart_row_title h1 {
 	padding: 5px;
 }
 
@@ -104,4 +106,16 @@ input.cart_text, input.cart_date, input.cart_email, input.cart_number, select.ca
 
 .view_head {
 	text-align: center;
+}
+
+#iban_wrong, #email_wrong {
+	color: red;
+	display: none;
+	font-weight: bold;
+	min-width: 200px;
+	padding: 7px;
+}
+#iban_not_sepa {
+	color: orange;
+	display: none;
 }

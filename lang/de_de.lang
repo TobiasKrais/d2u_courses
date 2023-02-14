@@ -65,6 +65,7 @@ d2u_courses_settings_forward_single_course = Wenn Kursliste einer Kategorie nur 
 d2u_courses_settings_google = Einstellungen für Google
 d2u_courses_settings_multinewsletter_group = Angebotene Newsletter
 d2u_courses_settings_multinewsletter_subscribe = Newsletter Abonnement im Bestellvorgang anbieten
+d2u_courses_settings_payment_options_allow_company_bank_transfer = Firmenkunden immer die Option "Überweisung" anbieten, auch diese in anzuzeigende Zahlungsarten nicht ausgewählt ist
 d2u_courses_settings_request_form_email = Empfänger E-Mailadresse
 d2u_courses_settings_request_form_sender_email = Absender E-Mailadresse
 d2u_courses_settings_show_time = Kurse anzeigen bis ...

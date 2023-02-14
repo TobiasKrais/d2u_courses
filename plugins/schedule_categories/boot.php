@@ -24,7 +24,7 @@ function rex_d2u_courses_schedule_categories_article_is_in_use(rex_extension_poi
 	if($addon->hasConfig("article_id_schedule_categories") && $addon->getConfig("article_id_schedule_categories") == $article_id) {
 		$message = '<a href="index.php?page=d2u_courses/settings">'.
 			 rex_i18n::msg('d2u_courses_rights_all') ." - ". rex_i18n::msg('d2u_helper_settings') . '</a>';
-		if(!in_array($message, $warning)) {
+		if(!in_array($message, $warning, true)) {
 			$warning[] = $message;
 		}
 	}
@@ -58,7 +58,7 @@ function rex_d2u_courses_schedule_categories_media_is_in_use(rex_extension_point
 	for($i = 0; $i < $sql_schedule_categories->getRows(); $i++) {
 		$message = rex_i18n::msg('d2u_courses_rights_all') ." - ". rex_i18n::msg('d2u_courses_schedule_categories') .': <a href="javascript:openPage(\'index.php?page=d2u_courses/schedule_categories&func=edit&entry_id='.
 			$sql_schedule_categories->getValue('schedule_category_id') .'\')">'. $sql_schedule_categories->getValue('name') .'</a>';
-		if(!in_array($message, $warning)) {
+		if(!in_array($message, $warning, true)) {
 			$warning[] = $message;
 		}
 		$sql_schedule_categories->next();

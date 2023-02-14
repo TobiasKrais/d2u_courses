@@ -24,7 +24,7 @@ function rex_d2u_courses_locations_article_is_in_use(rex_extension_point $ep) {
 	if($addon->hasConfig("article_id_locations") && $addon->getConfig("article_id_locations") == $article_id) {
 		$message = '<a href="index.php?page=d2u_courses/settings">'.
 			 rex_i18n::msg('d2u_courses_rights_all') ." - ". rex_i18n::msg('d2u_helper_settings') . '</a>';
-		if(!in_array($message, $warning)) {
+		if(!in_array($message, $warning, true)) {
 			$warning[] = $message;
 		}
 	}
@@ -63,7 +63,7 @@ function rex_d2u_courses_locations_media_is_in_use(rex_extension_point $ep) {
 	for($i = 0; $i < $sql_locations->getRows(); $i++) {
 		$message = rex_i18n::msg('d2u_courses_rights_all') ." - ". rex_i18n::msg('d2u_courses_locations') .': <a href="javascript:openPage(\'index.php?page=d2u_courses/location&func=edit&entry_id='.
 			$sql_locations->getValue('location_id') .'\')">'. $sql_locations->getValue('name') .'</a>';
-		if(!in_array($message, $warning)) {
+		if(!in_array($message, $warning, true)) {
 			$warning[] = $message;
 		}
 		$sql_locations->next();
@@ -73,7 +73,7 @@ function rex_d2u_courses_locations_media_is_in_use(rex_extension_point $ep) {
 	for($i = 0; $i < $sql_categories->getRows(); $i++) {
 		$message = rex_i18n::msg('d2u_courses_rights_all') ." - ". rex_i18n::msg('d2u_courses_location_categories') .': <a href="javascript:openPage(\'index.php?page=d2u_courses/location_category&func=edit&entry_id='. $sql_categories->getValue('location_category_id') .'\')">'.
 			 $sql_categories->getValue('name') . '</a>';
-		if(!in_array($message, $warning)) {
+		if(!in_array($message, $warning, true)) {
 			$warning[] = $message;
 		}
 		$sql_categories->next();

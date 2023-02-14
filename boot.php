@@ -33,7 +33,7 @@ function rex_d2u_courses_article_is_in_use(rex_extension_point $ep) {
 	for($i = 0; $i < $sql_courses->getRows(); $i++) {
 		$message = '<a href="javascript:openPage(\'index.php?page=d2u_courses/courses&func=edit&entry_id='.
 			$sql_courses->getValue('course_id') .'\')">'. rex_i18n::msg('d2u_courses_rights_all') ." - ". rex_i18n::msg('d2u_courses_courses') .': '. $sql_courses->getValue('name') .'</a>';
-		if(!in_array($message, $warning)) {
+		if(!in_array($message, $warning, true)) {
 			$warning[] = $message;
 		}
 		$sql_courses->next();
@@ -41,13 +41,13 @@ function rex_d2u_courses_article_is_in_use(rex_extension_point $ep) {
 	
 	// Settings
 	$addon = rex_addon::get("d2u_courses");
-	if(($addon->hasConfig("article_id_courses") && $addon->getConfig("article_id_courses") == $article_id) ||
-		($addon->hasConfig("article_id_shopping_cart") && $addon->getConfig("article_id_shopping_cart") == $article_id) ||
-		($addon->hasConfig("article_id_conditions") && $addon->getConfig("article_id_conditions") == $article_id) ||
-		($addon->hasConfig("article_id_terms_of_participation") && $addon->getConfig("article_id_terms_of_participation") == $article_id)) {
+	if(($addon->hasConfig("article_id_courses") && intval($addon->getConfig("article_id_courses")) === $article_id) ||
+		($addon->hasConfig("article_id_shopping_cart") && intval($addon->getConfig("article_id_shopping_cart")) === $article_id) ||
+		($addon->hasConfig("article_id_conditions") && intval($addon->getConfig("article_id_conditions")) === $article_id) ||
+		($addon->hasConfig("article_id_terms_of_participation") && intval($addon->getConfig("article_id_terms_of_participation")) === $article_id)) {
 		$message = '<a href="index.php?page=d2u_courses/settings">'.
 			 rex_i18n::msg('d2u_courses_rights_all') ." - ". rex_i18n::msg('d2u_helper_settings') . '</a>';
-		if(!in_array($message, $warning)) {
+		if(!in_array($message, $warning, true)) {
 			$warning[] = $message;
 		}
 	}
@@ -86,7 +86,7 @@ function rex_d2u_courses_media_is_in_use(rex_extension_point $ep) {
 	for($i = 0; $i < $sql_courses->getRows(); $i++) {
 		$message = rex_i18n::msg('d2u_courses_rights_all') ." - ". rex_i18n::msg('d2u_courses_courses') .': <a href="javascript:openPage(\'index.php?page=d2u_courses/course&func=edit&entry_id='.
 			$sql_courses->getValue('course_id') .'\')">'. $sql_courses->getValue('name') .'</a>';
-		if(!in_array($message, $warning)) {
+		if(!in_array($message, $warning, true)) {
 			$warning[] = $message;
 		}
 		$sql_courses->next();
@@ -96,7 +96,7 @@ function rex_d2u_courses_media_is_in_use(rex_extension_point $ep) {
 	for($i = 0; $i < $sql_categories->getRows(); $i++) {
 		$message = rex_i18n::msg('d2u_courses_rights_all') ." - ". rex_i18n::msg('d2u_helper_categories') .': <a href="javascript:openPage(\'index.php?page=d2u_courses/category&func=edit&entry_id='. $sql_categories->getValue('category_id') .'\')">'.
 			 $sql_categories->getValue('name') . '</a>';
-		if(!in_array($message, $warning)) {
+		if(!in_array($message, $warning, true)) {
 			$warning[] = $message;
 		}
 		$sql_categories->next();

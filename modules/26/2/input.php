@@ -32,15 +32,13 @@
 <div class="row" id="categories">
 	<div class="col-xs-12 col-sm-4">Kategorien mit Altersabfrage auswählen</div>
 	<div class="col-xs-12 col-sm-8">
-		<div class="rex-select-style">
 		<?php
-			print '<select name="REX_INPUT_VALUE[4][]" class="form-control" multiple="multiple" size="5">';
+			print '<select name="REX_INPUT_VALUE[4][]" class="form-control selectpicker" multiple="multiple">';
 			foreach (\D2U_Courses\Category::getAllParents() as $root_category) {
 				echo '<option value="'. $root_category->category_id .'" '. (in_array($root_category->category_id, rex_var::toArray("REX_VALUE[4]") ?: []) ? 'selected="selected" ' : '') .'>'. $root_category->name .'</option>';
 			}
 			print '</select>';
 		?>
-		</div>
 	</div>
 	<div class="col-xs-12">&nbsp;</div>
 </div>

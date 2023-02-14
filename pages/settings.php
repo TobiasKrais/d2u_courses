@@ -22,6 +22,7 @@ if (filter_input(INPUT_POST, 'btn_save') === 'save') {
 	}
 
 	// Checkbox also need special treatment if empty
+	$settings['allow_company_bank_transfer'] = array_key_exists('allow_company_bank_transfer', $settings);
 	$settings['ask_kids_go_home_alone'] = array_key_exists('ask_kids_go_home_alone', $settings) ? "active" : "inactive";
 	$settings['ask_vacation_pass'] = array_key_exists('ask_vacation_pass', $settings) ? "active" : "inactive";
 	$settings['forward_single_course'] = array_key_exists('forward_single_course', $settings) ? "active" : "inactive";
@@ -339,16 +340,17 @@ if (filter_input(INPUT_POST, 'btn_save') === 'save') {
 						d2u_addon_backend_helper::form_input('d2u_courses_settings_request_form_sender_email', 'settings[request_form_sender_email]', $this->getConfig('request_form_sender_email'), true, false, 'email');
 						d2u_addon_backend_helper::form_linkfield('d2u_courses_settings_article_conditions', '3', $this->getConfig('article_id_conditions'), rex_config::get("d2u_helper", "default_lang", rex_clang::getStartId()));
 						d2u_addon_backend_helper::form_linkfield('d2u_courses_settings_article_terms_of_participation', '4', $this->getConfig('article_id_terms_of_participation'), rex_config::get("d2u_helper", "default_lang", rex_clang::getStartId()));
+						d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_ask_kids_go_home_alone', 'settings[ask_kids_go_home_alone]', 'active', $this->getConfig('ask_kids_go_home_alone') == 'active');
+						if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() === false) {
+							d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_ask_vacation_pass', 'settings[ask_vacation_pass]', 'active', $this->getConfig('ask_vacation_pass') == 'active');
+						}
 						$options_paymant = [
 							'bank_transfer' => rex_i18n::msg('d2u_courses_payment_bank_transfer'),
 							'direct_debit' => rex_i18n::msg('d2u_courses_payment_direct_debit'),
 							'cash' => rex_i18n::msg('d2u_courses_payment_cash')
 						];
 						d2u_addon_backend_helper::form_select('d2u_courses_payment', 'settings[payment_options][]', $options_paymant, $this->getConfig('payment_options'), 3, true);
-						d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_ask_kids_go_home_alone', 'settings[ask_kids_go_home_alone]', 'active', $this->getConfig('ask_kids_go_home_alone') == 'active');
-						if(rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() === false) {
-							d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_ask_vacation_pass', 'settings[ask_vacation_pass]', 'active', $this->getConfig('ask_vacation_pass') == 'active');
-						}
+						d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_payment_options_allow_company_bank_transfer', 'settings[allow_company_bank_transfer]', 'true', boolval($this->getConfig('allow_company_bank_transfer')));
 					?>
 				</div>
 			</fieldset>
@@ -500,4 +502,3 @@ if (filter_input(INPUT_POST, 'btn_save') === 'save') {
 <?php
 	print d2u_addon_backend_helper::getCSS();
 	print d2u_addon_backend_helper::getJS();
-	print d2u_addon_backend_helper::getJSOpenAll();

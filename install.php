@@ -56,7 +56,7 @@
 // Online categories (changes need to be done in install.php and pages/settings.php)
 $sql = rex_sql::factory();
 $showTimeWhere = 'date_start = "" OR date_start > CURDATE()';
-if(class_exists('d2u_courses_frontend_helper') && method_exists('d2u_courses_frontend_helper', 'getShowTimeWhere')) {
+if(class_exists('d2u_courses_frontend_helper') && method_exists('d2u_courses_frontend_helper', 'getShowTimeWhere')) { /** @phpstan-ignore-line */
 	$showTimeWhere = d2u_courses_frontend_helper::getShowTimeWhere();
 }
 $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_categories AS '
@@ -165,7 +165,7 @@ $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_ur
 
 // Insert url schemes
 if(\rex_addon::get('url')->isAvailable()) {
-	$clang_id = count(rex_clang::getAllIds()) == 1 ? rex_clang::getStartId() : 0;
+	$clang_id = count(rex_clang::getAllIds()) === 1 ? rex_clang::getStartId() : 0;
 	$article_id = rex_config::get('d2u_courses', 'article_id_courses', 0) > 0 ? rex_config::get('d2u_courses', 'article_id_courses') : rex_article::getSiteStartArticleId(); 
 
 	// Insert url schemes Version 2.x
@@ -183,7 +183,7 @@ if(\rex_addon::get('url')->isAvailable()) {
 		. "'{\"column_id\":\"category_id\",\"column_clang_id\":\"\",\"column_segment_part_1\":\"name\",\"column_segment_part_2_separator\":\"\\/\",\"column_segment_part_2\":\"\",\"column_segment_part_3_separator\":\"\\/\",\"column_segment_part_3\":\"\"}', "
 		. "'relation_3_xxx_1_xxx_". rex::getTablePrefix() ."d2u_courses_categories', "
 		. "'{\"column_id\":\"category_id\",\"column_clang_id\":\"\",\"column_segment_part_1\":\"name\",\"column_segment_part_2_separator\":\"\\/\",\"column_segment_part_2\":\"\",\"column_segment_part_3_separator\":\"\\/\",\"column_segment_part_3\":\"\"}', "
-		. "CURRENT_TIMESTAMP, '". rex::getUser()->getValue('login') ."', CURRENT_TIMESTAMP, '". rex::getUser()->getValue('login') ."');");
+		. "CURRENT_TIMESTAMP, '". (rex::getUser() instanceof rex_user ? rex::getUser()->getValue('login') : '') ."', CURRENT_TIMESTAMP, '". (rex::getUser() instanceof rex_user ? rex::getUser()->getValue('login') : '') ."');");
 
 	$sql->setQuery("DELETE FROM ". \rex::getTablePrefix() ."url_generator_profile WHERE `namespace` = 'course_id';");
 	$sql->setQuery("INSERT INTO ". \rex::getTablePrefix() ."url_generator_profile (`namespace`, `article_id`, `clang_id`, `ep_pre_save_called`, `table_name`, `table_parameters`, `relation_1_table_name`, `relation_1_table_parameters`, `relation_2_table_name`, `relation_2_table_parameters`, `relation_3_table_name`, `relation_3_table_parameters`, `createdate`, `createuser`, `updatedate`, `updateuser`) VALUES
@@ -199,16 +199,16 @@ if(\rex_addon::get('url')->isAvailable()) {
 		. "'{\"column_id\":\"category_id\",\"column_clang_id\":\"\",\"column_segment_part_1\":\"name\",\"column_segment_part_2_separator\":\"\\/\",\"column_segment_part_2\":\"\",\"column_segment_part_3_separator\":\"\\/\",\"column_segment_part_3\":\"\"}', "
 		. "'relation_3_xxx_1_xxx_". rex::getTablePrefix() ."d2u_courses_categories', "
 		. "'{\"column_id\":\"category_id\",\"column_clang_id\":\"\",\"column_segment_part_1\":\"name\",\"column_segment_part_2_separator\":\"\\/\",\"column_segment_part_2\":\"\",\"column_segment_part_3_separator\":\"\\/\",\"column_segment_part_3\":\"\"}',"
-		. "CURRENT_TIMESTAMP, '". rex::getUser()->getValue('login') ."', CURRENT_TIMESTAMP, '". rex::getUser()->getValue('login') ."');");
+		. "CURRENT_TIMESTAMP, '". (rex::getUser() instanceof rex_user ? rex::getUser()->getValue('login') : '') ."', CURRENT_TIMESTAMP, '". (rex::getUser() instanceof rex_user ? rex::getUser()->getValue('login') : '') ."');");
 	\rex_delete_cache();
 }
 
 // START default settings
-if (!$this->hasConfig('article_id_courses')) {
-    $this->setConfig('article_id_courses', rex_article::getSiteStartArticleId());
+if (!rex_config::has('d2u_courses', 'article_id_courses')) {
+	rex_config::set('d2u_courses', 'article_id_courses', rex_article::getSiteStartArticleId());
 }
-if (!$this->hasConfig('forward_single_course')) {
-    $this->setConfig('forward_single_course', 'active');
+if (!rex_config::has('d2u_courses', 'forward_single_course')) {
+	rex_config::set('d2u_courses', 'forward_single_course', 'active');
 }
 // END default settings
 

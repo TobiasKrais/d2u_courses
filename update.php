@@ -30,5 +30,12 @@ if(!rex_config::has('d2u_courses', 'payment_options')) {
 	rex_config::set('d2u_courses', 'payment_options', ["bank_transfer", "cash", "direct_debit"]);
 }
 
+// Remove old translations
+if (rex_version::compare(rex_addon::get('d2u_courses')->getVersion(), '3.3.0', '<')) {
+	if(rex_addon::get('sprog')->isAvailable()) {
+		$sql->setQuery("DELETE FROM ". \rex::getTablePrefix() ."sprog_wildcard WHERE wildcard = 'd2u_courses_cart_heading'");
+	}
+}
+
 // use path relative to __DIR__ to get correct path in update temp dir
 $this->includeFile(__DIR__.'/install.php'); /** @phpstan-ignore-line */

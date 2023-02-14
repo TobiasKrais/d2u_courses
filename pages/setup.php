@@ -246,7 +246,13 @@ else if($old_tables_available) {
 	<li>.github Verzeichnis aus Installer Action ausgeschlossen.</li>
 	<li>rexstan Anpassungen</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": Geolocation als Kartenaddon wird ab sofort unterstützt.</li>
+	<li>Modul 26-1 "Ausgabe Veranstaltungen": "Zum Warenkorb hinzufügen" statt Grau in der Farbe der Veranstaltung.</li>
 	<li>Modul 26-2 "Warenkorb": Fehlermeldung, wenn ein Newsletter aus dem MultiNewsletter angeboten wurde behoben.</li>
+	<li>Modul 26-2 "Warenkorb": Feld für Firma hinzugefügt. In den Einstellungen kann festgelegt werden, dass Bestellungen von Firmen immer die Zahlungsoption Überweisung anbietet, auch wenn die Option im entsprechenden Feld nicht gewählt ist.</li>
+	<li>Modul 26-2 "Warenkorb": IBAN Prüfung und Warnhinweis auf mögliche Kosten, wenn bei Zahlungsoption "SEPA Lastschrift" eine Kontonummer außerhalb des SEPA Raumes eingegeben wird.</li>
+	<li>Modul 26-2 "Warenkorb": Eingabefeld für Land hinzugefügt und Postleitzahlfeld angepasst.</li>
+	<li>Modul 26-2 "Warenkorb": E-Mail Verifizierungsfeld hinzugefügt.</li>
+	<li>Modul 26-2 "Warenkorb": Wenn Altersabfrage aktiviert ist, wird zusätzlich nach einer Notfallnummer gefragt.</li>
 </ul>
 <p>3.2.4:</p>
 <ul>
