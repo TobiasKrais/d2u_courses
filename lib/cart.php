@@ -161,23 +161,6 @@ class Cart {
 								$zusatz->appendChild($xml->createTextNode($participant_data['age']));
 								$stammdaten->appendChild($zusatz);
 							}
-							if(array_key_exists('emergency_number', $participant_data) && $participant_data['emergency_number'] !== '') {
-								// <KOMMUNIKATIONSEINTRAG>
-								$kommunikationseintrag_emergency = $xml->createElement("KOMMUNIKATIONSEINTRAG");
-								$stammdaten->appendChild($kommunikationseintrag_emergency);
-								// <KOMMART>T</KOMMART>
-								$kommart_emergency = $xml->createElement("KOMMART");
-								$kommart_emergency->appendChild($xml->createTextNode("T"));
-								$kommunikationseintrag_emergency->appendChild($kommart_emergency);
-								// <KOMMBEZ>Notfallnummer</KOMMBEZ>
-								$kommbez_emergency = $xml->createElement("KOMMBEZ");
-								$kommbez_emergency->appendChild($xml->createTextNode(\Sprog\Wildcard::get('d2u_courses_cart_emergency_number')));
-								$kommunikationseintrag_emergency->appendChild($kommbez_emergency);
-								// <KOMMWERT>Nummer</KOMMWERT>
-								$kommwert_emergency = $xml->createElement("KOMMWERT");
-								$kommwert_emergency->appendChild($xml->createTextNode($participant_data['emergency_number']));
-								$kommunikationseintrag_emergency->appendChild($kommwert_emergency);
-							}
 							break 2;
 						}
 					}
@@ -193,23 +176,6 @@ class Cart {
 					$zusatz = $xml->createElement("ZUSATZ");
 					$zusatz->appendChild($xml->createTextNode(self::calculateAge($invoice_address['birthday'])));
 					$stammdaten->appendChild($zusatz);
-					if(array_key_exists('emergency_number', $participant_data) && $participant_data['emergency_number'] !== '') {
-						// <KOMMUNIKATIONSEINTRAG>
-						$kommunikationseintrag_emergency = $xml->createElement("KOMMUNIKATIONSEINTRAG");
-						$stammdaten->appendChild($kommunikationseintrag_emergency);
-						// <KOMMART>T</KOMMART>
-						$kommart_emergency = $xml->createElement("KOMMART");
-						$kommart_emergency->appendChild($xml->createTextNode("T"));
-						$kommunikationseintrag_emergency->appendChild($kommart_emergency);
-						// <KOMMBEZ>Notfallnummer</KOMMBEZ>
-						$kommbez_emergency = $xml->createElement("KOMMBEZ");
-						$kommbez_emergency->appendChild($xml->createTextNode(\Sprog\Wildcard::get('d2u_courses_cart_emergency_number')));
-						$kommunikationseintrag_emergency->appendChild($kommbez_emergency);
-						// <KOMMWERT>Nummer</KOMMWERT>
-						$kommwert_emergency = $xml->createElement("KOMMWERT");
-						$kommwert_emergency->appendChild($xml->createTextNode($participant_data['emergency_number']));
-						$kommunikationseintrag_emergency->appendChild($kommwert_emergency);
-					}
 				}
 			}
 		}
@@ -246,23 +212,6 @@ class Cart {
 							$zusatz = $xml->createElement("ZUSATZ");
 							$zusatz->appendChild($xml->createTextNode($participant_data['age']));
 							$stammdaten->appendChild($zusatz);
-						}
-						if(array_key_exists('emergency_number', $participant_data) && $participant_data['emergency_number'] !== '') {
-							// <KOMMUNIKATIONSEINTRAG>
-							$kommunikationseintrag_emergency = $xml->createElement("KOMMUNIKATIONSEINTRAG");
-							$stammdaten->appendChild($kommunikationseintrag_emergency);
-							// <KOMMART>T</KOMMART>
-							$kommart_emergency = $xml->createElement("KOMMART");
-							$kommart_emergency->appendChild($xml->createTextNode("T"));
-							$kommunikationseintrag_emergency->appendChild($kommart_emergency);
-							// <KOMMBEZ>Notfallnummer</KOMMBEZ>
-							$kommbez_emergency = $xml->createElement("KOMMBEZ");
-							$kommbez_emergency->appendChild($xml->createTextNode(\Sprog\Wildcard::get('d2u_courses_cart_emergency_number')));
-							$kommunikationseintrag_emergency->appendChild($kommbez_emergency);
-							// <KOMMWERT>Nummer</KOMMWERT>
-							$kommwert_emergency = $xml->createElement("KOMMWERT");
-							$kommwert_emergency->appendChild($xml->createTextNode($participant_data['emergency_number']));
-							$kommunikationseintrag_emergency->appendChild($kommwert_emergency);
 						}
 						break 2;
 					}
@@ -365,6 +314,32 @@ class Cart {
 		$kommwert_email = $xml->createElement("KOMMWERT");
 		$kommwert_email->appendChild($xml->createTextNode($invoice_address['e-mail']));
 		$kommunikationseintrag_email->appendChild($kommwert_email);
+
+		// Emergency number
+		foreach($cart as $course_id => $participant) {
+			if(is_array($participant)) {
+				foreach($participant as $id => $participant_data) {
+					if(array_key_exists('emergency_number', $participant_data) && $participant_data['emergency_number'] !== '') {
+						// <KOMMUNIKATIONSEINTRAG>
+						$kommunikationseintrag_emergency = $xml->createElement("KOMMUNIKATIONSEINTRAG");
+						$kommunikation->appendChild($kommunikationseintrag_emergency);
+						// <KOMMART>T</KOMMART>
+						$kommart_emergency = $xml->createElement("KOMMART");
+						$kommart_emergency->appendChild($xml->createTextNode("T"));
+						$kommunikationseintrag_emergency->appendChild($kommart_emergency);
+						// <KOMMBEZ>Notfallnummer</KOMMBEZ>
+						$kommbez_emergency = $xml->createElement("KOMMBEZ");
+						$kommbez_emergency->appendChild($xml->createTextNode(\Sprog\Wildcard::get('d2u_courses_cart_emergency_number')));
+						$kommunikationseintrag_emergency->appendChild($kommbez_emergency);
+						// <KOMMWERT>Nummer</KOMMWERT>
+						$kommwert_emergency = $xml->createElement("KOMMWERT");
+						$kommwert_emergency->appendChild($xml->createTextNode($participant_data['emergency_number']));
+						$kommunikationseintrag_emergency->appendChild($kommwert_emergency);
+					}
+					break 2;
+				}
+			}
+		}
 
 		// <KURS>
 		$kurse_xml = $xml->createElement("KURSE");
