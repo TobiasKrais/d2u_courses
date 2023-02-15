@@ -59,17 +59,20 @@ class Cart {
 	 */
 	public static function calculateAge($date) {
 		$time = 0;
-		if(strpos($date, "-")) {
+		if(strpos($date, "-") !== false) {
 			$d = explode("-", $date);
 			$time = mktime(0, 0, 0, (int) $d[1], (int) $d[2], (int) $d[0]);
 		}
-		else if(strpos($date, ".")){
+		else if(strpos($date, ".") !== false) {
 			$d = explode(".", $date);
 			$time = mktime(0, 0, 0, (int) $d[1], (int) $d[0], (int) $d[2]);
 		}
-		else {
+		else if(strpos($date, "/") !== false)  {
 			$d = explode("/", $date);
 			$time = mktime(0, 0, 0, (int) $d[1], (int) $d[0], (int) $d[2]);
+		}
+		else {
+			return 0;
 		}
 		return (int) floor((date("Ymd") - date("Ymd", $time)) / 10000);
 	}

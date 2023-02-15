@@ -146,7 +146,7 @@ if(isset($form_data['invoice_form'])) {
 	}
 	
 	// MultiNewsletter Anmeldemail senden
-	if(rex_addon::get('multinewsletter')->isAvailable() && is_array($form_data['invoice_form']['multinewsletter']) && count($form_data['invoice_form']['multinewsletter']) > 0) {
+	if(rex_addon::get('multinewsletter')->isAvailable() && key_exists('multinewsletter', $form_data['invoice_form']) && is_array($form_data['invoice_form']['multinewsletter']) && count($form_data['invoice_form']['multinewsletter']) > 0) {
 		$user = MultinewsletterUser::initByMail(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL));
 		$anrede = $form_data['invoice_form']['gender'] == "W" ? 1 : 0;
 
@@ -311,7 +311,7 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 	}
 	
 	if(count($payment_options) > 0) {
-		print '<div class="registration_header cart_row_title">'. $tag_open .'d2u_courses_payment_data'. $tag_close .'</div>';
+		print '<div class="registration_header cart_row_title"><h1>'. $tag_open .'d2u_courses_payment_data'. $tag_close .'</h1></div>';
 
 		print '<p>';
 		print '<label class="cart_select" for="invoice_form-payment">'. $tag_open .'d2u_courses_payment'. $tag_close .':</label>';
@@ -428,6 +428,7 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 				$('#invoice_form-bank').parent().slideDown();
 				$('#invoice_form-iban').parent().slideDown();
 				$('#invoice_form-bic').parent().slideDown();
+				$('#iban_not_sepa').slideDown();
 			}
 			else {
 				$('#invoice_form-account_owner').removeAttr('required');
@@ -438,6 +439,7 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 				$('#invoice_form-bank').parent().slideUp();
 				$('#invoice_form-iban').parent().slideUp();
 				$('#invoice_form-bic').parent().slideUp();
+				$('#iban_not_sepa').slideUp();
 			}
 		}
 		// On init
@@ -540,7 +542,7 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 					}
 				}
 				print '</li>';
-				if($cart::calculateAge($participant['birthday']) < 18) {
+				if($participant['birthday'] !== '' && $cart::calculateAge($participant['birthday']) < 18) {
 					$has_minor_participants = true;
 				}
 			}
@@ -622,7 +624,7 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 		document.getElementById('cart').addEventListener(
 			"submit", 
 			function (evt) {
-				if(isValidIBANNumber(document.getElementById('invoice_form-iban').value) !== 1) {
+				if(document.getElementById('invoice_form-payment').value === 'L' && isValidIBANNumber(document.getElementById('invoice_form-iban').value) !== 1) {
 					evt.preventDefault();
 					document.getElementById('invoice_form-iban').focus();
 					window.scrollBy({ top: -200, left: 0, behavior: "smooth" });

@@ -416,7 +416,7 @@ else {
 		if($course->registration_possible == "yes" || $course->registration_possible == "yes_number") {
 			print ' <div class="open"></div>';
 		}
-		else if($list_course->registration_possible == "booked") {
+		else if($course->registration_possible == "booked") {
 			print ' <div class="closed"></div>';
 		}
 		print '</h1>'. ($course->details_age ? '<div class="details_age">'. $course->details_age .'</div>' : '');
@@ -589,7 +589,7 @@ else {
 			$box_details .= '</form>';
 		}
 
-
+		$box_picture = '';
 		if($course->picture != "") {
 			$box_picture = '<div class="col-12 col-md-6 course_row">';
 			$box_picture .= '<div class="course_box spacer_box course_picture">';
