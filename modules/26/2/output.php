@@ -342,10 +342,10 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 		print '<label class="cart_text" for="invoice_form-iban">'. $tag_open .'d2u_courses_payment_iban'. $tag_close .' *</label>';
 		print '<input type="text" class="cart_text" name="invoice_form[iban]" id="invoice_form-iban" maxlength="35" value="" onblur="alertInvalidIBAN(this);alertForeignIBAN(this.value);" required>';
 		print ' <span id="iban_wrong">'. \Sprog\Wildcard::get('d2u_courses_cart_iban_wrong') .'</span>';
-		print '</p>';
 		print '<div id="iban_not_sepa"><p>'
 			.'<label class="cart_text">&nbsp;</label>'
 			.\Sprog\Wildcard::get('d2u_courses_cart_iban_not_sepa') .'</p></div>';
+		print '</p>';
 ?>
 	<script>
 		/**
@@ -428,7 +428,6 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 				$('#invoice_form-bank').parent().slideDown();
 				$('#invoice_form-iban').parent().slideDown();
 				$('#invoice_form-bic').parent().slideDown();
-				$('#iban_not_sepa').slideDown();
 			}
 			else {
 				$('#invoice_form-account_owner').removeAttr('required');
@@ -439,7 +438,6 @@ else if(isset($form_data['request_courses']) && $form_data['request_courses'] !=
 				$('#invoice_form-bank').parent().slideUp();
 				$('#invoice_form-iban').parent().slideUp();
 				$('#invoice_form-bic').parent().slideUp();
-				$('#iban_not_sepa').slideUp();
 			}
 		}
 		// On init
