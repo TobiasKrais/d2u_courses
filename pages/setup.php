@@ -241,6 +241,7 @@ if ('d2u_courses' == rex_request('import', 'string') && $old_tables_available) {
 <h2>Changelog</h2>
 <p>3.2.5-DEV:</p>
 <ul>
+	<li>PHP-CS-Fixer Code Verbesserungen.</li>
 	<li>.github Verzeichnis aus Installer Action ausgeschlossen.</li>
 	<li>rexstan Anpassungen</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": Geolocation als Kartenaddon wird ab sofort unterstützt.</li>
