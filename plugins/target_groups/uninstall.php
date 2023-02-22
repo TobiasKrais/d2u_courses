@@ -1,13 +1,14 @@
 <?php
+
 $sql = rex_sql::factory();
 
 // Delete url schemes
-if(\rex_addon::get('url')->isAvailable()) {
-	$sql->setQuery("DELETE FROM ". \rex::getTablePrefix() ."url_generator_profile WHERE `namespace` = 'target_group_child_id';");
-	$sql->setQuery("DELETE FROM ". \rex::getTablePrefix() ."url_generator_profile WHERE `namespace` = 'target_group_id';");
-	
-	// Delete URL Cache
-	rex_delete_cache();
+if (\rex_addon::get('url')->isAvailable()) {
+    $sql->setQuery('DELETE FROM '. \rex::getTablePrefix() ."url_generator_profile WHERE `namespace` = 'target_group_child_id';");
+    $sql->setQuery('DELETE FROM '. \rex::getTablePrefix() ."url_generator_profile WHERE `namespace` = 'target_group_id';");
+
+    // Delete URL Cache
+    rex_delete_cache();
 }
 
 // Delete views

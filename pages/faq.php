@@ -11,19 +11,19 @@
 			Kategorien werden nur angezeigt, wenn auch ein online Kurs darin enthalten ist.
 		</li>
 		<li><b>Wie kann ich das Warenkorb Symbol in meinem Template einbinden?</b><br>
-			<?php print rex_string::highlight(<<<'EOF'
-print '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'" class="cart_link">';
-print '<div id="cart_symbol" class="desktop-inner">';
-print '<img src="'. rex_url::addonAssets('d2u_courses', 'cart_only.png') .'" alt="'.
-	rex_article::get(rex_config::get('d2u_courses', 'article_id_shopping_cart', 0))->getName() .'">';
-if(count(\D2U_Courses\Cart::getCourseIDs()) > 0) {
-	print '<div id="cart_info">'. count(\D2U_Courses\Cart::getCourseIDs()) .'</div>';
-}
-print '</div>';
-print '</a>';
-EOF
-			); ?>
+			<?= rex_string::highlight(<<<'EOF'
+    print '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'" class="cart_link">';
+    print '<div id="cart_symbol" class="desktop-inner">';
+    print '<img src="'. rex_url::addonAssets('d2u_courses', 'cart_only.png') .'" alt="'.
+    	rex_article::get(rex_config::get('d2u_courses', 'article_id_shopping_cart', 0))->getName() .'">';
+    if(count(\D2U_Courses\Cart::getCourseIDs()) > 0) {
+    	print '<div id="cart_info">'. count(\D2U_Courses\Cart::getCourseIDs()) .'</div>';
+    }
+    print '</div>';
+    print '</a>';
+    EOF
+            ) ?>
 		</li>
-			
+
 	</ul>
 </fieldset>

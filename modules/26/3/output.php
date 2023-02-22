@@ -2,83 +2,81 @@
 /*
  * Get parameters
  */
-$category_id = "REX_VALUE[1]";
+$category_id = 'REX_VALUE[1]';
 $category = $category_id > 0 ? new \D2U_Courses\Category($category_id) : false;
 $courses = $category->getCourses(true);
-$box_per_line = "REX_VALUE[5]" == 4 ? 4 : 3;
+$box_per_line = 'REX_VALUE[5]' == 4 ? 4 : 3;
 
-$sprog = rex_addon::get("sprog");
+$sprog = rex_addon::get('sprog');
 $tag_open = $sprog->getConfig('wildcard_open_tag');
 $tag_close = $sprog->getConfig('wildcard_close_tag');
 
 /*
  * Function stuff
  */
-if(!function_exists('printBox')) {
-	/**
-	 * Print box
-	 * @param string $title Box title
-	 * @param string $picture_filename mediapool picture filename
-	 * @param string $color Background color (Hex)
-	 * @param string $url Link target url
-	 * @param string $box_per_line number boxes per line on large screens
-	 */
-	function printBox($title, $picture_filename, $color, $url, $box_per_line = 3) {
-		print '<div class="col-6 col-md-4 col-lg-'. ($box_per_line == 4 ? '3' : '4') .' spacer">';
-		print '<div class="category_box" style="background-color: '. ($color == "" ? "grey" : "". $color) .'" data-height-watch>';
-		print '<a href="'. $url .'">';
-		print '<div class="view">';
-		if($picture_filename != "") {
-			print '<img src="index.php?rex_media_type=d2u_helper_sm&rex_media_file='. $picture_filename .'" alt="'. $title .'">';
-		}
-		else {
-			print '<img src="'.	rex_addon::get("d2u_courses")->getAssetsUrl("empty_box.png") .'" alt="Placeholder">';
-		}
-		print '</div>';
-		print '<div class="box_title">'. $title .'</div>';
-		print '</a>';
-		print '</div>';
-		print '</div>';
-	}
+if (!function_exists('printBox')) {
+    /**
+     * Print box.
+     * @param string $title Box title
+     * @param string $picture_filename mediapool picture filename
+     * @param string $color Background color (Hex)
+     * @param string $url Link target url
+     * @param string $box_per_line number boxes per line on large screens
+     */
+    function printBox($title, $picture_filename, $color, $url, $box_per_line = 3)
+    {
+        echo '<div class="col-6 col-md-4 col-lg-'. (4 == $box_per_line ? '3' : '4') .' spacer">';
+        echo '<div class="category_box" style="background-color: '. ('' == $color ? 'grey' : ''. $color) .'" data-height-watch>';
+        echo '<a href="'. $url .'">';
+        echo '<div class="view">';
+        if ('' != $picture_filename) {
+            echo '<img src="index.php?rex_media_type=d2u_helper_sm&rex_media_file='. $picture_filename .'" alt="'. $title .'">';
+        } else {
+            echo '<img src="'.	rex_addon::get('d2u_courses')->getAssetsUrl('empty_box.png') .'" alt="Placeholder">';
+        }
+        echo '</div>';
+        echo '<div class="box_title">'. $title .'</div>';
+        echo '</a>';
+        echo '</div>';
+        echo '</div>';
+    }
 }
 
-if(rex::isBackend()) {
-	print "Ausgabe Veranstaltungen der Kategorie <b>". $category->name ."</b>";
-}
-else {
-	// Course list
-	if(rex_config::get('d2u_courses', 'forward_single_course', 'inactive') == "active" && count($courses) == 1 && filter_input(INPUT_POST, 'course_search') == "") {
-		foreach($courses as $course) {
-			header('Location: '. $course->getURL());
-			exit;
-		}
-	}
-	else if(count($courses) > 0) {
-		if($category !== false) {
-			if("REX_VALUE[2]" == 'true') {
-				print '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. $category->color .' !important">';
-				print '<h1 class="page_title">';
-				if($category->parent_category !== false) {
-					print $category->parent_category->name .": ";
-				}
-				print $category->name;
-				print '</h1>';
-				print '</div></div>';
-			}
-			if("REX_VALUE[3]" == 'true' && trim($category->description) != "") {
-				print '<div class="col-12 course_row spacer">';
-				print '<div class="course_box spacer_box">'. $category->description .'</div>';
-				print '</div>';
-			}
-		}
-		foreach($courses as $list_course) {
-			$title = $list_course->name ."<br><small>"
-				. ("REX_VALUE[3]" == 'true' && $list_course->teaser != "" ? $list_course->teaser ."<br>" : "")
-				. (new DateTime($list_course->date_start))->format('d.m.Y') ."</small>";
-			printBox($title, $list_course->picture, $list_course->category->color, $list_course->getURL(true), $box_per_line);
-		}
-	}
-	?>
+if (rex::isBackend()) {
+    echo 'Ausgabe Veranstaltungen der Kategorie <b>'. $category->name .'</b>';
+} else {
+    // Course list
+    if ('active' == rex_config::get('d2u_courses', 'forward_single_course', 'inactive') && 1 == count($courses) && '' == filter_input(INPUT_POST, 'course_search')) {
+        foreach ($courses as $course) {
+            header('Location: '. $course->getURL());
+            exit;
+        }
+    } elseif (count($courses) > 0) {
+        if (false !== $category) {
+            if ('REX_VALUE[2]' == 'true') {
+                echo '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. $category->color .' !important">';
+                echo '<h1 class="page_title">';
+                if (false !== $category->parent_category) {
+                    echo $category->parent_category->name .': ';
+                }
+                echo $category->name;
+                echo '</h1>';
+                echo '</div></div>';
+            }
+            if ('REX_VALUE[3]' == 'true' && '' != trim($category->description)) {
+                echo '<div class="col-12 course_row spacer">';
+                echo '<div class="course_box spacer_box">'. $category->description .'</div>';
+                echo '</div>';
+            }
+        }
+        foreach ($courses as $list_course) {
+            $title = $list_course->name .'<br><small>'
+                . ('REX_VALUE[3]' == 'true' && '' != $list_course->teaser ? $list_course->teaser .'<br>' : '')
+                . (new DateTime($list_course->date_start))->format('d.m.Y') .'</small>';
+            printBox($title, $list_course->picture, $list_course->category->color, $list_course->getURL(true), $box_per_line);
+        }
+    }
+    ?>
 	<script>
 		$(window).on("load",
 			function(e) {

@@ -1,10 +1,11 @@
 <?php
+
 $sql = rex_sql::factory();
 
 // Delete url schemes
-if(\rex_addon::get('url')->isAvailable()) {
-	$sql->setQuery("DELETE FROM ". \rex::getTablePrefix() ."url_generator_profile WHERE `namespace` = 'location_id';");
-	$sql->setQuery("DELETE FROM ". \rex::getTablePrefix() ."url_generator_profile WHERE `namespace` = 'location_category_id';");
+if (\rex_addon::get('url')->isAvailable()) {
+    $sql->setQuery('DELETE FROM '. \rex::getTablePrefix() ."url_generator_profile WHERE `namespace` = 'location_id';");
+    $sql->setQuery('DELETE FROM '. \rex::getTablePrefix() ."url_generator_profile WHERE `namespace` = 'location_category_id';");
 }
 
 // Delete views
