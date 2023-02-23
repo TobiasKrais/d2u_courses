@@ -41,12 +41,11 @@ function rex_d2u_courses_locations_article_is_in_use(rex_extension_point $ep)
 
 /**
  * Checks if media is used by this addon.
- * @param rex_extension_point<string> $ep Redaxo extension point
+ * @param rex_extension_point<array<string>> $ep Redaxo extension point
  * @return array<string> Warning message as array
  */
 function rex_d2u_courses_locations_media_is_in_use(rex_extension_point $ep)
 {
-    /** @var array<string> $warning */
     $warning = $ep->getSubject();
     $params = $ep->getParams();
     $filename = addslashes($params['filename']);
