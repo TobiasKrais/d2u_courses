@@ -51,7 +51,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
     // Check if object is used
     $uses_courses = $target_group->getCourses();
 
-    if (0 == count($uses_courses)) {
+    if (0 === count($uses_courses)) {
         $target_group->delete();
         echo rex_view::success(rex_i18n::msg('d2u_helper_deleted') . $message);
     } else {

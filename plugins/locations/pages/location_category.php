@@ -46,7 +46,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
     // Check if object is used
     $uses_locations = $location_category->getLocations(false);
 
-    if (0 == count($uses_locations)) {
+    if (0 === count($uses_locations)) {
         $location_category->delete();
 
         echo rex_view::success(rex_i18n::msg('d2u_helper_deleted') . $message);

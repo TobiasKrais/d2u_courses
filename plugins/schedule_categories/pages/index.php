@@ -52,7 +52,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
     $uses_courses = $schedule_category->getCourses();
     $uses_categories = $schedule_category->getChildren();
 
-    if (0 == count($uses_courses) && 0 == count($uses_categories)) {
+    if (0 === count($uses_courses) && 0 == count($uses_categories)) {
         $schedule_category->delete();
         echo rex_view::success(rex_i18n::msg('d2u_helper_deleted') . $message);
     } else {

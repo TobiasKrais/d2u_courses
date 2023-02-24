@@ -59,7 +59,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
         $used_in_settings = true;
     }
 
-    if (0 == count($uses_courses) && 0 == count($uses_categories) && false == $used_in_settings) {
+    if (0 === count($uses_courses) && 0 == count($uses_categories) && false == $used_in_settings) {
         $category->delete();
         echo rex_view::success(rex_i18n::msg('d2u_helper_deleted') . $message);
     } else {

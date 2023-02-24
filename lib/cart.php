@@ -534,7 +534,7 @@ class Cart
         unset($_SESSION['cart'][$course_id][$delete_participant_id]);
 
         // If last participant was deleted: delete course
-        if (0 == count((array) $_SESSION['cart'][$course_id])) {
+        if (0 === count((array) $_SESSION['cart'][$course_id])) {
             unset($_SESSION['cart'][$course_id]);
             return;
         }

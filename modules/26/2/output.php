@@ -640,7 +640,7 @@ if (isset($form_data['invoice_form'])) {
     echo '</div>';
     echo '</div>';
 
-    if (0 == count($cart->getCourseIDs())) {
+    if (0 === count($cart->getCourseIDs())) {
         echo '<div class="col-12 col-md-9 spacer">';
         echo '<div class="cart_row_title" id="cart_empty">'. $tag_open .'d2u_courses_cart_empty'. $tag_close .'</div>';
         echo '</div>';
