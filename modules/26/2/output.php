@@ -654,7 +654,7 @@ if (isset($form_data['invoice_form'])) {
             echo '<div class="cart_row_title" style="background-color: '. (false !== $course->category ? $course->category->color : 'grey') .'">';
             echo '<div class="row">';
             echo '<div class="col-12">';
-            echo '<a href="'. $course->getURL(true) .'" title="'. $course->name .'" class="cart_course_title">';
+            echo '<a href="'. $course->getUrl(true) .'" title="'. $course->name .'" class="cart_course_title">';
             echo $course->name;
             if ('' !== $course->course_number) {
                 echo ' ('. $course->course_number .')';

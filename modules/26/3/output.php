@@ -48,7 +48,7 @@ if (rex::isBackend()) {
     // Course list
     if ('active' == rex_config::get('d2u_courses', 'forward_single_course', 'inactive') && 1 == count($courses) && '' == filter_input(INPUT_POST, 'course_search')) {
         foreach ($courses as $course) {
-            header('Location: '. $course->getURL());
+            header('Location: '. $course->getUrl());
             exit;
         }
     } elseif (count($courses) > 0) {
@@ -73,7 +73,7 @@ if (rex::isBackend()) {
             $title = $list_course->name .'<br><small>'
                 . ('REX_VALUE[3]' == 'true' && '' != $list_course->teaser ? $list_course->teaser .'<br>' : '')
                 . (new DateTime($list_course->date_start))->format('d.m.Y') .'</small>';
-            printBox($title, $list_course->picture, $list_course->category->color, $list_course->getURL(true), $box_per_line);
+            printBox($title, $list_course->picture, $list_course->category->color, $list_course->getUrl(true), $box_per_line);
         }
     }
     ?>

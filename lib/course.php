@@ -410,7 +410,7 @@ class Course
         $json_data .= '"description" : "'. ('' != $this->teaser ? addcslashes($this->teaser, '"') : addcslashes($this->name, '"')) .'",'. PHP_EOL
                 .'"offers" : {'. PHP_EOL
                     .'"@type" : "Offer",'. PHP_EOL
-                    .'"url" : "'. $this->getURL(true) .'",'. PHP_EOL;
+                    .'"url" : "'. $this->getUrl(true) .'",'. PHP_EOL;
         if ('' != $this->price) {
             $json_data .= '"price" : "'. $this->price .'",'. PHP_EOL
                     .'"priceCurrency" : "EUR"';
@@ -442,7 +442,7 @@ class Course
      * @param string $including_domain true if Domain name should be included
      * @return string URL
      */
-    public function getURL($including_domain = false)
+    public function getUrl($including_domain = false)
     {
         if ('' == $this->url) {
             $parameterArray = [];

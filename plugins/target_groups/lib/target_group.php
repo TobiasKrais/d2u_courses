@@ -261,7 +261,7 @@ class TargetGroup
      * @param string $including_domain true if Domain name should be included
      * @return string URL
      */
-    public function getURL($including_domain = false)
+    public function getUrl($including_domain = false)
     {
         if ('' == $this->url) {
             $parameterArray = [];
