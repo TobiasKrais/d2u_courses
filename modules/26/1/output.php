@@ -603,7 +603,7 @@ if (rex::isBackend()) {
 
         if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
             // Show Google map
-            $show_map = 'REX_VALUE[2]' == 'true' ? true : false;
+            $show_map = 'REX_VALUE[2]' === 'true' ? true : false; /** @phpstan-ignore-line */
             if ($show_map) {
                 echo '<div class="col-12 course_row">';
                 echo '<div class="course_box spacer_box">';
