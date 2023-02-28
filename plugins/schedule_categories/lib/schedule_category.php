@@ -298,7 +298,7 @@ class ScheduleCategory
 
     /**
      * Returns the URL of this object.
-     * @param string $including_domain true if Domain name should be included
+     * @param bool $including_domain true if Domain name should be included
      * @return string URL
      */
     public function getUrl($including_domain = false)
