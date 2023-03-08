@@ -756,8 +756,8 @@ if (isset($form_data['invoice_form'])) {
                     if ('REX_VALUE[5]' !== 'true') {
                         echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_gender'. $tag_close .'</div>';
                         echo '<div class="col-10 col-sm-5 col-md-7 div_cart"><select class="participant" name="participant_'. $course_id .'['. $participant_id .'][gender]">';
-                        echo '<option value="M"'. ('M' == $participant_data['gender'] ? ' selected' : '') .'>'. $tag_open .'d2u_courses_male'. $tag_close .'</option>';
-                        echo '<option value="W"'. ('W' == $participant_data['gender'] ? ' selected' : '') .'>'. $tag_open .'d2u_courses_female'. $tag_close .'</option>';
+                        echo '<option value="M"'. ('M' === $participant_data['gender'] ? ' selected' : '') .'>'. $tag_open .'d2u_courses_male'. $tag_close .'</option>';
+                        echo '<option value="W"'. ('W' === $participant_data['gender'] ? ' selected' : '') .'>'. $tag_open .'d2u_courses_female'. $tag_close .'</option>';
                         echo '</select></div>';
                     }
 
