@@ -221,14 +221,14 @@ class Location
      */
     public function getUrl($including_domain = false)
     {
-        if ('' == $this->url) {
+        if ('' === $this->url) {
             $parameterArray = [];
             $parameterArray['location_id'] = $this->location_id;
             $this->url = rex_getUrl(rex_config::get('d2u_courses', 'article_id_locations'), '', $parameterArray, '&');
         }
 
         if ($including_domain) {
-            if (rex_addon::get('yrewrite') && rex_addon::get('yrewrite')->isAvailable()) {
+            if (\rex_addon::get('yrewrite') instanceof \rex_addon_interface && rex_addon::get('yrewrite')->isAvailable()) {
                 return str_replace(rex_yrewrite::getCurrentDomain()->getUrl() .'/', rex_yrewrite::getCurrentDomain()->getUrl(), rex_yrewrite::getCurrentDomain()->getUrl() . $this->url);
             }
 
@@ -279,7 +279,7 @@ class Location
             $this->location_id = (int) $result->getLastId();
         }
 
-        if (!$result->hasError() && $pre_save_object->name != $this->name) {
+        if (!$result->hasError() && $pre_save_object->name !== $this->name) {
             d2u_addon_backend_helper::generateUrlCache('location_id');
         }
 

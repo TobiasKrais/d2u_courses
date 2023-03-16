@@ -1,4 +1,8 @@
 <?php
+
+use D2U_Courses\LocationCategory;
+use D2U_Courses\ScheduleCategory;
+
 /**
  * Offers helper functions for frontend.
  */
@@ -31,16 +35,18 @@ class d2u_courses_frontend_helper
 
             if ($course_id > 0) {
                 $course = new D2U_Courses\Course($course_id);
-                if (false !== $course->category->parent_category) {
-                    if (false !== $course->category->parent_category->parent_category) {
-                        if (false !== $course->category->parent_category->parent_category->parent_category) {
-                            $breadcrumbs[] = '<a href="' . $course->category->parent_category->parent_category->parent_category->getUrl() . '">' . $course->category->parent_category->parent_category->parent_category->name . '</a>';
+                if ($course->category instanceof Category) {
+                    if ($course->category->parent_category instanceof Category) {
+                        if ($course->category->parent_category->parent_category instanceof Category) {
+                            if ($course->category->parent_category->parent_category->parent_category instanceof Category) {
+                                $breadcrumbs[] = '<a href="' . $course->category->parent_category->parent_category->parent_category->getUrl() . '">' . $course->category->parent_category->parent_category->parent_category->name . '</a>';
+                            }
+                            $breadcrumbs[] = '<a href="' . $course->category->parent_category->parent_category->getUrl() . '">' . $course->category->parent_category->parent_category->name . '</a>';
                         }
-                        $breadcrumbs[] = '<a href="' . $course->category->parent_category->parent_category->getUrl() . '">' . $course->category->parent_category->parent_category->name . '</a>';
+                        $breadcrumbs[] = '<a href="' . $course->category->parent_category->getUrl() . '">' . $course->category->parent_category->name . '</a>';
                     }
-                    $breadcrumbs[] = '<a href="' . $course->category->parent_category->getUrl() . '">' . $course->category->parent_category->name . '</a>';
+                    $breadcrumbs[] = '<a href="' . $course->category->getUrl() . '">' . $course->category->name . '</a>';
                 }
-                $breadcrumbs[] = '<a href="' . $course->category->getUrl() . '">' . $course->category->name . '</a>';
                 $breadcrumbs[] = '<a href="' . $course->getUrl() . '">' . $course->name . '</a>';
             }
         }
@@ -50,8 +56,8 @@ class d2u_courses_frontend_helper
 
             if ($category_id > 0) {
                 $category = new D2U_Courses\Category($category_id);
-                if (false !== $category->parent_category) {
-                    if (false !== $category->parent_category->parent_category) {
+                if ($category->parent_category instanceof Category) {
+                    if ($category->parent_category->parent_category instanceof Category) {
                         $breadcrumbs[] = '<a href="' . $category->parent_category->parent_category->getUrl() . '">' . $category->parent_category->parent_category->name . '</a>';
                     }
                     $breadcrumbs[] = '<a href="' . $category->parent_category->getUrl() . '">' . $category->parent_category->name . '</a>';
@@ -65,7 +71,7 @@ class d2u_courses_frontend_helper
 
             if ($location_id > 0 && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
                 $location = new D2U_Courses\Location($location_id);
-                if (false !== $location->location_category) {
+                if ($location->location_category instanceof LocationCategory) {
                     $breadcrumbs[] = '<a href="' . $location->location_category->getUrl() . '">' . $location->location_category->name . '</a>';
                 }
                 $breadcrumbs[] = '<a href="' . $location->getUrl() . '">' . $location->name . '</a>';
@@ -86,7 +92,7 @@ class d2u_courses_frontend_helper
 
             if ($schedule_category_id > 0 && rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
                 $schedule_category = new D2U_Courses\ScheduleCategory($schedule_category_id);
-                if (false !== $schedule_category->parent_schedule_category) {
+                if ($schedule_category->parent_schedule_category instanceof ScheduleCategory) {
                     $breadcrumbs[] = '<a href="' . $schedule_category->parent_schedule_category->getUrl() . '">' . $schedule_category->parent_schedule_category->name . '</a>';
                 }
                 $breadcrumbs[] = '<a href="' . $schedule_category->getUrl() . '">' . $schedule_category->name . '</a>';
@@ -126,11 +132,11 @@ class d2u_courses_frontend_helper
         $config_show_time = rex_config::get('d2u_courses', 'show_time', 'day_one_start');
         // Track changes of WHERE statement also in plugins/target_groups/update.php
         $where = 'date_start = "" OR date_start > CURDATE()';
-        if ('day_one_end' == $config_show_time) {
+        if ('day_one_end' === $config_show_time) {
             $where = 'date_start = "" OR date_start >= CURDATE()';
-        } elseif ('day_x_start' == $config_show_time) {
+        } elseif ('day_x_start' === $config_show_time) {
             $where = 'date_start = "" OR date_start >= CURDATE() OR date_end > CURDATE()';
-        } elseif ('day_x_end' == $config_show_time) {
+        } elseif ('day_x_end' === $config_show_time) {
             $where = 'date_start = "" OR date_start >= CURDATE() OR date_end >= CURDATE()';
         }
         return $where;

@@ -396,7 +396,7 @@ if (rex::isBackend()) {
         if ('' != $course->course_number) {
             echo ' ('. $course->course_number .')';
         }
-        if ('yes' == $course->registration_possible || 'yes_number' == $course->registration_possible) {
+        if ('yes' == $course->registration_possible || 'yes_number' === $course->registration_possible) {
             echo ' <div class="open"></div>';
         } elseif ('booked' == $course->registration_possible) {
             echo ' <div class="closed"></div>';
@@ -552,7 +552,7 @@ if (rex::isBackend()) {
             $box_details .= '</div>';
         }
 
-        if ('yes' == $course->registration_possible || 'yes_number' == $course->registration_possible || 'booked' == $course->registration_possible) {
+        if ('yes' == $course->registration_possible || 'yes_number' === $course->registration_possible || 'booked' == $course->registration_possible) {
             $box_details .= '<div class="col-12 course_row">';
             $box_details .= '<div class="course_box spacer_box add_cart" style="background-color: '. $course->category->color.'">';
             if (D2U_Courses\Cart::getCart()->hasCourse($course->course_id)) {

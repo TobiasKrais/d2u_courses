@@ -141,7 +141,7 @@ class ScheduleCategory
         if ($parent_category_id > 0) {
             $query .= 'WHERE parent_schedule_category_id = '. $parent_category_id .' ';
         }
-        if ('priority' == rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
+        if ('priority' === rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
             $query .= 'ORDER BY priority';
         } else {
             $query .= 'ORDER BY name';
@@ -156,7 +156,7 @@ class ScheduleCategory
                         .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') '
                         . ($parent_category_id > 0 ? 'AND parent_schedule_category_id = '. $parent_category_id .' ' : '')
                     .'GROUP BY c2s.schedule_category_id, schedule_categories.name ';
-            if ('priority' == rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
+            if ('priority' === rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
                 $query .= 'ORDER BY schedule_categories.priority';
             } else {
                 $query .= 'ORDER BY schedule_categories.name';
@@ -191,7 +191,7 @@ class ScheduleCategory
                         .'ON child_not.parent_schedule_category_id = parent_not.schedule_category_id '
                 .'WHERE parent_not.schedule_category_id > 0 '
                 .'GROUP BY child_not.parent_schedule_category_id) ';
-        if ('priority' == rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
+        if ('priority' === rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
             $query .= 'ORDER BY child.priority';
         } else {
             $query .= 'ORDER BY name';
@@ -224,7 +224,7 @@ class ScheduleCategory
 				LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS parent_scheds ON scheds.parent_schedule_category_id = parent_scheds.schedule_category_id
 				WHERE scheds.parent_schedule_category_id > 0
 				GROUP BY scheds.schedule_category_id
-				ORDER BY '. ('priority' == rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') ? 'priority' : 'name');
+				ORDER BY '. ('priority' === rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name') ? 'priority' : 'name');
         $result = rex_sql::factory();
         $result->setQuery($query);
         $num_rows = $result->getRows();
@@ -248,7 +248,7 @@ class ScheduleCategory
     {
         $query = 'SELECT schedule_category_id FROM '. rex::getTablePrefix() .'d2u_courses_schedule_categories '
                 .'WHERE parent_schedule_category_id = '. $this->schedule_category_id .' ';
-        if ('priority' == rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
+        if ('priority' === rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
             $query .= 'ORDER BY priority';
         } else {
             $query .= 'ORDER BY name';
@@ -303,14 +303,14 @@ class ScheduleCategory
      */
     public function getUrl($including_domain = false)
     {
-        if ('' == $this->url) {
+        if ('' === $this->url) {
             $parameterArray = [];
             $parameterArray['schedule_category_id'] = $this->schedule_category_id;
             $this->url = rex_getUrl(rex_config::get('d2u_courses', 'article_id_schedule_categories'), '', $parameterArray, '&');
         }
 
         if ($including_domain) {
-            if (rex_addon::get('yrewrite') && rex_addon::get('yrewrite')->isAvailable()) {
+            if (\rex_addon::get('yrewrite') instanceof \rex_addon_interface && rex_addon::get('yrewrite')->isAvailable()) {
                 return str_replace(rex_yrewrite::getCurrentDomain()->getUrl() .'/', rex_yrewrite::getCurrentDomain()->getUrl(), rex_yrewrite::getCurrentDomain()->getUrl() . $this->url);
             }
 
@@ -356,7 +356,7 @@ class ScheduleCategory
             $this->setPriority();
         }
 
-        if (!$result->hasError() && $pre_save_object->name != $this->name) {
+        if (!$result->hasError() && $pre_save_object->name !== $this->name) {
             d2u_addon_backend_helper::generateUrlCache('schedule_category_id');
         }
 

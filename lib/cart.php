@@ -18,6 +18,7 @@ use function count;
 use function is_array;
 
 /**
+ * @api
  * Course category class.
  */
 class Cart
@@ -523,7 +524,7 @@ class Cart
      * Deletes course.
      * @param int $course_id Course ID
      */
-    public function deleteCourse($course_id)
+    public function deleteCourse($course_id):void
     {
         $cart = \rex_request::session('cart');
         unset($cart[$course_id]);
@@ -536,7 +537,7 @@ class Cart
      * @param int $course_id Course ID
      * @param int $delete_participant_id Participant number
      */
-    public function deleteParticipant($course_id, $delete_participant_id)
+    public function deleteParticipant($course_id, $delete_participant_id):void
     {
         $cart = \rex_request::session('cart');
         unset($cart[$course_id][$delete_participant_id]);
@@ -560,15 +561,16 @@ class Cart
      */
     public static function formatCourseDate($date)
     {
-        if (strpos($date, '-')) {
+        if (strpos($date, '-') !== false) {
             $d = explode('-', $date);
-            $unix = mktime(0, 0, 0, $d[1], $d[2], $d[0]);
+            $unix = mktime(0, 0, 0, (int) $d[1], (int) $d[2], (int) $d[0]);
 
-            return date('d.m.Y', $unix);
+            if (false !== $unix) {
+                return date('d.m.Y', $unix);
+            }
         }
 
         return $date;
-
     }
 
     /**
@@ -587,7 +589,7 @@ class Cart
     public static function getCourseIDs()
     {
         // Session is needed
-        if (PHP_SESSION_NONE == session_status()) {
+        if (PHP_SESSION_NONE === session_status()) {
             session_start();
         }
 
@@ -608,7 +610,7 @@ class Cart
     public static function getCourseParticipants($course_id)
     {
         foreach (\rex_request::session('cart') as $cart_course_id => $participants) {
-            if ($cart_course_id == $course_id) {
+            if ((int) $cart_course_id === $course_id) {
                 return $participants;
             }
         }
@@ -624,9 +626,9 @@ class Cart
     public static function getCourseParticipantsNumber($course_id)
     {
         foreach (\rex_request::session('cart') as $cart_course_id => $participants) {
-            if ($cart_course_id == $course_id) {
+            if ((int) $cart_course_id === $course_id) {
                 $course = new Course($course_id);
-                if ('yes_number' == $course->registration_possible) {
+                if ('yes_number' === $course->registration_possible) {
                     return $participants;
                 }
                 if (is_array($participants)) {
@@ -670,18 +672,18 @@ class Cart
         $mail_has_content = false;
 
         $mail = new rex_mailer();
-        $mail->IsHTML(true);
+        $mail->isHTML(true);
         $mail->CharSet = 'utf-8';
         $mail->From = rex_config::get('d2u_courses', 'request_form_sender_email');
         $mail->Sender = rex_config::get('d2u_courses', 'request_form_sender_email');
         $mail->addReplyTo($invoice_address['e-mail'], $invoice_address['firstname'] .' '. $invoice_address['lastname']);
         $mail->addCC($invoice_address['e-mail'], $invoice_address['firstname'] .' '. $invoice_address['lastname']);
 
-        $mail->AddAddress(rex_config::get('d2u_courses', 'request_form_email'));
+        $mail->addAddress(rex_config::get('d2u_courses', 'request_form_email'));
 
         $mail->Subject = 'Anmeldung / Bestellung';
 
-        $body .= '<p>Sehr '. ('W' === $invoice_address['gender'] ? 'geehrte Frau' : 'geehrter Herr') .' '. $invoice_address['lastname'] .',</p>';
+        $body = '<p>Sehr '. ('W' === $invoice_address['gender'] ? 'geehrte Frau' : 'geehrter Herr') .' '. $invoice_address['lastname'] .',</p>';
         $body .= '<p>vielen Dank für Ihre Anmeldung / Bestellung. Nachfolgend die Details:</p>';
 
         $price_full = 0;
@@ -689,25 +691,25 @@ class Cart
         foreach ($cart as $course_id => $participant) {
             $body .= '<br>';
             $course = new Course($course_id);
-            if ('' != $course->name) {
+            if ('' !== $course->name) {
                 $mail_has_content = true;
             } else {
                 continue;
             }
             $body .= '<b>Anmeldung / Bestellung: "'. $course->name .'"';
-            if ('' != $course->course_number && '' != $course->name) {
+            if ('' !== $course->course_number) {
                 $body .= ' ('. $course->course_number .')';
             }
             $body .= '</b><br>';
-            if ($course->date_start) {
-                $body .= 'Datum: '. (new DateTime($course->date_start))->format('d.m.Y') . ('' !== $course->date_end ? ' - '. (new DateTime($course->date_end))->format('d.m.Y') : '') . ('' != $course->time ? ', '. $course->time : '') .'<br>';
+            if ('' !== $course->date_start) {
+                $body .= 'Datum: '. (new DateTime($course->date_start))->format('d.m.Y') . ('' !== $course->date_end ? ' - '. (new DateTime($course->date_end))->format('d.m.Y') : '') . ('' !== $course->time ? ', '. $course->time : '') .'<br>';
             }
             if ($course->price_salery_level) {
-                if ('yes_number' == $course->registration_possible) {
+                if ('yes_number' === $course->registration_possible) {
                     $body .= 'Einzelpreis: '. $participant['participant_price'] .'<br>';
                     $price_full = $price_full + ($participant['participant_number'] * ((float) str_replace(',', '.', str_replace('.', '', $participant['participant_price']))));
                 }
-            } elseif ($course->price) {
+            } elseif ($course->price > 0) {
                 $body .= 'Einzelpreis: '. $course->price  .' €'. ($course->price_discount > 0 ? ' (mögliche Ermäßigungen nicht mit einberechnet)' : '') .'<br>';
                 $price_full = $price_full + (isset($participant['participant_number']) ? $participant['participant_number'] * $course->price : count($participant) * $course->price);
             }
@@ -731,7 +733,7 @@ class Cart
                         $price_level_row_counter = 0;
                         foreach ($course->price_salery_level_details as $level_description => $level_price) {
                             ++$price_level_row_counter;
-                            if ($price_level_row_counter == $participant_data['price_salery_level_row_number']) {
+                            if ($price_level_row_counter === (int) $participant_data['price_salery_level_row_number']) {
                                 $price_level_description = $level_description;
                                 break;
                             }
@@ -797,7 +799,7 @@ class Cart
     /**
      * Delete all cart items.
      */
-    public function unsetCart()
+    public function unsetCart():void
     {
         \rex_request::setSession('cart', null);
     }
@@ -809,7 +811,7 @@ class Cart
      * @param string[] $participant_data Array with participant data. Allowed keys
      * are "firstname", "lastname", "birthday", "age", "gender", "emergency_number", "salery_level"
      */
-    public function updateParticipant($course_id, $participant_id, $participant_data)
+    public function updateParticipant($course_id, $participant_id, $participant_data):void
     {
         $cart = \rex_request::session('cart');
         foreach ($participant_data as $key => $value) {
@@ -825,19 +827,19 @@ class Cart
      * @param string $participant_price price per participant, e.g. 30 €
      * @param int $participant_price_salery_level_row_number row number of price salery level used as so to say id
      */
-    public function updateParticipantNumber($course_id, $participant_number, $participant_price = null, $participant_price_salery_level_row_number = 0)
+    public function updateParticipantNumber($course_id, $participant_number, $participant_price = null, $participant_price_salery_level_row_number = 0):void
     {
         $cart = \rex_request::session('cart');
         $cart[$course_id] = [];
         $cart[$course_id]['participant_number'] = $participant_number;
-        if ($participant_price || $participant_price_salery_level_row_number) {
-            if ($participant_price_salery_level_row_number) {
+        if ($participant_price !== '' || $participant_price_salery_level_row_number > 0) {
+            if ($participant_price_salery_level_row_number > 0) {
                 $course = new Course($course_id);
                 if ($course->price_salery_level) {
                     $counter_row_price_salery_level_details = 0;
                     foreach ($course->price_salery_level_details as $description => $price) {
                         ++$counter_row_price_salery_level_details;
-                        if ($counter_row_price_salery_level_details == $participant_price_salery_level_row_number) {
+                        if ($counter_row_price_salery_level_details === $participant_price_salery_level_row_number) {
                             $participant_price = $price;
                             break;
                         }

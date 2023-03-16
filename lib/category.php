@@ -7,10 +7,13 @@
 
 namespace D2U_Courses;
 
+use Category as GlobalCategory;
 use d2u_addon_backend_helper;
+use D2U_Courses\Category as D2U_CoursesCategory;
 use d2u_courses_frontend_helper;
 use rex;
 use rex_addon;
+use rex_addon_interface;
 use rex_config;
 use rex_plugin;
 use rex_sql;
@@ -24,44 +27,44 @@ use function in_array;
 class Category
 {
     /** @var int Database ID */
-    public $category_id = 0;
+    public int $category_id = 0;
 
     /** @var string Name */
-    public $name = '';
+    public string $name = '';
 
     /** @var string Description */
-    public $description = '';
+    public string $description = '';
 
     /** @var string Color (hexadecimal value or CSS keyword) */
-    public $color = '#5e5c64';
+    public string $color = '#5e5c64';
 
     /** @var string Picture */
-    public $picture = '';
+    public string $picture = '';
 
     /** @var Category|bool parent category */
-    public $parent_category = false;
+    public Category|bool $parent_category = false;
 
     /** @var int Sort Priority */
-    public $priority = 0;
+    public int $priority = 0;
 
     /**
      * @var array<string> KuferSQL category name including parent category name.
      * Devider is " \ ".
      * Im Kufer XML export field name "Bezeichnungsstruktur".
      */
-    public $kufer_categories = [];
+    public array $kufer_categories = [];
 
     /**
      * @var string course type for Google JSON+LD Format: "event", "course"
      * or simply empty
      */
-    public $google_type = '';
+    public string $google_type = '';
 
     /** @var string Update timestamp */
-    public $updatedate = '';
+    public string $updatedate = '';
 
     /** @var string URL */
-    private $url = '';
+    private string $url = '';
 
     /**
      * Constructor.
@@ -76,21 +79,24 @@ class Category
         $num_rows = $result->getRows();
 
         if ($num_rows > 0) {
-            $this->category_id = $result->getValue('category_id');
-            $this->name = $result->getValue('name');
-            $this->description = stripslashes($result->getValue('description'));
-            if ('' != $result->getValue('color')) {
-                $this->color = $result->getValue('color');
+            $this->category_id = (int) $result->getValue('category_id');
+            $this->name = (string) $result->getValue('name');
+            $this->description = stripslashes((string) $result->getValue('description'));
+            if ('' !== $result->getValue('color')) {
+                $this->color = (string) $result->getValue('color');
             }
-            $this->picture = $result->getValue('picture');
-            if ($result->getValue('parent_category_id') > 0) {
+            $this->picture = (string) $result->getValue('picture');
+            if ((int) $result->getValue('parent_category_id') > 0) {
                 $this->parent_category = new self((int) $result->getValue('parent_category_id'));
             }
-            $this->priority = $result->getValue('priority');
-            $this->updatedate = $result->getValue('updatedate');
+            $this->priority = (int) $result->getValue('priority');
+            $this->updatedate = (string) $result->getValue('updatedate');
             if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-                $this->kufer_categories = array_map('trim', preg_grep('/^\s*$/s', explode(PHP_EOL, $result->getValue('kufer_categories')), PREG_GREP_INVERT));
-                $this->google_type = $result->getValue('google_type');
+                $kufer_categories = preg_grep('/^\s*$/s', explode(PHP_EOL, (string) $result->getValue('kufer_categories')), PREG_GREP_INVERT);
+                if (false !== $kufer_categories) {
+                    $this->kufer_categories = array_map('trim', $kufer_categories);
+                }
+                $this->google_type = (string) $result->getValue('google_type');
             }
         }
     }
@@ -174,7 +180,7 @@ class Category
             $query .= 'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') '
                     .'GROUP BY category_id ';
         }
-        if ('priority' == rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
+        if ('priority' === rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
             $query .= 'ORDER BY categories.priority';
         } else {
             $query .= 'ORDER BY name';
@@ -186,16 +192,16 @@ class Category
         $categories = [];
         $ids = [];
         for ($i = 0; $i < $num_rows; ++$i) {
-            $category = new self($result->getValue('category_id'));
+            $category = new self((int) $result->getValue('category_id'));
             // Add parent categories if no special parent category is selected - parent categories contain no courses
-            if (0 == $parent_category_id && false !== $category->parent_category
-                    && $category->parent_category->category_id > 0 && !in_array($category->parent_category->category_id, $ids)) {
+            if (0 === $parent_category_id && false !== $category->parent_category instanceof \D2U_Courses\Category
+                    && $category->parent_category->category_id > 0 && !in_array($category->parent_category->category_id, $ids, true)) {
                 $category = new self($category->parent_category->category_id);
                 $categories[] = $category;
                 $ids[] = $category->category_id;
             }
 
-            if (!in_array($category->category_id, $ids)) {
+            if (!in_array($category->category_id, $ids, true)) {
                 $ids[] = $category->category_id;
                 $categories[] = $category;
             }
@@ -215,7 +221,7 @@ class Category
     {
         $query = 'SELECT category_id FROM '. rex::getTablePrefix() .'d2u_courses_categories '
                 .'WHERE parent_category_id = '. $this->category_id .' ';
-        if ('priority' == rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
+        if ('priority' === rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
             $query .= 'ORDER BY priority';
         } else {
             $query .= 'ORDER BY name';
@@ -225,7 +231,7 @@ class Category
 
         $child_categories = [];
         for ($i = 0; $i < $result->getRows(); ++$i) {
-            $child_category = new self($result->getValue('category_id'));
+            $child_category = new self((int) $result->getValue('category_id'));
             if (($online_only && $child_category->isOnline()) || !$online_only) {
                 $child_categories[] = $child_category;
             }
@@ -236,7 +242,6 @@ class Category
 
     /**
      * Get all categories which are not parents.
-     * @param bool $online_only If true only online categories are returned
      * @return Category[] array with category objects
      */
     public static function getAllNotParents()
@@ -252,7 +257,7 @@ class Category
                         .'ON child_not.parent_category_id = parent_not.category_id '
                 .'WHERE parent_not.category_id > 0 '
                 .'GROUP BY child_not.parent_category_id) ';
-        if ('priority' == rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
+        if ('priority' === rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
             $query .= 'ORDER BY child.priority';
         } else {
             $query .= 'ORDER BY child.name';
@@ -263,7 +268,7 @@ class Category
 
         $categories = [];
         for ($i = 0; $i < $num_rows; ++$i) {
-            $categories[] = new self($result->getValue('category_id'));
+            $categories[] = new self((int) $result->getValue('category_id'));
             $result->next();
         }
 
@@ -285,7 +290,7 @@ class Category
                     .'ON url_cat.category_id = cats.category_id '
                 .' WHERE url_cat.parent_category_id <= 0 ';
         }
-        if ('priority' == rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
+        if ('priority' === rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
             $query .= 'ORDER BY cats.priority';
         } else {
             $query .= 'ORDER BY cats.name';
@@ -296,7 +301,7 @@ class Category
 
         $categories = [];
         for ($i = 0; $i < $num_rows; ++$i) {
-            $categories[$result->getValue('category_id')] = new self($result->getValue('category_id'));
+            $categories[(int) $result->getValue('category_id')] = new self( (int) $result->getValue('category_id'));
             $result->next();
         }
 
@@ -325,7 +330,7 @@ class Category
 
         $courses = [];
         for ($i = 0; $i < $num_rows; ++$i) {
-            $courses[] = new Course($result->getValue('course_id'));
+            $courses[] = new Course((int) $result->getValue('course_id'));
             $result->next();
         }
         return $courses;
@@ -337,9 +342,9 @@ class Category
      */
     public function getPartentRoot()
     {
-        if (false !== $this->parent_category) {
-            if (false !== $this->parent_category->parent_category) {
-                if (false !== $this->parent_category->parent_category->parent_category) {
+        if ($this->parent_category instanceof Category) {
+            if ($this->parent_category->parent_category instanceof Category) {
+                if ($this->parent_category->parent_category->parent_category instanceof Category) {
                     return $this->parent_category->parent_category->parent_category;
                 }
                 return $this->parent_category->parent_category;
@@ -356,14 +361,14 @@ class Category
      */
     public function getUrl($including_domain = false)
     {
-        if ('' == $this->url) {
+        if ('' === $this->url) {
             $parameterArray = [];
             $parameterArray['courses_category_id'] = $this->category_id;
             $this->url = rex_getUrl(rex_config::get('d2u_courses', 'course_article_id'), '', $parameterArray, '&');
         }
 
         if ($including_domain) {
-            if (rex_addon::get('yrewrite') && rex_addon::get('yrewrite')->isAvailable()) {
+            if (\rex_addon::get('yrewrite') instanceof \rex_addon_interface && rex_addon::get('yrewrite')->isAvailable()) {
                 return str_replace(rex_yrewrite::getCurrentDomain()->getUrl() .'/', rex_yrewrite::getCurrentDomain()->getUrl(), rex_yrewrite::getCurrentDomain()->getUrl() . $this->url);
             }
 
@@ -393,7 +398,7 @@ class Category
             .'description = "'. addslashes($this->description) .'", '
             .'color = "'. $this->color .'", '
             .'picture = "'. $this->picture .'", '
-            .'parent_category_id = '. (false !== $this->parent_category ? $this->parent_category->category_id : 0) .', '
+            .'parent_category_id = '. ($this->parent_category instanceof Category ? $this->parent_category->category_id : 0) .', '
             .'updatedate = CURRENT_TIMESTAMP';
         if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
             $query .= ', kufer_categories = "'. implode(PHP_EOL, $this->kufer_categories) .'"'
@@ -414,7 +419,7 @@ class Category
             $this->setPriority();
         }
 
-        if (!$error && $pre_save_object->name != $this->name) {
+        if (!$error && $pre_save_object->name !== $this->name) {
             d2u_addon_backend_helper::generateUrlCache('courses_category_id');
             d2u_addon_backend_helper::generateUrlCache('course_id');
             if (rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {

@@ -124,7 +124,7 @@ class TargetGroup
         if ($online_only) {
             $query = 'SELECT target_group_id FROM '. rex::getTablePrefix() .'d2u_courses_url_target_groups ';
         }
-        if ('priority' == rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
+        if ('priority' === rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
             $query .= 'ORDER BY priority';
         } else {
             $query .= 'ORDER BY name';
@@ -263,7 +263,7 @@ class TargetGroup
      */
     public function getUrl($including_domain = false)
     {
-        if ('' == $this->url) {
+        if ('' === $this->url) {
             $parameterArray = [];
             if (false !== $this->parent_target_group) {
                 // Separator is ugly, but needs to consist of digits only
@@ -275,7 +275,7 @@ class TargetGroup
         }
 
         if ($including_domain) {
-            if (rex_addon::get('yrewrite') && rex_addon::get('yrewrite')->isAvailable()) {
+            if (\rex_addon::get('yrewrite') instanceof \rex_addon_interface && rex_addon::get('yrewrite')->isAvailable()) {
                 return str_replace(rex_yrewrite::getCurrentDomain()->getUrl() .'/', rex_yrewrite::getCurrentDomain()->getUrl(), rex_yrewrite::getCurrentDomain()->getUrl() . $this->url);
             }
 
@@ -325,7 +325,7 @@ class TargetGroup
                 $this->setPriority();
             }
 
-            if (!$result->hasError() && $pre_save_object->name != $this->name) {
+            if (!$result->hasError() && $pre_save_object->name !== $this->name) {
                 d2u_addon_backend_helper::generateUrlCache('target_group_id');
                 d2u_addon_backend_helper::generateUrlCache('target_group_child_id');
             }

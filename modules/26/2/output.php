@@ -479,7 +479,7 @@ if (isset($form_data['invoice_form'])) {
                 echo ' ('. $tag_open .'d2u_courses_discount'. $tag_close .': '. number_format($course->price_discount, 2, ',', '.') .' €)<br>';
             }
         }
-        if ('yes_number' == $course->registration_possible) {
+        if ('yes_number' === $course->registration_possible) {
             $participant_data = $cart->getCourseParticipants($course_id);
             echo '<ul>';
             echo '<li>'. $tag_open .'d2u_courses_participant_number'. $tag_close .': '. $participant_data['participant_number'];
