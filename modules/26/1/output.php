@@ -1,5 +1,5 @@
 <?php
-if (PHP_SESSION_NONE == session_status()) {
+if (PHP_SESSION_NONE === session_status()) {
     session_start();
 }
 
@@ -15,19 +15,19 @@ $target_group = false;
 
 $startpage = 'REX_VALUE[1]';
 
-$news_category_id = 'REX_VALUE[5]';
+$news_category_id = (int) 'REX_VALUE[5]';
 $news = [];
 if ($news_category_id > 0) {
     $new_category = new \D2U_News\Category($news_category_id, rex_clang::getCurrentId());
     $news = $new_category->getNews(true);
 }
-$linkbox_category_id = 'REX_VALUE[6]';
+$linkbox_category_id = (int) 'REX_VALUE[6]';
 $linkboxes = [];
 if ($linkbox_category_id > 0) {
     $new_category = new \D2U_Linkbox\Category($linkbox_category_id, rex_clang::getCurrentId());
     $linkboxes = $new_category->getLinkboxes(true);
 }
-$box_per_line = 'REX_VALUE[8]' == 4 ? 4 : 3;
+$box_per_line = (int) 'REX_VALUE[8]' === 4 ? 4 : 3; /** @phpstan-ignore-line */
 
 $sprog = rex_addon::get('sprog');
 $tag_open = $sprog->getConfig('wildcard_open_tag');
@@ -43,7 +43,7 @@ if (filter_input(INPUT_GET, 'course_id', FILTER_VALIDATE_INT, ['options' => ['de
     if ($course_id > 0) {
         $course = new D2U_Courses\Course($course_id);
         // Redirect if object is not online
-        if ('online' != $course->online_status) {
+        if ('online' !== $course->online_status) {
             rex_redirect(rex_article::getNotfoundArticleId(), rex_clang::getCurrentId());
         }
     }
@@ -109,13 +109,13 @@ if (!function_exists('printBox')) {
      * @param string $url Link target url
      * @param int $number_columns can be 2, 3 or 4
      */
-    function printBox($title, $picture_filename, $color, $url, $number_columns = 3)
+    function printBox($title, $picture_filename, $color, $url, $number_columns = 3):void
     {
-        echo '<div class="col-6'. ($number_columns >= 3 ? ' col-md-4' : '') . (4 == $number_columns ? ' col-lg-3' : '') .' spacer">';
-        echo '<div class="category_box" style="background-color: '. ('' == $color ? 'grey' : ''. $color) .'" data-height-watch>';
+        echo '<div class="col-6'. ($number_columns >= 3 ? ' col-md-4' : '') . (4 === $number_columns ? ' col-lg-3' : '') .' spacer">';
+        echo '<div class="category_box" style="background-color: '. ('' === $color ? 'grey' : ''. $color) .'" data-height-watch>';
         echo '<a href="'. $url .'">';
         echo '<div class="view">';
-        if ('' != $picture_filename) {
+        if ('' !== $picture_filename) {
             echo '<img src="index.php?rex_media_type=d2u_helper_sm&rex_media_file='. $picture_filename .'" alt="'. $title .'">';
         } else {
             echo '<img src="'.	rex_addon::get('d2u_courses')->getAssetsUrl('empty_box.png') .'" alt="Placeholder">';
@@ -130,11 +130,11 @@ if (!function_exists('printBox')) {
 
 if (rex::isBackend()) {
     echo 'Ausgabe Veranstaltungen des D2U Veranstaltungen Addons'
-        . ($new_category > 0 ? ' / mit News aus dem D2U News Addon' : '')
-        . ($linkbox_category_id > 0 ? ' / mit Linxboxen aus dem D2U Linkbox Addon' : '');
+        . ($new_category > 0 ? ' / mit News aus dem D2U News Addon' : '') /** @phpstan-ignore-line */
+        . ($linkbox_category_id > 0 ? ' / mit Linxboxen aus dem D2U Linkbox Addon' : ''); /** @phpstan-ignore-line */
 } else {
     // Course search box
-    $show_search = 'REX_VALUE[3]' == 'true' ? true : false;
+    $show_search = 'REX_VALUE[3]' === 'true' ? true : false;
     if ($show_search) {
         echo '<div class="d-none d-sm-block col-sm-6 col-md-8 spacer d-print-none">&nbsp;</div>';
         echo '<div class="col-12 col-sm-6 col-md-4 spacer d-print-none">';

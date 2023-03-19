@@ -122,7 +122,7 @@ if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
 <?php
 }
 if (rex_addon::get('d2u_news')->isAvailable()) {
-    $categories = \D2U_News\Category::getAll(rex_clang::getCurrentId(), true);
+    $categories = \D2U_News\Category::getAll(rex_clang::getCurrentId());
     if (count($categories) > 0) {
 ?>
 		<div class="row">
@@ -134,7 +134,7 @@ if (rex_addon::get('d2u_news')->isAvailable()) {
                     echo '<option value="0">Keine News anzeigen</option>';
                     foreach ($categories as $category) {
                         echo '<option value="'. $category->category_id .'" ';
-                        if ('REX_VALUE[5]' == $category->category_id) {
+                        if ((int) 'REX_VALUE[5]' === $category->category_id) {
                             echo 'selected="selected" ';
                         }
                         echo '>'. $category->name .'</option>';
@@ -163,7 +163,7 @@ if (rex_addon::get('d2u_linkbox')->isAvailable()) {
                     echo '<option value="0">Keine Linkboxen anzeigen</option>';
                     foreach ($categories as $category) {
                         echo '<option value="'. $category->category_id .'" ';
-                        if ('REX_VALUE[6]' == $category->category_id) {
+                        if ((int) 'REX_VALUE[6]' === $category->category_id) {
                             echo 'selected="selected" ';
                         }
                         echo '>'. $category->name .'</option>';
@@ -185,8 +185,8 @@ if (rex_addon::get('d2u_linkbox')->isAvailable()) {
 	<div class="col-xs-8">
 		<?php
             echo '<select name="REX_INPUT_VALUE[8]" class="form-control">';
-            echo '<option value="3" '. ('REX_VALUE[8]' == 3 ? 'selected="selected" ' : '') .'>3</option>';
-            echo '<option value="4" '. ('REX_VALUE[8]' == 4 ? 'selected="selected" ' : '') .'>4</option>';
+            echo '<option value="3" '. ( (int) 'REX_VALUE[8]' === 3 ? 'selected="selected" ' : '') .'>3</option>'; /** @phpstan-ignore-line */
+            echo '<option value="4" '. ((int) 'REX_VALUE[8]' === 4 ? 'selected="selected" ' : '') .'>4</option>'; /** @phpstan-ignore-line */
             echo '</select>';
         ?>
 	</div>
