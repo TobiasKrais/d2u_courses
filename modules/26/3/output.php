@@ -14,16 +14,16 @@ $tag_close = $sprog->getConfig('wildcard_close_tag');
 /*
  * Function stuff
  */
-if (!function_exists('printBox')) {
+if (!function_exists('printBoxModule26_3')) {
     /**
      * Print box.
      * @param string $title Box title
      * @param string $picture_filename mediapool picture filename
      * @param string $color Background color (Hex)
      * @param string $url Link target url
-     * @param string $box_per_line number boxes per line on large screens
+     * @param int $box_per_line number boxes per line on large screens
      */
-    function printBox($title, $picture_filename, $color, $url, $box_per_line = 3)
+    function printBoxModule26_3($title, $picture_filename, $color, $url, $box_per_line = 3)
     {
         echo '<div class="col-6 col-md-4 col-lg-'. (4 == $box_per_line ? '3' : '4') .' spacer">';
         echo '<div class="category_box" style="background-color: '. ('' == $color ? 'grey' : ''. $color) .'" data-height-watch>';
@@ -73,7 +73,7 @@ if (rex::isBackend()) {
             $title = $list_course->name .'<br><small>'
                 . ('REX_VALUE[3]' == 'true' && '' != $list_course->teaser ? $list_course->teaser .'<br>' : '')
                 . (new DateTime($list_course->date_start))->format('d.m.Y') .'</small>';
-            printBox($title, $list_course->picture, $list_course->category->color, $list_course->getUrl(true), $box_per_line);
+            printBoxModule26_3($title, $list_course->picture, $list_course->category->color, $list_course->getUrl(true), $box_per_line);
         }
     }
     ?>

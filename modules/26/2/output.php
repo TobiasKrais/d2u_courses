@@ -1,5 +1,6 @@
 <?php
-$cart = D2U_Courses\Cart::getCart();
+
+$cart = \D2U_Courses\Cart::getCart();
 
 // Delete course / participant
 if (filter_input(INPUT_GET, 'delete', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0) {
@@ -22,17 +23,17 @@ if (filter_input(INPUT_POST, 'course_id', FILTER_VALIDATE_INT, ['options' => ['d
 
 $form_data = filter_input_array(INPUT_POST);
 // Add empty participant
-if (isset($form_data['participant_add'])) {
+if (is_array($form_data) && key_exists('participant_add', $form_data)) {
     foreach ($form_data['participant_add'] as $course_id => $value) {
         $cart->addEmptyParticipant($course_id);
     }
 }
 
 // Add participant data
-foreach ($cart->getCourseIDs() as $course_id) {
+foreach (\D2U_Courses\Cart::getCourseIDs() as $course_id) {
     $course = new \D2U_Courses\Course($course_id);
 
-    if (isset($form_data['participant_'. $course_id])) {
+    if (is_array($form_data) && key_exists('participant_'. $course_id, $form_data)) {
         // courses with person details
         foreach ($form_data['participant_'. $course_id] as $participant_id => $patricipant_data) {
             $participant_price = '';
@@ -57,7 +58,7 @@ foreach ($cart->getCourseIDs() as $course_id) {
             $cart->updateParticipant($course_id, $participant_id, $participant_data);
         }
     }
-    if (isset($form_data['participant_number_'. $course_id])) {
+    if (is_array($form_data) && key_exists('participant_number_'. $course_id, $form_data)) {
         $participant_price = '';
         $counter_row_price_salery_level_details = 0;
         foreach ($course->price_salery_level_details as $description => $price) {
