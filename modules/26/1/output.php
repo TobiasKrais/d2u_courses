@@ -5,6 +5,7 @@ use D2U_Courses\Course;
 use D2U_Courses\Location;
 use D2U_Courses\LocationCategory;
 use D2U_Courses\ScheduleCategory;
+use D2U_Courses\TargetGroup;
 
 if (PHP_SESSION_NONE === session_status()) {
     session_start();
@@ -156,7 +157,7 @@ if (rex::isBackend()) {
 
     $courses = [];
     // Get courses if search field was used
-    if ('' !== filter_input(INPUT_POST, 'course_search')) {
+    if (null !== filter_input(INPUT_POST, 'course_search')) {
         $courses = D2U_Courses\Course::search(filter_input(INPUT_POST, 'course_search'));
     }
     // Deal with categories
@@ -289,13 +290,13 @@ if (rex::isBackend()) {
             exit;
         }
     } elseif (count($courses) > 0) {
-        if ('' !== filter_input(INPUT_POST, 'course_search')) {
+        if (null !== filter_input(INPUT_POST, 'course_search')) {
             echo '<div class="col-12 course-title">';
             echo '<div class="search_title">';
             echo '<h1>'. $tag_open .'d2u_courses_search_results'. $tag_close .' "'. filter_input(INPUT_POST, 'course_search') .'":</h1>';
             echo '</div>';
             echo '</div>';
-        } elseif (false !== $target_group) {
+        } elseif ($target_group instanceof TargetGroup) {
             echo '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a') .' !important">';
             echo '<h1 class="page_title">';
             echo $target_group->name;
@@ -306,17 +307,17 @@ if (rex::isBackend()) {
                 echo '<div class="course_box spacer_box">'. $target_group->description .'</div>';
                 echo '</div>';
             }
-        } elseif (false !== $schedule_category) {
+        } elseif ($schedule_category instanceof ScheduleCategory) {
             echo '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2') .' !important">';
             echo '<h1 class="page_title">';
             echo $schedule_category->name;
             echo '</h1>';
             echo '</div></div>';
-        } elseif (false !== $location) {
+        } elseif ($location instanceof Location) {
             echo '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'location_bg_color', '#41b23b') .' !important">';
-            echo '<h1 class="page_title">'. $location->location_category->name .': '. $location->name .'</h1>';
+            echo '<h1 class="page_title">'. ($location->location_category instanceof LocationCategory ? $location->location_category->name .': ' : '') . $location->name .'</h1>';
             echo '</div></div>';
-        } elseif (false !== $category) {
+        } elseif ($category instanceof Category) {
             echo '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="background-color: '. $category->color .' !important">';
             echo '<h1 class="page_title">';
             echo $category->name;
@@ -383,7 +384,7 @@ if (rex::isBackend()) {
                 echo '</div>';
             }
         }
-    } elseif ('' !== filter_input(INPUT_POST, 'course_search')) {
+    } elseif (null !== filter_input(INPUT_POST, 'course_search')) {
         echo '<div class="col-12">';
         echo '<div class="search_title">';
         echo '<h1>'. $tag_open .'d2u_courses_search_no_hits'. $tag_close .'</h1>';
@@ -597,7 +598,7 @@ if (rex::isBackend()) {
         $box_description = '';
         if ('' !== $course->description) {
             $box_description .= '<div class="row" data-match-height>';
-            $box_description .= '<div class="col-12'. ('' == $box_details ? ' col-md-6' : '') .' course_row">';
+            $box_description .= '<div class="col-12'. ('' === $box_details ? ' col-md-6' : '') .' course_row">';
             $box_description .= '<div class="course_box spacer_box" data-height-watch>'. $course->description .'</div>';
             $box_description .= '</div>';
             if ('' === $box_details) {
@@ -625,8 +626,8 @@ if (rex::isBackend()) {
                 echo '<div class="col-12 course_row">';
                 echo '<div class="course_box spacer_box">';
 
-                $map_type = 'REX_VALUE[1]' === '' ? 'google' : 'REX_VALUE[1]'; /** @phpstan-ignore-line */
-                if ('google' === $map_type) {
+                $map_type = 'REX_VALUE[7]' === '' ? 'google' : 'REX_VALUE[7]'; /** @phpstan-ignore-line */
+                if ('google' === $map_type) { /** @phpstan-ignore-line */
                     $api_key = '';
                     if (rex_config::has('d2u_helper', 'maps_key')) {
                         $api_key = rex_config::get('d2u_helper', 'maps_key');
@@ -637,11 +638,11 @@ if (rex::isBackend()) {
 					<script>
 					<?php
                         // If longitude and latitude is available: create map
-                        if (0 != $course->location->latitude && 0 != $course->location->longitude) {
+                        if ((0 > $course->location->latitude || 0 < $course->location->latitude) && (0 > $course->location->longitude || 0 < $course->location->longitude)) {
                     ?>
 						var myLatlng = new google.maps.LatLng(<?= $course->location->latitude .','. $course->location->longitude ?>);
 						var myOptions = {
-							zoom: <?= $course->location->location_category->zoom_level ?>,
+							zoom: <?= ($course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10) ?>,
 							center: myLatlng,
 							mapTypeId: google.maps.MapTypeId.ROADMAP
 						};
@@ -691,7 +692,7 @@ if (rex::isBackend()) {
 						}
 
 						var myOptions = {
-							zoom: <?= $course->location->location_category->zoom_level ?>,
+							zoom: <?= ($course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10) ?>,
 							mapTypeId: google.maps.MapTypeId.ROADMAP
 						};
 						map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
@@ -709,7 +710,7 @@ if (rex::isBackend()) {
                 ?>
 					<div id="map-<?= $map_id ?>" style="width:100%;height:400px"></div>
 					<script type="text/javascript" async="async">
-						var map = L.map('map-<?= $map_id ?>').setView([<?= $course->location->latitude .','. $course->location->longitude ?>], <?= $course->location->location_category->zoom_level ?>);
+						var map = L.map('map-<?= $map_id ?>').setView([<?= $course->location->latitude .','. $course->location->longitude ?>], <?= ($course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10) ?>);
 						L.tileLayer('/?osmtype=german&z={z}&x={x}&y={y}', {
 							attribution: 'Map data &copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
 						}).addTo(map);
@@ -815,7 +816,7 @@ if (rex::isBackend()) {
                     echo \Geolocation\mapset::take($mapsetId)
                         ->attributes('id', $mapsetId)
                         ->attributes('style', 'height:400px;width:100%;')
-                        ->dataset('center', [[$course->location->latitude, $course->location->longitude], $course->location->location_category->zoom_level])
+                        ->dataset('center', [[$course->location->latitude, $course->location->longitude], ($course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10)])
                         ->dataset('position', [$course->location->latitude, $course->location->longitude])
                         ->dataset('infobox', [[$course->location->latitude, $course->location->longitude], $course->location->name])
                         ->parse();

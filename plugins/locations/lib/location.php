@@ -24,52 +24,51 @@ use function is_array;
 class Location
 {
     /** @var int ID */
-    public $location_id = 0;
+    public int $location_id = 0;
 
     /** @var string Name */
-    public $name = '';
+    public string $name = '';
 
-    /** @var string Longitude */
-    public $longitude = '';
+    /** @var float Longitude */
+    public float $longitude = 0;
 
-    /** @var string Latitude */
-    public $latitude = '';
+    /** @var float Latitude */
+    public float$latitude = 0;
 
     /** @var string Street */
-    public $street = '';
+    public string $street = '';
 
     /** @var string ZIP code */
-    public $zip_code = '';
+    public string $zip_code = '';
 
     /** @var string City */
-    public $city = '';
+    public string $city = '';
 
     /** @var string ISO country code */
-    public $country_code = '';
+    public string $country_code = '';
 
     /** @var string Picture */
-    public $picture = '';
+    public string $picture = '';
 
     /** @var string Site plan */
-    public $site_plan = '';
+    public string $site_plan = '';
 
-    /** @var LocationCategory Location category */
-    public $location_category = false;
+    /** @var LocationCategory|bool Location category */
+    public LocationCategory|bool $location_category = false;
 
     /**
-     * @var array<string> Redaxo usernames that are allowed to create courses for this
-     * location
+     * @var array<string> Redaxo usernames that are allowed to create courses for this location
      */
-    public $redaxo_users = [];
+    public array $redaxo_users = [];
 
     /** @var string Update timestamp */
-    public $updatedate = '';
+    public string $updatedate = '';
 
     /** @var int Update timestamp */
-    public $kufer_location_id = 0;
+    public int $kufer_location_id = 0;
 
     /** @var string URL */
-    private $url = '';
+    private string $url = '';
 
     /**
      * Constructor.
@@ -83,25 +82,25 @@ class Location
         $result->setQuery($query);
 
         if ($result->getRows() > 0) {
-            $this->location_id = $result->getValue('location_id');
-            $this->name = $result->getValue('name');
-            $this->latitude = $result->getValue('latitude');
-            $this->longitude = $result->getValue('longitude');
-            $this->city = $result->getValue('city');
-            $this->zip_code = $result->getValue('zip_code');
-            $this->country_code = $result->getValue('country_code');
-            $this->street = $result->getValue('street');
+            $this->location_id = (int) $result->getValue('location_id');
+            $this->name = (string) $result->getValue('name');
+            $this->latitude = (float) $result->getValue('latitude');
+            $this->longitude = (float) $result->getValue('longitude');
+            $this->city = (string) $result->getValue('city');
+            $this->zip_code = (string) $result->getValue('zip_code');
+            $this->country_code = (string) $result->getValue('country_code');
+            $this->street = (string) $result->getValue('street');
             if ($result->getValue('location_category_id') > 0) {
-                $this->location_category = new LocationCategory($result->getValue('location_category_id'));
+                $this->location_category = new LocationCategory((int) $result->getValue('location_category_id'));
             }
             $redaxo_users = preg_grep('/^\s*$/s', explode('|', $result->getValue('redaxo_users')), PREG_GREP_INVERT);
             $this->redaxo_users = is_array($redaxo_users) ? $redaxo_users : [];
-            $this->picture = $result->getValue('picture');
-            $this->site_plan = $result->getValue('site_plan');
+            $this->picture = (string) $result->getValue('picture');
+            $this->site_plan = (string) $result->getValue('site_plan');
             if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-                $this->kufer_location_id = $result->getValue('kufer_location_id');
+                $this->kufer_location_id = (int) $result->getValue('kufer_location_id');
             }
-            $this->updatedate = $result->getValue('updatedate');
+            $this->updatedate = (string) $result->getValue('updatedate');
         }
     }
 

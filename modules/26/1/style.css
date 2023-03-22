@@ -159,6 +159,7 @@ a.course_row_a:hover {
 }
 .search_title {
 	background-color: #a49f9f;
+	margin-bottom: 10px;
 	padding: 0.5em;
 }
 .search_title h1 {

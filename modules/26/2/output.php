@@ -1,5 +1,7 @@
 <?php
 
+use D2U_Courses\Category;
+
 $cart = \D2U_Courses\Cart::getCart();
 
 // Delete course / participant
@@ -40,20 +42,20 @@ foreach (\D2U_Courses\Cart::getCourseIDs() as $course_id) {
             $counter_row_price_salery_level_details = 0;
             foreach ($course->price_salery_level_details as $description => $price) {
                 ++$counter_row_price_salery_level_details;
-                if ($counter_row_price_salery_level_details == $patricipant_data['price_salery_level_row_number']) {
+                if ($counter_row_price_salery_level_details === (int) $patricipant_data['price_salery_level_row_number']) {
                     $participant_price = $price;
                     break;
                 }
             }
             $participant_data = [
-                'firstname' => trim(filter_var($patricipant_data['firstname'])),
-                'lastname' => trim(filter_var($patricipant_data['lastname'])),
-                'birthday' => (array_key_exists('birthday', $patricipant_data) ? trim(filter_var($patricipant_data['birthday'])) : ''),
-                'age' => (array_key_exists('age', $patricipant_data) ? trim(filter_var($patricipant_data['age'])) : ''),
-                'emergency_number' => (array_key_exists('emergency_number', $patricipant_data) ? trim(filter_var($patricipant_data['emergency_number'])) : ''),
-                'gender' => (array_key_exists('gender', $patricipant_data) ? trim(filter_var($patricipant_data['gender'])) : ''),
+                'firstname' => trim((string) (filter_var($patricipant_data['firstname']) !== false ? filter_var($patricipant_data['firstname']) : '')),
+                'lastname' => trim((string) (filter_var($patricipant_data['lastname']) !== false ? filter_var($patricipant_data['lastname']) : '')),
+                'birthday' => (array_key_exists('birthday', $patricipant_data) && filter_var($patricipant_data['birthday']) !== false ? trim(filter_var($patricipant_data['birthday'])) : ''),
+                'age' => (array_key_exists('age', $patricipant_data) && filter_var($patricipant_data['age']) !== false ? trim(filter_var($patricipant_data['age'])) : ''),
+                'emergency_number' => (array_key_exists('emergency_number', $patricipant_data) && filter_var($patricipant_data['emergency_number']) !== false ? trim(filter_var($patricipant_data['emergency_number'])) : ''),
+                'gender' => (array_key_exists('gender', $patricipant_data) && filter_var($patricipant_data['gender']) !== false ? trim(filter_var($patricipant_data['gender'])) : ''),
                 'price' => trim($participant_price),
-                'price_salery_level_row_number' => (array_key_exists('price_salery_level_row_number', $patricipant_data) ? trim(filter_var($patricipant_data['price_salery_level_row_number'])) : ''),
+                'price_salery_level_row_number' => (array_key_exists('price_salery_level_row_number', $patricipant_data) && filter_var($patricipant_data['price_salery_level_row_number']) !== false ? trim(filter_var($patricipant_data['price_salery_level_row_number'])) : ''),
             ];
             $cart->updateParticipant($course_id, $participant_id, $participant_data);
         }
@@ -63,7 +65,7 @@ foreach (\D2U_Courses\Cart::getCourseIDs() as $course_id) {
         $counter_row_price_salery_level_details = 0;
         foreach ($course->price_salery_level_details as $description => $price) {
             ++$counter_row_price_salery_level_details;
-            if ($counter_row_price_salery_level_details == $form_data['price_salery_level_row_number']) {
+            if ($counter_row_price_salery_level_details === (int) $form_data['price_salery_level_row_number']) {
                 $participant_price = $price;
                 break;
             }
@@ -82,10 +84,10 @@ if (isset($form_data['participant_save'])) {
 $sprog = rex_addon::get('sprog');
 $tag_open = $sprog->getConfig('wildcard_open_tag');
 $tag_close = $sprog->getConfig('wildcard_close_tag');
-$ask_age = 'REX_VALUE[1]' == '' ? 1 : 'REX_VALUE[1]';
+$ask_age = 'REX_VALUE[1]' === '' ? 1 : (int) 'REX_VALUE[1]'; /** @phpstan-ignore-line */
 $ask_age_root_category_id = [];
-if ('REX_VALUE[3]' == 'true' && is_array(rex_var::toArray('REX_VALUE[4]'))) {
-    $ask_age_root_category_id = rex_var::toArray('REX_VALUE[4]');
+if ('REX_VALUE[3]' === 'true' && is_array(rex_var::toArray('REX_VALUE[4]'))) { /** @phpstan-ignore-line */
+    $ask_age_root_category_id = array_map('intval', rex_var::toArray('REX_VALUE[4]'));
 }
 
 // Invoice form
@@ -95,11 +97,11 @@ if (isset($form_data['invoice_form'])) {
     $kufer_children = [];
     $kufer_self = [];
     $mail_registration = [];
-    foreach ($cart->getCourseIDs() as $course_id) {
+    foreach (D2U_Courses\Cart::getCourseIDs() as $course_id) {
         $course = new D2U_Courses\Course($course_id);
-        if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && 'KuferSQL' == $course->import_type && '' != $course->course_number) {
-            foreach ($cart->getCourseParticipants($course_id) as $participant) {
-                if ($participant['firstname'] == $form_data['invoice_form']['firstname'] && $participant['lastname'] == $form_data['invoice_form']['lastname']) {
+        if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && 'KuferSQL' === $course->import_type && '' !== $course->course_number) {
+            foreach (D2U_Courses\Cart::getCourseParticipants($course_id) as $participant) {
+                if (array_key_exists('firstname', $participant) && $participant['firstname'] === $form_data['invoice_form']['firstname'] && $participant['lastname'] === $form_data['invoice_form']['lastname']) {
                     // Treat children currently like normal persons
                     $kufer_self[$course_id][] = $participant;
                     // Otherwise uncomment next lines
@@ -122,16 +124,16 @@ if (isset($form_data['invoice_form'])) {
                 }
             }
         } else {
-            $mail_registration[$course_id] = $cart->getCourseParticipants($course_id);
+            $mail_registration[$course_id] = D2U_Courses\Cart::getCourseParticipants($course_id);
         }
     }
 
     $error = false;
     // Create Kufer XML registrations
-    if (count($kufer_self) > 0 && false == $cart->createXMLRegistration($kufer_self, $form_data['invoice_form'], 'selbst')) {
+    if (count($kufer_self) > 0 && false === $cart->createXMLRegistration($kufer_self, $form_data['invoice_form'], 'selbst')) {
         $error = true;
     }
-    if (count($kufer_children) > 0 && false == $cart->createXMLRegistration($kufer_children, $form_data['invoice_form'], 'kind')) {
+    if (count($kufer_children) > 0 && false === $cart->createXMLRegistration($kufer_children, $form_data['invoice_form'], 'kind')) {
         $error = true;
     }
     foreach ($kufer_others as $course_id => $participant) {
@@ -139,16 +141,16 @@ if (isset($form_data['invoice_form'])) {
             $cart->createXMLRegistration([$course_id => [$cur_participant]], $form_data['invoice_form'], 'andere');
         }
     }
-    if (count($mail_registration) > 0 && false == $cart->sendRegistrations($mail_registration, $form_data['invoice_form'])) {
+    if (count($mail_registration) > 0 && false === $cart->sendRegistrations($mail_registration, $form_data['invoice_form'])) {
         $error = true;
     }
 
     // MultiNewsletter Anmeldemail senden
     if (rex_addon::get('multinewsletter')->isAvailable() && array_key_exists('multinewsletter', $form_data['invoice_form']) && is_array($form_data['invoice_form']['multinewsletter']) && count($form_data['invoice_form']['multinewsletter']) > 0) {
         $user = MultinewsletterUser::initByMail(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL));
-        $anrede = 'W' == $form_data['invoice_form']['gender'] ? 1 : 0;
+        $anrede = 'W' === $form_data['invoice_form']['gender'] ? 1 : 0;
 
-        if (false !== $user) {
+        if ($user instanceof MultinewsletterUser) {
             $user->title = $anrede;
             $user->firstname = $form_data['invoice_form']['firstname'];
             $user->lastname = $form_data['invoice_form']['lastname'];
@@ -167,7 +169,7 @@ if (isset($form_data['invoice_form'])) {
         $user->status = 0;
         $user->subscriptiontype = 'web';
         $user->privacy_policy_accepted = 1;
-        $user->activationkey = random_int(100000, 999999);
+        $user->activationkey = (string) random_int(100000, 999999);
         $user->save();
 
         // Send activationmail
@@ -179,7 +181,7 @@ if (isset($form_data['invoice_form'])) {
         );
     }
 
-    if (false == $error) {
+    if (false === $error) {
         echo '<div class="col-12">';
         echo '<h1>'. $tag_open .'d2u_courses_cart_thanks'. $tag_close .'</h1><p>'. $tag_open .'d2u_courses_cart_thanks_details'. $tag_close .'</p>';
         echo '</div>';
@@ -189,7 +191,7 @@ if (isset($form_data['invoice_form'])) {
         echo '<h1>'. $tag_open .'d2u_courses_cart_error'. $tag_close .'</h1><p><a href="'. rex_getUrl(rex_config::get('d2u_helper', 'article_id_impress', rex_article::getSiteStartArticleId())) .'">'. $tag_open .'d2u_courses_cart_error_details'. $tag_close .'</a></p>';
         echo '</div>';
     }
-} elseif (isset($form_data['request_courses']) && '' != $form_data['request_courses']) {
+} elseif (isset($form_data['request_courses']) && '' !== $form_data['request_courses']) {
     $payment_options = rex_config::get('d2u_courses', 'payment_options', []);
 
     // Anmeldeformular
@@ -286,7 +288,7 @@ if (isset($form_data['invoice_form'])) {
 		}
 	</script>
 <?php
-    if ('active' == rex_config::get('d2u_courses', 'ask_vacation_pass', 'inactive') && false === rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
+    if ('active' === rex_config::get('d2u_courses', 'ask_vacation_pass', 'inactive') && false === rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
         echo '<p>';
         echo '<label class="cart_text" for="invoice_form-vacation_pass">'. $tag_open .'d2u_courses_vacation_pass'. $tag_close .'</label>';
         echo '<input type="number" class="cart_text" name="invoice_form[vacation_pass]" id="invoice_form-vacation_pass" maxlength="5" value="">';
@@ -295,7 +297,7 @@ if (isset($form_data['invoice_form'])) {
     echo '<br>';
 
     // Kufer Sync Plugin needs statistic values
-    if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && 'REX_VALUE[2]' == 'true') {
+    if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && 'REX_VALUE[2]' === 'true') { /** @phpstan-ignore-line */
         echo '<div class="registration_header cart_row_title">'. $tag_open .'d2u_courses_statistic'. $tag_close .'</div>';
 
         echo '<p>';
@@ -310,13 +312,13 @@ if (isset($form_data['invoice_form'])) {
         echo '<p>';
         echo '<label class="cart_select" for="invoice_form-payment">'. $tag_open .'d2u_courses_payment'. $tag_close .':</label>';
         echo '<select class="cart_select" id="invoice_form-payment" name="invoice_form[payment]" size="1" onChange="remove_required()">';
-        if (in_array('direct_debit', $payment_options)) {
+        if (in_array('direct_debit', $payment_options, true)) {
             echo '<option value="L">'. $tag_open .'d2u_courses_payment_debit'. $tag_close .'</option>';
         }
-        if (in_array('bank_transfer', $payment_options)) {
+        if (in_array('bank_transfer', $payment_options, true)) {
             echo '<option value="Ü">'. $tag_open .'d2u_courses_payment_transfer'. $tag_close .'</option>';
         }
-        if (in_array('cash', $payment_options)) {
+        if (in_array('cash', $payment_options, true)) {
             echo '<option value="B">'. $tag_open .'d2u_courses_payment_cash'. $tag_close .'</option>';
         }
         echo '</select>';
@@ -350,7 +352,7 @@ if (isset($form_data['invoice_form'])) {
 				$('#invoice_form-company').attr('required', true);
 				$('#invoice_form-company').parent().slideDown();
 				<?php
-                    if (!in_array('bank_transfer', $payment_options) && (bool) rex_config::get('d2u_courses', 'allow_company_bank_transfer', false)) {
+                    if (!in_array('bank_transfer', $payment_options, true) && (bool) rex_config::get('d2u_courses', 'allow_company_bank_transfer', false)) {
                 ?>
 				var option = document.createElement("option");
 				option.text = '<?= $tag_open .'d2u_courses_payment_transfer'. $tag_close ?>';
@@ -364,7 +366,7 @@ if (isset($form_data['invoice_form'])) {
 				$('#invoice_form-company').removeAttr('required');
 				$('#invoice_form-company').parent().slideUp();
 				<?php
-                    if (!in_array('bank_transfer', $payment_options) && (bool) rex_config::get('d2u_courses', 'allow_company_bank_transfer', false)) {
+                    if (!in_array('bank_transfer', $payment_options, true) && (bool) rex_config::get('d2u_courses', 'allow_company_bank_transfer', false)) {
                 ?>
 				var select_payment = document.getElementById('invoice_form-payment');
 				for (var i = 0; i < select_payment.length; i++) {
@@ -442,29 +444,29 @@ if (isset($form_data['invoice_form'])) {
     // Bestellübersicht
     echo '<div class="registration_header cart_row_title"><h1>'. $tag_open .'d2u_courses_order_overview'. $tag_close .'</h1></div>';
     $has_minor_participants = false;
-    foreach ($cart->getCourseIDs() as $course_id) {
+    foreach (D2U_Courses\Cart::getCourseIDs() as $course_id) {
         $course = new D2U_Courses\Course($course_id);
         echo '<div class="row">';
         echo '<div class="col-12 spacer">';
-        echo '<div class="cart_row_title" style="background-color: '. (false !== $course->category ? $course->category->color : 'grey') .'">';
+        echo '<div class="cart_row_title" style="background-color: '. ($course->category instanceof Category? $course->category->color : 'grey') .'">';
         echo '<div class="row" data-match-height>';
         echo '<div class="col-12">';
         echo '<b>'. $course->name;
-        if ('' != $course->course_number) {
+        if ('' !== $course->course_number) {
             echo ' ('. $course->course_number .')';
         }
         echo '</b><br />';
-        if ('' != $course->date_start || '' != $course->date_end || '' != $course->time) {
+        if ('' !== $course->date_start || '' !== $course->date_end || '' !== $course->time) {
             echo $tag_open .'d2u_courses_date'. $tag_close .': ';
             $date = '';
-            if ('' != $course->date_start) {
+            if ('' !== $course->date_start) {
                 $date .= D2U_Courses\Cart::formatCourseDate($course->date_start);
             }
-            if ('' != $course->date_end) {
+            if ('' !== $course->date_end) {
                 $date .= ' - '. D2U_Courses\Cart::formatCourseDate($course->date_end);
             }
-            if ('' != $course->time) {
-                if ('' != $date) {
+            if ('' !== $course->time) {
+                if ('' !== $date) {
                     $date .= ', ';
                 }
                 $date .= $course->time;
@@ -474,50 +476,53 @@ if (isset($form_data['invoice_form'])) {
             }
             echo $date .'<br>';
         }
-        if (!$course->price_salery_level && $course->price) {
+        if (!$course->price_salery_level && $course->price > 0) {
             echo $tag_open .'d2u_courses_fee'. $tag_close . ': '. number_format($course->price, 2, ',', '.') .' €';
             if ($course->price_discount > 0) {
                 echo ' ('. $tag_open .'d2u_courses_discount'. $tag_close .': '. number_format($course->price_discount, 2, ',', '.') .' €)<br>';
             }
         }
         if ('yes_number' === $course->registration_possible) {
-            $participant_data = $cart->getCourseParticipants($course_id);
-            echo '<ul>';
-            echo '<li>'. $tag_open .'d2u_courses_participant_number'. $tag_close .': '. $participant_data['participant_number'];
-            if ($course->price_salery_level) {
-                $counter_row_price_salery_level_details = 0;
-                foreach ($course->price_salery_level_details as $description => $price) {
-                    ++$counter_row_price_salery_level_details;
-                    if ($counter_row_price_salery_level_details == $participant_data['participant_price_salery_level_row_number']) {
-                        echo ', '. $tag_open .'d2u_courses_fee'. $tag_close .': '. $participant_data['participant_price'] .' ('. $tag_open .'d2u_courses_price_salery_level'. $tag_close .': '. $description .')';
-                        break;
+            $participant_data = D2U_Courses\Cart::getCourseParticipants($course_id);
+            if (array_key_exists('participant_number', $participant_data)) {
+                echo '<ul>';
+                echo '<li>'. $tag_open .'d2u_courses_participant_number'. $tag_close .': '. $participant_data['participant_number'];
+                if ($course->price_salery_level) {
+                    $counter_row_price_salery_level_details = 0;
+                    foreach ($course->price_salery_level_details as $description => $price) {
+                        ++$counter_row_price_salery_level_details;
+                        if ($counter_row_price_salery_level_details === (int) $participant_data['participant_price_salery_level_row_number']) {
+                            echo ', '. $tag_open .'d2u_courses_fee'. $tag_close .': '. $participant_data['participant_price'] .' ('. $tag_open .'d2u_courses_price_salery_level'. $tag_close .': '. $description .')';
+                            break;
+                        }
                     }
                 }
-            }
 
-            echo '</li>';
-            echo '</ul>';
+                echo '</li>';
+                echo '</ul>';
+            }
         } else {
             // registration with person details
             echo '<ul>';
-            foreach ($cart->getCourseParticipants($course_id) as $id => $participant) {
-                echo '<li>'. $participant['firstname'] .' '. $participant['lastname'];
+            foreach (D2U_Courses\Cart::getCourseParticipants($course_id) as $id => $participant) {
+                echo '<li>'. (array_key_exists('firstname', $participant) && $participant['firstname'] !== '' ? $participant['firstname'] .' ' : '')
+                    . (array_key_exists('lastname', $participant) && $participant['lastname'] !== '' ? $participant['lastname'] .' ' : '');
 
-                if ('REX_VALUE[5]' !== 'true' || in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_id)) {
+                if ('REX_VALUE[5]' !== 'true' || ($course->category instanceof Category && in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_id, true))) { /** @phpstan-ignore-line */
                     echo ' (';
                     $age_seperator = false;
-                    if (1 == $ask_age && $participant['birthday']) {
+                    if (1 === $ask_age && array_key_exists('birthday', $participant) && $participant['birthday'] !== '') { /** @phpstan-ignore-line */
                         echo $tag_open .'d2u_courses_birthdate'. $tag_close .': '. D2U_Courses\Cart::formatCourseDate($participant['birthday']);
                         $age_seperator = true;
-                    } elseif (2 == $ask_age) {
+                    } elseif (2 === $ask_age && array_key_exists('age', $participant)) { /** @phpstan-ignore-line */
                         echo $tag_open .'d2u_courses_age'. $tag_close .': '. D2U_Courses\Cart::formatCourseDate($participant['age']);
                         $age_seperator = true;
                     }
-                    if ('REX_VALUE[5]' !== 'true') {
-                        if (true === $age_seperator) {
+                    if ('REX_VALUE[5]' !== 'true') { /** @phpstan-ignore-line */
+                        if ($age_seperator) { /** @phpstan-ignore-line */
                             echo ', ';
                         }
-                        echo 'M' == $participant['gender'] ? $tag_open .'d2u_courses_male'. $tag_close : $tag_open .'d2u_courses_female'. $tag_close;
+                        echo array_key_exists('gender', $participant) && 'M' === $participant['gender'] ? $tag_open .'d2u_courses_male'. $tag_close : $tag_open .'d2u_courses_female'. $tag_close;
                     }
                     echo ')';
                 }
@@ -525,7 +530,7 @@ if (isset($form_data['invoice_form'])) {
                     $counter_row_price_salery_level_details = 0;
                     foreach ($course->price_salery_level_details as $description => $price) {
                         ++$counter_row_price_salery_level_details;
-                        if ($counter_row_price_salery_level_details == $participant['price_salery_level_row_number']) {
+                        if (array_key_exists('price_salery_level_row_number', $participant) && $counter_row_price_salery_level_details === (int) $participant['price_salery_level_row_number']) {
                             echo ', '. $tag_open .'d2u_courses_fee'. $tag_close .': '. $participant['price'] .' ('. $tag_open .'d2u_courses_price_salery_level'. $tag_close .': '. $description .')';
                             break;
                         }
@@ -545,7 +550,7 @@ if (isset($form_data['invoice_form'])) {
         echo '</div>';
     }
     // Are minors allowed to retun home by their own?
-    if ('active' == rex_config::get('d2u_courses', 'ask_kids_go_home_alone', 'inactive')) {
+    if ('active' === rex_config::get('d2u_courses', 'ask_kids_go_home_alone', 'inactive')) {
         echo '<p class="cart_checkbox">';
         echo '<input type="checkbox" class="cart_checkbox" name="invoice_form[kids_go_home_alone]" id="invoice_kids_go_home_alone" value="yes">';
         echo '<label class="cart_checkbox" for="invoice_kids_go_home_alone">'. $tag_open .'d2u_courses_kids_go_home_alone'. $tag_close .'</label></p>';
@@ -576,7 +581,7 @@ if (isset($form_data['invoice_form'])) {
         echo '</p>';
     }
 
-    if (rex_addon::get('multinewsletter')->isAvailable() && 'show' == rex_config::get('d2u_courses', 'multinewsletter_subscribe', 'hide')) {
+    if (rex_addon::get('multinewsletter')->isAvailable() && 'show' === rex_config::get('d2u_courses', 'multinewsletter_subscribe', 'hide')) {
         $multinewsletter_config = rex_config::get('d2u_courses', 'multinewsletter_group', []);
         $multinewsletter_group = [];
         if (is_array($multinewsletter_config)) {
@@ -589,11 +594,11 @@ if (isset($form_data['invoice_form'])) {
             if (1 === count($multinewsletter_group)) {
                 echo '<input type="checkbox" class="cart_checkbox" name="invoice_form[multinewsletter][]" id="invoice_form-multinewsletter" value="'. rex_config::get('d2u_courses', 'multinewsletter_group', [])[0] .'">';
                 echo '<label class="cart_checkbox" for="invoice_form-multinewsletter">'. $tag_open .'d2u_courses_multinewsletter'. $tag_close .'</label>';
-            } elseif (count($multinewsletter_group) > 1) {
+            } else {
                 echo $tag_open .'d2u_courses_multinewsletter'. $tag_close .'<br>';
                 foreach ($multinewsletter_group as $newsletter_group_id) {
                     $multinewsletter_group = new MultinewsletterGroup($newsletter_group_id);
-                    if ($multinewsletter_group instanceof MultinewsletterGroup && $multinewsletter_group->id > 0) {
+                    if ($multinewsletter_group->id > 0) {
                         echo '<input type="checkbox" class="cart_checkbox" name="invoice_form[multinewsletter][]" id="invoice_form-multinewsletter" value="'. $multinewsletter_group->id .'">';
                         echo '<label class="cart_checkbox" for="invoice_form-multinewsletter">'. $multinewsletter_group->name .'</label><br>';
                     }
@@ -641,7 +646,7 @@ if (isset($form_data['invoice_form'])) {
     echo '</div>';
     echo '</div>';
 
-    if (0 === count($cart->getCourseIDs())) {
+    if (0 === count(D2U_Courses\Cart::getCourseIDs())) {
         echo '<div class="col-12 col-md-9 spacer">';
         echo '<div class="cart_row_title" id="cart_empty">'. $tag_open .'d2u_courses_cart_empty'. $tag_close .'</div>';
         echo '</div>';
@@ -649,10 +654,10 @@ if (isset($form_data['invoice_form'])) {
         echo '<div class="col-12 col-md-9">';
         echo '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'" method="post">';
         echo '<div class="row">';
-        foreach ($cart->getCourseIDs() as $course_id) {
+        foreach (D2U_Courses\Cart::getCourseIDs() as $course_id) {
             $course = new D2U_Courses\Course($course_id);
             echo '<div class="col-12 spacer">';
-            echo '<div class="cart_row_title" style="background-color: '. (false !== $course->category ? $course->category->color : 'grey') .'">';
+            echo '<div class="cart_row_title" style="background-color: '. ($course->category instanceof Category ? $course->category->color : 'grey') .'">';
             echo '<div class="row">';
             echo '<div class="col-12">';
             echo '<a href="'. $course->getUrl(true) .'" title="'. $course->name .'" class="cart_course_title">';
@@ -664,14 +669,14 @@ if (isset($form_data['invoice_form'])) {
             if ('' !== $course->date_start || '' !== $course->date_end || '' !== $course->time) {
                 echo $tag_open .'d2u_courses_date'. $tag_close .': ';
                 $date = '';
-                if ('' != $course->date_start) {
+                if ('' !== $course->date_start) {
                     $date .= D2U_Courses\Cart::formatCourseDate($course->date_start);
                 }
-                if ('' != $course->date_end) {
+                if ('' !== $course->date_end) {
                     $date .= ' - '. D2U_Courses\Cart::formatCourseDate($course->date_end);
                 }
-                if ('' != $course->time) {
-                    if ($date && '' != $course->time) {
+                if ('' !== $course->time) {
+                    if ('' !== $date) {
                         $date .= ', ';
                     }
                     $date .= $course->time;
@@ -690,7 +695,7 @@ if (isset($form_data['invoice_form'])) {
 
             if ('yes_number' === $course->registration_possible) {
                 // registration without person details
-                $participants_data = $cart->getCourseParticipants($course_id);
+                $participants_data = D2U_Courses\Cart::getCourseParticipants($course_id);
                 echo '<br>';
                 echo '<div class="row">';
                 echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_participant_number'. $tag_close .'</div>'
@@ -705,7 +710,7 @@ if (isset($form_data['invoice_form'])) {
                     $counter_row_price_salery_level_details = 0;
                     foreach ($course->price_salery_level_details as $key => $value) {
                         ++$counter_row_price_salery_level_details;
-                        echo '<option value="'. $counter_row_price_salery_level_details .'"'. ($counter_row_price_salery_level_details == $participants_data['participant_price_salery_level_row_number'] ? 'selected' : '') .'>'. $key .': '. $value .'</option>';
+                        echo '<option value="'. $counter_row_price_salery_level_details .'"'. ($counter_row_price_salery_level_details === (int) $participants_data['participant_price_salery_level_row_number'] ? 'selected' : '') .'>'. $key .': '. $value .'</option>';
                     }
                     echo '</select></div>';
                 }
@@ -714,17 +719,17 @@ if (isset($form_data['invoice_form'])) {
                 // registration with person details
                 echo '<div class="row">';
                 echo '<div class="col-12">&nbsp;</div>';
-                foreach ($cart->getCourseParticipants($course_id) as $participant_id => $participant_data) {
+                foreach (D2U_Courses\Cart::getCourseParticipants($course_id) as $participant_id => $participant_data) {
                     echo '<div class="col-12"><p><b>'. \Sprog\Wildcard::get('d2u_courses_cart_participant') .'</b></p></div>';
 
                     // First name
                     echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_firstname'. $tag_close .'</div>';
-                    echo '<div class="col-10 col-sm-5 col-md-7 div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][firstname]" value="'. $participant_data['firstname'] .'" required maxlength="20"></div>';
+                    echo '<div class="col-10 col-sm-5 col-md-7 div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][firstname]" value="'. (array_key_exists('lastname', $participant_data) ? $participant_data['firstname'] : '') .'" required maxlength="20"></div>';
 
                     // Delete button
                     echo '<div class="col-2 col-sm-1">';
                     $ask_delete = '';
-                    if (1 == $cart->getCourseParticipantsNumber($course_id)) {
+                    if (1 === D2U_Courses\Cart::getCourseParticipantsNumber($course_id)) {
                         $ask_delete = ' onclick="return window.confirm(\''. $tag_open .'d2u_courses_cart_delete_course'. $tag_close .'\');"';
                     }
                     echo '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'?delete='. $course_id .'&participant='. $participant_id .'" tabindex="-1" '. $ask_delete .'>';
@@ -733,15 +738,15 @@ if (isset($form_data['invoice_form'])) {
 
                     // Last name
                     echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_lastname'. $tag_close .'</div>';
-                    echo '<div class="col-10 col-sm-5 col-md-7 div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][lastname]" value="'. $participant_data['lastname'] .'" required maxlength="20"></div>';
+                    echo '<div class="col-10 col-sm-5 col-md-7 div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][lastname]" value="'. (array_key_exists('lastname', $participant_data) ? $participant_data['lastname'] : '') .'" required maxlength="20"></div>';
 
                     // Age / Birthday
-                    if (in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_id)) {
-                        echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .(1 == $ask_age ? 'd2u_courses_birthdate' : 'd2u_courses_age'). $tag_close .'</div>';
+                    if (in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_id, true)) {
+                        echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open . (1 === $ask_age ? 'd2u_courses_birthdate' : 'd2u_courses_age'). $tag_close .'</div>'; /** @phpstan-ignore-line */
                         echo '<div class="col-10 col-sm-5 col-md-7 div_cart">';
-                        if (1 == $ask_age) {
+                        if (1 === $ask_age && array_key_exists('birthday', $participant_data)) { /** @phpstan-ignore-line */
                             echo '<input type="date" class="date" name="participant_'. $course_id .'['. $participant_id .'][birthday]" value="'. $participant_data['birthday'] .'" required placeholder="'. $tag_open .'d2u_courses_date_placeholder'. $tag_close .'" min="1900-01-01" max="'. (date('Y') - 5) .'-01-01">';
-                        } elseif (2 == $ask_age) {
+                        } elseif (2 === $ask_age && array_key_exists('age', $participant_data)) { /** @phpstan-ignore-line */
                             echo '<input type="number" name="participant_'. $course_id .'['. $participant_id .'][age]" value="'. $participant_data['age'] .'" required>';
                         }
                         echo '</div>';
@@ -754,11 +759,11 @@ if (isset($form_data['invoice_form'])) {
                     }
 
                     // Gender
-                    if ('REX_VALUE[5]' !== 'true') {
+                    if ('REX_VALUE[5]' !== 'true') { /** @phpstan-ignore-line */
                         echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_gender'. $tag_close .'</div>';
                         echo '<div class="col-10 col-sm-5 col-md-7 div_cart"><select class="participant" name="participant_'. $course_id .'['. $participant_id .'][gender]">';
-                        echo '<option value="M"'. ('M' === $participant_data['gender'] ? ' selected' : '') .'>'. $tag_open .'d2u_courses_male'. $tag_close .'</option>';
-                        echo '<option value="W"'. ('W' === $participant_data['gender'] ? ' selected' : '') .'>'. $tag_open .'d2u_courses_female'. $tag_close .'</option>';
+                        echo '<option value="M"'. (array_key_exists('gender', $participant_data) && 'M' === $participant_data['gender'] ? ' selected' : '') .'>'. $tag_open .'d2u_courses_male'. $tag_close .'</option>';
+                        echo '<option value="W"'. (array_key_exists('gender', $participant_data) && 'W' === $participant_data['gender'] ? ' selected' : '') .'>'. $tag_open .'d2u_courses_female'. $tag_close .'</option>';
                         echo '</select></div>';
                     }
 
@@ -769,7 +774,7 @@ if (isset($form_data['invoice_form'])) {
                         $counter_row_price_salery_level_details = 0;
                         foreach ($course->price_salery_level_details as $key => $value) {
                             ++$counter_row_price_salery_level_details;
-                            echo '<option value="'. $counter_row_price_salery_level_details .'"'. ($counter_row_price_salery_level_details == $participant_data['price_salery_level_row_number'] ? 'selected' : '') .'>'. $key .': '. $value .'</option>';
+                            echo '<option value="'. $counter_row_price_salery_level_details .'"'. ($counter_row_price_salery_level_details === (int) $participant_data['price_salery_level_row_number'] ? 'selected' : '') .'>'. $key .': '. $value .'</option>';
                         }
                         echo '</select></div>';
                     }

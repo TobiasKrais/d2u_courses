@@ -605,7 +605,7 @@ class Cart
     /**
      * Get Cart Courses.
      * @param int $course_id Course ID
-     * @return string[] Participants
+     * @return array<int,array<string,string>>|array<string,string> Participants
      */
     public static function getCourseParticipants($course_id)
     {
@@ -620,8 +620,7 @@ class Cart
     /**
      * Get Cart Courses participant number.
      * @param int $course_id Course ID
-     * @return string[]|int Participants, in case only patricipant number is set
-     * for this course, number of participants is returned
+     * @return int number of participants
      */
     public static function getCourseParticipantsNumber($course_id)
     {

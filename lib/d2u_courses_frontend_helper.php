@@ -1,5 +1,6 @@
 <?php
 
+use D2U_Courses\Category;
 use D2U_Courses\LocationCategory;
 use D2U_Courses\ScheduleCategory;
 
