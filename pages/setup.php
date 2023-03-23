@@ -19,7 +19,7 @@ $d2u_module_manager->showManagerList();
 $sql = rex_sql::factory();
 $sql->setQuery("SHOW TABLES LIKE '". rex::getTablePrefix() ."d2u_kurse_kurse'");
 $old_tables_available = $sql->getRows() > 0 ? true : false;
-if ('d2u_courses' == rex_request('import', 'string') && $old_tables_available) {
+if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) {
     $sql->setQuery('DROP TABLE IF EXISTS `'. rex::getTablePrefix() .'d2u_courses_location_categories`;
 			DROP TABLE IF EXISTS `'. rex::getTablePrefix() .'d2u_courses_locations`;
 			DROP TABLE IF EXISTS `'. rex::getTablePrefix() .'d2u_courses_target_groups`;
@@ -36,14 +36,14 @@ if ('d2u_courses' == rex_request('import', 'string') && $old_tables_available) {
     for ($i = 0; $i < $sql->getRows(); ++$i) {
         $course_id = $sql->getValue('kurs_id');
         $category_id = $sql->getValue('kurskategorie_id');
-        $secondary_category_ids_unfiltered = preg_grep('/^\s*$/s', explode('|', $sql->getValue('sekundaere_kurskategorie_ids')), PREG_GREP_INVERT);
+        $secondary_category_ids_unfiltered = preg_grep('/^\s*$/s', explode('|', (string) $sql->getValue('sekundaere_kurskategorie_ids')), PREG_GREP_INVERT);
         $secondary_category_ids = is_array($secondary_category_ids_unfiltered) ? array_map('intval', $secondary_category_ids_unfiltered) : [];
-        if (!in_array($category_id, $secondary_category_ids)) {
+        if (!in_array($category_id, $secondary_category_ids, true)) {
             $secondary_category_ids[] = $category_id;
         }
-        $target_group_ids_unfiltered = preg_grep('/^\s*$/s', explode('|', $sql->getValue('zielgruppen_ids')), PREG_GREP_INVERT);
+        $target_group_ids_unfiltered = preg_grep('/^\s*$/s', explode('|', (string) $sql->getValue('zielgruppen_ids')), PREG_GREP_INVERT);
         $target_group_ids = is_array($target_group_ids_unfiltered) ? array_map('intval', $target_group_ids_unfiltered) : [];
-        $schedule_category_ids_unfiltered = preg_grep('/^\s*$/s', explode('|', $sql->getValue('terminkategorie_ids')), PREG_GREP_INVERT);
+        $schedule_category_ids_unfiltered = preg_grep('/^\s*$/s', explode('|', (string) $sql->getValue('terminkategorie_ids')), PREG_GREP_INVERT);
         $schedule_category_ids = is_array($schedule_category_ids_unfiltered) ? array_map('intval', $schedule_category_ids_unfiltered) : [];
 
         foreach ($target_group_ids as $target_group_id) {
@@ -75,9 +75,10 @@ if ('d2u_courses' == rex_request('import', 'string') && $old_tables_available) {
         $parent_target_id = $sql->getValue('eltern_zielgruppe_id');
         $target_id = $sql->getValue('c2t.target_group_id');
         $kufer_name = $sql->getValue('kufer_zielgruppe_name');
-        $kufer_categories = array_map('trim', preg_grep('/^\s*$/s', explode(PHP_EOL, $sql->getValue('kufer_kategorien_bezeichnungsstrukturen')), PREG_GREP_INVERT));
+		$kufer_kategorien_bezeichnungsstrukturen = preg_grep('/^\s*$/s', explode(PHP_EOL, (string) $sql->getValue('kufer_kategorien_bezeichnungsstrukturen')), PREG_GREP_INVERT);
+        $kufer_categories = is_array($kufer_kategorien_bezeichnungsstrukturen) ? array_map('trim', $kufer_kategorien_bezeichnungsstrukturen) : [];
         // Transfer Kufer names to parents
-        if ('' != $kufer_name) {
+        if ('' !== $kufer_name) {
             $parent_kufer_names[$parent_target_id] = $kufer_name;
         }
         // Transfer Kufer categories to parents
@@ -197,7 +198,7 @@ if ('d2u_courses' == rex_request('import', 'string') && $old_tables_available) {
 
     $error = $sql->hasError() ? $sql->getError() : '';
 
-    if ('' != $error) {
+    if ('' !== $error) {
         echo rex_view::error('Fehler beim Import: '. $error);
     } else {
         echo rex_view::success('Daten aus Redaxo 4 D2U Kurse Addon importiert und alte Tabellen gelöscht');

@@ -1,4 +1,11 @@
 <?php
+
+use D2U_Courses\Category;
+use D2U_Courses\Course;
+use D2U_Courses\Location;
+use D2U_Courses\LocationCategory;
+use D2U_Courses\ScheduleCategory;
+
 $func = rex_request('func', 'string');
 $entry_id = (int) rex_request('entry_id', 'int');
 $message = rex_get('message', 'string');
@@ -32,7 +39,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $course->price_salery_level_details = [];
     foreach (explode(PHP_EOL, $form['price_salery_level_details']) as $price_salery_level_details_line) {
         $line = explode(':', $price_salery_level_details_line);
-        if (2 == count($line)) {
+        if (2 === count($line)) {
             $course->price_salery_level_details[trim($line[0])] = trim($line[1]);
         }
     }
@@ -75,7 +82,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     }
 
     // Redirect to make reload and thus double save impossible
-    if (1 === (int) filter_input(INPUT_POST, 'btn_apply', FILTER_VALIDATE_INT) && false !== $course) {
+    if (1 === (int) filter_input(INPUT_POST, 'btn_apply', FILTER_VALIDATE_INT) && $course->course_id > 0) {
         header('Location: '. rex_url::currentBackendPage(['entry_id' => $course->course_id, 'func' => 'edit', 'message' => $message], false));
     } else {
         header('Location: '. rex_url::currentBackendPage(['message' => $message], false));
@@ -112,8 +119,8 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
     $course = new D2U_Courses\Course($entry_id);
 
     $readonly = false;
-    if (!rex::getUser()->isAdmin() && !rex::getUser()->hasPerm('d2u_courses[courses_all]')
-        && rex_plugin::get('d2u_courses', 'locations')->isAvailable() && false !== $course->location && !in_array(rex::getUser()->getLogin(), $course->location->redaxo_users)) {
+    if (rex::getUser() instanceof rex_user && !rex::getUser()->isAdmin() && !rex::getUser()->hasPerm('d2u_courses[courses_all]')
+        && rex_plugin::get('d2u_courses', 'locations')->isAvailable() && $course->location instanceof Location && !in_array(rex::getUser()->getLogin(), $course->location->redaxo_users, true)) {
         $readonly = true;
     }
 ?>
@@ -130,13 +137,13 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                             d2u_addon_backend_helper::form_input('d2u_courses_course_number', 'form[course_number]', $course->course_number, false, $readonly, 'text');
                             d2u_addon_backend_helper::form_input('d2u_courses_instructor', 'form[instructor]', $course->instructor, false, $readonly, 'text');
                             d2u_addon_backend_helper::form_checkbox('d2u_helper_online_status', 'form[online_status]', 'online', 'online' === $course->online_status, $readonly);
-                            d2u_addon_backend_helper::form_input('d2u_courses_teaser', 'form[teaser]', $course->teaser, false, $readonly, false);
+                            d2u_addon_backend_helper::form_input('d2u_courses_teaser', 'form[teaser]', $course->teaser, false, $readonly, 'text');
                             d2u_addon_backend_helper::form_textarea('d2u_courses_description', 'form[description]', $course->description, 5, false, $readonly, true);
                             d2u_addon_backend_helper::form_textarea('d2u_courses_details_course', 'form[details_course]', $course->details_course, 3, false, $readonly, true);
                             d2u_addon_backend_helper::form_textarea('d2u_courses_details_deadline', 'form[details_deadline]', $course->details_deadline, 3, false, $readonly, false);
                             d2u_addon_backend_helper::form_input('d2u_courses_details_age', 'form[details_age]', $course->details_age, false, $readonly, 'text');
                             d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $course->picture, $readonly);
-                            d2u_addon_backend_helper::form_medialistfield('d2u_courses_downloads', '1', $course->downloads, $readonly);
+                            d2u_addon_backend_helper::form_medialistfield('d2u_courses_downloads', 1, $course->downloads, $readonly);
                             if (!rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && 'KuferSQL' !== $course->import_type) {
                                 d2u_addon_backend_helper::form_checkbox('d2u_courses_price_salery_level', 'form[price_salery_level]', 'true', $course->price_salery_level, $readonly);
                                 $price_salery_level_details = '';
@@ -146,15 +153,15 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                                 d2u_addon_backend_helper::form_textarea('d2u_courses_price_salery_level_details', 'form[price_salery_level_details]', $price_salery_level_details, 5, false, $readonly, false);
                                 d2u_addon_backend_helper::form_infotext('d2u_courses_price_salery_level_details_description', 'd2u_courses_price_salery_level_details_description');
                             }
-                            d2u_addon_backend_helper::form_input('d2u_courses_price', 'form[price]', $course->price, false, $readonly, 'text');
-                            d2u_addon_backend_helper::form_input('d2u_courses_price_discount', 'form[price_discount]', $course->price_discount, false, $readonly, 'text');
+                            d2u_addon_backend_helper::form_input('d2u_courses_price', 'form[price]', (string) $course->price, false, $readonly, 'text');
+                            d2u_addon_backend_helper::form_input('d2u_courses_price_discount', 'form[price_discount]', (string) $course->price_discount, false, $readonly, 'text');
                             $options_registration = [
                                 'yes' => rex_i18n::msg('d2u_courses_yes'),
                                 'yes_number' => rex_i18n::msg('d2u_courses_yes_number'),
                                 'no' => rex_i18n::msg('d2u_courses_no'),
                                 'booked' => rex_i18n::msg('d2u_courses_booked'),
                             ];
-                            if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && 'KuferSQL' == $course->import_type && '' != $course->course_number) {
+                            if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && 'KuferSQL' === $course->import_type && '' !== $course->course_number) {
                                 unset($options_registration['yes_number']);
                             }
                             d2u_addon_backend_helper::form_select('d2u_courses_registration_possible', 'form[registration_possible]', $options_registration, [$course->registration_possible], 1, false, $readonly);
@@ -202,9 +209,9 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
 						<?php
                             $options_categories = [];
                             foreach (D2U_Courses\Category::getAllNotParents() as $category) {
-                                $options_categories[$category->category_id] = ($category->parent_category ? ($category->parent_category->parent_category ? ($category->parent_category->parent_category->parent_category ? $category->parent_category->parent_category->parent_category->name .' → ' : ''). $category->parent_category->parent_category->name .' → ' : ''). $category->parent_category->name .' → ' : ''). $category->name;
+                                $options_categories[$category->category_id] = ($category->parent_category instanceof Category ? ($category->parent_category->parent_category instanceof Category ? ($category->parent_category->parent_category->parent_category instanceof Category ? $category->parent_category->parent_category->parent_category->name .' → ' : ''). $category->parent_category->parent_category->name .' → ' : ''). $category->parent_category->name .' → ' : ''). $category->name;
                             }
-                            d2u_addon_backend_helper::form_select('d2u_courses_category_primary', 'form[category_id]', $options_categories, $course->category ? [$course->category->category_id] : [], 1, false, $readonly);
+                            d2u_addon_backend_helper::form_select('d2u_courses_category_primary', 'form[category_id]', $options_categories, $course->category instanceof Category ? [$course->category->category_id] : [], 1, false, $readonly);
                             d2u_addon_backend_helper::form_select('d2u_courses_category_secondary', 'form[secondary_category_ids][]', $options_categories, $course->secondary_category_ids, 10, true, $readonly);
                             $options_google_type = [
                                 '' => rex_i18n::msg('d2u_courses_google_type_none'),
@@ -219,7 +226,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                             if (rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
                                 $options_schedule_categories = [];
                                 foreach (D2U_Courses\ScheduleCategory::getAllNotParents() as $schedule_category) {
-                                    $options_schedule_categories[$schedule_category->schedule_category_id] = (false !== $schedule_category->parent_schedule_category ? $schedule_category->parent_schedule_category->name .' → ' : ''). $schedule_category->name;
+                                    $options_schedule_categories[$schedule_category->schedule_category_id] = ($schedule_category->parent_schedule_category instanceof ScheduleCategory? $schedule_category->parent_schedule_category->name .' → ' : ''). $schedule_category->name;
                                 }
                                 d2u_addon_backend_helper::form_select('d2u_courses_schedule_categories', 'form[schedule_category_ids][]', $options_schedule_categories, $course->schedule_category_ids, 10, true, $readonly);
                             }
@@ -236,12 +243,12 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                                 $options_locations = [];
                                 foreach (D2U_Courses\Location::getAll() as $location) {
                                     // Add location only if user has the right to edit courses for location
-                                    if (rex::getUser() instanceof rex_user && (rex::getUser()->isAdmin() || rex::getUser()->hasPerm('d2u_courses[courses_all]') || in_array(rex::getUser()->getLogin(), $location->redaxo_users))) {
-                                        $options_locations[$location->location_id] = (false !== $location->location_category ? $location->location_category->name .' → ' : ''). $location->name;
+                                    if (rex::getUser() instanceof rex_user && (rex::getUser()->isAdmin() || rex::getUser()->hasPerm('d2u_courses[courses_all]') || in_array(rex::getUser()->getLogin(), $location->redaxo_users, true))) {
+                                        $options_locations[$location->location_id] = ($location->location_category instanceof LocationCategory ? $location->location_category->name .' → ' : ''). $location->name;
                                     }
                                 }
                                 asort($options_locations);
-                                d2u_addon_backend_helper::form_select('d2u_courses_location', 'form[location_id]', $options_locations, false === $course->location ? [] : [$course->location->location_id], 1, false, $readonly);
+                                d2u_addon_backend_helper::form_select('d2u_courses_location', 'form[location_id]', $options_locations, $course->location instanceof Location ? [$course->location->location_id] : [], 1, false, $readonly);
                                 d2u_addon_backend_helper::form_input('d2u_courses_location_room', 'form[room]', $course->room, false, $readonly, 'text');
                             }
                         ?>
@@ -288,7 +295,7 @@ if ('' === $func) {
             . 'ON categories_parents.parent_category_id = categories_grand_parents.category_id '
         . 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_categories AS categories_great_grand_parents '
             . 'ON categories_grand_parents.parent_category_id = categories_great_grand_parents.category_id ';
-    if (!rex::getUser()->isAdmin() && !rex::getUser()->hasPerm('d2u_courses[courses_all]') && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
+    if (rex::getUser() instanceof rex_user && !rex::getUser()->isAdmin() && !rex::getUser()->hasPerm('d2u_courses[courses_all]') && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
         $query .= 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_locations AS locations '
                 . 'ON courses.location_id = locations.location_id '
             .'WHERE redaxo_users LIKE "%'. rex::getUser()->getLogin() .'%" ';

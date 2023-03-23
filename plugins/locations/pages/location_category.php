@@ -27,7 +27,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     }
 
     // Redirect to make reload and thus double save impossible
-    if (1 === (int) filter_input(INPUT_POST, 'btn_apply', FILTER_VALIDATE_INT) && false !== $location_category) {
+    if (1 === (int) filter_input(INPUT_POST, 'btn_apply', FILTER_VALIDATE_INT) && $location_category->location_category_id > 0) {
         header('Location: '. rex_url::currentBackendPage(['entry_id' => $location_category->location_category_id, 'func' => 'edit', 'message' => $message], false));
     } else {
         header('Location: '. rex_url::currentBackendPage(['message' => $message], false));
@@ -65,7 +65,6 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
 
 // Form
 if ('edit' === $func || 'add' === $func) {
-    $readonly = false;
 ?>
 	<form action="<?= rex_url::currentBackendPage() ?>" method="post">
 		<div class="panel panel-edit">
@@ -75,27 +74,19 @@ if ('edit' === $func || 'add' === $func) {
 				<?php
 
                     $location_category = new D2U_Courses\LocationCategory($entry_id);
-                    d2u_addon_backend_helper::form_input('d2u_helper_name', 'form[name]', $location_category->name, true, $readonly);
-                    d2u_addon_backend_helper::form_input('d2u_courses_location_zoomlevel', 'form[zoom_level]', $location_category->zoom_level, true, $readonly, 'number');
-                    d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $location_category->picture, $readonly);
+                    d2u_addon_backend_helper::form_input('d2u_helper_name', 'form[name]', $location_category->name, true, false);
+                    d2u_addon_backend_helper::form_input('d2u_courses_location_zoomlevel', 'form[zoom_level]', $location_category->zoom_level, true, false, 'number');
+                    d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $location_category->picture, false);
                 ?>
 			</div>
 			<footer class="panel-footer">
 				<div class="rex-form-panel-footer">
 					<div class="btn-toolbar">
-						<?php
-                            if (!$readonly) {
-                        ?>
 						<button class="btn btn-save rex-form-aligned" type="submit" name="btn_save" value="1"><?= rex_i18n::msg('form_save') ?></button>
 						<button class="btn btn-apply" type="submit" name="btn_apply" value="1"><?= rex_i18n::msg('form_apply') ?></button>
-						<?php
-                            }
-                        ?>
 						<button class="btn btn-abort" type="submit" name="btn_abort" formnovalidate="formnovalidate" value="1"><?= rex_i18n::msg('form_abort') ?></button>
 						<?php
-                            if (!$readonly) {
-                                echo '<button class="btn btn-delete" type="submit" name="btn_delete" formnovalidate="formnovalidate" data-confirm="'. rex_i18n::msg('form_delete') .'?" value="1">'. rex_i18n::msg('form_delete') .'</button>';
-                            }
+                            echo '<button class="btn btn-delete" type="submit" name="btn_delete" formnovalidate="formnovalidate" data-confirm="'. rex_i18n::msg('form_delete') .'?" value="1">'. rex_i18n::msg('form_delete') .'</button>';
                         ?>
 					</div>
 				</div>

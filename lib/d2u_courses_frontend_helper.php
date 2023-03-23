@@ -3,6 +3,7 @@
 use D2U_Courses\Category;
 use D2U_Courses\LocationCategory;
 use D2U_Courses\ScheduleCategory;
+use D2U_Courses\TargetGroup;
 
 /**
  * Offers helper functions for frontend.
@@ -114,7 +115,7 @@ class d2u_courses_frontend_helper
 
             if ($target_group_child_id > 0 && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
                 $target_group_child = D2U_Courses\TargetGroup::getByChildID($target_group_child_id);
-                if (false !== $target_group_child->parent_target_group) {
+                if ($target_group_child->parent_target_group instanceof TargetGroup) {
                     $breadcrumbs[] = '<a href="' . $target_group_child->parent_target_group->getUrl() . '">' . $target_group_child->parent_target_group->name . '</a>';
                 }
                 $breadcrumbs[] = '<a href="' . $target_group_child->getUrl() . '">' . $target_group_child->name . '</a>';

@@ -8,6 +8,7 @@
 namespace D2U_Courses;
 
 use d2u_addon_backend_helper;
+use D2U_Courses\TargetGroup as D2U_CoursesTargetGroup;
 use d2u_courses_frontend_helper;
 use rex;
 use rex_addon;
@@ -17,6 +18,7 @@ use rex_sql;
 use rex_yrewrite;
 
 /**
+ * @api
  * Target groups class.
  */
 class TargetGroup
@@ -72,7 +74,8 @@ class TargetGroup
             $this->picture = (string) $result->getValue('picture');
             $this->priority = (int) $result->getValue('priority');
             $this->kufer_target_group_name = (string) $result->getValue('kufer_target_group_name');
-            $this->kufer_categories = array_map('trim', preg_grep('/^\s*$/s', explode(PHP_EOL, (string) $result->getValue('kufer_categories')), PREG_GREP_INVERT));
+            $kufer_categories = preg_grep('/^\s*$/s', explode(PHP_EOL, (string) $result->getValue('kufer_categories')), PREG_GREP_INVERT);
+            $this->kufer_categories = is_array($kufer_categories) ? array_map('trim', $kufer_categories) : [];
             $this->updatedate = (string) $result->getValue('updatedate');
         }
     }
@@ -116,6 +119,7 @@ class TargetGroup
     /**
      * Get all target groups.
      * @param bool $online_only If true only online categories are returned
+     * @param int $parent_target_group_id Parent target group id if only children of the specific group should be returned
      * @return TargetGroup[] Array with target group IDs
      */
     public static function getAll($online_only = true, $parent_target_group_id = 0)
@@ -134,7 +138,7 @@ class TargetGroup
 
         $target_groups = [];
         for ($i = 0; $i < $result->getRows(); ++$i) {
-            $target_groups[] = new self($result->getValue('target_group_id'));
+            $target_groups[] = new self((int) $result->getValue('target_group_id'));
             $result->next();
         }
 
@@ -142,15 +146,15 @@ class TargetGroup
     }
 
     /**
-     * Get by target_group_child_id. target_group_child_id format is
-     * target_group_id, category_id, devider is "-".
-     * @param string target_group_child_id ID
+     * Get by target_group_child_id. target_group_child_id format is target_group_id, category_id, devider is "-".
+     * @param string $target_group_child_id ID
+     * @return TargetGroup Target group child
      */
     public static function getByChildID($target_group_child_id)
     {
         // Separator is ugly, but needs to consist of digits only
-        $target_group_id = substr($target_group_child_id, 0, strrpos($target_group_child_id, '00000'));
-        $category_id = substr($target_group_child_id, strrpos($target_group_child_id, '00000') + 5);
+        $target_group_id = (int) substr($target_group_child_id, 0, (int) strrpos($target_group_child_id, '00000'));
+        $category_id = (int) substr($target_group_child_id, (int) strrpos($target_group_child_id, '00000') + 5);
 
         $target_child = new self(0);
         $target_child->parent_target_group = new self($target_group_id);
@@ -170,14 +174,14 @@ class TargetGroup
      */
     public function getChildren()
     {
-        if (false != $this->parent_target_group) {
+        if (!($this->parent_target_group instanceof TargetGroup)) {
             return [];
         }
 
         // Only target groups without parent can have children
         $query = 'SELECT category_id FROM '. rex::getTablePrefix() .'d2u_courses_url_target_group_childs  '
                 .'WHERE target_group_id = '. $this->target_group_id .' ';
-        if ('priority' == rex_config::get('d2u_courses', 'default_category_sort')) {
+        if ('priority' === rex_config::get('d2u_courses', 'default_category_sort')) {
             $query .= 'ORDER BY priority';
         } else {
             $query .= 'ORDER BY name';
@@ -187,7 +191,7 @@ class TargetGroup
 
         $target_children = [];
         for ($i = 0; $i < $result->getRows(); ++$i) {
-            $category = new Category($result->getValue('category_id'));
+            $category = new Category((int) $result->getValue('category_id'));
             $target_child = new self(0);
             $target_child->target_group_id = $category->category_id;
             $target_child->parent_target_group = $this;
@@ -208,18 +212,18 @@ class TargetGroup
     public function getCourses($online_only = false)
     {
         $query = '';
-        if (false === $this->parent_target_group) {
-            // If object is NOT a child
-            $query = 'SELECT courses.course_id FROM '. rex::getTablePrefix() .'d2u_courses_2_target_groups AS c2t '
-                .'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses ON c2t.course_id = courses.course_id '
-                .'WHERE c2t.target_group_id = '. $this->target_group_id .' ';
-        } else {
+        if ($this->parent_target_group instanceof TargetGroup) {
             // If object IS a child
             $query = 'SELECT courses.course_id FROM '. rex::getTablePrefix() .'d2u_courses_2_target_groups AS c2t '
                 .'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses ON c2t.course_id = courses.course_id '
                 .'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_2_categories AS c2c ON c2c.course_id = courses.course_id '
                 .'WHERE c2t.target_group_id = '. $this->parent_target_group->target_group_id .' '
                     .'AND c2c.category_id = '. $this->target_group_id .' ';
+        } else {
+            // If object is NOT a child
+            $query = 'SELECT courses.course_id FROM '. rex::getTablePrefix() .'d2u_courses_2_target_groups AS c2t '
+                .'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses ON c2t.course_id = courses.course_id '
+                .'WHERE c2t.target_group_id = '. $this->target_group_id .' ';
         }
         if ($online_only) {
             $query .= "AND online_status = 'online' "
@@ -232,7 +236,7 @@ class TargetGroup
 
         $courses = [];
         for ($i = 0; $i < $result->getRows(); ++$i) {
-            $courses[] = new Course($result->getValue('course_id'));
+            $courses[] = new Course((int) $result->getValue('course_id'));
             $result->next();
         }
         return $courses;
@@ -265,13 +269,13 @@ class TargetGroup
     {
         if ('' === $this->url) {
             $parameterArray = [];
-            if (false !== $this->parent_target_group) {
+            if ($this->parent_target_group instanceof TargetGroup) {
                 // Separator is ugly, but needs to consist of digits only
                 $parameterArray['target_group_child_id'] = $this->parent_target_group->target_group_id .'00000'. $this->target_group_id;
             } else {
                 $parameterArray['target_group_id'] = $this->target_group_id;
             }
-            $this->url = rex_getUrl(rex_config::get('d2u_courses', 'article_id_target_groups'), '', $parameterArray, '&');
+            $this->url = rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_target_groups'), '', $parameterArray, '&');
         }
 
         if ($including_domain) {
@@ -321,7 +325,7 @@ class TargetGroup
                 $this->target_group_id = (int) $result->getLastId();
             }
 
-            if ($this->priority !== $pre_save_category->priority) {
+            if ($this->priority !== $pre_save_object->priority) {
                 $this->setPriority();
             }
 

@@ -101,7 +101,7 @@ if (isset($form_data['invoice_form'])) {
         $course = new D2U_Courses\Course($course_id);
         if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && 'KuferSQL' === $course->import_type && '' !== $course->course_number) {
             foreach (D2U_Courses\Cart::getCourseParticipants($course_id) as $participant) {
-                if (array_key_exists('firstname', $participant) && $participant['firstname'] === $form_data['invoice_form']['firstname'] && $participant['lastname'] === $form_data['invoice_form']['lastname']) {
+                if (is_array($participant) && array_key_exists('firstname', $participant) && $participant['firstname'] === $form_data['invoice_form']['firstname'] && $participant['lastname'] === $form_data['invoice_form']['lastname']) {
                     // Treat children currently like normal persons
                     $kufer_self[$course_id][] = $participant;
                     // Otherwise uncomment next lines
@@ -484,14 +484,14 @@ if (isset($form_data['invoice_form'])) {
         }
         if ('yes_number' === $course->registration_possible) {
             $participant_data = D2U_Courses\Cart::getCourseParticipants($course_id);
-            if (array_key_exists('participant_number', $participant_data)) {
+            if (array_key_exists('participant_number', $participant_data) && !is_array($participant_data['participant_number'])) {
                 echo '<ul>';
                 echo '<li>'. $tag_open .'d2u_courses_participant_number'. $tag_close .': '. $participant_data['participant_number'];
                 if ($course->price_salery_level) {
                     $counter_row_price_salery_level_details = 0;
                     foreach ($course->price_salery_level_details as $description => $price) {
                         ++$counter_row_price_salery_level_details;
-                        if ($counter_row_price_salery_level_details === (int) $participant_data['participant_price_salery_level_row_number']) {
+                        if ($counter_row_price_salery_level_details === (int) $participant_data['participant_price_salery_level_row_number'] && !is_array($participant_data['participant_price'])) {
                             echo ', '. $tag_open .'d2u_courses_fee'. $tag_close .': '. $participant_data['participant_price'] .' ('. $tag_open .'d2u_courses_price_salery_level'. $tag_close .': '. $description .')';
                             break;
                         }
@@ -505,40 +505,42 @@ if (isset($form_data['invoice_form'])) {
             // registration with person details
             echo '<ul>';
             foreach (D2U_Courses\Cart::getCourseParticipants($course_id) as $id => $participant) {
-                echo '<li>'. (array_key_exists('firstname', $participant) && $participant['firstname'] !== '' ? $participant['firstname'] .' ' : '')
-                    . (array_key_exists('lastname', $participant) && $participant['lastname'] !== '' ? $participant['lastname'] .' ' : '');
+                if (is_array($participant)) {
+                    echo '<li>'. (array_key_exists('firstname', $participant) && '' !== $participant['firstname'] ? $participant['firstname'] .' ' : '')
+                        . (array_key_exists('lastname', $participant) && '' !== $participant['lastname'] ? $participant['lastname'] .' ' : '');
 
-                if ('REX_VALUE[5]' !== 'true' || ($course->category instanceof Category && in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_id, true))) { /** @phpstan-ignore-line */
-                    echo ' (';
-                    $age_seperator = false;
-                    if (1 === $ask_age && array_key_exists('birthday', $participant) && $participant['birthday'] !== '') { /** @phpstan-ignore-line */
-                        echo $tag_open .'d2u_courses_birthdate'. $tag_close .': '. D2U_Courses\Cart::formatCourseDate($participant['birthday']);
-                        $age_seperator = true;
-                    } elseif (2 === $ask_age && array_key_exists('age', $participant)) { /** @phpstan-ignore-line */
-                        echo $tag_open .'d2u_courses_age'. $tag_close .': '. D2U_Courses\Cart::formatCourseDate($participant['age']);
-                        $age_seperator = true;
-                    }
-                    if ('REX_VALUE[5]' !== 'true') { /** @phpstan-ignore-line */
-                        if ($age_seperator) { /** @phpstan-ignore-line */
-                            echo ', ';
+                    if ('REX_VALUE[5]' !== 'true' || ($course->category instanceof Category && in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_id, true))) { /** @phpstan-ignore-line */
+                        echo ' (';
+                        $age_seperator = false;
+                        if (1 === $ask_age && array_key_exists('birthday', $participant) && '' !== $participant['birthday']) { /** @phpstan-ignore-line */
+                            echo $tag_open .'d2u_courses_birthdate'. $tag_close .': '. D2U_Courses\Cart::formatCourseDate($participant['birthday']);
+                            $age_seperator = true;
+                        } elseif (2 === $ask_age && array_key_exists('age', $participant)) { /** @phpstan-ignore-line */
+                            echo $tag_open .'d2u_courses_age'. $tag_close .': '. D2U_Courses\Cart::formatCourseDate($participant['age']);
+                            $age_seperator = true;
                         }
-                        echo array_key_exists('gender', $participant) && 'M' === $participant['gender'] ? $tag_open .'d2u_courses_male'. $tag_close : $tag_open .'d2u_courses_female'. $tag_close;
+                        if ('REX_VALUE[5]' !== 'true') { /** @phpstan-ignore-line */
+                            if ($age_seperator) { /** @phpstan-ignore-line */
+                                echo ', ';
+                            }
+                            echo array_key_exists('gender', $participant) && 'M' === $participant['gender'] ? $tag_open .'d2u_courses_male'. $tag_close : $tag_open .'d2u_courses_female'. $tag_close;
+                        }
+                        echo ')';
                     }
-                    echo ')';
-                }
-                if ($course->price_salery_level) {
-                    $counter_row_price_salery_level_details = 0;
-                    foreach ($course->price_salery_level_details as $description => $price) {
-                        ++$counter_row_price_salery_level_details;
-                        if (array_key_exists('price_salery_level_row_number', $participant) && $counter_row_price_salery_level_details === (int) $participant['price_salery_level_row_number']) {
-                            echo ', '. $tag_open .'d2u_courses_fee'. $tag_close .': '. $participant['price'] .' ('. $tag_open .'d2u_courses_price_salery_level'. $tag_close .': '. $description .')';
-                            break;
+                    if ($course->price_salery_level) {
+                        $counter_row_price_salery_level_details = 0;
+                        foreach ($course->price_salery_level_details as $description => $price) {
+                            ++$counter_row_price_salery_level_details;
+                            if (array_key_exists('price_salery_level_row_number', $participant) && $counter_row_price_salery_level_details === (int) $participant['price_salery_level_row_number']) {
+                                echo ', '. $tag_open .'d2u_courses_fee'. $tag_close .': '. $participant['price'] .' ('. $tag_open .'d2u_courses_price_salery_level'. $tag_close .': '. $description .')';
+                                break;
+                            }
                         }
                     }
-                }
-                echo '</li>';
-                if ('' !== $participant['birthday'] && $cart::calculateAge($participant['birthday']) < 18) {
-                    $has_minor_participants = true;
+                    echo '</li>';
+                    if ('' !== $participant['birthday'] && $cart::calculateAge($participant['birthday']) < 18) {
+                        $has_minor_participants = true;
+                    }
                 }
             }
             echo '</ul>';
@@ -699,7 +701,7 @@ if (isset($form_data['invoice_form'])) {
                 echo '<br>';
                 echo '<div class="row">';
                 echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_participant_number'. $tag_close .'</div>'
-                    . '<div class="col-10 col-sm-5 col-md-7 div_cart"><input type="number" class="text_cart" name="participant_number_'. $course_id .'" value="'. ($participants_data['participant_number'] ?: 1) .'" min="1" max="50"></div>';
+                    . '<div class="col-10 col-sm-5 col-md-7 div_cart"><input type="number" class="text_cart" name="participant_number_'. $course_id .'" value="'. (!is_array($participants_data['participant_number']) && '' !== $participants_data['participant_number'] ? $participants_data['participant_number'] : 1) .'" min="1" max="50"></div>';
                 echo '<div class="col-2 col-sm-1">';
                 echo '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'?delete='. $course_id .'" onclick="return window.confirm(\''. $tag_open .'d2u_courses_cart_delete_course'. $tag_close .'\');" tabindex="-1">';
                 echo '<img src="'. rex_addon::get('d2u_courses')->getAssetsUrl('delete.png') .'" alt="'. $tag_open .'d2u_courses_cart_delete'. $tag_close .'" class="delete_participant"></a>';
@@ -720,65 +722,67 @@ if (isset($form_data['invoice_form'])) {
                 echo '<div class="row">';
                 echo '<div class="col-12">&nbsp;</div>';
                 foreach (D2U_Courses\Cart::getCourseParticipants($course_id) as $participant_id => $participant_data) {
-                    echo '<div class="col-12"><p><b>'. \Sprog\Wildcard::get('d2u_courses_cart_participant') .'</b></p></div>';
+                    if (is_array($participant_data)) {
+                        echo '<div class="col-12"><p><b>'. \Sprog\Wildcard::get('d2u_courses_cart_participant') .'</b></p></div>';
 
-                    // First name
-                    echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_firstname'. $tag_close .'</div>';
-                    echo '<div class="col-10 col-sm-5 col-md-7 div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][firstname]" value="'. (array_key_exists('lastname', $participant_data) ? $participant_data['firstname'] : '') .'" required maxlength="20"></div>';
+                        // First name
+                        echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_firstname'. $tag_close .'</div>';
+                        echo '<div class="col-10 col-sm-5 col-md-7 div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][firstname]" value="'. (array_key_exists('lastname', $participant_data) ? $participant_data['firstname'] : '') .'" required maxlength="20"></div>';
 
-                    // Delete button
-                    echo '<div class="col-2 col-sm-1">';
-                    $ask_delete = '';
-                    if (1 === D2U_Courses\Cart::getCourseParticipantsNumber($course_id)) {
-                        $ask_delete = ' onclick="return window.confirm(\''. $tag_open .'d2u_courses_cart_delete_course'. $tag_close .'\');"';
-                    }
-                    echo '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'?delete='. $course_id .'&participant='. $participant_id .'" tabindex="-1" '. $ask_delete .'>';
-                    echo '<img src="'. rex_addon::get('d2u_courses')->getAssetsUrl('delete.png') .'" alt="'. $tag_open .'d2u_courses_cart_delete'. $tag_close .'" class="delete_participant"></a>';
-                    echo '</div>';
-
-                    // Last name
-                    echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_lastname'. $tag_close .'</div>';
-                    echo '<div class="col-10 col-sm-5 col-md-7 div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][lastname]" value="'. (array_key_exists('lastname', $participant_data) ? $participant_data['lastname'] : '') .'" required maxlength="20"></div>';
-
-                    // Age / Birthday
-                    if (in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_id, true)) {
-                        echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open . (1 === $ask_age ? 'd2u_courses_birthdate' : 'd2u_courses_age'). $tag_close .'</div>'; /** @phpstan-ignore-line */
-                        echo '<div class="col-10 col-sm-5 col-md-7 div_cart">';
-                        if (1 === $ask_age && array_key_exists('birthday', $participant_data)) { /** @phpstan-ignore-line */
-                            echo '<input type="date" class="date" name="participant_'. $course_id .'['. $participant_id .'][birthday]" value="'. $participant_data['birthday'] .'" required placeholder="'. $tag_open .'d2u_courses_date_placeholder'. $tag_close .'" min="1900-01-01" max="'. (date('Y') - 5) .'-01-01">';
-                        } elseif (2 === $ask_age && array_key_exists('age', $participant_data)) { /** @phpstan-ignore-line */
-                            echo '<input type="number" name="participant_'. $course_id .'['. $participant_id .'][age]" value="'. $participant_data['age'] .'" required>';
+                        // Delete button
+                        echo '<div class="col-2 col-sm-1">';
+                        $ask_delete = '';
+                        if (1 === D2U_Courses\Cart::getCourseParticipantsNumber($course_id)) {
+                            $ask_delete = ' onclick="return window.confirm(\''. $tag_open .'d2u_courses_cart_delete_course'. $tag_close .'\');"';
                         }
+                        echo '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'?delete='. $course_id .'&participant='. $participant_id .'" tabindex="-1" '. $ask_delete .'>';
+                        echo '<img src="'. rex_addon::get('d2u_courses')->getAssetsUrl('delete.png') .'" alt="'. $tag_open .'d2u_courses_cart_delete'. $tag_close .'" class="delete_participant"></a>';
                         echo '</div>';
 
-                        // Emergency phone number
-                        echo '<div class="col-12 col-sm-6 col-md-4">'. \Sprog\Wildcard::get('d2u_courses_cart_emergency_number') .'</div>';
-                        echo '<div class="col-10 col-sm-5 col-md-7 div_cart">';
-                        echo '<input type="text" class="date" name="participant_'. $course_id .'['. $participant_id .'][emergency_number]" value="'. $participant_data['emergency_number'] .'" required>';
-                        echo '</div>';
-                    }
+                        // Last name
+                        echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_lastname'. $tag_close .'</div>';
+                        echo '<div class="col-10 col-sm-5 col-md-7 div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][lastname]" value="'. (array_key_exists('lastname', $participant_data) ? $participant_data['lastname'] : '') .'" required maxlength="20"></div>';
 
-                    // Gender
-                    if ('REX_VALUE[5]' !== 'true') { /** @phpstan-ignore-line */
-                        echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_gender'. $tag_close .'</div>';
-                        echo '<div class="col-10 col-sm-5 col-md-7 div_cart"><select class="participant" name="participant_'. $course_id .'['. $participant_id .'][gender]">';
-                        echo '<option value="M"'. (array_key_exists('gender', $participant_data) && 'M' === $participant_data['gender'] ? ' selected' : '') .'>'. $tag_open .'d2u_courses_male'. $tag_close .'</option>';
-                        echo '<option value="W"'. (array_key_exists('gender', $participant_data) && 'W' === $participant_data['gender'] ? ' selected' : '') .'>'. $tag_open .'d2u_courses_female'. $tag_close .'</option>';
-                        echo '</select></div>';
-                    }
+                        // Age / Birthday
+                        if ($course->category instanceof Category && in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_id, true)) { /** @phpstan-ignore-line */
+                            echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open . (1 === $ask_age ? 'd2u_courses_birthdate' : 'd2u_courses_age'). $tag_close .'</div>'; /** @phpstan-ignore-line */
+                            echo '<div class="col-10 col-sm-5 col-md-7 div_cart">';
+                            if (1 === $ask_age && array_key_exists('birthday', $participant_data)) { /** @phpstan-ignore-line */
+                                echo '<input type="date" class="date" name="participant_'. $course_id .'['. $participant_id .'][birthday]" value="'. $participant_data['birthday'] .'" required placeholder="'. $tag_open .'d2u_courses_date_placeholder'. $tag_close .'" min="1900-01-01" max="'. (date('Y') - 5) .'-01-01">';
+                            } elseif (2 === $ask_age && array_key_exists('age', $participant_data)) { /** @phpstan-ignore-line */
+                                echo '<input type="number" name="participant_'. $course_id .'['. $participant_id .'][age]" value="'. $participant_data['age'] .'" required>';
+                            }
+                            echo '</div>';
 
-                    // Salery level
-                    if ($course->price_salery_level) {
-                        echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_price_salery_level'. $tag_close .'</div>';
-                        echo '<div class="col-10 col-sm-5 col-md-7 div_cart"><select class="participant" name="participant_'. $course_id .'['. $participant_id .'][price_salery_level_row_number]">';
-                        $counter_row_price_salery_level_details = 0;
-                        foreach ($course->price_salery_level_details as $key => $value) {
-                            ++$counter_row_price_salery_level_details;
-                            echo '<option value="'. $counter_row_price_salery_level_details .'"'. ($counter_row_price_salery_level_details === (int) $participant_data['price_salery_level_row_number'] ? 'selected' : '') .'>'. $key .': '. $value .'</option>';
+                            // Emergency phone number
+                            echo '<div class="col-12 col-sm-6 col-md-4">'. \Sprog\Wildcard::get('d2u_courses_cart_emergency_number') .'</div>';
+                            echo '<div class="col-10 col-sm-5 col-md-7 div_cart">';
+                            echo '<input type="text" class="date" name="participant_'. $course_id .'['. $participant_id .'][emergency_number]" value="'. $participant_data['emergency_number'] .'" required>';
+                            echo '</div>';
                         }
-                        echo '</select></div>';
+
+                        // Gender
+                        if ('REX_VALUE[5]' !== 'true') { /** @phpstan-ignore-line */
+                            echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_gender'. $tag_close .'</div>';
+                            echo '<div class="col-10 col-sm-5 col-md-7 div_cart"><select class="participant" name="participant_'. $course_id .'['. $participant_id .'][gender]">';
+                            echo '<option value="M"'. (array_key_exists('gender', $participant_data) && 'M' === $participant_data['gender'] ? ' selected' : '') .'>'. $tag_open .'d2u_courses_male'. $tag_close .'</option>';
+                            echo '<option value="W"'. (array_key_exists('gender', $participant_data) && 'W' === $participant_data['gender'] ? ' selected' : '') .'>'. $tag_open .'d2u_courses_female'. $tag_close .'</option>';
+                            echo '</select></div>';
+                        }
+
+                        // Salery level
+                        if ($course->price_salery_level) {
+                            echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_price_salery_level'. $tag_close .'</div>';
+                            echo '<div class="col-10 col-sm-5 col-md-7 div_cart"><select class="participant" name="participant_'. $course_id .'['. $participant_id .'][price_salery_level_row_number]">';
+                            $counter_row_price_salery_level_details = 0;
+                            foreach ($course->price_salery_level_details as $key => $value) {
+                                ++$counter_row_price_salery_level_details;
+                                echo '<option value="'. $counter_row_price_salery_level_details .'"'. ($counter_row_price_salery_level_details === (int) $participant_data['price_salery_level_row_number'] ? 'selected' : '') .'>'. $key .': '. $value .'</option>';
+                            }
+                            echo '</select></div>';
+                        }
+                        echo '<div class="col-12">&nbsp;</div>';
                     }
-                    echo '<div class="col-12">&nbsp;</div>';
                 }
                 echo '</div>';
 

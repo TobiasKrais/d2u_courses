@@ -1,12 +1,12 @@
 <?php
 
 // import
-if ('kufer_sync' == rex_request('import', 'string')) {
+if ('kufer_sync' === rex_request('import', 'string')) {
     echo "<fieldset style='padding: 1em; border: 1px solid #dfe3e9;'>";
     D2U_Courses\KuferSync::sync();
     echo '</fieldset><br>';
 }
-if ('' != trim(\rex_config::get('d2u_courses', 'kufer_sync_xml_url', ''))) {
+if ('' !== trim((string) \rex_config::get('d2u_courses', 'kufer_sync_xml_url', ''))) {
     echo "<fieldset style=' padding: 1em; border: 1px solid #dfe3e9;'>";
     echo '<p>Der Kufer Import aktualisiert die durch Kufer importierten Kurse wie folgt:</p>
 		<ul>

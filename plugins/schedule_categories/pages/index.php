@@ -1,4 +1,7 @@
 <?php
+
+use D2U_Courses\ScheduleCategory;
+
 $func = rex_request('func', 'string');
 $entry_id = (int) rex_request('entry_id', 'int');
 $message = rex_get('message', 'string');
@@ -22,7 +25,8 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $schedule_category->priority = $form['priority'];
     $schedule_category->parent_schedule_category = $form['parent_schedule_category_id'] > 0 ? new D2U_Courses\ScheduleCategory($form['parent_schedule_category_id']) : false;
     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-        $schedule_category->kufer_categories = array_map('trim', preg_grep('/^\s*$/s', explode(PHP_EOL, $form['kufer_categories']), PREG_GREP_INVERT));
+        $kufer_categories = preg_grep('/^\s*$/s', explode(PHP_EOL, $form['kufer_categories']), PREG_GREP_INVERT);
+        $schedule_category->kufer_categories = is_array($kufer_categories) ? array_map('trim', $kufer_categories) : [];
     }
 
     // message output
@@ -32,7 +36,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     }
 
     // Redirect to make reload and thus double save impossible
-    if (1 === (int) filter_input(INPUT_POST, 'btn_apply', FILTER_VALIDATE_INT) && false !== $schedule_category) {
+    if (1 === (int) filter_input(INPUT_POST, 'btn_apply', FILTER_VALIDATE_INT) && $schedule_category->schedule_category_id > 0) {
         header('Location: '. rex_url::currentBackendPage(['entry_id' => $schedule_category->schedule_category_id, 'func' => 'edit', 'message' => $message], false));
     } else {
         header('Location: '. rex_url::currentBackendPage(['message' => $message], false));
@@ -52,7 +56,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
     $uses_courses = $schedule_category->getCourses();
     $uses_categories = $schedule_category->getChildren();
 
-    if (0 === count($uses_courses) && 0 == count($uses_categories)) {
+    if (0 === count($uses_courses) && 0 === count($uses_categories)) {
         $schedule_category->delete();
         echo rex_view::success(rex_i18n::msg('d2u_helper_deleted') . $message);
     } else {
@@ -73,7 +77,6 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
 
 // Form
 if ('edit' === $func || 'add' === $func) {
-    $readonly = false;
 ?>
 	<form action="<?= rex_url::currentBackendPage() ?>" method="post">
 		<div class="panel panel-edit">
@@ -83,35 +86,29 @@ if ('edit' === $func || 'add' === $func) {
 				<?php
 
                     $schedule_category = new D2U_Courses\ScheduleCategory($entry_id);
-                    d2u_addon_backend_helper::form_input('d2u_helper_name', 'form[name]', $schedule_category->name, true, $readonly);
-                    d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $schedule_category->picture, $readonly);
-                    d2u_addon_backend_helper::form_input('header_priority', 'form[priority]', $schedule_category->priority, true, $readonly, 'number');
+                    d2u_addon_backend_helper::form_input('d2u_helper_name', 'form[name]', $schedule_category->name, true, false);
+                    d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $schedule_category->picture, false);
+                    d2u_addon_backend_helper::form_input('header_priority', 'form[priority]', $schedule_category->priority, true, false, 'number');
                     $options_parents = [-1 => rex_i18n::msg('d2u_courses_categories_parent_category_none')];
                     foreach (D2U_Courses\ScheduleCategory::getAllParents() as $parent) {
-                        $options_parents[$parent->schedule_category_id] = $parent->name;
+                        if ($parent instanceof ScheduleCategory) {
+                            $options_parents[$parent->schedule_category_id] = $parent->name;
+                        }
                     }
-                    d2u_addon_backend_helper::form_select('d2u_courses_categories_parent_category', 'form[parent_schedule_category_id]', $options_parents, false === $schedule_category->parent_schedule_category ? [-1] : [$schedule_category->parent_schedule_category->schedule_category_id], 1, false, $readonly);
+                    d2u_addon_backend_helper::form_select('d2u_courses_categories_parent_category', 'form[parent_schedule_category_id]', $options_parents, $schedule_category->parent_schedule_category instanceof ScheduleCategory ? [$schedule_category->parent_schedule_category->schedule_category_id] : [-1], 1, false, false);
                     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-                        d2u_addon_backend_helper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $schedule_category->kufer_categories), 5, false, $readonly, false);
+                        d2u_addon_backend_helper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $schedule_category->kufer_categories), 5, false, false, false);
                     }
                 ?>
 			</div>
 			<footer class="panel-footer">
 				<div class="rex-form-panel-footer">
 					<div class="btn-toolbar">
-						<?php
-                            if (!$readonly) {
-                        ?>
 						<button class="btn btn-save rex-form-aligned" type="submit" name="btn_save" value="1"><?= rex_i18n::msg('form_save') ?></button>
 						<button class="btn btn-apply" type="submit" name="btn_apply" value="1"><?= rex_i18n::msg('form_apply') ?></button>
-						<?php
-                            }
-                        ?>
 						<button class="btn btn-abort" type="submit" name="btn_abort" formnovalidate="formnovalidate" value="1"><?= rex_i18n::msg('form_abort') ?></button>
 						<?php
-                            if (!$readonly) {
                                 echo '<button class="btn btn-delete" type="submit" name="btn_delete" formnovalidate="formnovalidate" data-confirm="'. rex_i18n::msg('form_delete') .'?" value="1">'. rex_i18n::msg('form_delete') .'</button>';
-                            }
                         ?>
 					</div>
 				</div>
@@ -130,7 +127,7 @@ if ('' === $func) {
         . 'FROM '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS category '
         . 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS parents '
             . 'ON category.parent_schedule_category_id = parents.schedule_category_id ';
-    if ('priority' == rex_config::get('d2u_courses', 'default_category_sort', 'name')) {
+    if ('priority' === rex_config::get('d2u_courses', 'default_category_sort', 'name')) {
         $query .= 'ORDER BY priority ASC';
     } else {
         $query .= 'ORDER BY full_name ASC';

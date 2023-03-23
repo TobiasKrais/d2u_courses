@@ -14,7 +14,7 @@ if (0 === (int) $sql->getRows()) {
 }
 
 // Update database to 3.0.5
-if (rex_version::compare($this->getVersion(), '3.0.5', '<')) {
+if (rex_version::compare($this->getVersion(), '3.0.5', '<')) { /** @phpstan-ignore-line */
     $sql->setQuery('ALTER TABLE '. \rex::getTablePrefix() .'d2u_courses_schedule_categories ADD COLUMN `updatedate_new` DATETIME NOT NULL AFTER `updatedate`;');
     $sql->setQuery('UPDATE '. \rex::getTablePrefix() .'d2u_courses_schedule_categories SET `updatedate_new` = FROM_UNIXTIME(`updatedate`);');
     $sql->setQuery('ALTER TABLE '. \rex::getTablePrefix() .'d2u_courses_schedule_categories DROP updatedate;');

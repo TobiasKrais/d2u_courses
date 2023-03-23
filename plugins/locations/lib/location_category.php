@@ -16,27 +16,28 @@ use rex_sql;
 use rex_yrewrite;
 
 /**
+ * @api
  * Location category.
  */
 class LocationCategory
 {
     /** @var int ID */
-    public $location_category_id = 0;
+    public int $location_category_id = 0;
 
     /** @var string Name */
-    public $name = '';
+    public string $name = '';
 
     /** @var string Picture */
-    public $picture = '';
+    public string $picture = '';
 
     /** @var int Zoom level on maps */
-    public $zoom_level = 10;
+    public int $zoom_level = 10;
 
     /** @var string Upadte timestamp */
-    public $updatedate = '';
+    public string $updatedate = '';
 
     /** @var string URL */
-    private $url = '';
+    private string $url = '';
 
     /**
      * Constructor.
@@ -51,11 +52,11 @@ class LocationCategory
         $num_rows = $result->getRows();
 
         if ($num_rows > 0) {
-            $this->location_category_id = $result->getValue('location_category_id');
-            $this->name = $result->getValue('name');
-            $this->picture = $result->getValue('picture');
-            $this->zoom_level = $result->getValue('zoom_level');
-            $this->updatedate = $result->getValue('updatedate');
+            $this->location_category_id = (int) $result->getValue('location_category_id');
+            $this->name = (string) $result->getValue('name');
+            $this->picture = (string) $result->getValue('picture');
+            $this->zoom_level = (int) $result->getValue('zoom_level');
+            $this->updatedate = (string) $result->getValue('updatedate');
         }
     }
 
@@ -124,7 +125,7 @@ class LocationCategory
 
         $location_categories = [];
         for ($i = 0; $i < $num_rows; ++$i) {
-            $location_categories[] = new self($result->getValue('location_category_id'));
+            $location_categories[] = new self((int) $result->getValue('location_category_id'));
             $result->next();
         }
         return $location_categories;
@@ -153,7 +154,7 @@ class LocationCategory
 
         $locations = [];
         for ($i = 0; $i < $num_rows; ++$i) {
-            $locations[] = new Location($result->getValue('location_id'));
+            $locations[] = new Location((int) $result->getValue('location_id'));
             $result->next();
         }
         return $locations;
@@ -169,7 +170,7 @@ class LocationCategory
         if ('' === $this->url) {
             $parameterArray = [];
             $parameterArray['location_category_id'] = $this->location_category_id;
-            $this->url = rex_getUrl(rex_config::get('d2u_courses', 'article_id_locations'), '', $parameterArray, '&');
+            $this->url = rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_locations'), '', $parameterArray, '&');
         }
 
         if ($including_domain) {

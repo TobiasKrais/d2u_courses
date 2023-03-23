@@ -8,6 +8,7 @@
 namespace D2U_Courses;
 
 use d2u_addon_backend_helper;
+use D2U_Courses\ScheduleCategory as D2U_CoursesScheduleCategory;
 use d2u_courses_frontend_helper;
 use rex;
 use rex_addon;
@@ -17,6 +18,7 @@ use rex_sql;
 use rex_yrewrite;
 
 /**
+ * @api
  * Schedule category.
  */
 class ScheduleCategory
@@ -68,7 +70,8 @@ class ScheduleCategory
             if ((int) $result->getValue('parent_schedule_category_id') > 0) {
                 $this->parent_schedule_category = new self((int) $result->getValue('parent_schedule_category_id'));
             }
-            $this->kufer_categories = array_map('trim', preg_grep('/^\s*$/s', explode(PHP_EOL, $result->getValue('kufer_categories')), PREG_GREP_INVERT));
+            $kufer_categories = preg_grep('/^\s*$/s', explode(PHP_EOL, (string) $result->getValue('kufer_categories')), PREG_GREP_INVERT);
+            $this->kufer_categories = is_array($kufer_categories) ? array_map('trim', $kufer_categories) : [];
             $this->updatedate = (string) $result->getValue('updatedate');
         }
     }
@@ -177,7 +180,6 @@ class ScheduleCategory
 
     /**
      * Get all categories which are not parents.
-     * @param bool $online_only If true only online categories are returned
      * @return ScheduleCategory[] array with ScheduleCategory objects
      */
     public static function getAllNotParents()
@@ -290,7 +292,7 @@ class ScheduleCategory
 
         $courses = [];
         for ($i = 0; $i < $num_rows; ++$i) {
-            $courses[] = new Course($result->getValue('course_id'));
+            $courses[] = new Course((int) $result->getValue('course_id'));
             $result->next();
         }
         return $courses;
@@ -306,7 +308,7 @@ class ScheduleCategory
         if ('' === $this->url) {
             $parameterArray = [];
             $parameterArray['schedule_category_id'] = $this->schedule_category_id;
-            $this->url = rex_getUrl(rex_config::get('d2u_courses', 'article_id_schedule_categories'), '', $parameterArray, '&');
+            $this->url = rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_schedule_categories'), '', $parameterArray, '&');
         }
 
         if ($including_domain) {
@@ -337,7 +339,7 @@ class ScheduleCategory
         $query .= rex::getTablePrefix().'d2u_courses_schedule_categories SET '
             .'`name` = "'. addslashes($this->name) .'", '
             .'picture = "'. $this->picture .'", '
-            .'parent_schedule_category_id = '. (false !== $this->parent_schedule_category ? $this->parent_schedule_category->schedule_category_id : 0) .', '
+            .'parent_schedule_category_id = '. ($this->parent_schedule_category instanceof ScheduleCategory ? $this->parent_schedule_category->schedule_category_id : 0) .', '
             .'updatedate = CURRENT_TIMESTAMP ';
         if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
             $query .= ', kufer_categories = "'. implode(PHP_EOL, $this->kufer_categories) .'"';
@@ -352,7 +354,7 @@ class ScheduleCategory
             $this->schedule_category_id = (int) $result->getLastId();
         }
 
-        if ($this->priority !== $pre_save_category->priority) {
+        if ($this->priority !== $pre_save_object->priority) {
             $this->setPriority();
         }
 

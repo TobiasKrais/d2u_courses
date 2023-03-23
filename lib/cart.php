@@ -134,47 +134,47 @@ class Cart
         if ('selbst' === $registration_type || 'kind' === $registration_type) {
             // <NAME>Last name</NAME>
             $name = $xml->createElement('NAME');
-            $name->appendChild($xml->createTextNode($invoice_address['lastname']));
+            $name->appendChild($xml->createTextNode((string) $invoice_address['lastname']));
             $stammdaten->appendChild($name);
             // <VORNAME>First name</VORNAME>
             $firstname = $xml->createElement('VORNAME');
-            $firstname->appendChild($xml->createTextNode($invoice_address['firstname']));
+            $firstname->appendChild($xml->createTextNode((string) $invoice_address['firstname']));
             $stammdaten->appendChild($firstname);
             // <STRASSE>Street and number</STRASSE>
             $strasse = $xml->createElement('STRASSE');
-            $strasse->appendChild($xml->createTextNode($invoice_address['address']));
+            $strasse->appendChild($xml->createTextNode((string) $invoice_address['address']));
             $stammdaten->appendChild($strasse);
             // <ORT>City</ORT>
             $city = $xml->createElement('ORT');
-            $city->appendChild($xml->createTextNode($invoice_address['zipcode'] .' '. $invoice_address['city']));
+            $city->appendChild($xml->createTextNode((string) $invoice_address['zipcode'] .' '. $invoice_address['city']));
             $stammdaten->appendChild($city);
             // <NATION>Land</NATION>
             $country = $xml->createElement('NATION');
-            $country->appendChild($xml->createTextNode($invoice_address['country']));
+            $country->appendChild($xml->createTextNode((string) $invoice_address['country']));
             $stammdaten->appendChild($country);
             if ('' !== trim($invoice_address['gender'])) {
                 // <GESCHLECHT>M = male, W = female, F = company</GESCHLECHT>
                 $gender = $xml->createElement('GESCHLECHT');
-                $gender->appendChild($xml->createTextNode($invoice_address['gender']));
+                $gender->appendChild($xml->createTextNode((string) $invoice_address['gender']));
                 $stammdaten->appendChild($gender);
             }
             if ('selbst' === $registration_type) {
                 foreach ($cart as $course_id => $participant) {
                     if (is_array($participant)) {
                         foreach ($participant as $id => $participant_data) {
-                            if (isset($participant_data['birthday']) && '' !== trim($participant_data['birthday'])) {
+                            if (is_array($participant_data) && isset($participant_data['birthday']) && '' !== trim((string) $participant_data['birthday'])) {
                                 // <GEBDATUM>TT.MM.JJJJ</GEBDATUM>
                                 $gebdatum = $xml->createElement('GEBDATUM');
-                                $gebdatum->appendChild($xml->createTextNode(self::formatCourseDate($participant_data['birthday'])));
+                                $gebdatum->appendChild($xml->createTextNode(self::formatCourseDate((string) $participant_data['birthday'])));
                                 $stammdaten->appendChild($gebdatum);
                                 // <ZUSATZ>Age</ZUSATZ>
                                 $zusatz = $xml->createElement('ZUSATZ');
-                                $zusatz->appendChild($xml->createTextNode((string) self::calculateAge($participant_data['birthday'])));
+                                $zusatz->appendChild($xml->createTextNode((string) self::calculateAge((string) $participant_data['birthday'])));
                                 $stammdaten->appendChild($zusatz);
-                            } elseif (isset($participant_data['age']) && '' !== trim($participant_data['age'])) {
+                            } elseif (is_array($participant_data) && isset($participant_data['age']) && '' !== trim((string) $participant_data['age'])) {
                                 // <ZUSATZ>Age</ZUSATZ>
                                 $zusatz = $xml->createElement('ZUSATZ');
-                                $zusatz->appendChild($xml->createTextNode($participant_data['age']));
+                                $zusatz->appendChild($xml->createTextNode((string) $participant_data['age']));
                                 $stammdaten->appendChild($zusatz);
                             }
                             break 2;
@@ -199,31 +199,31 @@ class Cart
                     foreach ($participant as $id => $participant_data) {
                         // <NAME>Last name</NAME>
                         $name = $xml->createElement('NAME');
-                        $name->appendChild($xml->createTextNode($participant_data['lastname']));
+                        $name->appendChild($xml->createTextNode((string) $participant_data['lastname']));
                         $stammdaten->appendChild($name);
                         // <VORNAME>First name</VORNAME>
                         $firstname = $xml->createElement('VORNAME');
-                        $firstname->appendChild($xml->createTextNode($participant_data['firstname']));
+                        $firstname->appendChild($xml->createTextNode((string) $participant_data['firstname']));
                         $stammdaten->appendChild($firstname);
-                        if (array_key_exists('gender', $participant_data) && '' !== $participant_data['gender']) {
+                        if (is_array($participant_data) && array_key_exists('gender', $participant_data) && '' !== $participant_data['gender']) {
                             // <GESCHLECHT>M = male, W = female, F = company</GESCHLECHT>
                             $gender = $xml->createElement('GESCHLECHT');
-                            $gender->appendChild($xml->createTextNode($participant_data['gender']));
+                            $gender->appendChild($xml->createTextNode((string) $participant_data['gender']));
                             $stammdaten->appendChild($gender);
                         }
-                        if (array_key_exists('birthday', $participant_data) && '' !== $participant_data['birthday']) {
+                        if (is_array($participant_data) && array_key_exists('birthday', $participant_data) && '' !== $participant_data['birthday']) {
                             // <GEBDATUM>DD.MM.YYYY</GEBDATUM>
                             $gebdatum = $xml->createElement('GEBDATUM');
-                            $gebdatum->appendChild($xml->createTextNode(self::formatCourseDate($participant_data['birthday'])));
+                            $gebdatum->appendChild($xml->createTextNode(self::formatCourseDate((string) $participant_data['birthday'])));
                             $stammdaten->appendChild($gebdatum);
                             // <ZUSATZ>Age</ZUSATZ>
                             $zusatz = $xml->createElement('ZUSATZ');
                             $zusatz->appendChild($xml->createTextNode((string) self::calculateAge($participant_data['birthday'])));
                             $stammdaten->appendChild($zusatz);
-                        } elseif (array_key_exists('age', $participant_data) && '' !== $participant_data['age']) {
+                        } elseif (is_array($participant_data) && array_key_exists('age', $participant_data) && '' !== $participant_data['age']) {
                             // <ZUSATZ>Age</ZUSATZ>
                             $zusatz = $xml->createElement('ZUSATZ');
-                            $zusatz->appendChild($xml->createTextNode($participant_data['age']));
+                            $zusatz->appendChild($xml->createTextNode((string) $participant_data['age']));
                             $stammdaten->appendChild($zusatz);
                         }
                         break 2;
@@ -236,47 +236,47 @@ class Cart
         $type = $invoice_address['type'] ?? 'P';
         if ('B' === $type) {
             $company = $xml->createElement('RECHADR'. $rechaddr_field_nr);
-            $company->appendChild($xml->createTextNode($invoice_address['company']));
+            $company->appendChild($xml->createTextNode((string) $invoice_address['company']));
             $stammdaten->appendChild($company);
             ++$rechaddr_field_nr;
         }
 
         $title = isset($invoice_address['gender']) && 'W' === $invoice_address['gender'] ? \Sprog\Wildcard::get('d2u_courses_title_female') : \Sprog\Wildcard::get('d2u_courses_title_male');
         $strasse = $xml->createElement('RECHADR'. $rechaddr_field_nr);
-        $strasse->appendChild($xml->createTextNode($title .' '. trim($invoice_address['firstname']) .' '. trim($invoice_address['lastname'])));
+        $strasse->appendChild($xml->createTextNode((string) $title .' '. trim($invoice_address['firstname']) .' '. trim($invoice_address['lastname'])));
         $stammdaten->appendChild($strasse);
         ++$rechaddr_field_nr;
         // <RECHADR2>Invoice receipient street and house number</RECHADR2>
         $strasse2 = $xml->createElement('RECHADR'. $rechaddr_field_nr);
-        $strasse2->appendChild($xml->createTextNode($invoice_address['address']));
+        $strasse2->appendChild($xml->createTextNode((string) $invoice_address['address']));
         $stammdaten->appendChild($strasse2);
         ++$rechaddr_field_nr;
         // <RECHADR3>Invoice receipient zip code an city</RECHADR3>
         $city = $xml->createElement('RECHADR'. $rechaddr_field_nr);
-        $city->appendChild($xml->createTextNode($invoice_address['zipcode'] .' '. $invoice_address['city']));
+        $city->appendChild($xml->createTextNode((string) $invoice_address['zipcode'] .' '. $invoice_address['city']));
         $stammdaten->appendChild($city);
         ++$rechaddr_field_nr;
         // <RECHADR4>Invoice receipient country</RECHADR4>
         $country = $xml->createElement('RECHADR'. $rechaddr_field_nr);
-        $country->appendChild($xml->createTextNode($invoice_address['country']));
+        $country->appendChild($xml->createTextNode((string) $invoice_address['country']));
         $stammdaten->appendChild($country);
 
         if (isset($invoice_address['iban']) && '' !== $invoice_address['iban']) {
             // <BANKBEZ>Bank name</BANKBEZ>
             $bank = $xml->createElement('BANKBEZ');
-            $bank->appendChild($xml->createTextNode($invoice_address['bank']));
+            $bank->appendChild($xml->createTextNode((string) $invoice_address['bank']));
             $stammdaten->appendChild($bank);
             // <KONTOINH>Account owner</KONTOINH>
             $account_owner = $xml->createElement('KONTOINH');
-            $account_owner->appendChild($xml->createTextNode($invoice_address['account_owner']));
+            $account_owner->appendChild($xml->createTextNode((string) $invoice_address['account_owner']));
             $stammdaten->appendChild($account_owner);
             // <BIC>BIC</BIC>
             $bic = $xml->createElement('BIC');
-            $bic->appendChild($xml->createTextNode($invoice_address['bic']));
+            $bic->appendChild($xml->createTextNode((string) $invoice_address['bic']));
             $stammdaten->appendChild($bic);
             // <IBAN>IBAN</IBAN>
             $iban = $xml->createElement('IBAN');
-            $iban->appendChild($xml->createTextNode($invoice_address['iban']));
+            $iban->appendChild($xml->createTextNode((string) $invoice_address['iban']));
             $stammdaten->appendChild($iban);
         }
 
@@ -309,7 +309,7 @@ class Cart
         $kommunikationseintrag_phone->appendChild($kommbez_phone);
         // <KOMMWERT>Phone number</KOMMWERT>
         $kommwert_phone = $xml->createElement('KOMMWERT');
-        $kommwert_phone->appendChild($xml->createTextNode($invoice_address['phone']));
+        $kommwert_phone->appendChild($xml->createTextNode((string) $invoice_address['phone']));
         $kommunikationseintrag_phone->appendChild($kommwert_phone);
 
         // <KOMMUNIKATIONSEINTRAG>
@@ -325,7 +325,7 @@ class Cart
         $kommunikationseintrag_email->appendChild($kommbez_email);
         // <KOMMWERT>E-Mail address</KOMMWERT>
         $kommwert_email = $xml->createElement('KOMMWERT');
-        $kommwert_email->appendChild($xml->createTextNode($invoice_address['e-mail']));
+        $kommwert_email->appendChild($xml->createTextNode((string) $invoice_address['e-mail']));
         $kommunikationseintrag_email->appendChild($kommwert_email);
 
         // Emergency number
@@ -346,7 +346,7 @@ class Cart
                         $kommunikationseintrag_emergency->appendChild($kommbez_emergency);
                         // <KOMMWERT>Nummer</KOMMWERT>
                         $kommwert_emergency = $xml->createElement('KOMMWERT');
-                        $kommwert_emergency->appendChild($xml->createTextNode($participant_data['emergency_number']));
+                        $kommwert_emergency->appendChild($xml->createTextNode((string) $participant_data['emergency_number']));
                         $kommunikationseintrag_emergency->appendChild($kommwert_emergency);
                     }
                     break 2;
@@ -368,7 +368,7 @@ class Cart
 
                 // <KURSNUMMER>Course number</KURSNUMMER>
                 $kursnummer = $xml->createElement('KURSNUMMER');
-                $kursnummer->appendChild($xml->createTextNode($course->course_number));
+                $kursnummer->appendChild($xml->createTextNode((string) $course->course_number));
                 $kurs_xml->appendChild($kursnummer);
 
                 // <STATUS>A</STATUS>
@@ -379,7 +379,7 @@ class Cart
                 // <ZAHLART>A</ZAHLART>
                 if (isset($invoice_address['payment'])) {
                     $zahlart = $xml->createElement('ZAHLART');
-                    $zahlart->appendChild($xml->createTextNode($invoice_address['payment']));
+                    $zahlart->appendChild($xml->createTextNode((string) $invoice_address['payment']));
                     $kurs_xml->appendChild($zahlart);
                 }
 
@@ -445,13 +445,13 @@ class Cart
                         $weiterstamm->appendChild($name_titel);
                         // <NAME>Last name</NAME>
                         $name = $xml->createElement('NAME');
-                        $name->appendChild($xml->createTextNode($participant_data['lastname']));
+                        $name->appendChild($xml->createTextNode((string) $participant_data['lastname']));
                         $weiterstamm->appendChild($name);
                         // <VORNAME>First name</VORNAME>
                         $firstname = $xml->createElement('VORNAME');
-                        $firstname->appendChild($xml->createTextNode($participant_data['firstname']));
+                        $firstname->appendChild($xml->createTextNode((string) $participant_data['firstname']));
                         $weiterstamm->appendChild($firstname);
-                        if (array_key_exists('birthday', $participant_data) && '' !== $participant_data['birthday']) {
+                        if (is_array($participant_data) && array_key_exists('birthday', $participant_data) && '' !== $participant_data['birthday']) {
                             // <GEBDATUM>DD.MM.YYYY</GEBDATUM>
                             $gebdatum = $xml->createElement('GEBDATUM');
                             $gebdatum->appendChild($xml->createTextNode(self::formatCourseDate($participant_data['birthday'])));
@@ -460,7 +460,7 @@ class Cart
                             $zusatz = $xml->createElement('ZUSATZ');
                             $zusatz->appendChild($xml->createTextNode((string) self::calculateAge($invoice_address['birthday'])));
                             $weiterstamm->appendChild($zusatz);
-                        } elseif (array_key_exists('age', $participant_data) && '' !== $participant_data['age']) {
+                        } elseif (is_array($participant_data) && array_key_exists('age', $participant_data) && '' !== $participant_data['age']) {
                             // <ZUSATZ>Age</ZUSATZ>
                             $zusatz = $xml->createElement('ZUSATZ');
                             $zusatz->appendChild($xml->createTextNode((string) self::calculateAge($invoice_address['age'])));
@@ -468,10 +468,10 @@ class Cart
                         }
                         // <GESCHLECHT>M = male, W = female</GESCHLECHT>
                         $gender = $xml->createElement('GESCHLECHT');
-                        $gender->appendChild($xml->createTextNode($participant_data['gender']));
+                        $gender->appendChild($xml->createTextNode((string) $participant_data['gender']));
                         $weiterstamm->appendChild($gender);
 
-                        if (array_key_exists('emergency_number', $participant_data) && '' !== $participant_data['emergency_number']) {
+                        if (is_array($participant_data) && array_key_exists('emergency_number', $participant_data) && '' !== $participant_data['emergency_number']) {
                             // <KOMMUNIKATIONSEINTRAG>
                             $kommunikationseintrag_emergency = $xml->createElement('KOMMUNIKATIONSEINTRAG');
                             $weiterstamm->appendChild($kommunikationseintrag_emergency);
@@ -485,7 +485,7 @@ class Cart
                             $kommunikationseintrag_emergency->appendChild($kommbez_emergency);
                             // <KOMMWERT>Nummer</KOMMWERT>
                             $kommwert_emergency = $xml->createElement('KOMMWERT');
-                            $kommwert_emergency->appendChild($xml->createTextNode($invoice_address['emergency_number']));
+                            $kommwert_emergency->appendChild($xml->createTextNode((string) $invoice_address['emergency_number']));
                             $kommunikationseintrag_emergency->appendChild($kommwert_emergency);
                         }
 
@@ -500,7 +500,7 @@ class Cart
 
         // XML in Datei schreiben
         try {
-            $dir = trim(rex_config::get('d2u_courses', 'kufer_sync_xml_registration_path'), '/');
+            $dir = trim((string) rex_config::get('d2u_courses', 'kufer_sync_xml_registration_path'), '/');
             if (!file_exists($dir)) {
                 mkdir($dir, 0777, true);
             }
@@ -717,7 +717,7 @@ class Cart
                     $body .= 'Vorname: '. $participant_data['firstname']  .'<br>';
                     $body .= 'Nachname: '. $participant_data['lastname']  .'<br>';
                     if (isset($participant_data['birthday']) && '' !== $participant_data['birthday']) {
-                        $body .= 'Geburtsdatum: '. self::formatCourseDate($participant_data['birthday'])  .'<br>';
+                        $body .= 'Geburtsdatum: '. self::formatCourseDate((string) $participant_data['birthday'])  .'<br>';
                     } elseif (isset($participant_data['age']) && '' !== $participant_data['age']) {
                         $body .= 'Alter bei Veranstaltungsbeginn: '. $participant_data['age']  .'<br>';
                     }

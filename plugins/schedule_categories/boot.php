@@ -19,16 +19,14 @@ function rex_d2u_courses_schedule_categories_article_is_in_use(rex_extension_poi
 {
     $warning = [];
     $params = $ep->getParams();
-    $article_id = $params['id'];
+    $article_id = (int) $params['id'];
 
     // Settings
     $addon = rex_addon::get('d2u_courses');
-    if ($addon->hasConfig('article_id_schedule_categories') && $addon->getConfig('article_id_schedule_categories') == $article_id) {
+    if ($addon->hasConfig('article_id_schedule_categories') && (int) $addon->getConfig('article_id_schedule_categories') === $article_id) {
         $message = '<a href="index.php?page=d2u_courses/settings">'.
              rex_i18n::msg('d2u_courses_rights_all') .' - '. rex_i18n::msg('d2u_helper_settings') . '</a>';
-        if (!in_array($message, $warning, true)) {
-            $warning[] = $message;
-        }
+        $warning[] = $message;
     }
 
     if (count($warning) > 0) {

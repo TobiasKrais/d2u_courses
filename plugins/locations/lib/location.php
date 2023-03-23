@@ -19,6 +19,7 @@ use rex_yrewrite;
 use function is_array;
 
 /**
+ * @api
  * Course location.
  */
 class Location
@@ -93,7 +94,7 @@ class Location
             if ($result->getValue('location_category_id') > 0) {
                 $this->location_category = new LocationCategory((int) $result->getValue('location_category_id'));
             }
-            $redaxo_users = preg_grep('/^\s*$/s', explode('|', $result->getValue('redaxo_users')), PREG_GREP_INVERT);
+            $redaxo_users = preg_grep('/^\s*$/s', explode('|', (string) $result->getValue('redaxo_users')), PREG_GREP_INVERT);
             $this->redaxo_users = is_array($redaxo_users) ? $redaxo_users : [];
             $this->picture = (string) $result->getValue('picture');
             $this->site_plan = (string) $result->getValue('site_plan');
@@ -165,7 +166,7 @@ class Location
 
         $locations = [];
         for ($i = 0; $i < $num_rows; ++$i) {
-            $locations[] = new self($result->getValue('location_id'));
+            $locations[] = new self((int) $result->getValue('location_id'));
             $result->next();
         }
         return $locations;
@@ -182,7 +183,7 @@ class Location
         $result = rex_sql::factory();
         $result->setQuery($query);
         if ($result->getRows() > 0) {
-            return new self($result->getValue('location_id'));
+            return new self((int) $result->getValue('location_id'));
         }
         return false;
     }
@@ -190,7 +191,7 @@ class Location
     /**
      * Get courses hosted by this location orderd by start date.
      * @param bool $online_only true, if only online courses are returned
-     * @return Courses[] Array with course objects
+     * @return array<int,Course> Array with course objects
      */
     public function getCourses($online_only = true)
     {
@@ -207,7 +208,7 @@ class Location
 
         $courses = [];
         for ($i = 0; $i < $num_rows; ++$i) {
-            $courses[] = new Course($result->getValue('course_id'));
+            $courses[] = new Course((int) $result->getValue('course_id'));
             $result->next();
         }
         return $courses;
@@ -223,7 +224,7 @@ class Location
         if ('' === $this->url) {
             $parameterArray = [];
             $parameterArray['location_id'] = $this->location_id;
-            $this->url = rex_getUrl(rex_config::get('d2u_courses', 'article_id_locations'), '', $parameterArray, '&');
+            $this->url = rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_locations'), '', $parameterArray, '&');
         }
 
         if ($including_domain) {
@@ -259,7 +260,7 @@ class Location
             .'zip_code = "'. $this->zip_code .'", '
             .'country_code = "'. $this->country_code .'", '
             .'street = "'. $this->street .'", '
-            .'location_category_id = '. (false !== $this->location_category ? $this->location_category->location_category_id : 0) .', '
+            .'location_category_id = '. ($this->location_category instanceof LocationCategory ? $this->location_category->location_category_id : 0) .', '
             .'redaxo_users = "'. implode('|', $this->redaxo_users) .'", '
             .'picture = "'. $this->picture .'", '
             .'site_plan = "'. $this->site_plan .'", '

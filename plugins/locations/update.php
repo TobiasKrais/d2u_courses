@@ -1,6 +1,6 @@
 <?php
 
-if (rex_version::compare($this->getVersion(), '3.0.5', '<')) {
+if (rex_version::compare($this->getVersion(), '3.0.5', '<')) { /** @phpstan-ignore-line */
     $sql = rex_sql::factory();
     $sql->setQuery('ALTER TABLE '. \rex::getTablePrefix() .'d2u_courses_location_categories ADD COLUMN `updatedate_new` DATETIME NOT NULL AFTER `updatedate`;');
     $sql->setQuery('UPDATE '. \rex::getTablePrefix() .'d2u_courses_location_categories SET `updatedate_new` = FROM_UNIXTIME(`updatedate`);');

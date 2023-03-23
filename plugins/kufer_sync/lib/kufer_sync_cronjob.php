@@ -6,7 +6,7 @@ class kufer_sync_cronjob extends D2U_Helper\ACronJob
 {
     /**
      * Create a new instance of object.
-     * @return multinewsletter_cronjob_cleanup CronJob object
+     * @return kufer_sync_cronjob CronJob object
      */
     public static function factory()
     {

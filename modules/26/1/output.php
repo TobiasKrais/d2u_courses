@@ -209,13 +209,13 @@ if (rex::isBackend()) {
         }
     }
     // Deal with target groups
-    elseif ($target_group) {
-        if (count($target_group->getChildren(true)) > 0) {
+    elseif ($target_group instanceof TargetGroup) {
+        if (count($target_group->getChildren()) > 0) {
             echo '<div class="col-12 course-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a') .' !important">';
             echo '<h1 class="page_title">'. $target_group->name .'</h1>';
             echo '</div></div>';
             // Children
-            foreach ($target_group->getChildren(true) as $child_target_group) {
+            foreach ($target_group->getChildren() as $child_target_group) {
                 printBoxModule26_1($child_target_group->name, $child_target_group->picture, rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a'), $child_target_group->getUrl(), $box_per_line);
             }
         } else {
@@ -335,7 +335,7 @@ if (rex::isBackend()) {
             if ($course_list_box_style) { /** @phpstan-ignore-line */
                 $title = $list_course->name .'<br><small>'
                     . (new DateTime($list_course->date_start))->format('d.m.Y') .'</small>';
-                printBoxModule26_1($title, $list_course->picture, $list_course->category->color, $list_course->getUrl(true), $box_per_line);
+                printBoxModule26_1($title, $list_course->picture, $list_course->category instanceof Category ? $list_course->category->color : '#eee', $list_course->getUrl(true), $box_per_line);
             } else {
                 echo '<div class="col-12">';
                 $title = $list_course->name;
@@ -347,18 +347,18 @@ if (rex::isBackend()) {
                 echo '<div class="row course_row" data-match-height>';
 
                 echo '<div class="col-12 col-md-6 spacer_box">';
-                echo '<div class="course_row_title" style="background-color: '. $list_course->category->color .'" data-height-watch>';
+                echo '<div class="course_row_title" '.  ($list_course->category instanceof Category ? 'style="background-color:'. $list_course->category->color .'" ' : '') .'" data-height-watch>';
                 echo $title;
                 echo '</div>';
                 echo '</div>';
 
                 echo '<div class="col-8 col-md-4">';
                 echo '<div class="course_box spacer_box" data-height-watch>';
-                if ($list_course->date_start) {
+                if ('' !== $list_course->date_start) {
                     echo (new DateTime($list_course->date_start))->format('d.m.Y')
-                        .($list_course->date_end ? ' - '. (new DateTime($list_course->date_end))->format('d.m.Y') : '')
-                        .($list_course->time ? '<br>'. $list_course->time .'' : '');
-                } elseif ($list_course->time) {
+                        .('' !== $list_course->date_end ? ' - '. (new DateTime($list_course->date_end))->format('d.m.Y') : '')
+                        .('' !== $list_course->time ? '<br>'. $list_course->time .'' : '');
+                } elseif ('' !== $list_course->time) {
                     echo $list_course->time;
                 } else {
                     echo $list_course->teaser;
@@ -368,7 +368,7 @@ if (rex::isBackend()) {
 
                 echo '<div class="col-4 col-md-2 course_row">';
                 echo '<div class="course_box spacer_box" data-height-watch>';
-                if (rex_plugin::get('d2u_courses', 'locations')->isAvailable() && false !== $list_course->location) {
+                if (rex_plugin::get('d2u_courses', 'locations')->isAvailable() && $list_course->location instanceof Location && $list_course->location->location_category instanceof LocationCategory) {
                     echo $list_course->location->location_category->name;
                 }
                 if ('yes' === $list_course->registration_possible || 'yes_number' === $list_course->registration_possible) {
@@ -814,7 +814,7 @@ if (rex::isBackend()) {
                     $mapsetId = (int) 'REX_VALUE[9]';
 
                     echo \Geolocation\mapset::take($mapsetId)
-                        ->attributes('id', $mapsetId)
+                        ->attributes('id', (string) $mapsetId)
                         ->attributes('style', 'height:400px;width:100%;')
                         ->dataset('center', [[$course->location->latitude, $course->location->longitude], ($course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10)])
                         ->dataset('position', [$course->location->latitude, $course->location->longitude])

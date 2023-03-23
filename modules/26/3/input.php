@@ -61,8 +61,8 @@
 	<div class="col-xs-8">
 		<?php
             echo '<select name="REX_INPUT_VALUE[5]" class="form-control">';
-            echo '<option value="3" '. ('REX_VALUE[5]' == 3 ? 'selected="selected" ' : '') .'>3</option>';
-            echo '<option value="4" '. ('REX_VALUE[5]' == 4 ? 'selected="selected" ' : '') .'>4</option>';
+            echo '<option value="3" '. ((int) 'REX_VALUE[5]' === 3 ? 'selected="selected" ' : '') .'>3</option>'; /** @phpstan-ignore-line */
+            echo '<option value="4" '. ((int) 'REX_VALUE[5]' === 4 ? 'selected="selected" ' : '') .'>4</option>'; /** @phpstan-ignore-line */
             echo '</select>';
         ?>
 	</div>

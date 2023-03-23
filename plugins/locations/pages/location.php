@@ -1,4 +1,7 @@
 <?php
+
+use D2U_Courses\LocationCategory;
+
 $func = rex_request('func', 'string');
 $entry_id = (int) rex_request('entry_id', 'int');
 $message = rex_get('message', 'string');
@@ -37,7 +40,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     }
 
     // Redirect to make reload and thus double save impossible
-    if (1 === (int) filter_input(INPUT_POST, 'btn_apply', FILTER_VALIDATE_INT) && false !== $location) {
+    if (1 === (int) filter_input(INPUT_POST, 'btn_apply', FILTER_VALIDATE_INT) && $location->location_id > 0) {
         header('Location: '. rex_url::currentBackendPage(['entry_id' => $location->location_id, 'func' => 'edit', 'message' => $message], false));
     } else {
         header('Location: '. rex_url::currentBackendPage(['message' => $message], false));
@@ -56,18 +59,18 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
     // Check if object is used
     $uses_courses = $location->getCourses(false);
     $used_in_settings = false;
-    if (rex_config::get('d2u_courses', 'kufer_sync_default_location_id', 0) == $location->location_id) {
+    if ((int) rex_config::get('d2u_courses', 'kufer_sync_default_location_id', 0) === $location->location_id) {
         $used_in_settings = true;
     }
 
-    if (0 === count($uses_courses) && false == $used_in_settings) {
+    if (0 === count($uses_courses) && false === $used_in_settings) {
         $location->delete();
 
         echo rex_view::success(rex_i18n::msg('d2u_helper_deleted') . $message);
     } else {
         $message = '<ul>';
-        foreach ($uses_courses as $uses_location) {
-            $message .= '<li><a href="index.php?page=d2u_courses/location/location&func=edit&entry_id='. $uses_location->location_id .'">'. $uses_location->name .'</a></li>';
+        foreach ($uses_courses as $uses_course) {
+            $message .= '<li><a href="index.php?page=d2u_courses/location/location&func=edit&entry_id='. $uses_course->course_id .'">'. $uses_course->name .'</a></li>';
         }
         if ($used_in_settings) {
             $message .= '<li><a href="index.php?page=d2u_courses/settings">'. rex_i18n::msg('d2u_helper_settings') .'</a></li>';
@@ -82,7 +85,6 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
 
 // Form
 if ('edit' === $func || 'add' === $func) {
-    $readonly = false;
 ?>
 	<form action="<?= rex_url::currentBackendPage() ?>" method="post">
 		<div class="panel panel-edit">
@@ -92,15 +94,15 @@ if ('edit' === $func || 'add' === $func) {
 				<?php
 
                     $location = new D2U_Courses\Location($entry_id);
-                    d2u_addon_backend_helper::form_input('d2u_helper_name', 'form[name]', $location->name, true, $readonly);
-                    d2u_addon_backend_helper::form_input('d2u_courses_location_street', 'form[street]', $location->street, true, $readonly, 'text');
-                    d2u_addon_backend_helper::form_input('d2u_courses_location', 'form[city]', $location->city, true, $readonly, 'text');
-                    d2u_addon_backend_helper::form_input('d2u_courses_location_zip_code', 'form[zip_code]', $location->zip_code, true, $readonly, 'text');
-                    d2u_addon_backend_helper::form_input('d2u_courses_location_country_code', 'form[country_code]', $location->country_code, true, $readonly, 'text');
+                    d2u_addon_backend_helper::form_input('d2u_helper_name', 'form[name]', $location->name, true, false);
+                    d2u_addon_backend_helper::form_input('d2u_courses_location_street', 'form[street]', $location->street, true, false, 'text');
+                    d2u_addon_backend_helper::form_input('d2u_courses_location', 'form[city]', $location->city, true, false, 'text');
+                    d2u_addon_backend_helper::form_input('d2u_courses_location_zip_code', 'form[zip_code]', $location->zip_code, true, false, 'text');
+                    d2u_addon_backend_helper::form_input('d2u_courses_location_country_code', 'form[country_code]', $location->country_code, true, false, 'text');
 
                     $d2u_helper = rex_addon::get('d2u_helper');
                     $api_key = '';
-                    if ('' != $d2u_helper->getConfig('maps_key', '')) {
+                    if ('' !== $d2u_helper->getConfig('maps_key', '')) {
                         $api_key = '?key='. $d2u_helper->getConfig('maps_key');
 
                 ?>
@@ -135,49 +137,41 @@ if ('edit' === $func || 'add' === $func) {
                             . ' <div class="btn btn-abort"><a href="https://maps.google.com/?q='. $location->latitude .','. $location->longitude .'&z=17" id="check_geocode" target="_blank">'. rex_i18n::msg('d2u_helper_geocode_check') .'</a></div>'
                             . '</dd>';
                         echo '</dl>';
-                        if (0 == $location->latitude && 0 == $location->longitude) {
+                        if (0 === (int) $location->latitude && 0 === (int) $location->longitude) {
                             echo '<script>jQuery(document).ready(function($) { $("#check_geocode").parent().hide(); });</script>';
                         }
                     }
                     d2u_addon_backend_helper::form_infotext('d2u_helper_geocode_hint', 'hint_geocoding');
-                    d2u_addon_backend_helper::form_input('d2u_courses_location_latitude', 'form[latitude]', $location->latitude, false, $readonly, 'text');
-                    d2u_addon_backend_helper::form_input('d2u_courses_location_longitude', 'form[longitude]', $location->longitude, false, $readonly, 'text');
-                    d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $location->picture, $readonly);
-                    d2u_addon_backend_helper::form_mediafield('d2u_courses_location_site_plan', '2', $location->site_plan, $readonly);
+                    d2u_addon_backend_helper::form_input('d2u_courses_location_latitude', 'form[latitude]', (string) $location->latitude, false, false, 'text');
+                    d2u_addon_backend_helper::form_input('d2u_courses_location_longitude', 'form[longitude]', (string) $location->longitude, false, false, 'text');
+                    d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $location->picture, false);
+                    d2u_addon_backend_helper::form_mediafield('d2u_courses_location_site_plan', '2', $location->site_plan, false);
                     $options_categories = [];
                     foreach (D2U_Courses\LocationCategory::getAll(false) as $location_category) {
                         $options_categories[$location_category->location_category_id] = $location_category->name;
                     }
-                    d2u_addon_backend_helper::form_select('d2u_helper_category', 'form[location_category_id]', $options_categories, false === $location->location_category ? [-1] : [$location->location_category->location_category_id], 1, false, $readonly);
+                    d2u_addon_backend_helper::form_select('d2u_helper_category', 'form[location_category_id]', $options_categories, $location->location_category instanceof LocationCategory ? [$location->location_category->location_category_id] : [-1], 1, false, false);
                     $options_users = [];
                     $user_result = \rex_sql::factory();
                     $user_result->setQuery('SELECT login, name FROM '. rex::getTablePrefix() .'user ORDER BY name');
                     for ($i = 0; $i < $user_result->getRows(); ++$i) {
-                        $options_users[$user_result->getValue('login')] = $user_result->getValue('name');
+                        $options_users[(string) $user_result->getValue('login')] = (string) $user_result->getValue('name');
                         $user_result->next();
                     }
-                    d2u_addon_backend_helper::form_select('d2u_courses_location_rexuser', 'form[redaxo_users][]', $options_users, $location->redaxo_users, 5, true, $readonly);
+                    d2u_addon_backend_helper::form_select('d2u_courses_location_rexuser', 'form[redaxo_users][]', $options_users, $location->redaxo_users, 5, true, false);
                     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-                        d2u_addon_backend_helper::form_input('d2u_courses_kufer_sync_location_id', 'form[kufer_location_id]', $location->kufer_location_id, false, $readonly, 'number');
+                        d2u_addon_backend_helper::form_input('d2u_courses_kufer_sync_location_id', 'form[kufer_location_id]', $location->kufer_location_id, false, false, 'number');
                     }
                 ?>
 			</div>
 			<footer class="panel-footer">
 				<div class="rex-form-panel-footer">
 					<div class="btn-toolbar">
-						<?php
-                            if (!$readonly) {
-                        ?>
 						<button class="btn btn-save rex-form-aligned" type="submit" name="btn_save" value="1"><?= rex_i18n::msg('form_save') ?></button>
 						<button class="btn btn-apply" type="submit" name="btn_apply" value="1"><?= rex_i18n::msg('form_apply') ?></button>
-						<?php
-                            }
-                        ?>
 						<button class="btn btn-abort" type="submit" name="btn_abort" formnovalidate="formnovalidate" value="1"><?= rex_i18n::msg('form_abort') ?></button>
 						<?php
-                            if (!$readonly) {
-                                echo '<button class="btn btn-delete" type="submit" name="btn_delete" formnovalidate="formnovalidate" data-confirm="'. rex_i18n::msg('form_delete') .'?" value="1">'. rex_i18n::msg('form_delete') .'</button>';
-                            }
+                            echo '<button class="btn btn-delete" type="submit" name="btn_delete" formnovalidate="formnovalidate" data-confirm="'. rex_i18n::msg('form_delete') .'?" value="1">'. rex_i18n::msg('form_delete') .'</button>';
                         ?>
 					</div>
 				</div>

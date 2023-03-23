@@ -312,7 +312,7 @@ class Category
      * Get all courses orderd by start date.
      * @param bool $online_only true, if only online courses should be returned,
      * otherwise false
-     * @return Course[] Array with course objects
+     * @return array<Course> Array with course objects
      */
     public function getCourses($online_only = false)
     {

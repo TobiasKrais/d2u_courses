@@ -12,12 +12,13 @@ use function in_array;
 use function strlen;
 
 /**
+ * @api
  * Reads kufer XML file and imports contents into database.
  */
 class KuferSync
 {
     /** @var string import name */
-    public static $import_name = 'KuferSQL';
+    public static string $import_name = 'KuferSQL';
 
     /**
      * Formats date form DD.MM.YYYY to YYYY-MM-DD.
@@ -27,7 +28,7 @@ class KuferSync
     public static function formatDate($date)
     {
         $d = explode('.', $date);
-        $unix = mktime(0, 0, 0, $d[1], $d[0], $d[2]);
+        $unix = (int) mktime(0, 0, 0, (int) $d[1], (int) $d[0], (int) $d[2]);
 
         return date('Y-m-d', $unix);
     }
@@ -35,18 +36,24 @@ class KuferSync
     /**
      * Imports data from Kufer SQL exported XML file.
      */
-    public static function sync()
+    public static function sync():void
     {
         // Read XML file
         $context = stream_context_create(['http' => ['header' => 'Accept: application/xml']]);
-        $xmlstring = file_get_contents(rex_config::get('d2u_courses', 'kufer_sync_xml_url', ''), false, $context);
+        $xmlstring = file_get_contents((string) rex_config::get('d2u_courses', 'kufer_sync_xml_url', ''), false, $context);
+        if(false === $xmlstring || '' === $xmlstring) {
+            return;
+        }
         $kufer_courses = simplexml_load_string($xmlstring, null, LIBXML_NOCDATA);
+        if(false === $kufer_courses) {
+            return;
+        }
 
         // Read current courses, in case they need to be updated - only imported ones
         $old_courses_all = Course::getAll();
         $old_courses = [];
         foreach ($old_courses_all as $course) {
-            if ($course->import_type == self::$import_name) {
+            if ($course->import_type === self::$import_name) {
                 $old_courses[$course->course_number] = $course;
             }
         }
@@ -71,18 +78,18 @@ class KuferSync
                 continue;
             }
             // ... also courses that already started / ended (see settings
-            if (isset($kufer_course->beginndat) && '' != $kufer_course->beginndat) {
+            if (isset($kufer_course->beginndat) && '' !== (string) $kufer_course->beginndat) {
                 $beginndat = self::formatDate($kufer_course->beginndat);
                 $endedat = self::formatDate($kufer_course->endedat);
 
                 $config_show_time = rex_config::get('d2u_courses', 'show_time', 'day_one_start');
-                if ('day_one_start' === $config_show_time && date('Y-m-d', mktime(0, 0, 0, date('m'), date('d') - 1, date('Y'))) > $beginndat) {
+                if ('day_one_start' === $config_show_time && date('Y-m-d', (int) mktime(0, 0, 0, (int) date('m'), date('d') - 1, (int) date('Y'))) > $beginndat) {
                     continue;
                 }
                 if ('day_one_end' === $config_show_time && date('Y-m-d') > $beginndat) {
                     continue;
                 }
-                if ('day_x_start' === $config_show_time && date('Y-m-d', mktime(0, 0, 0, date('m'), date('d') - 1, date('Y'))) > $endedat) {
+                if ('day_x_start' === $config_show_time && date('Y-m-d', (int) mktime(0, 0, 0, (int) date('m'), date('d') - 1, (int) date('Y'))) > $endedat) {
                     continue;
                 }
                 if ('day_x_end' === $config_show_time && date('Y-m-d') > $endedat) {
@@ -109,52 +116,52 @@ class KuferSync
             }
 
             // Title
-            if (isset($kufer_course->titelkurz) && '' != $kufer_course->titelkurz) {
+            if (isset($kufer_course->titelkurz) && '' !== (string) $kufer_course->titelkurz) {
                 $new_course->name = str_replace('"', "'", (string) $kufer_course->titelkurz);
-            } elseif (isset($kufer_course->titellang) && '' != $kufer_course->titellang) {
+            } elseif (isset($kufer_course->titellang) && '' !== (string) $kufer_course->titellang) {
                 $new_course->name = str_replace('"', "'", (string) $kufer_course->titellang);
             }
 
             // Description
             $new_course->description = ''; // Reset first
-            if (isset($kufer_course->titellang) && '' != $kufer_course->titellang) {
+            if (isset($kufer_course->titellang) && '' !== (string) $kufer_course->titellang) {
                 $new_course->description = '<p><b>'. (string) $kufer_course->titellang .'</b></p>';
             }
-            if (isset($kufer_course->web_info) && '' != $kufer_course->web_info) {
+            if (isset($kufer_course->web_info) && '' !== (string) $kufer_course->web_info) {
                 $new_course->description .= '<p>'. nl2br($kufer_course->web_info) .'</p>';
-            } elseif (isset($kufer_course->inhalt) && '' != $kufer_course->inhalt) {
+            } elseif (isset($kufer_course->inhalt) && '' !== (string) $kufer_course->inhalt) {
                 $new_course->description .= '<p>'. nl2br($kufer_course->inhalt) .'</p>';
             }
 
             // Course details, e.g. material costs
-            if (isset($kufer_course->material) && '' != $kufer_course->material) {
+            if (isset($kufer_course->material) && '' !== (string) $kufer_course->material) {
                 $new_course->details_course = $kufer_course->material;
             }
 
             // Is registration for this course possible?
-            if (isset($kufer_course->keinewebanmeldung) && 'F' == $kufer_course->keinewebanmeldung) {
+            if (isset($kufer_course->keinewebanmeldung) && 'F' === (string) $kufer_course->keinewebanmeldung) {
                 $new_course->registration_possible = 'yes';
-            } elseif (isset($kufer_course->keinewebanmeldung) && 'W' == $kufer_course->keinewebanmeldung) {
+            } elseif (isset($kufer_course->keinewebanmeldung) && 'W' === (string) $kufer_course->keinewebanmeldung) {
                 $new_course->registration_possible = 'no';
             }
-            if (isset($kufer_course->tnmax) && isset($kufer_course->tnanmeldungen) && (int) $kufer_course->tnmax > 0 && $kufer_course->tnanmeldungen >= (int) $kufer_course->tnmax) {
+            if (isset($kufer_course->tnmax) && isset($kufer_course->tnanmeldungen) && (int) $kufer_course->tnmax > 0 && (int) $kufer_course->tnanmeldungen >= (int) $kufer_course->tnmax) {
                 $new_course->registration_possible = 'booked';
             }
 
             // Date
-            if (isset($kufer_course->beginndat) && '' != $kufer_course->beginndat) {
+            if (isset($kufer_course->beginndat) && '' !== (string) $kufer_course->beginndat) {
                 // Start
                 $new_course->date_start = self::formatDate($kufer_course->beginndat);
                 // End
-                if (isset($kufer_course->endedat) && '' != $kufer_course->endedat && trim($kufer_course->beginndat) != trim($kufer_course->endedat)) {
+                if (isset($kufer_course->endedat) && '' !== (string) $kufer_course->endedat && trim($kufer_course->beginndat) !== trim((string) $kufer_course->endedat)) {
                     $new_course->date_end = self::formatDate($kufer_course->endedat);
                     $new_course->time = '';
                 } else {
                     $new_course->date_end = '';
                     // Time if course lasts one day
-                    if (isset($kufer_course->beginnuhr) && '' != $kufer_course->beginnuhr) {
+                    if (isset($kufer_course->beginnuhr) && '' !== (string) $kufer_course->beginnuhr) {
                         $new_course->time = $kufer_course->beginnuhr;
-                        if (isset($kufer_course->endeuhr) && '' != $kufer_course->endeuhr) {
+                        if (isset($kufer_course->endeuhr) && '' !== (string) $kufer_course->endeuhr) {
                             $new_course->time .= ' - '. $kufer_course->endeuhr;
                         }
                         $new_course->time .= ' Uhr';
@@ -167,9 +174,9 @@ class KuferSync
                 $new_course->description .= '<ul>';
                 for ($i = 0; $i < $kufer_course->termine->termin->count(); ++$i) {
                     $new_course->description .= '<li>'. $kufer_course->termine->termin[$i]->tag;
-                    if (isset($kufer_course->termine->termin[$i]->zeitvon) && '' != $kufer_course->termine->termin[$i]->zeitvon) {
+                    if (null !== $kufer_course->termine->termin[$i]->zeitvon && '' !== (string) $kufer_course->termine->termin[$i]->zeitvon) {
                         $new_course->description .= ': '. $kufer_course->termine->termin[$i]->zeitvon;
-                        if (isset($kufer_course->termine->termin[$i]->zeitbis) && '' != $kufer_course->termine->termin[$i]->zeitbis) {
+                        if (null !== $kufer_course->termine->termin[$i]->zeitbis && '' !== (string) $kufer_course->termine->termin[$i]->zeitbis) {
                             $new_course->description .= ' - '. $kufer_course->termine->termin[$i]->zeitbis;
                         }
                         $new_course->description .= ' Uhr';
@@ -180,22 +187,22 @@ class KuferSync
             }
 
             // Deadline infos
-            if (isset($kufer_course->dauerdetails) && '' != $kufer_course->dauerdetails) {
+            if (isset($kufer_course->dauerdetails) && '' !== (string) $kufer_course->dauerdetails) {
                 $new_course->details_deadline = $kufer_course->dauerdetails;
             }
 
             // Location: take from settings
             if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
                 if (isset($kufer_course->ortid) && $kufer_course->ortid > 0) {
-                    $new_course->location = Location::getByKuferLocationId($kufer_course->ortid);
+                    $new_course->location = Location::getByKuferLocationId((int) $kufer_course->ortid);
                 }
                 if (false === $new_course->location) {
-                    $new_course->location = new Location(rex_config::get('d2u_courses', 'kufer_sync_default_location_id', 0));
+                    $new_course->location = new Location((int) rex_config::get('d2u_courses', 'kufer_sync_default_location_id', 0));
                 }
 
                 // room name
-                if (isset($kufer_course->ortraumname) && '' != $kufer_course->ortraumname) {
-                    $new_course->room = str_replace('"', "'", $kufer_course->ortraumname);
+                if (isset($kufer_course->ortraumname) && '' !== (string) $kufer_course->ortraumname) {
+                    $new_course->room = str_replace('"', "'", (string) $kufer_course->ortraumname);
                 }
             }
 
@@ -236,10 +243,10 @@ class KuferSync
                     if (strlen($new_course->instructor) > 3) {
                         $new_course->instructor .= ', ';
                     }
-                    if (isset($dozent->titel)) {
+                    if (property_exists($dozent, 'titel')) {
                         $new_course->instructor .= $dozent->titel .' ';
                     }
-                    if (isset($dozent->vorname) && isset($dozent->name)) {
+                    if (property_exists($dozent, 'vorname') &&  property_exists($dozent, 'name')) {
                         $new_course->instructor .= $dozent->vorname .' '. $dozent->name;
                     }
                 }
@@ -262,11 +269,12 @@ class KuferSync
                 $kurskategorie_counter = 0;
                 foreach ($course_categories as $course_category) {
                     foreach ($course_category->kufer_categories as $kufer_category) {
-                        if (in_array($kufer_category, $kufer_kurs_bezeichnungstrukturen) && !in_array($course_category->category_id, $new_course->secondary_category_ids)) {
-                            if (0 == $kurskategorie_counter) {
+                        if (in_array($kufer_category, $kufer_kurs_bezeichnungstrukturen, true) && !in_array($course_category->category_id, $new_course->secondary_category_ids, true)) {
+                            if (0 === $kurskategorie_counter) {
                                 $new_course->category = $course_category;
                             }
                             $new_course->secondary_category_ids[] = $course_category->category_id;
+                            $kurskategorie_counter++;
                         }
                     }
                 }
@@ -275,7 +283,7 @@ class KuferSync
                 if (rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
                     foreach ($schedule_categories as $schedule_category) {
                         foreach ($schedule_category->kufer_categories as $kufer_schedule_category) {
-                            if (in_array($kufer_schedule_category, $kufer_kurs_bezeichnungstrukturen) && !in_array($schedule_category->schedule_category_id, $new_course->schedule_category_ids)) {
+                            if (in_array($kufer_schedule_category, $kufer_kurs_bezeichnungstrukturen, true) && !in_array($schedule_category->schedule_category_id, $new_course->schedule_category_ids, true)) {
                                 $new_course->schedule_category_ids[] = $schedule_category->schedule_category_id;
                             }
                         }
@@ -286,7 +294,7 @@ class KuferSync
                 if (rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
                     foreach ($target_groups as $target_group) {
                         foreach ($target_group->kufer_categories as $kufer_target_group) {
-                            if (in_array($kufer_target_group, $kufer_kurs_bezeichnungstrukturen) && !in_array($target_group->target_group_id, $new_course->target_group_ids)) {
+                            if (in_array($kufer_target_group, $kufer_kurs_bezeichnungstrukturen, true) && !in_array($target_group->target_group_id, $new_course->target_group_ids, true)) {
                                 $new_course->target_group_ids[] = $target_group->target_group_id;
                             }
                         }
@@ -295,16 +303,16 @@ class KuferSync
             }
             // In case default course category is still not set
             if (false === $new_course->category) {
-                $new_course->category = new Category(rex_config::get('d2u_courses', 'kufer_sync_default_category_id', 0));
-                $new_course->sekundaere_kurskategorie_ids = [rex_config::get('d2u_courses', 'kufer_sync_default_category_id', 0)];
+                $new_course->category = new Category((int) rex_config::get('d2u_courses', 'kufer_sync_default_category_id', 0));
+                $new_course->secondary_category_ids = [(int) rex_config::get('d2u_courses', 'kufer_sync_default_category_id', 0)];
             }
 
             // Target group
             if (rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-                if (isset($kufer_course->zielgruppe) && '' != $kufer_course->zielgruppe) {
+                if (isset($kufer_course->zielgruppe) && '' !== (string) $kufer_course->zielgruppe) {
                     foreach ($target_groups as $target_group) {
-                        if ($target_group->kufer_target_group_name == $kufer_course->zielgruppe && !in_array($target_group->target_group_id, $new_course->target_group_ids)) {
-                            $new_course->target_group_ids[] = $target_group->zielgruppe_id;
+                        if ($target_group->kufer_target_group_name === $kufer_course->zielgruppe && !in_array($target_group->target_group_id, $new_course->target_group_ids, true)) {
+                            $new_course->target_group_ids[] = $target_group->target_group_id;
                         }
                     }
                 }
