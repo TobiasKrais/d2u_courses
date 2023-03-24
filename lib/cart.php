@@ -48,6 +48,9 @@ class Cart
     {
         $course = new Course($course_id);
         $cart = \rex_request::session('cart');
+        if (!is_array($cart)) {
+            $cart = [];
+        }
         $cart[$course_id] = [];
         if ('yes_number' === $course->registration_possible) {
             // registration with participant number only
@@ -66,6 +69,9 @@ class Cart
     public function addEmptyParticipant($course_id): void
     {
         $cart = \rex_request::session('cart');
+        if (!is_array($cart)) {
+            $cart = [];
+        }
         $cart[$course_id][] = ['firstname' => '', 'lastname' => '', 'birthday' => '', 'age' => '', 'emergency_number' => '', 'gender' => '', 'price' => '', 'price_salery_level_row_number' => rex_request('participant_price_salery_level_row_add', 'int', 0)];
         \rex_request::setSession('cart', $cart);
     }
@@ -197,6 +203,9 @@ class Cart
             foreach ($cart as $course_id => $participant) {
                 if (is_array($participant)) {
                     foreach ($participant as $id => $participant_data) {
+                        if(!is_array($participant_data) || !array_key_exists('lastname', $participant_data) || !array_key_exists('firstname', $participant_data)) {
+                            continue;
+                        }
                         // <NAME>Last name</NAME>
                         $name = $xml->createElement('NAME');
                         $name->appendChild($xml->createTextNode((string) $participant_data['lastname']));
@@ -205,22 +214,22 @@ class Cart
                         $firstname = $xml->createElement('VORNAME');
                         $firstname->appendChild($xml->createTextNode((string) $participant_data['firstname']));
                         $stammdaten->appendChild($firstname);
-                        if (is_array($participant_data) && array_key_exists('gender', $participant_data) && '' !== $participant_data['gender']) {
+                        if (array_key_exists('gender', $participant_data) && '' !== $participant_data['gender']) {
                             // <GESCHLECHT>M = male, W = female, F = company</GESCHLECHT>
                             $gender = $xml->createElement('GESCHLECHT');
                             $gender->appendChild($xml->createTextNode((string) $participant_data['gender']));
                             $stammdaten->appendChild($gender);
                         }
-                        if (is_array($participant_data) && array_key_exists('birthday', $participant_data) && '' !== $participant_data['birthday']) {
+                        if (array_key_exists('birthday', $participant_data) && '' !== $participant_data['birthday']) {
                             // <GEBDATUM>DD.MM.YYYY</GEBDATUM>
                             $gebdatum = $xml->createElement('GEBDATUM');
                             $gebdatum->appendChild($xml->createTextNode(self::formatCourseDate((string) $participant_data['birthday'])));
                             $stammdaten->appendChild($gebdatum);
                             // <ZUSATZ>Age</ZUSATZ>
                             $zusatz = $xml->createElement('ZUSATZ');
-                            $zusatz->appendChild($xml->createTextNode((string) self::calculateAge($participant_data['birthday'])));
+                            $zusatz->appendChild($xml->createTextNode((string) self::calculateAge((string) $participant_data['birthday'])));
                             $stammdaten->appendChild($zusatz);
-                        } elseif (is_array($participant_data) && array_key_exists('age', $participant_data) && '' !== $participant_data['age']) {
+                        } elseif (array_key_exists('age', $participant_data) && '' !== $participant_data['age']) {
                             // <ZUSATZ>Age</ZUSATZ>
                             $zusatz = $xml->createElement('ZUSATZ');
                             $zusatz->appendChild($xml->createTextNode((string) $participant_data['age']));
@@ -332,7 +341,7 @@ class Cart
         foreach ($cart as $course_id => $participant) {
             if (is_array($participant)) {
                 foreach ($participant as $id => $participant_data) {
-                    if (array_key_exists('emergency_number', $participant_data) && '' !== $participant_data['emergency_number']) {
+                    if (is_array($participant_data) && array_key_exists('emergency_number', $participant_data) && '' !== $participant_data['emergency_number']) {
                         // <KOMMUNIKATIONSEINTRAG>
                         $kommunikationseintrag_emergency = $xml->createElement('KOMMUNIKATIONSEINTRAG');
                         $kommunikation->appendChild($kommunikationseintrag_emergency);
@@ -368,7 +377,7 @@ class Cart
 
                 // <KURSNUMMER>Course number</KURSNUMMER>
                 $kursnummer = $xml->createElement('KURSNUMMER');
-                $kursnummer->appendChild($xml->createTextNode((string) $course->course_number));
+                $kursnummer->appendChild($xml->createTextNode($course->course_number));
                 $kurs_xml->appendChild($kursnummer);
 
                 // <STATUS>A</STATUS>
@@ -408,88 +417,90 @@ class Cart
 
                     $counter = 0;
                     foreach ($participant as $id => $participant_data) {
-                        if ($participant_data['firstname'] === $invoice_address['firstname'] && $participant_data['lastname'] === $invoice_address['lastname']) {
-                            continue;
-                        }
-                        // <WEITERANM>
-                        $weiteranm = $xml->createElement('WEITERANM');
-                        $weitereanm->appendChild($weiteranm);
-                        // <TYP>K = child registration, M = registrate multiple participants</TYP>
-                        $typ = $xml->createElement('TYP');
-                        if ((isset($participant_data['birthday']) && date('Y') - $participant_data['birthday'] < 18) || (isset($participant_data['age']) && $participant_data['age'] < 18)) {
-                            $typ->appendChild($xml->createTextNode('K'));
-                        } else {
-                            $typ->appendChild($xml->createTextNode('M'));
-                        }
-                        $weiteranm->appendChild($typ);
+                        if (is_array($participant_data)) {
+                            if ($participant_data['firstname'] === $invoice_address['firstname'] && $participant_data['lastname'] === $invoice_address['lastname']) {
+                                continue;
+                            }
+                            // <WEITERANM>
+                            $weiteranm = $xml->createElement('WEITERANM');
+                            $weitereanm->appendChild($weiteranm);
+                            // <TYP>K = child registration, M = registrate multiple participants</TYP>
+                            $typ = $xml->createElement('TYP');
+                            if ((isset($participant_data['birthday']) && date('Y') - $participant_data['birthday'] < 18) || (isset($participant_data['age']) && $participant_data['age'] < 18)) {
+                                $typ->appendChild($xml->createTextNode('K'));
+                            } else {
+                                $typ->appendChild($xml->createTextNode('M'));
+                            }
+                            $weiteranm->appendChild($typ);
 
-                        // <KURSGEBUEHR>35,00</KURSGEBUEHR>
-                        $kursgebuehr = $xml->createElement('KURSGEBUEHR');
-                        if ('kind' === $registration_type && $course->price_discount > 0) {
-                            $kursgebuehr->appendChild($xml->createTextNode((string) ($course->price_discount * count($participant))));
-                        } else {
-                            $kursgebuehr->appendChild($xml->createTextNode((string) ($course->price * count($participant))));
-                        }
-                        $weiteranm->appendChild($kursgebuehr);
+                            // <KURSGEBUEHR>35,00</KURSGEBUEHR>
+                            $kursgebuehr = $xml->createElement('KURSGEBUEHR');
+                            if ('kind' === $registration_type && $course->price_discount > 0) {
+                                $kursgebuehr->appendChild($xml->createTextNode((string) ($course->price_discount * count($participant))));
+                            } else {
+                                $kursgebuehr->appendChild($xml->createTextNode((string) ($course->price * count($participant))));
+                            }
+                            $weiteranm->appendChild($kursgebuehr);
 
-                        // <WEITERSTAMM>
-                        $weiterstamm = $xml->createElement('WEITERSTAMM');
-                        $weiteranm->appendChild($weiterstamm);
-                        // <NAME_TITEL>M = Herr, W = Frau, F = Herr</NAME_TITEL>
-                        $name_titel = $xml->createElement('NAME_TITEL');
-                        if ('W' === $participant_data['gender']) {
-                            $name_titel->appendChild($xml->createTextNode('Frau'));
-                        } else {
-                            $name_titel->appendChild($xml->createTextNode('Herr'));
-                        }
-                        $weiterstamm->appendChild($name_titel);
-                        // <NAME>Last name</NAME>
-                        $name = $xml->createElement('NAME');
-                        $name->appendChild($xml->createTextNode((string) $participant_data['lastname']));
-                        $weiterstamm->appendChild($name);
-                        // <VORNAME>First name</VORNAME>
-                        $firstname = $xml->createElement('VORNAME');
-                        $firstname->appendChild($xml->createTextNode((string) $participant_data['firstname']));
-                        $weiterstamm->appendChild($firstname);
-                        if (is_array($participant_data) && array_key_exists('birthday', $participant_data) && '' !== $participant_data['birthday']) {
-                            // <GEBDATUM>DD.MM.YYYY</GEBDATUM>
-                            $gebdatum = $xml->createElement('GEBDATUM');
-                            $gebdatum->appendChild($xml->createTextNode(self::formatCourseDate($participant_data['birthday'])));
-                            $weiterstamm->appendChild($gebdatum);
-                            // <ZUSATZ>Age</ZUSATZ>
-                            $zusatz = $xml->createElement('ZUSATZ');
-                            $zusatz->appendChild($xml->createTextNode((string) self::calculateAge($invoice_address['birthday'])));
-                            $weiterstamm->appendChild($zusatz);
-                        } elseif (is_array($participant_data) && array_key_exists('age', $participant_data) && '' !== $participant_data['age']) {
-                            // <ZUSATZ>Age</ZUSATZ>
-                            $zusatz = $xml->createElement('ZUSATZ');
-                            $zusatz->appendChild($xml->createTextNode((string) self::calculateAge($invoice_address['age'])));
-                            $weiterstamm->appendChild($zusatz);
-                        }
-                        // <GESCHLECHT>M = male, W = female</GESCHLECHT>
-                        $gender = $xml->createElement('GESCHLECHT');
-                        $gender->appendChild($xml->createTextNode((string) $participant_data['gender']));
-                        $weiterstamm->appendChild($gender);
+                            // <WEITERSTAMM>
+                            $weiterstamm = $xml->createElement('WEITERSTAMM');
+                            $weiteranm->appendChild($weiterstamm);
+                            // <NAME_TITEL>M = Herr, W = Frau, F = Herr</NAME_TITEL>
+                            $name_titel = $xml->createElement('NAME_TITEL');
+                            if ('W' === $participant_data['gender']) {
+                                $name_titel->appendChild($xml->createTextNode('Frau'));
+                            } else {
+                                $name_titel->appendChild($xml->createTextNode('Herr'));
+                            }
+                            $weiterstamm->appendChild($name_titel);
+                            // <NAME>Last name</NAME>
+                            $name = $xml->createElement('NAME');
+                            $name->appendChild($xml->createTextNode((string) $participant_data['lastname']));
+                            $weiterstamm->appendChild($name);
+                            // <VORNAME>First name</VORNAME>
+                            $firstname = $xml->createElement('VORNAME');
+                            $firstname->appendChild($xml->createTextNode((string) $participant_data['firstname']));
+                            $weiterstamm->appendChild($firstname);
+                            if (array_key_exists('birthday', $participant_data) && '' !== $participant_data['birthday']) {
+                                // <GEBDATUM>DD.MM.YYYY</GEBDATUM>
+                                $gebdatum = $xml->createElement('GEBDATUM');
+                                $gebdatum->appendChild($xml->createTextNode(self::formatCourseDate($participant_data['birthday'])));
+                                $weiterstamm->appendChild($gebdatum);
+                                // <ZUSATZ>Age</ZUSATZ>
+                                $zusatz = $xml->createElement('ZUSATZ');
+                                $zusatz->appendChild($xml->createTextNode((string) self::calculateAge($invoice_address['birthday'])));
+                                $weiterstamm->appendChild($zusatz);
+                            } elseif (array_key_exists('age', $participant_data) && '' !== $participant_data['age']) {
+                                // <ZUSATZ>Age</ZUSATZ>
+                                $zusatz = $xml->createElement('ZUSATZ');
+                                $zusatz->appendChild($xml->createTextNode((string) self::calculateAge($invoice_address['age'])));
+                                $weiterstamm->appendChild($zusatz);
+                            }
+                            // <GESCHLECHT>M = male, W = female</GESCHLECHT>
+                            $gender = $xml->createElement('GESCHLECHT');
+                            $gender->appendChild($xml->createTextNode((string) $participant_data['gender']));
+                            $weiterstamm->appendChild($gender);
 
-                        if (is_array($participant_data) && array_key_exists('emergency_number', $participant_data) && '' !== $participant_data['emergency_number']) {
-                            // <KOMMUNIKATIONSEINTRAG>
-                            $kommunikationseintrag_emergency = $xml->createElement('KOMMUNIKATIONSEINTRAG');
-                            $weiterstamm->appendChild($kommunikationseintrag_emergency);
-                            // <KOMMART>T</KOMMART>
-                            $kommart_emergency = $xml->createElement('KOMMART');
-                            $kommart_emergency->appendChild($xml->createTextNode('T'));
-                            $kommunikationseintrag_emergency->appendChild($kommart_emergency);
-                            // <KOMMBEZ>Notfallnummer</KOMMBEZ>
-                            $kommbez_emergency = $xml->createElement('KOMMBEZ');
-                            $kommbez_emergency->appendChild($xml->createTextNode(\Sprog\Wildcard::get('d2u_courses_cart_emergency_number')));
-                            $kommunikationseintrag_emergency->appendChild($kommbez_emergency);
-                            // <KOMMWERT>Nummer</KOMMWERT>
-                            $kommwert_emergency = $xml->createElement('KOMMWERT');
-                            $kommwert_emergency->appendChild($xml->createTextNode((string) $invoice_address['emergency_number']));
-                            $kommunikationseintrag_emergency->appendChild($kommwert_emergency);
-                        }
+                            if (array_key_exists('emergency_number', $participant_data) && '' !== $participant_data['emergency_number']) {
+                                // <KOMMUNIKATIONSEINTRAG>
+                                $kommunikationseintrag_emergency = $xml->createElement('KOMMUNIKATIONSEINTRAG');
+                                $weiterstamm->appendChild($kommunikationseintrag_emergency);
+                                // <KOMMART>T</KOMMART>
+                                $kommart_emergency = $xml->createElement('KOMMART');
+                                $kommart_emergency->appendChild($xml->createTextNode('T'));
+                                $kommunikationseintrag_emergency->appendChild($kommart_emergency);
+                                // <KOMMBEZ>Notfallnummer</KOMMBEZ>
+                                $kommbez_emergency = $xml->createElement('KOMMBEZ');
+                                $kommbez_emergency->appendChild($xml->createTextNode(\Sprog\Wildcard::get('d2u_courses_cart_emergency_number')));
+                                $kommunikationseintrag_emergency->appendChild($kommbez_emergency);
+                                // <KOMMWERT>Nummer</KOMMWERT>
+                                $kommwert_emergency = $xml->createElement('KOMMWERT');
+                                $kommwert_emergency->appendChild($xml->createTextNode((string) $invoice_address['emergency_number']));
+                                $kommunikationseintrag_emergency->appendChild($kommwert_emergency);
+                            }
 
-                        ++$counter;
+                            ++$counter;
+                        }
                     }
                     if ($counter > 0) {
                         $kurs_xml->appendChild($weitereanm);
@@ -527,7 +538,9 @@ class Cart
     public function deleteCourse($course_id):void
     {
         $cart = \rex_request::session('cart');
-        unset($cart[$course_id]);
+        if (is_array($cart)) {
+            unset($cart[$course_id]);
+        }
         \rex_request::setSession('cart', $cart);
     }
 
@@ -540,15 +553,17 @@ class Cart
     public function deleteParticipant($course_id, $delete_participant_id):void
     {
         $cart = \rex_request::session('cart');
-        unset($cart[$course_id][$delete_participant_id]);
+        if (is_array($cart)) {
+            unset($cart[$course_id][$delete_participant_id]);
+        }
 
-        if (0 === count((array) $cart[$course_id])) {
+        if (is_array($cart) && 0 === count((array) $cart[$course_id])) {
             // If last participant was deleted: delete course
             unset($cart[$course_id]);
         }
-        else {
+        else if (is_array($cart)) {
             // Sort participants - if this is not done there might be participants confusions in cart
-            $cart[$course_id] = array_values($cart[$course_id]);
+            $cart[$course_id] = array_values((array) $cart[$course_id]);
         }
 
         \rex_request::setSession('cart', $cart);
@@ -594,9 +609,12 @@ class Cart
         }
 
         $course_ids = [];
-        if (\rex_session('cart') !== '') {
-            foreach (\rex_request::session('cart') as $course_id => $participants) {
-                $course_ids[] = $course_id;
+        if ('' !== rex_session('cart')) {
+            $cart = \rex_request::session('cart');
+            if (is_array($cart)) {
+                foreach ($cart as $course_id => $participants) {
+                    $course_ids[] = (int) $course_id;
+                }
             }
         }
         return $course_ids;
@@ -609,9 +627,12 @@ class Cart
      */
     public static function getCourseParticipants($course_id)
     {
-        foreach (\rex_request::session('cart') as $cart_course_id => $participants) {
-            if ((int) $cart_course_id === $course_id) {
-                return $participants;
+        $cart = \rex_request::session('cart');
+        if (is_array($cart)) {
+            foreach ($cart as $cart_course_id => $participants) {
+                if ((int) $cart_course_id === $course_id) {
+                    return $participants;
+                }
             }
         }
         return [];
@@ -673,8 +694,8 @@ class Cart
         $mail = new rex_mailer();
         $mail->isHTML(true);
         $mail->CharSet = 'utf-8';
-        $mail->From = rex_config::get('d2u_courses', 'request_form_sender_email');
-        $mail->Sender = rex_config::get('d2u_courses', 'request_form_sender_email');
+        $mail->From = (string) rex_config::get('d2u_courses', 'request_form_sender_email');
+        $mail->Sender = (string) rex_config::get('d2u_courses', 'request_form_sender_email');
         $mail->addReplyTo($invoice_address['e-mail'], $invoice_address['firstname'] .' '. $invoice_address['lastname']);
         $mail->addCC($invoice_address['e-mail'], $invoice_address['firstname'] .' '. $invoice_address['lastname']);
 
