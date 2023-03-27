@@ -772,7 +772,7 @@ class Cart
             }
         }
         if (isset($invoice_address['kids_go_home_alone']) && 'yes' === $invoice_address['kids_go_home_alone']) {
-            $body .= '<br><br>'. \Sprog\Wildcard::get('d2u_courses_kids_go_home_alone');
+            $body .= '<br>'. \Sprog\Wildcard::get('d2u_courses_kids_go_home_alone') .'<br>';
         }
 
         // invoice data
