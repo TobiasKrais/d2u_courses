@@ -94,7 +94,7 @@ if (\rex_addon::get('url')->isAvailable()) {
 }
 
 // START default settings
-if ((int) rex_config::get('d2u_courses', 'article_id_locations', 0) === 0) {
+if (0 === (int) rex_config::get('d2u_courses', 'article_id_locations', 0)) {
     rex_config::set('d2u_courses', 'article_id_locations', rex_article::getSiteStartArticleId());
 }
 // END default settings

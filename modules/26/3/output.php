@@ -9,7 +9,7 @@ use D2U_Courses\Course;
 $category_id = (int) 'REX_VALUE[1]';
 $category = $category_id > 0 ? new \D2U_Courses\Category($category_id) : false; /** @phpstan-ignore-line */
 $courses = $category instanceof Category ? $category->getCourses(true) : []; /** @phpstan-ignore-line */
-$box_per_line = (int) 'REX_VALUE[5]' === 4 ? 4 : 3; /** @phpstan-ignore-line */
+$box_per_line = 4 === (int) 'REX_VALUE[5]' ? 4 : 3; /** @phpstan-ignore-line */
 
 $sprog = rex_addon::get('sprog');
 $tag_open = $sprog->getConfig('wildcard_open_tag');
@@ -27,7 +27,7 @@ if (!function_exists('printBoxModule26_3')) {
      * @param string $url Link target url
      * @param int $box_per_line number boxes per line on large screens
      */
-    function printBoxModule26_3($title, $picture_filename, $color, $url, $box_per_line = 3):void
+    function printBoxModule26_3($title, $picture_filename, $color, $url, $box_per_line = 3): void
     {
         echo '<div class="col-6 col-md-4 col-lg-'. (4 === $box_per_line ? '3' : '4') .' spacer">';
         echo '<div class="category_box" style="background-color: '. ('' === $color ? 'grey' : ''. $color) .'" data-height-watch>';

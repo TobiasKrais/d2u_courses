@@ -1,7 +1,6 @@
 <?php
 
 use D2U_Courses\Category;
-use D2U_Courses\Course;
 use D2U_Courses\Location;
 use D2U_Courses\LocationCategory;
 use D2U_Courses\ScheduleCategory;
@@ -226,7 +225,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                             if (rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
                                 $options_schedule_categories = [];
                                 foreach (D2U_Courses\ScheduleCategory::getAllNotParents() as $schedule_category) {
-                                    $options_schedule_categories[$schedule_category->schedule_category_id] = ($schedule_category->parent_schedule_category instanceof ScheduleCategory? $schedule_category->parent_schedule_category->name .' → ' : ''). $schedule_category->name;
+                                    $options_schedule_categories[$schedule_category->schedule_category_id] = ($schedule_category->parent_schedule_category instanceof ScheduleCategory ? $schedule_category->parent_schedule_category->name .' → ' : ''). $schedule_category->name;
                                 }
                                 d2u_addon_backend_helper::form_select('d2u_courses_schedule_categories', 'form[schedule_category_ids][]', $options_schedule_categories, $course->schedule_category_ids, 10, true, $readonly);
                             }

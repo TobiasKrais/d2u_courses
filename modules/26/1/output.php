@@ -35,7 +35,7 @@ if ($linkbox_category_id > 0) { /** @phpstan-ignore-line */
     $new_category = new \D2U_Linkbox\Category($linkbox_category_id, rex_clang::getCurrentId());
     $linkboxes = $new_category->getLinkboxes(true);
 }
-$box_per_line = (int) 'REX_VALUE[8]' === 4 ? 4 : 3; /** @phpstan-ignore-line */
+$box_per_line = 4 === (int) 'REX_VALUE[8]' ? 4 : 3; /** @phpstan-ignore-line */
 
 $sprog = rex_addon::get('sprog');
 $tag_open = $sprog->getConfig('wildcard_open_tag');
@@ -117,7 +117,7 @@ if (!function_exists('printBoxModule26_1')) {
      * @param string $url Link target url
      * @param int $number_columns can be 2, 3 or 4
      */
-    function printBoxModule26_1($title, $picture_filename, $color, $url, $number_columns = 3):void
+    function printBoxModule26_1($title, $picture_filename, $color, $url, $number_columns = 3): void
     {
         echo '<div class="col-6'. ($number_columns >= 3 ? ' col-md-4' : '') . (4 === $number_columns ? ' col-lg-3' : '') .' spacer">';
         echo '<div class="category_box" style="background-color: '. ('' === $color ? 'grey' : ''. $color) .'" data-height-watch>';
@@ -409,7 +409,7 @@ if (rex::isBackend()) {
         } elseif ('booked' === $course->registration_possible) {
             echo ' <div class="closed"></div>';
         }
-        echo '</h1>'. ($course->details_age !== '' ? '<div class="details_age">'. $course->details_age .'</div>' : '');
+        echo '</h1>'. ('' !== $course->details_age ? '<div class="details_age">'. $course->details_age .'</div>' : '');
         echo '</div>';
         echo '</div>';
 
@@ -642,7 +642,7 @@ if (rex::isBackend()) {
                     ?>
 						var myLatlng = new google.maps.LatLng(<?= $course->location->latitude .','. $course->location->longitude ?>);
 						var myOptions = {
-							zoom: <?= ($course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10) ?>,
+							zoom: <?= $course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10 ?>,
 							center: myLatlng,
 							mapTypeId: google.maps.MapTypeId.ROADMAP
 						};
@@ -692,7 +692,7 @@ if (rex::isBackend()) {
 						}
 
 						var myOptions = {
-							zoom: <?= ($course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10) ?>,
+							zoom: <?= $course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10 ?>,
 							mapTypeId: google.maps.MapTypeId.ROADMAP
 						};
 						map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
@@ -710,7 +710,7 @@ if (rex::isBackend()) {
                 ?>
 					<div id="map-<?= $map_id ?>" style="width:100%;height:400px"></div>
 					<script type="text/javascript" async="async">
-						var map = L.map('map-<?= $map_id ?>').setView([<?= $course->location->latitude .','. $course->location->longitude ?>], <?= ($course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10) ?>);
+						var map = L.map('map-<?= $map_id ?>').setView([<?= $course->location->latitude .','. $course->location->longitude ?>], <?= $course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10 ?>);
 						L.tileLayer('/?osmtype=german&z={z}&x={x}&y={y}', {
 							attribution: 'Map data &copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
 						}).addTo(map);
@@ -816,7 +816,7 @@ if (rex::isBackend()) {
                     echo \Geolocation\mapset::take($mapsetId)
                         ->attributes('id', (string) $mapsetId)
                         ->attributes('style', 'height:400px;width:100%;')
-                        ->dataset('center', [[$course->location->latitude, $course->location->longitude], ($course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10)])
+                        ->dataset('center', [[$course->location->latitude, $course->location->longitude], $course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10])
                         ->dataset('position', [$course->location->latitude, $course->location->longitude])
                         ->dataset('infobox', [[$course->location->latitude, $course->location->longitude], $course->location->name])
                         ->parse();

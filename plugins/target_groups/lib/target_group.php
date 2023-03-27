@@ -8,14 +8,16 @@
 namespace D2U_Courses;
 
 use d2u_addon_backend_helper;
-use D2U_Courses\TargetGroup as D2U_CoursesTargetGroup;
 use d2u_courses_frontend_helper;
 use rex;
 use rex_addon;
+use rex_addon_interface;
 use rex_config;
 use rex_plugin;
 use rex_sql;
 use rex_yrewrite;
+
+use function is_array;
 
 /**
  * @api
@@ -174,7 +176,7 @@ class TargetGroup
      */
     public function getChildren()
     {
-        if (!($this->parent_target_group instanceof TargetGroup)) {
+        if (!($this->parent_target_group instanceof self)) {
             return [];
         }
 
@@ -212,7 +214,7 @@ class TargetGroup
     public function getCourses($online_only = false)
     {
         $query = '';
-        if ($this->parent_target_group instanceof TargetGroup) {
+        if ($this->parent_target_group instanceof self) {
             // If object IS a child
             $query = 'SELECT courses.course_id FROM '. rex::getTablePrefix() .'d2u_courses_2_target_groups AS c2t '
                 .'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses ON c2t.course_id = courses.course_id '
@@ -269,7 +271,7 @@ class TargetGroup
     {
         if ('' === $this->url) {
             $parameterArray = [];
-            if ($this->parent_target_group instanceof TargetGroup) {
+            if ($this->parent_target_group instanceof self) {
                 // Separator is ugly, but needs to consist of digits only
                 $parameterArray['target_group_child_id'] = $this->parent_target_group->target_group_id .'00000'. $this->target_group_id;
             } else {
@@ -279,7 +281,7 @@ class TargetGroup
         }
 
         if ($including_domain) {
-            if (\rex_addon::get('yrewrite') instanceof \rex_addon_interface && rex_addon::get('yrewrite')->isAvailable()) {
+            if (rex_addon::get('yrewrite') instanceof rex_addon_interface && rex_addon::get('yrewrite')->isAvailable()) {
                 return str_replace(rex_yrewrite::getCurrentDomain()->getUrl() .'/', rex_yrewrite::getCurrentDomain()->getUrl(), rex_yrewrite::getCurrentDomain()->getUrl() . $this->url);
             }
 

@@ -36,16 +36,16 @@ class KuferSync
     /**
      * Imports data from Kufer SQL exported XML file.
      */
-    public static function sync():void
+    public static function sync(): void
     {
         // Read XML file
         $context = stream_context_create(['http' => ['header' => 'Accept: application/xml']]);
         $xmlstring = file_get_contents((string) rex_config::get('d2u_courses', 'kufer_sync_xml_url', ''), false, $context);
-        if(false === $xmlstring || '' === $xmlstring) {
+        if (false === $xmlstring || '' === $xmlstring) {
             return;
         }
         $kufer_courses = simplexml_load_string($xmlstring, null, LIBXML_NOCDATA);
-        if(false === $kufer_courses) {
+        if (false === $kufer_courses) {
             return;
         }
 
@@ -246,7 +246,7 @@ class KuferSync
                     if (property_exists($dozent, 'titel')) {
                         $new_course->instructor .= $dozent->titel .' ';
                     }
-                    if (property_exists($dozent, 'vorname') &&  property_exists($dozent, 'name')) {
+                    if (property_exists($dozent, 'vorname') && property_exists($dozent, 'name')) {
                         $new_course->instructor .= $dozent->vorname .' '. $dozent->name;
                     }
                 }
@@ -274,7 +274,7 @@ class KuferSync
                                 $new_course->category = $course_category;
                             }
                             $new_course->secondary_category_ids[] = $course_category->category_id;
-                            $kurskategorie_counter++;
+                            ++$kurskategorie_counter;
                         }
                     }
                 }

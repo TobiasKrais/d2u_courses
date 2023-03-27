@@ -115,7 +115,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                             }
                         }
                     }
-                    d2u_addon_backend_helper::form_select('d2u_courses_categories_parent_category', 'form[parent_category_id]', $options_parents, [($category->parent_category instanceof Category ? $category->parent_category->category_id : -1)], 1, false, false);
+                    d2u_addon_backend_helper::form_select('d2u_courses_categories_parent_category', 'form[parent_category_id]', $options_parents, [$category->parent_category instanceof Category ? $category->parent_category->category_id : -1], 1, false, false);
                     d2u_addon_backend_helper::form_input('header_priority', 'form[priority]', $category->priority, true, false, 'number');
                     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
                         d2u_addon_backend_helper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $category->kufer_categories), 5, false, false, false);
@@ -137,8 +137,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
 						<button class="btn btn-save rex-form-aligned" type="submit" name="btn_save" value="1"><?= rex_i18n::msg('form_save') ?></button>
 						<button class="btn btn-apply" type="submit" name="btn_apply" value="1"><?= rex_i18n::msg('form_apply') ?></button>
 						<button class="btn btn-abort" type="submit" name="btn_abort" formnovalidate="formnovalidate" value="1"><?= rex_i18n::msg('form_abort') ?></button>
-						<?php
-                            echo '<button class="btn btn-delete" type="submit" name="btn_delete" formnovalidate="formnovalidate" data-confirm="'. rex_i18n::msg('form_delete') .'?" value="1">'. rex_i18n::msg('form_delete') .'</button>';
+						<?= '<button class="btn btn-delete" type="submit" name="btn_delete" formnovalidate="formnovalidate" data-confirm="'. rex_i18n::msg('form_delete') .'?" value="1">'. rex_i18n::msg('form_delete') .'</button>';
                         ?>
 					</div>
 				</div>

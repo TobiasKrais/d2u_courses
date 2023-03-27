@@ -11,9 +11,11 @@ use d2u_addon_backend_helper;
 use d2u_courses_frontend_helper;
 use rex;
 use rex_addon;
+use rex_addon_interface;
 use rex_config;
 use rex_plugin;
 use rex_sql;
+
 use rex_yrewrite;
 
 use function is_array;
@@ -57,9 +59,7 @@ class Location
     /** @var LocationCategory|bool Location category */
     public LocationCategory|bool $location_category = false;
 
-    /**
-     * @var array<string> Redaxo usernames that are allowed to create courses for this location
-     */
+    /** @var array<string> Redaxo usernames that are allowed to create courses for this location */
     public array $redaxo_users = [];
 
     /** @var string Update timestamp */
@@ -228,7 +228,7 @@ class Location
         }
 
         if ($including_domain) {
-            if (\rex_addon::get('yrewrite') instanceof \rex_addon_interface && rex_addon::get('yrewrite')->isAvailable()) {
+            if (rex_addon::get('yrewrite') instanceof rex_addon_interface && rex_addon::get('yrewrite')->isAvailable()) {
                 return str_replace(rex_yrewrite::getCurrentDomain()->getUrl() .'/', rex_yrewrite::getCurrentDomain()->getUrl(), rex_yrewrite::getCurrentDomain()->getUrl() . $this->url);
             }
 

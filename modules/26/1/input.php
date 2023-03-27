@@ -185,8 +185,8 @@ if (rex_addon::get('d2u_linkbox')->isAvailable()) {
 	<div class="col-xs-8">
 		<?php
             echo '<select name="REX_INPUT_VALUE[8]" class="form-control">';
-            echo '<option value="3" '. ( (int) 'REX_VALUE[8]' === 3 ? 'selected="selected" ' : '') .'>3</option>'; /** @phpstan-ignore-line */
-            echo '<option value="4" '. ((int) 'REX_VALUE[8]' === 4 ? 'selected="selected" ' : '') .'>4</option>'; /** @phpstan-ignore-line */
+            echo '<option value="3" '. (3 === (int) 'REX_VALUE[8]' ? 'selected="selected" ' : '') .'>3</option>'; /** @phpstan-ignore-line */
+            echo '<option value="4" '. (4 === (int) 'REX_VALUE[8]' ? 'selected="selected" ' : '') .'>4</option>'; /** @phpstan-ignore-line */
             echo '</select>';
         ?>
 	</div>

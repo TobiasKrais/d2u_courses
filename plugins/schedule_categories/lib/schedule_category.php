@@ -8,14 +8,16 @@
 namespace D2U_Courses;
 
 use d2u_addon_backend_helper;
-use D2U_Courses\ScheduleCategory as D2U_CoursesScheduleCategory;
 use d2u_courses_frontend_helper;
 use rex;
 use rex_addon;
+use rex_addon_interface;
 use rex_config;
 use rex_plugin;
 use rex_sql;
 use rex_yrewrite;
+
+use function is_array;
 
 /**
  * @api
@@ -312,7 +314,7 @@ class ScheduleCategory
         }
 
         if ($including_domain) {
-            if (\rex_addon::get('yrewrite') instanceof \rex_addon_interface && rex_addon::get('yrewrite')->isAvailable()) {
+            if (rex_addon::get('yrewrite') instanceof rex_addon_interface && rex_addon::get('yrewrite')->isAvailable()) {
                 return str_replace(rex_yrewrite::getCurrentDomain()->getUrl() .'/', rex_yrewrite::getCurrentDomain()->getUrl(), rex_yrewrite::getCurrentDomain()->getUrl() . $this->url);
             }
 
@@ -339,7 +341,7 @@ class ScheduleCategory
         $query .= rex::getTablePrefix().'d2u_courses_schedule_categories SET '
             .'`name` = "'. addslashes($this->name) .'", '
             .'picture = "'. $this->picture .'", '
-            .'parent_schedule_category_id = '. ($this->parent_schedule_category instanceof ScheduleCategory ? $this->parent_schedule_category->schedule_category_id : 0) .', '
+            .'parent_schedule_category_id = '. ($this->parent_schedule_category instanceof self ? $this->parent_schedule_category->schedule_category_id : 0) .', '
             .'updatedate = CURRENT_TIMESTAMP ';
         if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
             $query .= ', kufer_categories = "'. implode(PHP_EOL, $this->kufer_categories) .'"';

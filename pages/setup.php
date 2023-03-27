@@ -75,7 +75,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
         $parent_target_id = $sql->getValue('eltern_zielgruppe_id');
         $target_id = $sql->getValue('c2t.target_group_id');
         $kufer_name = $sql->getValue('kufer_zielgruppe_name');
-		$kufer_kategorien_bezeichnungsstrukturen = preg_grep('/^\s*$/s', explode(PHP_EOL, (string) $sql->getValue('kufer_kategorien_bezeichnungsstrukturen')), PREG_GREP_INVERT);
+        $kufer_kategorien_bezeichnungsstrukturen = preg_grep('/^\s*$/s', explode(PHP_EOL, (string) $sql->getValue('kufer_kategorien_bezeichnungsstrukturen')), PREG_GREP_INVERT);
         $kufer_categories = is_array($kufer_kategorien_bezeichnungsstrukturen) ? array_map('trim', $kufer_kategorien_bezeichnungsstrukturen) : [];
         // Transfer Kufer names to parents
         if ('' !== $kufer_name) {

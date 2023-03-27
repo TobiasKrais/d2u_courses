@@ -7,9 +7,7 @@
 
 namespace D2U_Courses;
 
-use Category as GlobalCategory;
 use d2u_addon_backend_helper;
-use D2U_Courses\Category as D2U_CoursesCategory;
 use d2u_courses_frontend_helper;
 use rex;
 use rex_addon;
@@ -194,7 +192,7 @@ class Category
         for ($i = 0; $i < $num_rows; ++$i) {
             $category = new self((int) $result->getValue('category_id'));
             // Add parent categories if no special parent category is selected - parent categories contain no courses
-            if (0 === $parent_category_id && false !== $category->parent_category instanceof \D2U_Courses\Category
+            if (0 === $parent_category_id && false !== $category->parent_category instanceof self
                     && $category->parent_category->category_id > 0 && !in_array($category->parent_category->category_id, $ids, true)) {
                 $category = new self($category->parent_category->category_id);
                 $categories[] = $category;
@@ -301,7 +299,7 @@ class Category
 
         $categories = [];
         for ($i = 0; $i < $num_rows; ++$i) {
-            $categories[(int) $result->getValue('category_id')] = new self( (int) $result->getValue('category_id'));
+            $categories[(int) $result->getValue('category_id')] = new self((int) $result->getValue('category_id'));
             $result->next();
         }
 
@@ -342,9 +340,9 @@ class Category
      */
     public function getPartentRoot()
     {
-        if ($this->parent_category instanceof Category) {
-            if ($this->parent_category->parent_category instanceof Category) {
-                if ($this->parent_category->parent_category->parent_category instanceof Category) {
+        if ($this->parent_category instanceof self) {
+            if ($this->parent_category->parent_category instanceof self) {
+                if ($this->parent_category->parent_category->parent_category instanceof self) {
                     return $this->parent_category->parent_category->parent_category;
                 }
                 return $this->parent_category->parent_category;
@@ -368,7 +366,7 @@ class Category
         }
 
         if ($including_domain) {
-            if (\rex_addon::get('yrewrite') instanceof \rex_addon_interface && rex_addon::get('yrewrite')->isAvailable()) {
+            if (rex_addon::get('yrewrite') instanceof rex_addon_interface && rex_addon::get('yrewrite')->isAvailable()) {
                 return str_replace(rex_yrewrite::getCurrentDomain()->getUrl() .'/', rex_yrewrite::getCurrentDomain()->getUrl(), rex_yrewrite::getCurrentDomain()->getUrl() . $this->url);
             }
 
@@ -398,7 +396,7 @@ class Category
             .'description = "'. addslashes($this->description) .'", '
             .'color = "'. $this->color .'", '
             .'picture = "'. $this->picture .'", '
-            .'parent_category_id = '. ($this->parent_category instanceof Category ? $this->parent_category->category_id : 0) .', '
+            .'parent_category_id = '. ($this->parent_category instanceof self ? $this->parent_category->category_id : 0) .', '
             .'updatedate = CURRENT_TIMESTAMP';
         if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
             $query .= ', kufer_categories = "'. implode(PHP_EOL, $this->kufer_categories) .'"'

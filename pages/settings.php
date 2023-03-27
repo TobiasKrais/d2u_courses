@@ -16,13 +16,13 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
     $settings['article_id_terms_of_participation'] = is_array($link_ids) ? (int) $link_ids['REX_INPUT_LINK'][4] : 0;
 
     if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-        $settings['article_id_locations'] = is_array($link_ids) && is_array($link_ids['REX_INPUT_LINK']) && $link_ids['REX_INPUT_LINK'][5] > 0 ? (int) $link_ids['REX_INPUT_LINK'][5] :  $settings['article_id_courses'];
+        $settings['article_id_locations'] = is_array($link_ids) && is_array($link_ids['REX_INPUT_LINK']) && $link_ids['REX_INPUT_LINK'][5] > 0 ? (int) $link_ids['REX_INPUT_LINK'][5] : $settings['article_id_courses'];
     }
     if (rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
-        $settings['article_id_schedule_categories'] = is_array($link_ids) && is_array($link_ids['REX_INPUT_LINK']) && $link_ids['REX_INPUT_LINK'][6] > 0 ? (int) $link_ids['REX_INPUT_LINK'][6] :  $settings['article_id_courses'];
+        $settings['article_id_schedule_categories'] = is_array($link_ids) && is_array($link_ids['REX_INPUT_LINK']) && $link_ids['REX_INPUT_LINK'][6] > 0 ? (int) $link_ids['REX_INPUT_LINK'][6] : $settings['article_id_courses'];
     }
     if (rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-        $settings['article_id_target_groups'] = is_array($link_ids) && is_array($link_ids['REX_INPUT_LINK']) && $link_ids['REX_INPUT_LINK'][7] > 0 ? (int) $link_ids['REX_INPUT_LINK'][7] :  $settings['article_id_courses'];
+        $settings['article_id_target_groups'] = is_array($link_ids) && is_array($link_ids['REX_INPUT_LINK']) && $link_ids['REX_INPUT_LINK'][7] > 0 ? (int) $link_ids['REX_INPUT_LINK'][7] : $settings['article_id_courses'];
     }
 
     // Checkbox also need special treatment if empty
@@ -455,8 +455,8 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 						<?php
                             d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_multinewsletter_subscribe', 'settings[multinewsletter_subscribe]', 'show', 'show' === rex_config::get('d2u_courses', 'multinewsletter_subscribe'));
                             $options_groups = [];
-							foreach (MultinewsletterGroup::getAll() as $group) {
-								$options_groups[$group->id] = $group->name;
+                            foreach (MultinewsletterGroup::getAll() as $group) {
+                                $options_groups[$group->id] = $group->name;
                             }
                             d2u_addon_backend_helper::form_select('d2u_courses_settings_multinewsletter_group', 'settings[multinewsletter_group][]', $options_groups, rex_config::get('d2u_courses', 'multinewsletter_group'), 3, true, false); /** @phpstan-ignore-line */
                         ?>

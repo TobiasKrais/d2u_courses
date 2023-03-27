@@ -10,8 +10,11 @@ namespace D2U_Courses;
 
 use DateTime;
 use DOMDocument;
+use Exception;
 use rex_config;
+
 use rex_mailer;
+use rex_request;
 
 use function array_key_exists;
 use function count;
@@ -34,8 +37,8 @@ class Cart
         }
 
         // Create cart
-        if (\rex_session('cart') === '') {
-            \rex_request::setSession('cart', []);
+        if ('' === rex_session('cart')) {
+            rex_request::setSession('cart', []);
         }
     }
 
@@ -47,7 +50,7 @@ class Cart
     public function addCourse($course_id): void
     {
         $course = new Course($course_id);
-        $cart = \rex_request::session('cart');
+        $cart = rex_request::session('cart');
         if (!is_array($cart)) {
             $cart = [];
         }
@@ -59,7 +62,7 @@ class Cart
             // registration with person details
             $cart[$course_id][] = ['firstname' => '', 'lastname' => '', 'birthday' => '', 'age' => '', 'emergency_number' => '', 'gender' => '', 'price' => '', 'price_salery_level_row_number' => rex_request('participant_price_salery_level_row_add', 'int', 0)];
         }
-        \rex_request::setSession('cart', $cart);
+        rex_request::setSession('cart', $cart);
     }
 
     /**
@@ -68,7 +71,7 @@ class Cart
      */
     public function addEmptyParticipant($course_id): void
     {
-        $cart = \rex_request::session('cart');
+        $cart = rex_request::session('cart');
         if (!is_array($cart)) {
             $cart = [];
         }
@@ -78,7 +81,7 @@ class Cart
         if (is_array($cart[$course_id])) {
             $cart[$course_id][] = ['firstname' => '', 'lastname' => '', 'birthday' => '', 'age' => '', 'emergency_number' => '', 'gender' => '', 'price' => '', 'price_salery_level_row_number' => (int) rex_request('participant_price_salery_level_row_add', 'int', 0)];
         }
-        \rex_request::setSession('cart', $cart);
+        rex_request::setSession('cart', $cart);
     }
 
     /**
@@ -101,7 +104,7 @@ class Cart
         } else {
             return 0;
         }
-        return (int) floor((date('Ymd') - date('Ymd', $time === false ? 0 : $time)) / 10000);
+        return (int) floor((date('Ymd') - date('Ymd', false === $time ? 0 : $time)) / 10000);
     }
 
     /**
@@ -208,7 +211,7 @@ class Cart
             foreach ($cart as $course_id => $participant) {
                 if (is_array($participant)) {
                     foreach ($participant as $id => $participant_data) {
-                        if(!is_array($participant_data) || !array_key_exists('lastname', $participant_data) || !array_key_exists('firstname', $participant_data)) {
+                        if (!is_array($participant_data) || !array_key_exists('lastname', $participant_data) || !array_key_exists('firstname', $participant_data)) {
                             continue;
                         }
                         // <NAME>Last name</NAME>
@@ -518,7 +521,7 @@ class Cart
         try {
             $dir = trim((string) rex_config::get('d2u_courses', 'kufer_sync_xml_registration_path'), '/');
             if (!file_exists($dir)) {
-                mkdir($dir, 0777, true);
+                mkdir($dir, 0o777, true);
             }
             if (!file_exists($dir .'/.htaccess')) {
                 $handle = fopen($dir .'/.htaccess', 'a');
@@ -526,10 +529,10 @@ class Cart
                     fwrite($handle, 'order deny,allow'. PHP_EOL .'deny from all');
                 }
             }
-            if ($xml->save($dir .'/'. time() .'-'. random_int(0, getrandmax()) .'.xml') !== false) {
+            if (false !== $xml->save($dir .'/'. time() .'-'. random_int(0, getrandmax()) .'.xml')) {
                 return true;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             echo 'Error: '. $e;
             return false;
         }
@@ -540,13 +543,13 @@ class Cart
      * Deletes course.
      * @param int $course_id Course ID
      */
-    public function deleteCourse($course_id):void
+    public function deleteCourse($course_id): void
     {
-        $cart = \rex_request::session('cart');
+        $cart = rex_request::session('cart');
         if (is_array($cart)) {
             unset($cart[$course_id]);
         }
-        \rex_request::setSession('cart', $cart);
+        rex_request::setSession('cart', $cart);
     }
 
     /**
@@ -555,9 +558,9 @@ class Cart
      * @param int $course_id Course ID
      * @param int $delete_participant_id Participant number
      */
-    public function deleteParticipant($course_id, $delete_participant_id):void
+    public function deleteParticipant($course_id, $delete_participant_id): void
     {
-        $cart = \rex_request::session('cart');
+        $cart = rex_request::session('cart');
         if (is_array($cart) && is_array($cart[$course_id])) {
             unset($cart[$course_id][$delete_participant_id]);
         }
@@ -565,13 +568,12 @@ class Cart
         if (is_array($cart) && 0 === count((array) $cart[$course_id])) {
             // If last participant was deleted: delete course
             unset($cart[$course_id]);
-        }
-        else if (is_array($cart)) {
+        } elseif (is_array($cart)) {
             // Sort participants - if this is not done there might be participants confusions in cart
             $cart[$course_id] = array_values((array) $cart[$course_id]);
         }
 
-        \rex_request::setSession('cart', $cart);
+        rex_request::setSession('cart', $cart);
     }
 
     /**
@@ -581,7 +583,7 @@ class Cart
      */
     public static function formatCourseDate($date)
     {
-        if (strpos($date, '-') !== false) {
+        if (str_contains($date, '-')) {
             $d = explode('-', $date);
             $unix = mktime(0, 0, 0, (int) $d[1], (int) $d[2], (int) $d[0]);
 
@@ -615,7 +617,7 @@ class Cart
 
         $course_ids = [];
         if ('' !== rex_session('cart')) {
-            $cart = \rex_request::session('cart');
+            $cart = rex_request::session('cart');
             if (is_array($cart)) {
                 foreach ($cart as $course_id => $participants) {
                     $course_ids[] = (int) $course_id;
@@ -632,7 +634,7 @@ class Cart
      */
     public static function getCourseParticipants($course_id)
     {
-        $cart = \rex_request::session('cart');
+        $cart = rex_request::session('cart');
         if (is_array($cart)) {
             foreach ($cart as $cart_course_id => $participants) {
                 if ((int) $cart_course_id === $course_id) {
@@ -650,7 +652,7 @@ class Cart
      */
     public static function getCourseParticipantsNumber($course_id)
     {
-        $cart = \rex_request::session('cart');
+        $cart = rex_request::session('cart');
         if (is_array($cart)) {
             foreach ($cart as $cart_course_id => $participants) {
                 if ((int) $cart_course_id === $course_id) {
@@ -674,7 +676,7 @@ class Cart
      */
     public function hasCourse($course_id)
     {
-        $cart = \rex_request::session('cart');
+        $cart = rex_request::session('cart');
         if (is_array($cart) && array_key_exists($course_id, $cart)) {
             return true;
         }
@@ -766,7 +768,7 @@ class Cart
                             $body .= '<br>';
                         }
                     }
-                } else if (!is_array($participant['participant_number'])) {
+                } elseif (!is_array($participant['participant_number'])) {
                     $body .= 'Anzahl Anmeldungen: '. $participant['participant_number'] .'<br>';
                 }
             }
@@ -823,9 +825,9 @@ class Cart
     /**
      * Delete all cart items.
      */
-    public function unsetCart():void
+    public function unsetCart(): void
     {
-        \rex_request::setSession('cart', null);
+        rex_request::setSession('cart', null);
     }
 
     /**
@@ -835,11 +837,11 @@ class Cart
      * @param string[] $participant_data Array with participant data. Allowed keys
      * are "firstname", "lastname", "birthday", "age", "gender", "emergency_number", "salery_level"
      */
-    public function updateParticipant($course_id, $participant_id, $participant_data):void
+    public function updateParticipant($course_id, $participant_id, $participant_data): void
     {
-        $cart = \rex_request::session('cart');
+        $cart = rex_request::session('cart');
         foreach ($participant_data as $key => $value) {
-            if(!is_array($cart)) {
+            if (!is_array($cart)) {
                 $cart = [];
             }
             if (!array_key_exists($course_id, $cart) || !is_array($cart[$course_id])) {
@@ -850,7 +852,7 @@ class Cart
             }
             $cart[$course_id][$participant_id][$key] = trim((string) $value);
         }
-        \rex_request::setSession('cart', $cart);
+        rex_request::setSession('cart', $cart);
     }
 
     /**
@@ -860,15 +862,15 @@ class Cart
      * @param string $participant_price price per participant, e.g. 30 €
      * @param int $participant_price_salery_level_row_number row number of price salery level used as so to say id
      */
-    public function updateParticipantNumber($course_id, $participant_number, $participant_price = null, $participant_price_salery_level_row_number = 0):void
+    public function updateParticipantNumber($course_id, $participant_number, $participant_price = null, $participant_price_salery_level_row_number = 0): void
     {
-        $cart = \rex_request::session('cart');
+        $cart = rex_request::session('cart');
         if (!is_array($cart)) {
             $cart = [];
         }
         $cart[$course_id] = [];
         $cart[$course_id]['participant_number'] = $participant_number;
-        if ($participant_price !== '' || $participant_price_salery_level_row_number > 0) {
+        if ('' !== $participant_price || $participant_price_salery_level_row_number > 0) {
             if ($participant_price_salery_level_row_number > 0) {
                 $course = new Course($course_id);
                 if ($course->price_salery_level) {
@@ -885,6 +887,6 @@ class Cart
             $cart[$course_id]['participant_price'] = $participant_price;
             $cart[$course_id]['participant_price_salery_level_row_number'] = $participant_price_salery_level_row_number;
         }
-        \rex_request::setSession('cart', $cart);
+        rex_request::setSession('cart', $cart);
     }
 }

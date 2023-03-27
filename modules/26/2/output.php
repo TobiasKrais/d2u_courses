@@ -27,7 +27,7 @@ if (filter_input(INPUT_POST, 'course_id', FILTER_VALIDATE_INT, ['options' => ['d
 
 $form_data = filter_input_array(INPUT_POST);
 // Add empty participant
-if (is_array($form_data) && key_exists('participant_add', $form_data) && is_array($form_data['participant_add'])) {
+if (is_array($form_data) && array_key_exists('participant_add', $form_data) && is_array($form_data['participant_add'])) {
     foreach ($form_data['participant_add'] as $course_id => $value) {
         $cart->addEmptyParticipant($course_id);
     }
@@ -37,7 +37,7 @@ if (is_array($form_data) && key_exists('participant_add', $form_data) && is_arra
 foreach (\D2U_Courses\Cart::getCourseIDs() as $course_id) {
     $course = new \D2U_Courses\Course($course_id);
 
-    if (is_array($form_data) && key_exists('participant_'. $course_id, $form_data) && is_array($form_data['participant_'. $course_id])) {
+    if (is_array($form_data) && array_key_exists('participant_'. $course_id, $form_data) && is_array($form_data['participant_'. $course_id])) {
         // courses with person details
         foreach ($form_data['participant_'. $course_id] as $participant_id => $participant_data) {
             if (!is_array($participant_data)) {
@@ -53,19 +53,19 @@ foreach (\D2U_Courses\Cart::getCourseIDs() as $course_id) {
                 }
             }
             $participant_data_update = [
-                'firstname' => trim((string) (filter_var($participant_data['firstname']) !== false ? filter_var($participant_data['firstname']) : '')),
-                'lastname' => trim((string) (filter_var($participant_data['lastname']) !== false ? filter_var($participant_data['lastname']) : '')),
-                'birthday' => (array_key_exists('birthday', $participant_data) && filter_var($participant_data['birthday']) !== false ? trim(filter_var($participant_data['birthday'])) : ''),
-                'age' => (array_key_exists('age', $participant_data) && filter_var($participant_data['age']) !== false ? trim(filter_var($participant_data['age'])) : ''),
-                'emergency_number' => (array_key_exists('emergency_number', $participant_data) && filter_var($participant_data['emergency_number']) !== false ? trim(filter_var($participant_data['emergency_number'])) : ''),
-                'gender' => (array_key_exists('gender', $participant_data) && filter_var($participant_data['gender']) !== false ? trim(filter_var($participant_data['gender'])) : ''),
+                'firstname' => trim((string) (false !== filter_var($participant_data['firstname']) ? filter_var($participant_data['firstname']) : '')),
+                'lastname' => trim((string) (false !== filter_var($participant_data['lastname']) ? filter_var($participant_data['lastname']) : '')),
+                'birthday' => (array_key_exists('birthday', $participant_data) && false !== filter_var($participant_data['birthday']) ? trim(filter_var($participant_data['birthday'])) : ''),
+                'age' => (array_key_exists('age', $participant_data) && false !== filter_var($participant_data['age']) ? trim(filter_var($participant_data['age'])) : ''),
+                'emergency_number' => (array_key_exists('emergency_number', $participant_data) && false !== filter_var($participant_data['emergency_number']) ? trim(filter_var($participant_data['emergency_number'])) : ''),
+                'gender' => (array_key_exists('gender', $participant_data) && false !== filter_var($participant_data['gender']) ? trim(filter_var($participant_data['gender'])) : ''),
                 'price' => trim($participant_price),
-                'price_salery_level_row_number' => (array_key_exists('price_salery_level_row_number', $participant_data) && filter_var($participant_data['price_salery_level_row_number']) !== false ? trim(filter_var($participant_data['price_salery_level_row_number'])) : ''),
+                'price_salery_level_row_number' => (array_key_exists('price_salery_level_row_number', $participant_data) && false !== filter_var($participant_data['price_salery_level_row_number']) ? trim(filter_var($participant_data['price_salery_level_row_number'])) : ''),
             ];
             $cart->updateParticipant($course_id, (int) $participant_id, $participant_data_update);
         }
     }
-    if (is_array($form_data) && key_exists('participant_number_'. $course_id, $form_data)) {
+    if (is_array($form_data) && array_key_exists('participant_number_'. $course_id, $form_data)) {
         $participant_price = '';
         $counter_row_price_salery_level_details = 0;
         foreach ($course->price_salery_level_details as $description => $price) {
@@ -198,7 +198,7 @@ if (isset($form_data['invoice_form'])) {
     }
 } elseif (isset($form_data['request_courses']) && '' !== $form_data['request_courses']) {
     $payment_options = rex_config::get('d2u_courses', 'payment_options', []);
-    if(!is_array($payment_options)) {
+    if (!is_array($payment_options)) {
         $payment_options = [$payment_options];
     }
 
@@ -456,7 +456,7 @@ if (isset($form_data['invoice_form'])) {
         $course = new D2U_Courses\Course($course_id);
         echo '<div class="row">';
         echo '<div class="col-12 spacer">';
-        echo '<div class="cart_row_title" style="background-color: '. ($course->category instanceof Category? $course->category->color : 'grey') .'">';
+        echo '<div class="cart_row_title" style="background-color: '. ($course->category instanceof Category ? $course->category->color : 'grey') .'">';
         echo '<div class="row" data-match-height>';
         echo '<div class="col-12">';
         echo '<b>'. $course->name;

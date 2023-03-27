@@ -10,10 +10,13 @@ namespace D2U_Courses;
 use d2u_addon_backend_helper;
 use d2u_courses_frontend_helper;
 use DateTime;
+use rex;
 use rex_addon;
+use rex_addon_interface;
 use rex_config;
 use rex_plugin;
 use rex_sql;
+
 use rex_url;
 use rex_yrewrite;
 
@@ -150,7 +153,7 @@ class Course
     public function __construct($course_id)
     {
         if ($course_id > 0) {
-            $query = 'SELECT * FROM '. \rex::getTablePrefix() .'d2u_courses_courses '
+            $query = 'SELECT * FROM '. rex::getTablePrefix() .'d2u_courses_courses '
                     .'WHERE course_id = '. $course_id;
             $result = rex_sql::factory();
             $result->setQuery($query);
@@ -200,14 +203,14 @@ class Course
             }
 
             // Get secondary category ids
-            $result->setQuery('SELECT * FROM '. \rex::getTablePrefix() .'d2u_courses_2_categories WHERE course_id = '. $this->course_id .';');
+            $result->setQuery('SELECT * FROM '. rex::getTablePrefix() .'d2u_courses_2_categories WHERE course_id = '. $this->course_id .';');
             for ($i = 0; $i < $result->getRows(); ++$i) {
                 $this->secondary_category_ids[] = (int) $result->getValue('category_id');
                 $result->next();
             }
             // Get schedule categories
             if (rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
-                $result->setQuery('SELECT * FROM '. \rex::getTablePrefix() .'d2u_courses_2_schedule_categories WHERE course_id = '. $this->course_id .';');
+                $result->setQuery('SELECT * FROM '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories WHERE course_id = '. $this->course_id .';');
                 for ($i = 0; $i < $result->getRows(); ++$i) {
                     $this->schedule_category_ids[] = (int) $result->getValue('schedule_category_id');
                     $result->next();
@@ -215,7 +218,7 @@ class Course
             }
             // Get target group ids
             if (rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-                $result->setQuery('SELECT * FROM '. \rex::getTablePrefix() .'d2u_courses_2_target_groups WHERE course_id = '. $this->course_id .';');
+                $result->setQuery('SELECT * FROM '. rex::getTablePrefix() .'d2u_courses_2_target_groups WHERE course_id = '. $this->course_id .';');
                 for ($i = 0; $i < $result->getRows(); ++$i) {
                     $this->target_group_ids[] = (int) $result->getValue('target_group_id');
                     $result->next();
@@ -231,7 +234,7 @@ class Course
     {
         if ('online' === $this->online_status) {
             if ($this->course_id > 0) {
-                $query = 'UPDATE '. \rex::getTablePrefix() .'d2u_courses_courses '
+                $query = 'UPDATE '. rex::getTablePrefix() .'d2u_courses_courses '
                     ."SET online_status = 'offline' "
                     .'WHERE course_id = '. $this->course_id;
                 $result = rex_sql::factory();
@@ -240,7 +243,7 @@ class Course
             $this->online_status = 'offline';
         } else {
             if ($this->course_id > 0) {
-                $query = 'UPDATE '. \rex::getTablePrefix() .'d2u_courses_courses '
+                $query = 'UPDATE '. rex::getTablePrefix() .'d2u_courses_courses '
                     ."SET online_status = 'online' "
                     .'WHERE course_id = '. $this->course_id;
                 $result = rex_sql::factory();
@@ -262,24 +265,24 @@ class Course
         if ($this->course_id > 0) {
             $result = rex_sql::factory();
 
-            $query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_courses '
+            $query = 'DELETE FROM '. rex::getTablePrefix() .'d2u_courses_courses '
                     .'WHERE course_id = '. $this->course_id;
             $result->setQuery($query);
 
             $return = ($result->hasError() ? false : true);
 
-            $query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_2_categories '
+            $query = 'DELETE FROM '. rex::getTablePrefix() .'d2u_courses_2_categories '
                     .'WHERE course_id = '. $this->course_id;
             $result->setQuery($query);
 
             if (rex_plugin::get('d2u_courses', 'schedule_categories')->isInstalled()) {
-                $query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_2_schedule_categories '
+                $query = 'DELETE FROM '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories '
                         .'WHERE course_id = '. $this->course_id;
                 $result->setQuery($query);
             }
 
             if (rex_plugin::get('d2u_courses', 'target_groups')->isInstalled()) {
-                $query = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_2_target_groups '
+                $query = 'DELETE FROM '. rex::getTablePrefix() .'d2u_courses_2_target_groups '
                         .'WHERE course_id = '. $this->course_id;
                 $result->setQuery($query);
             }
@@ -326,7 +329,7 @@ class Course
      */
     public static function getAll($online_only = false)
     {
-        $query = 'SELECT course_id FROM '. \rex::getTablePrefix() .'d2u_courses_courses';
+        $query = 'SELECT course_id FROM '. rex::getTablePrefix() .'d2u_courses_courses';
         if ($online_only) {
             $query .= " WHERE online_status = 'online'";
         }
@@ -356,7 +359,7 @@ class Course
                 .'"provider" : {'. PHP_EOL
                     .'"@type" : "Organization",'. PHP_EOL
                     .'"name" : "'. addcslashes((string) rex_config::get('d2u_courses', 'company_name', ''), '"') .'",'. PHP_EOL
-                    .'"sameAs" : "'. (\rex_addon::get('yrewrite')->isAvailable() ? \rex_yrewrite::getCurrentDomain()->getUrl() : \rex::getServer()) .'"'. PHP_EOL
+                    .'"sameAs" : "'. (rex_addon::get('yrewrite')->isAvailable() ? rex_yrewrite::getCurrentDomain()->getUrl() : rex::getServer()) .'"'. PHP_EOL
                 .'}'. PHP_EOL
             .'}'. PHP_EOL
         .'</script>';
@@ -393,8 +396,8 @@ class Course
                 // eventAttendanceMode options: OfflineEventAttendanceMode, OnlineEventAttendanceMode, MixedEventAttendanceMode
                 .'"eventAttendanceMode" : "https://schema.org/OfflineEventAttendanceMode",'. PHP_EOL
                 .'"eventStatus" : "https://schema.org/EventScheduled",'. PHP_EOL;
-        if($this->location instanceof Location) {
-            $json_data .='"location" : {'. PHP_EOL
+        if ($this->location instanceof Location) {
+            $json_data .= '"location" : {'. PHP_EOL
                     .'"@type" : "Place",'. PHP_EOL
                     .'"name" : "'. addcslashes($this->location->name, '"') .'",'. PHP_EOL
                     .'"address" : {'. PHP_EOL
@@ -455,11 +458,11 @@ class Course
         }
 
         if ($including_domain) {
-            if (\rex_addon::get('yrewrite') instanceof \rex_addon_interface && rex_addon::get('yrewrite')->isAvailable()) {
+            if (rex_addon::get('yrewrite') instanceof rex_addon_interface && rex_addon::get('yrewrite')->isAvailable()) {
                 return str_replace(rex_yrewrite::getCurrentDomain()->getUrl() .'/', rex_yrewrite::getCurrentDomain()->getUrl(), rex_yrewrite::getCurrentDomain()->getUrl() . $this->url);
             }
 
-            return str_replace(\rex::getServer(). '/', \rex::getServer(), \rex::getServer() . $this->url);
+            return str_replace(rex::getServer(). '/', rex::getServer(), rex::getServer() . $this->url);
 
         }
 
@@ -479,7 +482,7 @@ class Course
         if ($this->course_id > 0) {
             $query = 'UPDATE ';
         }
-        $query .= \rex::getTablePrefix() .'d2u_courses_courses SET '
+        $query .= rex::getTablePrefix() .'d2u_courses_courses SET '
             .'`name` = "'. addslashes($this->name) .'", '
             .'teaser = "'. addslashes($this->teaser) .'", '
             .'description = "'. addslashes($this->description) .'", '
@@ -496,9 +499,9 @@ class Course
             .'`time` = "'. $this->time .'", '
             .'category_id = '. ($this->category instanceof Category ? $this->category->category_id : 0) .', '
             .'participants_max = '. ($this->participants_max > 0 ? $this->participants_max : 0) .', '
-            .'participants_min = '. ($this->participants_min > 0 ? $this->participants_min: 0) .', '
+            .'participants_min = '. ($this->participants_min > 0 ? $this->participants_min : 0) .', '
             .'participants_number = '. ($this->participants_number > 0 ? $this->participants_number : 0) .', '
-            .'participants_wait_list = '. ($this->participants_wait_list > 0 ? $this->participants_wait_list: 0) .', '
+            .'participants_wait_list = '. ($this->participants_wait_list > 0 ? $this->participants_wait_list : 0) .', '
             .'registration_possible = "'. $this->registration_possible .'", '
             .'online_status = "'. $this->online_status .'", '
             .'google_type = "'. $this->google_type .'", '
@@ -529,29 +532,29 @@ class Course
         }
 
         // Save secondary category IDs
-        $query_category = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_2_categories WHERE course_id = '. $this->course_id .';'. PHP_EOL;
+        $query_category = 'DELETE FROM '. rex::getTablePrefix() .'d2u_courses_2_categories WHERE course_id = '. $this->course_id .';'. PHP_EOL;
         foreach ($this->secondary_category_ids as $secondary_category_id) {
-            $query_category .= 'INSERT INTO '. \rex::getTablePrefix() .'d2u_courses_2_categories SET course_id = '. $this->course_id .', category_id = '. $secondary_category_id .';'. PHP_EOL;
+            $query_category .= 'INSERT INTO '. rex::getTablePrefix() .'d2u_courses_2_categories SET course_id = '. $this->course_id .', category_id = '. $secondary_category_id .';'. PHP_EOL;
         }
         if ($this->category instanceof Category) {
-            $query_category .= 'REPLACE INTO '. \rex::getTablePrefix() .'d2u_courses_2_categories SET course_id = '. $this->course_id .', category_id = '. $this->category->category_id .';'. PHP_EOL;
+            $query_category .= 'REPLACE INTO '. rex::getTablePrefix() .'d2u_courses_2_categories SET course_id = '. $this->course_id .', category_id = '. $this->category->category_id .';'. PHP_EOL;
         }
         $result->setQuery($query_category);
 
         // Save schedule category IDs
         if (rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
-            $query_schedules = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_2_schedule_categories WHERE course_id = '. $this->course_id .';'. PHP_EOL;
+            $query_schedules = 'DELETE FROM '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories WHERE course_id = '. $this->course_id .';'. PHP_EOL;
             foreach ($this->schedule_category_ids as $schedule_category_ids) {
-                $query_schedules .= 'INSERT INTO '. \rex::getTablePrefix() .'d2u_courses_2_schedule_categories SET course_id = '. $this->course_id .', schedule_category_id = '. $schedule_category_ids .';'. PHP_EOL;
+                $query_schedules .= 'INSERT INTO '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories SET course_id = '. $this->course_id .', schedule_category_id = '. $schedule_category_ids .';'. PHP_EOL;
             }
             $result->setQuery($query_schedules);
         }
 
         // Save target group IDs
         if (rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-            $query_target = 'DELETE FROM '. \rex::getTablePrefix() .'d2u_courses_2_target_groups WHERE course_id = '. $this->course_id .';'. PHP_EOL;
+            $query_target = 'DELETE FROM '. rex::getTablePrefix() .'d2u_courses_2_target_groups WHERE course_id = '. $this->course_id .';'. PHP_EOL;
             foreach ($this->target_group_ids as $target_group_id) {
-                $query_target .= 'INSERT INTO '. \rex::getTablePrefix() .'d2u_courses_2_target_groups SET course_id = '. $this->course_id .', target_group_id = '. $target_group_id .';'. PHP_EOL;
+                $query_target .= 'INSERT INTO '. rex::getTablePrefix() .'d2u_courses_2_target_groups SET course_id = '. $this->course_id .', target_group_id = '. $target_group_id .';'. PHP_EOL;
             }
             $result->setQuery($query_target);
         }
@@ -566,12 +569,12 @@ class Course
      */
     public static function search($keyword)
     {
-        $query = 'SELECT courses.course_id FROM '. \rex::getTablePrefix() .'d2u_courses_courses AS courses ';
+        $query = 'SELECT courses.course_id FROM '. rex::getTablePrefix() .'d2u_courses_courses AS courses ';
         if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-            $query .= 'LEFT JOIN '. \rex::getTablePrefix() .'d2u_courses_locations AS locations '
+            $query .= 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_locations AS locations '
                 .'ON courses.location_id = locations.location_id ';
         }
-        $query .= 'LEFT JOIN '. \rex::getTablePrefix() .'d2u_courses_categories AS categories '
+        $query .= 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_categories AS categories '
                 .'ON courses.category_id = categories.category_id '
             ."WHERE courses.online_status = 'online'"
                 .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') '
