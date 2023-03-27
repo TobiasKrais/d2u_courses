@@ -46,7 +46,7 @@ $url_id = d2u_addon_frontend_helper::getUrlId();
 
 // Courses
 if (filter_input(INPUT_GET, 'course_id', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0 || 'course_id' === $url_namespace) {
-    $course_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : filter_input(INPUT_GET, 'course_id', FILTER_VALIDATE_INT);
+    $course_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'course_id', FILTER_VALIDATE_INT);
 
     if ($course_id > 0) {
         $course = new D2U_Courses\Course($course_id);
@@ -58,7 +58,7 @@ if (filter_input(INPUT_GET, 'course_id', FILTER_VALIDATE_INT, ['options' => ['de
 }
 // Categories
 elseif (filter_input(INPUT_GET, 'courses_category_id', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0 || 'courses_category_id' === $url_namespace) {
-    $category_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : filter_input(INPUT_GET, 'courses_category_id', FILTER_VALIDATE_INT);
+    $category_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'courses_category_id', FILTER_VALIDATE_INT);
 
     if ($category_id > 0) {
         $category = new D2U_Courses\Category($category_id);
@@ -66,7 +66,7 @@ elseif (filter_input(INPUT_GET, 'courses_category_id', FILTER_VALIDATE_INT, ['op
 }
 // Locations
 elseif (filter_input(INPUT_GET, 'location_id', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0 || 'location_id' === $url_namespace) {
-    $location_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : filter_input(INPUT_GET, 'location_id', FILTER_VALIDATE_INT);
+    $location_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'location_id', FILTER_VALIDATE_INT);
 
     if ($location_id > 0 && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
         $location = new D2U_Courses\Location($location_id);
@@ -74,7 +74,7 @@ elseif (filter_input(INPUT_GET, 'location_id', FILTER_VALIDATE_INT, ['options' =
 }
 // Location category
 elseif (filter_input(INPUT_GET, 'location_category_id', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0 || 'location_category_id' === $url_namespace) {
-    $location_category_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : filter_input(INPUT_GET, 'location_category_id', FILTER_VALIDATE_INT);
+    $location_category_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'location_category_id', FILTER_VALIDATE_INT);
 
     if ($location_category_id > 0 && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
         $location_category = new D2U_Courses\LocationCategory($location_category_id);
@@ -82,7 +82,7 @@ elseif (filter_input(INPUT_GET, 'location_category_id', FILTER_VALIDATE_INT, ['o
 }
 // Schedule category
 elseif (filter_input(INPUT_GET, 'schedule_category_id', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0 || 'schedule_category_id' === $url_namespace) {
-    $schedule_category_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : filter_input(INPUT_GET, 'schedule_category_id', FILTER_VALIDATE_INT);
+    $schedule_category_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'schedule_category_id', FILTER_VALIDATE_INT);
 
     if ($schedule_category_id > 0 && rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
         $schedule_category = new D2U_Courses\ScheduleCategory($schedule_category_id);
@@ -90,7 +90,7 @@ elseif (filter_input(INPUT_GET, 'schedule_category_id', FILTER_VALIDATE_INT, ['o
 }
 // Target groups
 elseif (filter_input(INPUT_GET, 'target_group_id', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0 || 'target_group_id' === $url_namespace) {
-    $target_group_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : filter_input(INPUT_GET, 'target_group_id', FILTER_VALIDATE_INT);
+    $target_group_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'target_group_id', FILTER_VALIDATE_INT);
 
     if ($target_group_id > 0 && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
         $target_group = new D2U_Courses\TargetGroup($target_group_id);
@@ -98,10 +98,10 @@ elseif (filter_input(INPUT_GET, 'target_group_id', FILTER_VALIDATE_INT, ['option
 }
 // Target group children
 elseif (filter_input(INPUT_GET, 'target_group_child_id', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0 || 'target_group_child_id' === $url_namespace) {
-    $target_group_child_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : filter_input(INPUT_GET, 'target_group_child_id', FILTER_VALIDATE_INT);
+    $target_group_child_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (string) filter_input(INPUT_GET, 'target_group_child_id');
 
     if ($target_group_child_id > 0 && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-        $target_group = D2U_Courses\TargetGroup::getByChildID($target_group_child_id);
+        $target_group = D2U_Courses\TargetGroup::getByChildID((string) $target_group_child_id);
     }
 }
 
@@ -147,7 +147,7 @@ if (rex::isBackend()) {
         echo '<div class="d-none d-sm-block col-sm-6 col-md-8 spacer d-print-none">&nbsp;</div>';
         echo '<div class="col-12 col-sm-6 col-md-4 spacer d-print-none">';
         echo '<div class="search_div">';
-        echo '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_courses')) .'" method="post">'
+        echo '<form action="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_courses')) .'" method="post">'
             . '<input class="search_box" name="course_search" value="'. filter_input(INPUT_POST, 'course_search') .'" type="text">'
             . '<button class="search_button"><img src="'. rex_url::addonAssets('d2u_courses', 'lens.png').'"></button>'
             . '</form>';
@@ -158,7 +158,7 @@ if (rex::isBackend()) {
     $courses = [];
     // Get courses if search field was used
     if (null !== filter_input(INPUT_POST, 'course_search')) {
-        $courses = D2U_Courses\Course::search(filter_input(INPUT_POST, 'course_search'));
+        $courses = D2U_Courses\Course::search((string) filter_input(INPUT_POST, 'course_search'));
     }
     // Deal with categories
     elseif ($category instanceof Category) {
@@ -187,7 +187,7 @@ if (rex::isBackend()) {
         echo '<h1 class="page_title">'. $location_category->name .'</h1>';
         echo '</div></div>';
         foreach ($location_category->getLocations(true) as $current_location) {
-            printBoxModule26_1($current_location->name, $current_location->picture, rex_config::get('d2u_courses', 'location_bg_color', '#41b23b'), $current_location->getUrl(), $box_per_line);
+            printBoxModule26_1($current_location->name, $current_location->picture, (string) rex_config::get('d2u_courses', 'location_bg_color', '#41b23b'), $current_location->getUrl(), $box_per_line);
         }
     }
     // Deal with locations
@@ -202,7 +202,7 @@ if (rex::isBackend()) {
             echo '</div></div>';
             // Children
             foreach ($schedule_category->getChildren(true) as $child_schedule_category) {
-                printBoxModule26_1($child_schedule_category->name, $child_schedule_category->picture, rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2'), $child_schedule_category->getUrl(), $box_per_line);
+                printBoxModule26_1($child_schedule_category->name, $child_schedule_category->picture, (string) rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2'), $child_schedule_category->getUrl(), $box_per_line);
             }
         } else {
             $courses = $schedule_category->getCourses(true);
@@ -216,7 +216,7 @@ if (rex::isBackend()) {
             echo '</div></div>';
             // Children
             foreach ($target_group->getChildren() as $child_target_group) {
-                printBoxModule26_1($child_target_group->name, $child_target_group->picture, rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a'), $child_target_group->getUrl(), $box_per_line);
+                printBoxModule26_1($child_target_group->name, $child_target_group->picture, (string) rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a'), $child_target_group->getUrl(), $box_per_line);
             }
         } else {
             $courses = $target_group->getCourses(true);
@@ -233,17 +233,17 @@ if (rex::isBackend()) {
         if ('locations' === $startpage && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) { /** @phpstan-ignore-line */
             $location_categories = D2U_Courses\LocationCategory::getAll(true);
             foreach ($location_categories as $current_location_category) {
-                printBoxModule26_1($current_location_category->name, $current_location_category->picture, rex_config::get('d2u_courses', 'location_bg_color', '#41b23b'), $current_location_category->getUrl(), $tmp_box_per_line);
+                printBoxModule26_1($current_location_category->name, $current_location_category->picture, (string) rex_config::get('d2u_courses', 'location_bg_color', '#41b23b'), $current_location_category->getUrl(), $tmp_box_per_line);
             }
         } elseif ('schedule_categories' === $startpage && rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) { /** @phpstan-ignore-line */
             $schedule_categories = D2U_Courses\ScheduleCategory::getAllParents(true);
             foreach ($schedule_categories as $currecnt_schedule_category) {
-                printBoxModule26_1($currecnt_schedule_category->name, $currecnt_schedule_category->picture, rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2'), $currecnt_schedule_category->getUrl(), $tmp_box_per_line);
+                printBoxModule26_1($currecnt_schedule_category->name, $currecnt_schedule_category->picture, (string) rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2'), $currecnt_schedule_category->getUrl(), $tmp_box_per_line);
             }
         } elseif ('target_groups' === $startpage && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) { /** @phpstan-ignore-line */
             $target_groups = D2U_Courses\TargetGroup::getAll(true);
             foreach ($target_groups as $current_target_group) {
-                printBoxModule26_1($current_target_group->name, $current_target_group->picture, rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a'), $current_target_group->getUrl(), $tmp_box_per_line);
+                printBoxModule26_1($current_target_group->name, $current_target_group->picture, (string) rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a'), $current_target_group->getUrl(), $tmp_box_per_line);
             }
         } elseif (false === $course) {
             // Only show default if no course should be shown
@@ -574,9 +574,9 @@ if (rex::isBackend()) {
             $box_details .= '<div class="col-12 course_row">';
             $box_details .= '<div class="course_box spacer_box add_cart"'. ($course->category instanceof Category ? ' style="background-color: '. $course->category->color .'"' : '') .'>';
             if (D2U_Courses\Cart::getCart()->hasCourse($course->course_id)) {
-                $box_details .= '<a href="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'">'. $tag_open .'d2u_courses_cart_course_already_in'. $tag_close .' - '. $tag_open .'d2u_courses_cart_go_to'. $tag_close .'</a>';
+                $box_details .= '<a href="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'">'. $tag_open .'d2u_courses_cart_course_already_in'. $tag_close .' - '. $tag_open .'d2u_courses_cart_go_to'. $tag_close .'</a>';
             } else {
-                $box_details .= '<form action="'. rex_getUrl(rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'" method="post">';
+                $box_details .= '<form action="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'" method="post">';
                 $box_details .= '<input type="hidden" name="course_id" value="'. $course->course_id .'">';
                 $box_details .= '<input type="submit" class="add_cart" name="submit" value="'. $tag_open .'d2u_courses_cart_add'. $tag_close .'"'. ($course->category instanceof Category ? ' style="background-color: '. $course->category->color .'"' : '') .'>';
             }
@@ -630,7 +630,7 @@ if (rex::isBackend()) {
                 if ('google' === $map_type) { /** @phpstan-ignore-line */
                     $api_key = '';
                     if (rex_config::has('d2u_helper', 'maps_key')) {
-                        $api_key = rex_config::get('d2u_helper', 'maps_key');
+                        $api_key = (string) rex_config::get('d2u_helper', 'maps_key');
                     }
                     ?>
 					<script src="https://maps.googleapis.com/maps/api/js?key=<?= $api_key ?>"></script>
@@ -738,7 +738,7 @@ if (rex::isBackend()) {
                         }
             ?>
 				<script>
-					Geolocation.default.positionColor = '<?= rex_config::get('d2u_helper', 'article_color_h') ?>';
+					Geolocation.default.positionColor = '<?= (string) rex_config::get('d2u_helper', 'article_color_h') ?>';
 
 					// adjust zoom level
 					Geolocation.Tools.Center = class extends Geolocation.Tools.Template{

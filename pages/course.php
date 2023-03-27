@@ -173,7 +173,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                             d2u_addon_backend_helper::form_input('d2u_courses_date_end', 'form[date_end]', $course->date_end, false, $readonly, 'date');
                             d2u_addon_backend_helper::form_input('d2u_courses_time', 'form[time]', $course->time, false, $readonly, 'text');
                             d2u_addon_backend_helper::form_input('d2u_courses_url_external', 'form[url_external]', $course->url_external, false, $readonly, 'text');
-                            d2u_addon_backend_helper::form_linkfield('d2u_courses_redaxo_article', '1', $course->redaxo_article, rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()), $readonly);
+                            d2u_addon_backend_helper::form_linkfield('d2u_courses_redaxo_article', '1', $course->redaxo_article, (int) rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()), $readonly);
                         ?>
 						<script>
 							function container_changer() {

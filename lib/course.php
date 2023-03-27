@@ -167,7 +167,8 @@ class Course
                 $this->price = (float) $result->getValue('price');
                 $this->price_discount = (float) $result->getValue('price_discount');
                 $this->price_salery_level = $result->getValue('price_salery_level') > 0 ? true : false;
-                $this->price_salery_level_details = json_decode((string) $result->getValue('price_salery_level_details'), true);
+                $price_salery_level_details_json = json_decode((string) $result->getValue('price_salery_level_details'), true);
+                $this->price_salery_level_details = is_array($price_salery_level_details_json) ? $price_salery_level_details_json : []; /** @phpstan-ignore-line */
                 $this->date_start = str_replace('.', '-', (string) $result->getValue('date_start'));
                 $this->date_end = str_replace('.', '-', (string) $result->getValue('date_end'));
                 $this->time = (string) $result->getValue('time');
@@ -354,7 +355,7 @@ class Course
                 .'"description" : "'. ('' !== $this->teaser ? addcslashes($this->teaser, '"') : addcslashes($this->name, '"')) .'",'. PHP_EOL
                 .'"provider" : {'. PHP_EOL
                     .'"@type" : "Organization",'. PHP_EOL
-                    .'"name" : "'. addcslashes(rex_config::get('d2u_courses', 'company_name', ''), '"') .'",'. PHP_EOL
+                    .'"name" : "'. addcslashes((string) rex_config::get('d2u_courses', 'company_name', ''), '"') .'",'. PHP_EOL
                     .'"sameAs" : "'. (\rex_addon::get('yrewrite')->isAvailable() ? \rex_yrewrite::getCurrentDomain()->getUrl() : \rex::getServer()) .'"'. PHP_EOL
                 .'}'. PHP_EOL
             .'}'. PHP_EOL
@@ -432,7 +433,7 @@ class Course
         }
         $json_data .= '"organizer" : {'. PHP_EOL
                     .'"@type" : "Organization",'. PHP_EOL
-                    .'"name" : "'. addcslashes(rex_config::get('d2u_courses', 'company_name', ''), '"') .'",'. PHP_EOL
+                    .'"name" : "'. addcslashes((string) rex_config::get('d2u_courses', 'company_name', ''), '"') .'",'. PHP_EOL
                     .'"url" : "'. rex_yrewrite::getCurrentDomain()->getUrl() .'"'. PHP_EOL
                 .'}'. PHP_EOL
             .'}'. PHP_EOL
@@ -450,7 +451,7 @@ class Course
         if ('' === $this->url) {
             $parameterArray = [];
             $parameterArray['course_id'] = $this->course_id;
-            $this->url = rex_getUrl(rex_config::get('d2u_courses', 'course_article_id'), '', $parameterArray, '&');
+            $this->url = rex_getUrl((int) rex_config::get('d2u_courses', 'course_article_id'), '', $parameterArray, '&');
         }
 
         if ($including_domain) {

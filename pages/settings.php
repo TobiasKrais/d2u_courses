@@ -10,19 +10,19 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
     // Linkmap Link and media needs special treatment
     $link_ids = filter_input_array(INPUT_POST, ['REX_INPUT_LINK' => ['filter' => FILTER_VALIDATE_INT, 'flags' => FILTER_REQUIRE_ARRAY]]);
 
-    $settings['article_id_courses'] = is_array($link_ids) && $link_ids['REX_INPUT_LINK'][1] > 0 ? $link_ids['REX_INPUT_LINK'][1] : rex_article::getSiteStartArticleId();
-    $settings['article_id_shopping_cart'] = is_array($link_ids) ? $link_ids['REX_INPUT_LINK'][2] : 0;
-    $settings['article_id_conditions'] = is_array($link_ids) ? $link_ids['REX_INPUT_LINK'][3] : 0;
-    $settings['article_id_terms_of_participation'] = is_array($link_ids) ? $link_ids['REX_INPUT_LINK'][4] : 0;
+    $settings['article_id_courses'] = is_array($link_ids) && is_array($link_ids['REX_INPUT_LINK']) && $link_ids['REX_INPUT_LINK'][1] > 0 ? (int) $link_ids['REX_INPUT_LINK'][1] : rex_article::getSiteStartArticleId();
+    $settings['article_id_shopping_cart'] = is_array($link_ids) ? (int) $link_ids['REX_INPUT_LINK'][2] : 0;
+    $settings['article_id_conditions'] = is_array($link_ids) ? (int) $link_ids['REX_INPUT_LINK'][3] : 0;
+    $settings['article_id_terms_of_participation'] = is_array($link_ids) ? (int) $link_ids['REX_INPUT_LINK'][4] : 0;
 
     if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-        $settings['article_id_locations'] = is_array($link_ids) && $link_ids['REX_INPUT_LINK'][5] > 0 ? $link_ids['REX_INPUT_LINK'][5] :  $settings['article_id_courses'];
+        $settings['article_id_locations'] = is_array($link_ids) && is_array($link_ids['REX_INPUT_LINK']) && $link_ids['REX_INPUT_LINK'][5] > 0 ? (int) $link_ids['REX_INPUT_LINK'][5] :  $settings['article_id_courses'];
     }
     if (rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
-        $settings['article_id_schedule_categories'] = is_array($link_ids) && $link_ids['REX_INPUT_LINK'][6] > 0 ? $link_ids['REX_INPUT_LINK'][6] :  $settings['article_id_courses'];
+        $settings['article_id_schedule_categories'] = is_array($link_ids) && is_array($link_ids['REX_INPUT_LINK']) && $link_ids['REX_INPUT_LINK'][6] > 0 ? (int) $link_ids['REX_INPUT_LINK'][6] :  $settings['article_id_courses'];
     }
     if (rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-        $settings['article_id_target_groups'] = is_array($link_ids) && $link_ids['REX_INPUT_LINK'][7] > 0 ? $link_ids['REX_INPUT_LINK'][7] :  $settings['article_id_courses'];
+        $settings['article_id_target_groups'] = is_array($link_ids) && is_array($link_ids['REX_INPUT_LINK']) && $link_ids['REX_INPUT_LINK'][7] > 0 ? (int) $link_ids['REX_INPUT_LINK'][7] :  $settings['article_id_courses'];
     }
 
     // Checkbox also need special treatment if empty
@@ -310,18 +310,18 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 				<legend><small><i class="rex-icon rex-icon-system"></i></small> <?= rex_i18n::msg('d2u_helper_settings') ?></legend>
 				<div class="panel-body-wrapper slide">
 					<?php
-                        d2u_addon_backend_helper::form_linkfield('d2u_courses_settings_article_courses', '1', rex_config::get('d2u_courses', 'article_id_courses'), rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
+                        d2u_addon_backend_helper::form_linkfield('d2u_courses_settings_article_courses', '1', (int) rex_config::get('d2u_courses', 'article_id_courses'), (int) rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
                         d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_forward_single_course', 'settings[forward_single_course]', 'active', 'active' === rex_config::get('d2u_courses', 'forward_single_course'));
                         $options_category_sort = ['name' => rex_i18n::msg('d2u_helper_name'), 'priority' => rex_i18n::msg('header_priority')];
-                        d2u_addon_backend_helper::form_select('d2u_courses_category_sort', 'settings[default_category_sort]', $options_category_sort, [rex_config::get('d2u_courses', 'default_category_sort')]);
+                        d2u_addon_backend_helper::form_select('d2u_courses_category_sort', 'settings[default_category_sort]', $options_category_sort, [(string) rex_config::get('d2u_courses', 'default_category_sort')]);
                         $options_show_time = [
                             'day_one_start' => rex_i18n::msg('d2u_courses_settings_show_time_day_one_start'),
                             'day_one_end' => rex_i18n::msg('d2u_courses_settings_show_time_day_one_end'),
                             'day_x_start' => rex_i18n::msg('d2u_courses_settings_show_time_day_x_start'),
                             'day_x_end' => rex_i18n::msg('d2u_courses_settings_show_time_day_x_end'),
                         ];
-                        d2u_addon_backend_helper::form_select('d2u_courses_settings_show_time', 'settings[show_time]', $options_show_time, [rex_config::get('d2u_courses', 'show_time')]);
-                        d2u_addon_backend_helper::form_textarea('d2u_courses_settings_email_text', 'settings[email_text]', rex_config::get('d2u_courses', 'email_text'), 5, false, false, true);
+                        d2u_addon_backend_helper::form_select('d2u_courses_settings_show_time', 'settings[show_time]', $options_show_time, [(string) rex_config::get('d2u_courses', 'show_time')]);
+                        d2u_addon_backend_helper::form_textarea('d2u_courses_settings_email_text', 'settings[email_text]', (string) rex_config::get('d2u_courses', 'email_text'), 5, false, false, true);
                     ?>
 				</div>
 			</fieldset>
@@ -329,7 +329,7 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 				<legend><small><i class="rex-icon fa-google"></i></small> <?= rex_i18n::msg('d2u_courses_settings_google') ?></legend>
 				<div class="panel-body-wrapper slide">
 					<?php
-                        d2u_addon_backend_helper::form_input('d2u_courses_settings_company_name', 'settings[company_name]', rex_config::get('d2u_courses', 'company_name'), true, false, 'text');
+                        d2u_addon_backend_helper::form_input('d2u_courses_settings_company_name', 'settings[company_name]', (string) rex_config::get('d2u_courses', 'company_name'), true, false, 'text');
                     ?>
 				</div>
 			</fieldset>
@@ -337,14 +337,14 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 				<legend><small><i class="rex-icon fa-shopping-cart"></i></small> <?= rex_i18n::msg('d2u_courses_cart') ?></legend>
 				<div class="panel-body-wrapper slide">
 					<?php
-                        d2u_addon_backend_helper::form_linkfield('d2u_courses_settings_article_shopping_cart', '2', rex_config::get('d2u_courses', 'article_id_shopping_cart'), rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
-                        d2u_addon_backend_helper::form_input('d2u_courses_settings_request_form_email', 'settings[request_form_email]', rex_config::get('d2u_courses', 'request_form_email'), true, false, 'email');
-                        d2u_addon_backend_helper::form_input('d2u_courses_settings_request_form_sender_email', 'settings[request_form_sender_email]', rex_config::get('d2u_courses', 'request_form_sender_email'), true, false, 'email');
-                        d2u_addon_backend_helper::form_linkfield('d2u_courses_settings_article_conditions', '3', rex_config::get('d2u_courses', 'article_id_conditions'), rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
-                        d2u_addon_backend_helper::form_linkfield('d2u_courses_settings_article_terms_of_participation', '4', rex_config::get('d2u_courses', 'article_id_terms_of_participation'), rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
-                        d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_ask_kids_go_home_alone', 'settings[ask_kids_go_home_alone]', 'active', 'active' === rex_config::get('d2u_courses', 'ask_kids_go_home_alone'));
+                        d2u_addon_backend_helper::form_linkfield('d2u_courses_settings_article_shopping_cart', '2', (int) rex_config::get('d2u_courses', 'article_id_shopping_cart'), (int) rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
+                        d2u_addon_backend_helper::form_input('d2u_courses_settings_request_form_email', 'settings[request_form_email]', (string) rex_config::get('d2u_courses', 'request_form_email'), true, false, 'email');
+                        d2u_addon_backend_helper::form_input('d2u_courses_settings_request_form_sender_email', 'settings[request_form_sender_email]', (string) rex_config::get('d2u_courses', 'request_form_sender_email'), true, false, 'email');
+                        d2u_addon_backend_helper::form_linkfield('d2u_courses_settings_article_conditions', '3', (int) rex_config::get('d2u_courses', 'article_id_conditions'), (int) rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
+                        d2u_addon_backend_helper::form_linkfield('d2u_courses_settings_article_terms_of_participation', '4', (int) rex_config::get('d2u_courses', 'article_id_terms_of_participation'), (int) rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
+                        d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_ask_kids_go_home_alone', 'settings[ask_kids_go_home_alone]', 'active', 'active' === (string) rex_config::get('d2u_courses', 'ask_kids_go_home_alone'));
                         if (false === rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-                            d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_ask_vacation_pass', 'settings[ask_vacation_pass]', 'active', 'active' === rex_config::get('d2u_courses', 'ask_vacation_pass'));
+                            d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_ask_vacation_pass', 'settings[ask_vacation_pass]', 'active', 'active' === (string) rex_config::get('d2u_courses', 'ask_vacation_pass'));
                         }
                         $options_paymant = [
                             'bank_transfer' => rex_i18n::msg('d2u_courses_payment_bank_transfer'),
@@ -387,8 +387,8 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 					<legend><small><i class="rex-icon fa-map-marker"></i></small> <?= rex_i18n::msg('d2u_courses_locations') ?></legend>
 					<div class="panel-body-wrapper slide">
 						<?php
-                            d2u_addon_backend_helper::form_input('d2u_courses_location_settings_bg_color', 'settings[location_bg_color]', rex_config::get('d2u_courses', 'location_bg_color'), true, false, 'color');
-                            d2u_addon_backend_helper::form_linkfield('d2u_courses_location_settings_article', '5', rex_config::get('d2u_courses', 'article_id_locations'), rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
+                            d2u_addon_backend_helper::form_input('d2u_courses_location_settings_bg_color', 'settings[location_bg_color]', (string) rex_config::get('d2u_courses', 'location_bg_color'), true, false, 'color');
+                            d2u_addon_backend_helper::form_linkfield('d2u_courses_location_settings_article', '5', (int) rex_config::get('d2u_courses', 'article_id_locations'), (int) rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
                         ?>
 					</div>
 				</fieldset>
@@ -400,8 +400,8 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 					<legend><small><i class="rex-icon fa-calendar"></i></small> <?= rex_i18n::msg('d2u_courses_schedule_categories') ?></legend>
 					<div class="panel-body-wrapper slide">
 						<?php
-                            d2u_addon_backend_helper::form_input('d2u_courses_schedule_category_settings_bg_color', 'settings[schedule_category_bg_color]', rex_config::get('d2u_courses', 'schedule_category_bg_color'), true, false, 'color');
-                            d2u_addon_backend_helper::form_linkfield('d2u_courses_schedule_category_settings_article', '6', rex_config::get('d2u_courses', 'article_id_schedule_categories'), rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
+                            d2u_addon_backend_helper::form_input('d2u_courses_schedule_category_settings_bg_color', 'settings[schedule_category_bg_color]', (string) rex_config::get('d2u_courses', 'schedule_category_bg_color'), true, false, 'color');
+                            d2u_addon_backend_helper::form_linkfield('d2u_courses_schedule_category_settings_article', '6', (int) rex_config::get('d2u_courses', 'article_id_schedule_categories'), (int) rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
                         ?>
 					</div>
 				</fieldset>
@@ -413,8 +413,8 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 					<legend><small><i class="rex-icon fa-bullseye"></i></small> <?= rex_i18n::msg('d2u_courses_target_groups') ?></legend>
 					<div class="panel-body-wrapper slide">
 						<?php
-                            d2u_addon_backend_helper::form_input('d2u_courses_target_groups_settings_bg_color', 'settings[target_group_bg_color]', rex_config::get('d2u_courses', 'target_group_bg_color'), true, false, 'color');
-                            d2u_addon_backend_helper::form_linkfield('d2u_courses_target_groups_settings_article', '7', rex_config::get('d2u_courses', 'article_id_target_groups'), rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
+                            d2u_addon_backend_helper::form_input('d2u_courses_target_groups_settings_bg_color', 'settings[target_group_bg_color]', (string) rex_config::get('d2u_courses', 'target_group_bg_color'), true, false, 'color');
+                            d2u_addon_backend_helper::form_linkfield('d2u_courses_target_groups_settings_article', '7', (int) rex_config::get('d2u_courses', 'article_id_target_groups'), (int) rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
                         ?>
 					</div>
 				</fieldset>
@@ -427,7 +427,7 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 					<div class="panel-body-wrapper slide">
 						<?php
                             d2u_addon_backend_helper::form_checkbox('d2u_courses_import_settings_autoimport', 'settings[kufer_sync_autoimport]', 'active', 'active' === rex_config::get('d2u_courses', 'kufer_sync_autoimport'));
-                            d2u_addon_backend_helper::form_input('d2u_courses_import_settings_xml_url', 'settings[kufer_sync_xml_url]', rex_config::get('d2u_courses', 'kufer_sync_xml_url'), true, false, 'text');
+                            d2u_addon_backend_helper::form_input('d2u_courses_import_settings_xml_url', 'settings[kufer_sync_xml_url]', (string) rex_config::get('d2u_courses', 'kufer_sync_xml_url'), true, false, 'text');
                             $options_categories = [];
                             foreach (\D2U_Courses\Category::getAllNotParents() as $category) {
                                 $options_categories[$category->category_id] = ($category->parent_category instanceof Category ? ($category->parent_category->parent_category instanceof Category ? ($category->parent_category->parent_category->parent_category instanceof Category ? $category->parent_category->parent_category->parent_category->name .' → ' : ''). $category->parent_category->parent_category->name .' → ' : ''). $category->parent_category->name .' → ' : ''). $category->name;
@@ -441,7 +441,7 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
                                 asort($options_locations);
                                 d2u_addon_backend_helper::form_select('d2u_courses_import_settings_default_location', 'settings[kufer_sync_default_location_id]', $options_locations, [rex_config::get('d2u_courses', 'kufer_sync_default_location_id')], 1, false, false);
                             }
-                            d2u_addon_backend_helper::form_input('d2u_courses_import_settings_xml_registration_path', 'settings[kufer_sync_xml_registration_path]', rex_config::get('d2u_courses', 'kufer_sync_xml_registration_path'), true, false, 'text');
+                            d2u_addon_backend_helper::form_input('d2u_courses_import_settings_xml_registration_path', 'settings[kufer_sync_xml_registration_path]', (string) rex_config::get('d2u_courses', 'kufer_sync_xml_registration_path'), true, false, 'text');
                         ?>
 					</div>
 				</fieldset>
