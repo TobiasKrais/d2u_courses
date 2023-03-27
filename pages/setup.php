@@ -240,12 +240,12 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 </fieldset>
 
 <h2>Changelog</h2>
-<p>3.2.5-DEV:</p>
+<p>3.3.0:</p>
 <ul>
 	<li>PHP-CS-Fixer Code Verbesserungen.</li>
 	<li>.github Verzeichnis aus Installer Action ausgeschlossen.</li>
 	<li>rexstan Anpassungen</li>
-	<li>Modul 26-1 "Ausgabe Veranstaltungen": Geolocation als Kartenaddon wird ab sofort unterstützt.</li>
+	<li>Modul 26-1 "Ausgabe Veranstaltungen": Geolocation 1.x als Kartenaddon wird ab sofort unterstützt.</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": "Zum Warenkorb hinzufügen" statt Grau in der Farbe der Veranstaltung.</li>
 	<li>Modul 26-2 "Warenkorb": Fehlermeldung, wenn ein Newsletter aus dem MultiNewsletter angeboten wurde behoben.</li>
 	<li>Modul 26-2 "Warenkorb": Feld für Firma hinzugefügt. In den Einstellungen kann festgelegt werden, dass Bestellungen von Firmen immer die Zahlungsoption Überweisung anbietet, auch wenn die Option im entsprechenden Feld nicht gewählt ist.</li>
