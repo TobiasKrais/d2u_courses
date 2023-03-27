@@ -240,6 +240,10 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 </fieldset>
 
 <h2>Changelog</h2>
+<p>3.3.1-DEV:</p>
+<ul>
+	<li>...</li>
+</ul>
 <p>3.3.0:</p>
 <ul>
 	<li>PHP-CS-Fixer Code Verbesserungen.</li>
