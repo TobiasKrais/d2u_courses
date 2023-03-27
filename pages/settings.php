@@ -351,7 +351,7 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
                             'direct_debit' => rex_i18n::msg('d2u_courses_payment_direct_debit'),
                             'cash' => rex_i18n::msg('d2u_courses_payment_cash'),
                         ];
-                        d2u_addon_backend_helper::form_select('d2u_courses_payment', 'settings[payment_options][]', $options_paymant, rex_config::get('d2u_courses', 'payment_options'), 3, true);
+                        d2u_addon_backend_helper::form_select('d2u_courses_payment', 'settings[payment_options][]', $options_paymant, rex_config::get('d2u_courses', 'payment_options'), 3, true); /** @phpstan-ignore-line */
                         d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_payment_options_allow_company_bank_transfer', 'settings[allow_company_bank_transfer]', 'true', (bool) rex_config::get('d2u_courses', 'allow_company_bank_transfer'));
                     ?>
 				</div>
@@ -432,14 +432,14 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
                             foreach (\D2U_Courses\Category::getAllNotParents() as $category) {
                                 $options_categories[$category->category_id] = ($category->parent_category instanceof Category ? ($category->parent_category->parent_category instanceof Category ? ($category->parent_category->parent_category->parent_category instanceof Category ? $category->parent_category->parent_category->parent_category->name .' → ' : ''). $category->parent_category->parent_category->name .' → ' : ''). $category->parent_category->name .' → ' : ''). $category->name;
                             }
-                            d2u_addon_backend_helper::form_select('d2u_courses_import_settings_default_category', 'settings[kufer_sync_default_category_id]', $options_categories, [rex_config::get('d2u_courses', 'kufer_sync_default_category_id')], 1, false, false);
+                            d2u_addon_backend_helper::form_select('d2u_courses_import_settings_default_category', 'settings[kufer_sync_default_category_id]', $options_categories, [(int) rex_config::get('d2u_courses', 'kufer_sync_default_category_id')], 1, false, false);
                             if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
                                 $options_locations = [];
                                 foreach (\D2U_Courses\Location::getAll() as $location) {
                                     $options_locations[$location->location_id] = ($location->location_category instanceof LocationCategory ? $location->location_category->name .' → ' : ''). $location->name;
                                 }
                                 asort($options_locations);
-                                d2u_addon_backend_helper::form_select('d2u_courses_import_settings_default_location', 'settings[kufer_sync_default_location_id]', $options_locations, [rex_config::get('d2u_courses', 'kufer_sync_default_location_id')], 1, false, false);
+                                d2u_addon_backend_helper::form_select('d2u_courses_import_settings_default_location', 'settings[kufer_sync_default_location_id]', $options_locations, [(int) rex_config::get('d2u_courses', 'kufer_sync_default_location_id')], 1, false, false);
                             }
                             d2u_addon_backend_helper::form_input('d2u_courses_import_settings_xml_registration_path', 'settings[kufer_sync_xml_registration_path]', (string) rex_config::get('d2u_courses', 'kufer_sync_xml_registration_path'), true, false, 'text');
                         ?>
@@ -458,7 +458,7 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 							foreach (MultinewsletterGroup::getAll() as $group) {
 								$options_groups[$group->id] = $group->name;
                             }
-                            d2u_addon_backend_helper::form_select('d2u_courses_settings_multinewsletter_group', 'settings[multinewsletter_group][]', $options_groups, rex_config::get('d2u_courses', 'multinewsletter_group'), 3, true, false);
+                            d2u_addon_backend_helper::form_select('d2u_courses_settings_multinewsletter_group', 'settings[multinewsletter_group][]', $options_groups, rex_config::get('d2u_courses', 'multinewsletter_group'), 3, true, false); /** @phpstan-ignore-line */
                         ?>
 						<script>
 							function changeType() {

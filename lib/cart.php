@@ -726,7 +726,7 @@ class Cart
                     $body .= 'Datum: '. (new DateTime($course->date_start))->format('d.m.Y') . ('' !== $course->date_end ? ' - '. (new DateTime($course->date_end))->format('d.m.Y') : '') . ('' !== $course->time ? ', '. $course->time : '') .'<br>';
                 }
                 if ($course->price_salery_level) {
-                    if ('yes_number' === $course->registration_possible) {
+                    if ('yes_number' === $course->registration_possible && !is_array($participant['participant_price'])) {
                         $body .= 'Einzelpreis: '. $participant['participant_price'] .'<br>';
                         $price_full = $price_full + ((int) $participant['participant_number'] * ((float) str_replace(',', '.', str_replace('.', '', $participant['participant_price']))));
                     }
@@ -766,8 +766,8 @@ class Cart
                             $body .= '<br>';
                         }
                     }
-                } else {
-                    $body .= 'Anzahl Anmeldungen: '. $participant['participant_number']  .'<br>';
+                } else if (!is_array($participant['participant_number'])) {
+                    $body .= 'Anzahl Anmeldungen: '. $participant['participant_number'] .'<br>';
                 }
             }
         }
