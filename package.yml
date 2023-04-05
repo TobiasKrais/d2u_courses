@@ -9,9 +9,9 @@ page:
     subpages:
         course: { title: 'translate:d2u_courses_courses', icon: rex-icon fa-leanpub }
         category: { title: 'translate:d2u_helper_categories', icon: rex-icon rex-icon-open-category, perm: 'd2u_courses[categories]' }
-        setup: { title: 'translate:d2u_helper_setup', icon: rex-icon rex-icon-install, itemclass: pull-right, perm: 'd2u_courses[settings]' }
-        settings: { title: 'translate:d2u_helper_settings', icon: rex-icon rex-icon-system, itemclass: pull-right, perm: 'd2u_courses[settings]' }
-        faq: { title: 'translate:d2u_courses_faq', icon: rex-icon rex-icon-help, itemclass: pull-right }
+        setup: { title: 'translate:d2u_helper_setup', icon: rex-icon rex-icon-install, itemClass: pull-right, perm: 'd2u_courses[settings]' }
+        settings: { title: 'translate:d2u_helper_settings', icon: rex-icon rex-icon-system, itemClass: pull-right, perm: 'd2u_courses[settings]' }
+        faq: { title: 'translate:d2u_courses_faq', icon: rex-icon rex-icon-help, itemClass: pull-right }
 
 requires:
     redaxo: '>=5.10.0'
