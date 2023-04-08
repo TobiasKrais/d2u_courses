@@ -5,7 +5,7 @@ use D2U_Courses\Category;
 use D2U_Courses\LocationCategory;
 
 if ('save' === filter_input(INPUT_POST, 'btn_save')) {
-    $settings = (array) rex_post('settings', 'array', []);
+    $settings = rex_post('settings', 'array', []);
 
     // Linkmap Link and media needs special treatment
     $link_ids = filter_input_array(INPUT_POST, ['REX_INPUT_LINK' => ['filter' => FILTER_VALIDATE_INT, 'flags' => FILTER_REQUIRE_ARRAY]]);
