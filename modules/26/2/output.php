@@ -53,8 +53,8 @@ foreach (\D2U_Courses\Cart::getCourseIDs() as $course_id) {
                 }
             }
             $participant_data_update = [
-                'firstname' => trim((string) (false !== filter_var($participant_data['firstname']) ? filter_var($participant_data['firstname']) : '')),
-                'lastname' => trim((string) (false !== filter_var($participant_data['lastname']) ? filter_var($participant_data['lastname']) : '')),
+                'firstname' => trim(false !== filter_var($participant_data['firstname']) ? filter_var($participant_data['firstname']) : ''),
+                'lastname' => trim(false !== filter_var($participant_data['lastname']) ? filter_var($participant_data['lastname']) : ''),
                 'birthday' => (array_key_exists('birthday', $participant_data) && false !== filter_var($participant_data['birthday']) ? trim(filter_var($participant_data['birthday'])) : ''),
                 'age' => (array_key_exists('age', $participant_data) && false !== filter_var($participant_data['age']) ? trim(filter_var($participant_data['age'])) : ''),
                 'emergency_number' => (array_key_exists('emergency_number', $participant_data) && false !== filter_var($participant_data['emergency_number']) ? trim(filter_var($participant_data['emergency_number'])) : ''),
@@ -138,9 +138,9 @@ if (isset($form_data['invoice_form'])) {
     if (count($kufer_self) > 0 && false === $cart->createXMLRegistration($kufer_self, $form_data['invoice_form'], 'selbst')) {
         $error = true;
     }
-    if (count($kufer_children) > 0 && false === $cart->createXMLRegistration($kufer_children, $form_data['invoice_form'], 'kind')) {
-        $error = true;
-    }
+//    if (count($kufer_children) > 0 && false === $cart->createXMLRegistration($kufer_children, $form_data['invoice_form'], 'kind')) {
+//        $error = true;
+//    }
     foreach ($kufer_others as $course_id => $participant) {
         foreach ($participant as $id => $cur_participant) {
             $cart->createXMLRegistration([$course_id => [$cur_participant]], $form_data['invoice_form'], 'andere');

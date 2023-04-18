@@ -91,9 +91,7 @@ if ('edit' === $func || 'add' === $func) {
                     d2u_addon_backend_helper::form_input('header_priority', 'form[priority]', $schedule_category->priority, true, false, 'number');
                     $options_parents = [-1 => rex_i18n::msg('d2u_courses_categories_parent_category_none')];
                     foreach (D2U_Courses\ScheduleCategory::getAllParents() as $parent) {
-                        if ($parent instanceof ScheduleCategory) {
-                            $options_parents[$parent->schedule_category_id] = $parent->name;
-                        }
+                        $options_parents[$parent->schedule_category_id] = $parent->name;
                     }
                     d2u_addon_backend_helper::form_select('d2u_courses_categories_parent_category', 'form[parent_schedule_category_id]', $options_parents, $schedule_category->parent_schedule_category instanceof ScheduleCategory ? [$schedule_category->parent_schedule_category->schedule_category_id] : [-1], 1, false, false);
                     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {

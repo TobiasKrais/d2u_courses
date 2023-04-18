@@ -21,7 +21,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     // Media fields and links need special treatment
     $input_media = rex_post('REX_INPUT_MEDIA', 'array', []);
     $input_media_list = rex_post('REX_INPUT_MEDIALIST', 'array', []);
-    $input_link = (array) rex_post('REX_INPUT_LINK', 'array', []);
+    $input_link = rex_post('REX_INPUT_LINK', 'array', []);
 
     $course_id = $form['course_id'];
     $course = new D2U_Courses\Course($course_id);

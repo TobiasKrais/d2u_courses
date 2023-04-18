@@ -50,12 +50,12 @@ if (rex::isBackend()) {
     echo 'Ausgabe Veranstaltungen der Kategorie <b>'. ($category instanceof Category ? $category->name : 'Kategorie muss ausgewählt werden') .'</b>.'; /** @phpstan-ignore-line */
 } else {
     // Course list
-    if ('active' === rex_config::get('d2u_courses', 'forward_single_course', 'inactive') && 1 === count($courses) && null === filter_input(INPUT_POST, 'course_search')) {
+    if ('active' === rex_config::get('d2u_courses', 'forward_single_course', 'inactive') && 1 === count($courses) && null === filter_input(INPUT_POST, 'course_search')) { /** @phpstan-ignore-line */
         foreach ($courses as $course) {
             header('Location: '. $course->getUrl());
             exit;
         }
-    } elseif (count($courses) > 0) {
+    } elseif (count($courses) > 0) { /** @phpstan-ignore-line */
         if ($category instanceof Category) { /** @phpstan-ignore-line */
             if ('REX_VALUE[2]' === 'true') { /** @phpstan-ignore-line */
                 echo '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. $category->color .' !important">';

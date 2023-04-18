@@ -311,7 +311,7 @@ class KuferSync
             if (rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
                 if (isset($kufer_course->zielgruppe) && '' !== (string) $kufer_course->zielgruppe) {
                     foreach ($target_groups as $target_group) {
-                        if ($target_group->kufer_target_group_name === $kufer_course->zielgruppe && !in_array($target_group->target_group_id, $new_course->target_group_ids, true)) {
+                        if ($target_group->kufer_target_group_name === (string) $kufer_course->zielgruppe && !in_array($target_group->target_group_id, $new_course->target_group_ids, true)) {
                             $new_course->target_group_ids[] = $target_group->target_group_id;
                         }
                     }

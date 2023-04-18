@@ -225,7 +225,7 @@ if (rex::isBackend()) {
     // Nothing requested: selected startpage
     else {
         $tmp_box_per_line = $box_per_line;
-        if (count($news) > 0 && false === $course) {
+        if (count($news) > 0 && false === $course) { /** @phpstan-ignore-line */
             --$tmp_box_per_line;
             echo '<div class="col-12 col-lg-8" data-match-height>';
             echo '<div class="row">';
@@ -251,12 +251,12 @@ if (rex::isBackend()) {
             foreach ($categories as $current_category) {
                 printBoxModule26_1($current_category->name, $current_category->picture, $current_category->color, $current_category->getUrl(), $tmp_box_per_line);
             }
-            if (count($linkboxes) > 0) {
+            if (count($linkboxes) > 0) { /** @phpstan-ignore-line */
                 foreach ($linkboxes as $linkbox) {
                     printBoxModule26_1($linkbox->title, $linkbox->picture, $linkbox->background_color, $linkbox->getUrl(), $tmp_box_per_line);
                 }
             }
-            if (count($news) > 0) {
+            if (count($news) > 0) { /** @phpstan-ignore-line */
                 echo '</div>';
                 echo '</div>';
                 echo '<div class="col-12 col-lg-4">';
