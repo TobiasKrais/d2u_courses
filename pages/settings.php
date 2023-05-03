@@ -351,7 +351,7 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
                             'direct_debit' => rex_i18n::msg('d2u_courses_payment_direct_debit'),
                             'cash' => rex_i18n::msg('d2u_courses_payment_cash'),
                         ];
-                        d2u_addon_backend_helper::form_select('d2u_courses_payment', 'settings[payment_options][]', $options_paymant, rex_config::get('d2u_courses', 'payment_options'), 3, true); /** @phpstan-ignore-line */
+                        d2u_addon_backend_helper::form_select('d2u_courses_payment', 'settings[payment_options][]', $options_paymant, rex_config::get('d2u_courses', 'payment_options', []), 3, true); /** @phpstan-ignore-line */
                         d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_payment_options_allow_company_bank_transfer', 'settings[allow_company_bank_transfer]', 'true', (bool) rex_config::get('d2u_courses', 'allow_company_bank_transfer'));
                     ?>
 				</div>
