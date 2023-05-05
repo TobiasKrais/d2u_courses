@@ -521,7 +521,7 @@ class Cart
         try {
             $dir = trim((string) rex_config::get('d2u_courses', 'kufer_sync_xml_registration_path'), '/');
             if (!file_exists($dir)) {
-                mkdir($dir, 0o777, true);
+                \rex_dir::create(\rex_path::base($dir));
             }
             if (!file_exists($dir .'/.htaccess')) {
                 $handle = fopen($dir .'/.htaccess', 'a');
