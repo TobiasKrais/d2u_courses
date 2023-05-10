@@ -240,10 +240,11 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 </fieldset>
 
 <h2>Changelog</h2>
-<p>3.3.1-DEV:</p>
+<p>3.3.1:</p>
 <ul>
 	<li>Bugfix: Verzeichniserstellung für Kufer Anmeldungen mit PHP < 8.1 war nicht möglich.</li>
 	<li>Bugfix: Aufruf der Einstellungen bei Neuinstallation führte zu einem Fehler.</li>
+	<li>Bugfix locations Plugin: Fehler beim Speichern behoben.</li>
 </ul>
 <p>3.3.0:</p>
 <ul>
