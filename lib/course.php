@@ -12,7 +12,6 @@ use d2u_courses_frontend_helper;
 use DateTime;
 use rex;
 use rex_addon;
-use rex_addon_interface;
 use rex_config;
 use rex_plugin;
 use rex_sql;
@@ -104,23 +103,17 @@ class Course
     /** @var int Number waiting list participants */
     public int $participants_wait_list = 0;
 
-    /**
-     * @var string is online registration possible "yes", "yes_number" (= ask
-     * only for number participants) "no" oder "booked"
-     */
+    /** @var string is online registration possible "yes", "yes_number" (= ask only for number participants) "no" oder "booked" */
     public string $registration_possible = '';
 
     /** @var string course status: "online" or "offline" */
     public string $online_status = '';
 
-    /**
-     * @var string course type for Google JSON+LD Format: "event", "course"
-     * or simply empty
-     */
-    public string$google_type = '';
+    /** @var string course type for Google JSON+LD Format: "event", "course" or simply empty */
+    public string $google_type = '';
 
     /** @var string External web page link */
-    public $url_external = '';
+    public string $url_external = '';
 
     /** @var int Redaxo article id */
     public int $redaxo_article = 0;
@@ -137,10 +130,7 @@ class Course
     /** @var string Update timestamp */
     public string $updatedate = '';
 
-    /**
-     * @var string in case object was imported, this string contains import
-     * software string: "KuferSQL" for Kufer import plugin
-     */
+    /** @var string in case object was imported, this string contains import software string: "KuferSQL" for Kufer import plugin */
     public string $import_type = '';
 
     /** @var string course URL */

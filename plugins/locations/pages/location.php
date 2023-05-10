@@ -28,7 +28,9 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $location->country_code = $form['country_code'];
     $location->street = $form['street'];
     $location->location_category = $form['location_category_id'] > 0 ? new D2U_Courses\LocationCategory($form['location_category_id']) : false;
-    $location->kufer_location_id = (int) $form['kufer_location_id'];
+    if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
+        $location->kufer_location_id = (int) $form['kufer_location_id'];
+    }
     $location->redaxo_users = $form['redaxo_users'] ?? [];
     $location->picture = $input_media[1];
     $location->site_plan = $input_media[2];

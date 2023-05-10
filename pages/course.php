@@ -32,8 +32,8 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $course->details_deadline = $form['details_deadline'];
     $course->details_age = $form['details_age'];
     $course->picture = $input_media[1];
-    $course->price = $form['price'];
-    $course->price_discount = $form['price_discount'];
+    $course->price = (float) $form['price'];
+    $course->price_discount = (float) $form['price_discount'];
     $course->price_salery_level = array_key_exists('price_salery_level', $form);
     $course->price_salery_level_details = [];
     foreach (explode(PHP_EOL, $form['price_salery_level_details']) as $price_salery_level_details_line) {
@@ -47,10 +47,10 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $course->time = $form['time'];
     $course->category = $form['category_id'] > 0 ? new D2U_Courses\Category($form['category_id']) : false;
     $course->secondary_category_ids = $form['secondary_category_ids'] ?? [];
-    $course->participants_number = $form['participants_number'];
-    $course->participants_max = $form['participants_max'];
-    $course->participants_min = $form['participants_min'];
-    $course->participants_wait_list = $form['participants_wait_list'];
+    $course->participants_number = (int) $form['participants_number'];
+    $course->participants_max = (int) $form['participants_max'];
+    $course->participants_min = (int) $form['participants_min'];
+    $course->participants_wait_list = (int) $form['participants_wait_list'];
     $course->registration_possible = $form['registration_possible'];
     $course->online_status = array_key_exists('online_status', $form) ? 'online' : 'offline';
     $course->google_type = $form['google_type'];
