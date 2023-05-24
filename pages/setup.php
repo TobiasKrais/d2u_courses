@@ -240,9 +240,9 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 </fieldset>
 
 <h2>Changelog</h2>
-<p>3.3.2-DEV:</p>
+<p>3.3.2:</p>
 <ul>
-	<li>...</li>
+	<li>Bugfix: Speichern von Kursen endete bei Preiseingabe in Fehler.</li>
 </ul>
 <p>3.3.1:</p>
 <ul>
