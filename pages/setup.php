@@ -240,8 +240,9 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 </fieldset>
 
 <h2>Changelog</h2>
-<p>3.3.3-DEV:</p>
+<p>3.3.3:</p>
 <ul>
+	<li>README / Hilfe hinzugefügt.</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": Kann nun auch Karten des Geolocation Addon Version 2 nutzen.</li>
 </ul>
 <p>3.3.2:</p>
