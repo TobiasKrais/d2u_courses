@@ -74,9 +74,19 @@ if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
                 $map_types = [];
                 if (rex_addon::get('geolocation')->isAvailable()) {
                     $map_types['geolocation'] = 'Geolocation Addon: Standardkarte';
-                    $mapsets = \Geolocation\mapset::query()
-                        ->orderBy('title')
-                        ->findValues('title', 'id');
+					$mapsets = [];
+					if(rex_version::compare('2.0.0', rex_addon::get('geolocation')->getVersion(), '<=')) {
+						// Geolocation 2.x
+						$mapsets = \FriendsOfRedaxo\Geolocation\Mapset::query()
+							->orderBy('title')
+							->findValues('title', 'id');
+					}
+					else {
+						// Geolocation 1.x
+						$mapsets = \Geolocation\mapset::query()
+							->orderBy('title')
+							->findValues('title', 'id');
+					}
                     foreach ($mapsets as $id => $name) {
                         $map_types[$id] = 'Geolocation Addon: '. $name;
                     }

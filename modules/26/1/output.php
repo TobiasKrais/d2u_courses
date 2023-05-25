@@ -734,7 +734,14 @@ if (rex::isBackend()) {
                 } elseif (rex_addon::get('geolocation')->isAvailable()) {
                     try {
                         if (rex::isFrontend()) {
-                            \Geolocation\tools::echoAssetTags();
+                            if(rex_version::compare('2.0.0', rex_addon::get('geolocation')->getVersion(), '<=')) {
+                                // Geolocation 2.x
+                                \FriendsOfRedaxo\Geolocation\Tools::echoAssetTags();
+                            }
+                            else {
+                                // Geolocation 1.x
+                                \Geolocation\tools::echoAssetTags();
+                            }
                         }
             ?>
 				<script>
@@ -813,13 +820,26 @@ if (rex::isBackend()) {
 
                     $mapsetId = (int) 'REX_VALUE[9]';
 
-                    echo \Geolocation\mapset::take($mapsetId)
+                    if(rex_version::compare('2.0.0', rex_addon::get('geolocation')->getVersion(), '<=')) {
+                        // Geolocation 2.x
+                        echo \FriendsOfRedaxo\Geolocation\Mapset::take($mapsetId)
+                            ->attributes('id', (string) $mapsetId)
+                            ->attributes('style', 'height:400px;width:100%;')
+                            ->dataset('center', [[$course->location->latitude, $course->location->longitude], $course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10])
+                            ->dataset('position', [$course->location->latitude, $course->location->longitude])
+                            ->dataset('infobox', [[$course->location->latitude, $course->location->longitude], $course->location->name])
+                            ->parse();
+                    }
+                    else {
+                        // Geolocation 1.x
+                        echo \Geolocation\mapset::take($mapsetId)
                         ->attributes('id', (string) $mapsetId)
                         ->attributes('style', 'height:400px;width:100%;')
                         ->dataset('center', [[$course->location->latitude, $course->location->longitude], $course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10])
                         ->dataset('position', [$course->location->latitude, $course->location->longitude])
                         ->dataset('infobox', [[$course->location->latitude, $course->location->longitude], $course->location->name])
                         ->parse();
+                    }
                 }
                 echo '</div>';
                 echo '</div>';
