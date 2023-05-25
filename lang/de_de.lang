@@ -23,7 +23,6 @@ d2u_courses_details_age = Altersangaben
 d2u_courses_details_course = Kursinfos (z.B. Materialkosten)
 d2u_courses_details_deadline = An-/Abmeldeschluss
 d2u_courses_downloads = Dokumente zum Download
-d2u_courses_faq = FAQ
 d2u_courses_google_type = Kategorisierung bei Google
 d2u_courses_google_type_course = Kurs (Definition: es werden Bildungsinhalte in Form von Wissen oder Fähigkeiten vermittelt. Es gibt mind. 1 Dozenten und mehrere Lernende.)
 d2u_courses_google_type_event = Veranstaltung (Definition: einmalige oder wiederkehrende Ereignisse die der Unterhaltung dienen. Z.B. Konzert, Sommerfest)
