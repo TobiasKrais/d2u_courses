@@ -284,7 +284,7 @@ if (rex::isBackend()) {
     }
 
     // Course list
-    if ('active' === rex_config::get('d2u_courses', 'forward_single_course', 'inactive') && 1 === count($courses) && '' === filter_input(INPUT_POST, 'course_search')) {
+    if ('active' === rex_config::get('d2u_courses', 'forward_single_course', 'inactive') && 1 === count($courses) && null === filter_input(INPUT_POST, 'course_search')) {
         foreach ($courses as $current_course) {
             header('Location: '. $current_course->getUrl());
             exit;

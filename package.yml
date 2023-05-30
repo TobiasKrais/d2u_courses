@@ -1,5 +1,5 @@
 package: d2u_courses
-version: '3.3.3'
+version: '3.3.4'
 author: Tobias Krais
 
 page:
@@ -18,13 +18,16 @@ requires:
     packages:
         d2u_helper: '>=1.8.5'
         sprog: '>=1.0.0'
-        url: '>=2.0'
+        url: '>=2.1'
         yrewrite: '>=2.0.1'
     php: '>=7.4'
 
 conflicts:
     packages:
         multinewsletter: '<3.2.1'
+
+default_config:
+    forward_single_course: 'active'
 
 installer_ignore:
     - .github

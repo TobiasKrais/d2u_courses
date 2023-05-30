@@ -208,9 +208,6 @@ if (\rex_addon::get('url')->isAvailable()) {
 if (!rex_config::has('d2u_courses', 'article_id_courses')) {
     rex_config::set('d2u_courses', 'article_id_courses', rex_article::getSiteStartArticleId());
 }
-if (!rex_config::has('d2u_courses', 'forward_single_course')) {
-    rex_config::set('d2u_courses', 'forward_single_course', 'active');
-}
 // END default settings
 
 // Update modules
@@ -218,7 +215,7 @@ if (class_exists('D2UModuleManager')) {
     $modules = [];
     $modules[] = new D2UModule('26-1',
         'D2U Veranstaltungen - Ausgabe Veranstaltungen',
-        13);
+        14);
     $modules[] = new D2UModule('26-2',
         'D2U Veranstaltungen - Warenkorb',
         8);
