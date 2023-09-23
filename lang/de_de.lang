@@ -67,6 +67,7 @@ d2u_courses_settings_multinewsletter_subscribe = Newsletter Abonnement im Bestel
 d2u_courses_settings_payment_options_allow_company_bank_transfer = Firmenkunden immer die Option "Überweisung" anbieten, auch diese in anzuzeigende Zahlungsarten nicht ausgewählt ist
 d2u_courses_settings_request_form_email = Empfänger E-Mailadresse
 d2u_courses_settings_request_form_sender_email = Absender E-Mailadresse
+d2u_courses_settings_send_email_file = Teilnehmerdaten zusätzlich als Tabellendokument an Bestellmail anhängen
 d2u_courses_settings_show_time = Kurse anzeigen bis ...
 d2u_courses_settings_show_time_day_one_end = Ende des Starttages
 d2u_courses_settings_show_time_day_one_start = Beginn des Starttages

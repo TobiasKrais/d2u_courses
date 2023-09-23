@@ -31,6 +31,8 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
     $settings['ask_vacation_pass'] = array_key_exists('ask_vacation_pass', $settings) ? 'active' : 'inactive';
     $settings['forward_single_course'] = array_key_exists('forward_single_course', $settings) ? 'active' : 'inactive';
     $settings['lang_wildcard_overwrite'] = array_key_exists('lang_wildcard_overwrite', $settings) ? 'true' : 'false';
+    $settings['send_email_file'] = array_key_exists('send_email_file', $settings);
+	
     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
         $settings['kufer_sync_autoimport'] = array_key_exists('kufer_sync_autoimport', $settings) ? 'active' : 'inactive';
     }
@@ -353,6 +355,7 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
                         ];
                         d2u_addon_backend_helper::form_select('d2u_courses_payment', 'settings[payment_options][]', $options_paymant, rex_config::get('d2u_courses', 'payment_options', []), 3, true); /** @phpstan-ignore-line */
                         d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_payment_options_allow_company_bank_transfer', 'settings[allow_company_bank_transfer]', 'true', (bool) rex_config::get('d2u_courses', 'allow_company_bank_transfer'));
+                        d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_send_email_file', 'settings[send_email_file]', 'true', (bool) rex_config::get('d2u_courses', 'send_email_file', false));
                     ?>
 				</div>
 			</fieldset>

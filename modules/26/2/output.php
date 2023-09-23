@@ -607,7 +607,7 @@ if (isset($form_data['invoice_form'])) {
             } else {
                 echo $tag_open .'d2u_courses_multinewsletter'. $tag_close .'<br>';
                 foreach ($multinewsletter_group as $newsletter_group_id) {
-                    $multinewsletter_group = new MultinewsletterGroup($newsletter_group_id);
+                    $multinewsletter_group = new MultinewsletterGroup((int) $newsletter_group_id);
                     if ($multinewsletter_group->id > 0) {
                         echo '<input type="checkbox" class="cart_checkbox" name="invoice_form[multinewsletter][]" id="invoice_form-multinewsletter" value="'. $multinewsletter_group->id .'">';
                         echo '<label class="cart_checkbox" for="invoice_form-multinewsletter">'. $multinewsletter_group->name .'</label><br>';

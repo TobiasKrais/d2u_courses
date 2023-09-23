@@ -709,6 +709,7 @@ class Cart
         $body .= '<p>vielen Dank für Ihre Anmeldung / Bestellung. Nachfolgend die Details:</p>';
 
         $price_full = 0;
+        $csv_array = [];
         // Course information
         foreach ($cart as $course_id => $participant) {
             $body .= '<br>';
@@ -738,8 +739,8 @@ class Cart
             if ('yes_number' !== $course->registration_possible) {
                 foreach ($participant as $id => $participant_data) {
                     if (is_array($participant_data)) {
-                        $body .= 'Vorname: '. $participant_data['firstname']  .'<br>';
-                        $body .= 'Nachname: '. $participant_data['lastname']  .'<br>';
+                        $body .= 'Vorname: '. $participant_data['firstname'] .'<br>';
+                        $body .= 'Nachname: '. $participant_data['lastname'] .'<br>';
                         if (isset($participant_data['birthday']) && '' !== $participant_data['birthday']) {
                             $body .= 'Geburtsdatum: '. self::formatCourseDate($participant_data['birthday'])  .'<br>';
                         } elseif (isset($participant_data['age']) && '' !== $participant_data['age']) {
@@ -751,8 +752,8 @@ class Cart
                         if (isset($participant_data['gender']) && '' !== $participant_data['gender']) {
                             $body .= 'Geschlecht: '. $participant_data['gender']  .'<br>';
                         }
+                        $price_level_description = '';
                         if ($course->price_salery_level && isset($participant_data['price']) && isset($participant_data['price_salery_level_row_number']) && '' !== $participant_data['price']) {
-                            $price_level_description = '';
                             $price_level_row_counter = 0;
                             foreach ($course->price_salery_level_details as $level_description => $level_price) {
                                 ++$price_level_row_counter;
@@ -765,6 +766,23 @@ class Cart
                             $price_full = $price_full + ((float) str_replace(',', '.', str_replace('.', '', $participant_data['price'])));
                         }
                         $body .= '<br>';
+
+                        if ((bool) rex_config::get('d2u_courses', 'send_email_file' , false)) {
+                            // collect data for CSV attachment
+                            $csv_array[] = [
+                                'Event-ID' => $course->course_id, 
+                                'Eventname' => $course->name,
+                                'Lastname' => $participant_data['lastname'],
+                                'Firstname' => $participant_data['firstname'],
+                                'Street' => $invoice_address['address'],
+                                'City' => $invoice_address['zipcode'] .' '. $invoice_address['city'],
+                                'Phone' => array_key_exists('emergency_number', $participant_data) && '' !== $participant_data['emergency_number'] ? $participant_data['emergency_number'] : $invoice_address['phone'],
+                                'E-Mail' => $invoice_address['e-mail'],
+                                'Minors may go home by their own' => isset($invoice_address['kids_go_home_alone']) && 'yes' === $invoice_address['kids_go_home_alone'] ? 'Yes' : 'No',
+                                'Salery level' => $price_level_description,
+                                'Company' => $invoice_address['company'],
+                            ];
+                        }
                     }
                 }
             } elseif (!is_array($participant['participant_number'])) {
@@ -782,7 +800,7 @@ class Cart
         }
         $body .= $invoice_address['firstname'] .' '. $invoice_address['lastname'] .'<br>';
         $body .= $invoice_address['address'] .'<br>';
-        $body .= $invoice_address['zipcode'] .' '. $invoice_address['city']  .'<br>';
+        $body .= $invoice_address['zipcode'] .' '. $invoice_address['city'] .'<br>';
         $body .= $invoice_address['country'] .'<br>';
         $body .= $invoice_address['phone'] .'<br>';
         $body .= '<a href="'. $invoice_address['e-mail'] .'">'. $invoice_address['e-mail']  .'</a><br>';
@@ -812,8 +830,37 @@ class Cart
         }
 
         $mail->Body = $body;
+
+        $csv_name = '';
+        if ((bool) rex_config::get('d2u_courses', 'send_email_file' , false)) {
+            // attach participant data as CSV file
+            $csv_filename = 'participants_'. date('Y-m-d_H-i-s', time()) .'.csv';
+            $csv_name = \rex_path::addonCache('d2u_courses', $csv_filename);
+            if (!file_exists(\rex_path::addonCache('d2u_courses'))) {
+                \rex_dir::create(\rex_path::addonCache('d2u_courses'));
+            }
+    
+            $csv_file = fopen($csv_name, 'w');
+            if (is_resource($csv_file)) {
+                $first_line = true;
+                foreach ($csv_array as $csv_line) {
+                    if ($first_line) {
+                        fputcsv($csv_file, array_keys($csv_line));
+                        $first_line = false;
+                    }
+                    fputcsv($csv_file, $csv_line);
+                }
+                fclose($csv_file);
+                $mail->addAttachment($csv_name, $csv_filename);
+            }
+        }
+
         if ($mail_has_content) {
-            return $mail->send();
+            $success = $mail->send();
+            if ('' !== $csv_name && file_exists($csv_name)) {
+                unlink($csv_name);
+            }
+            return $success;
         }
 
         return $mail_has_content;
