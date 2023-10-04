@@ -344,11 +344,11 @@ class Course
             .'{'.PHP_EOL
                 .'"@context" : "https://schema.org/",'. PHP_EOL
                 .'"@type" : "Course",'. PHP_EOL
-                .'"name" : "'. addcslashes($this->name, '"') .'",'. PHP_EOL
-                .'"description" : "'. ('' !== $this->teaser ? addcslashes($this->teaser, '"') : addcslashes($this->name, '"')) .'",'. PHP_EOL
+                .'"name" : '. json_encode($this->name, JSON_UNESCAPED_UNICODE) .','. PHP_EOL
+                .'"description" : '. ('' !== $this->teaser ? json_encode($this->teaser, JSON_UNESCAPED_UNICODE) : json_encode($this->name, JSON_UNESCAPED_UNICODE)) .','. PHP_EOL
                 .'"provider" : {'. PHP_EOL
                     .'"@type" : "Organization",'. PHP_EOL
-                    .'"name" : "'. addcslashes((string) rex_config::get('d2u_courses', 'company_name', ''), '"') .'",'. PHP_EOL
+                    .'"name" : '. json_encode((string) rex_config::get('d2u_courses', 'company_name', ''), JSON_UNESCAPED_UNICODE) .','. PHP_EOL
                     .'"sameAs" : "'. (rex_addon::get('yrewrite')->isAvailable() ? rex_yrewrite::getCurrentDomain()->getUrl() : rex::getServer()) .'"'. PHP_EOL
                 .'}'. PHP_EOL
             .'}'. PHP_EOL
@@ -380,7 +380,7 @@ class Course
             .'{'.PHP_EOL
                 .'"@context" : "https://schema.org/",'. PHP_EOL
                 .'"@type" : "Event",'. PHP_EOL
-                .'"name" : "'. addcslashes($this->name, '"') .'",'. PHP_EOL
+                .'"name" : '. json_encode($this->name, JSON_UNESCAPED_UNICODE) .','. PHP_EOL
                 .'"startDate" : "'. (new DateTime($this->date_start .('' !== $time_start ? ''. $time_start : '')))->format('c') .'",'. PHP_EOL
                 .'"endDate" : "'. (new DateTime(($this->date_end ?? $this->date_start) .('' !== $time_start ? ''. $time_start : '')))->format('c') .'",'. PHP_EOL
                 // eventAttendanceMode options: OfflineEventAttendanceMode, OnlineEventAttendanceMode, MixedEventAttendanceMode
@@ -389,11 +389,11 @@ class Course
         if ($this->location instanceof Location) {
             $json_data .= '"location" : {'. PHP_EOL
                     .'"@type" : "Place",'. PHP_EOL
-                    .'"name" : "'. addcslashes($this->location->name, '"') .'",'. PHP_EOL
+                    .'"name" : "'. json_encode($this->location->name, JSON_UNESCAPED_UNICODE) .'",'. PHP_EOL
                     .'"address" : {'. PHP_EOL
                         .'"@type" : "PostalAddress"'
-                        .('' === $this->location->street ? '' : ','. PHP_EOL .'"streetAddress" : "'. addcslashes($this->location->street, '"') .'"')
-                        .('' === $this->location->city ? '' : ','. PHP_EOL .'"addressLocality" : "'. addcslashes($this->location->city, '"') .'"')
+                        .('' === $this->location->street ? '' : ','. PHP_EOL .'"streetAddress" : "'. json_encode($this->location->street, JSON_UNESCAPED_UNICODE) .'"')
+                        .('' === $this->location->city ? '' : ','. PHP_EOL .'"addressLocality" : "'. json_encode($this->location->city, JSON_UNESCAPED_UNICODE) .'"')
                         .('' === $this->location->zip_code ? '' : ','. PHP_EOL .'"postalCode" : "'. $this->location->zip_code .'"')
                         .('' === $this->location->country_code ? '' : ','. PHP_EOL .'"addressCountry" : "'. $this->location->country_code .'"')
                     . PHP_EOL.'}'. PHP_EOL
@@ -404,7 +404,7 @@ class Course
                 .'"'. rex_yrewrite::getCurrentDomain()->getUrl() . ltrim(rex_url::media($this->picture), '/') .'"'
                 .'],'. PHP_EOL;
         }
-        $json_data .= '"description" : "'. ('' !== $this->teaser ? addcslashes($this->teaser, '"') : addcslashes($this->name, '"')) .'",'. PHP_EOL
+        $json_data .= '"description" : "'. ('' !== $this->teaser ? json_encode($this->teaser, JSON_UNESCAPED_UNICODE) : json_encode($this->name, JSON_UNESCAPED_UNICODE)) .'",'. PHP_EOL
                 .'"offers" : {'. PHP_EOL
                     .'"@type" : "Offer",'. PHP_EOL
                     .'"url" : "'. $this->getUrl(true) .'",'. PHP_EOL;
@@ -426,7 +426,7 @@ class Course
         }
         $json_data .= '"organizer" : {'. PHP_EOL
                     .'"@type" : "Organization",'. PHP_EOL
-                    .'"name" : "'. addcslashes((string) rex_config::get('d2u_courses', 'company_name', ''), '"') .'",'. PHP_EOL
+                    .'"name" : "'. json_encode((string) rex_config::get('d2u_courses', 'company_name', ''), JSON_UNESCAPED_UNICODE) .'",'. PHP_EOL
                     .'"url" : "'. rex_yrewrite::getCurrentDomain()->getUrl() .'"'. PHP_EOL
                 .'}'. PHP_EOL
             .'}'. PHP_EOL
