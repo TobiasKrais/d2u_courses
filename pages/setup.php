@@ -243,6 +243,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 <p>3.4.0-DEV:</p>
 <ul>
 	<li>Option in den Einstellungen hinzugefügt, um Teilnehmerinformationen als CSV Dateianhang zu Bestellmails hinzuzufügen.</li>
+	<li>Methode Course::existCoursesForCart() hinzugefügt, um zu prüfen ob überhaupt Veranstaltungen mit Anmeldeoption existieren.</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": automatische Weiterleitung bei einem Kurs in einer Kategorie hatte nicht funktioniert.</li>
 	<li>Bugfix: Ausgabe im JSON Format kodiert nun einfache Anführungszeichen korrekt.</li>
 </ul>

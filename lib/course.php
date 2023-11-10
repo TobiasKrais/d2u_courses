@@ -288,6 +288,28 @@ class Course
     }
 
     /**
+     * Checks if courses exist, that can be booked. That means these coureses are online,
+     * are in future and registration is possible. This is useful to check if cart symbol
+     * is needed or not.
+     * @return bool True if courses exisit that can be booked.
+     */
+    public static function existCoursesForCart()
+    {
+        $query = 'SELECT course_id FROM '. rex::getTablePrefix() .'d2u_courses_courses '
+            ."WHERE online_status = 'online' "
+                .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') '
+                .'AND registration_possible != "no" '
+                .'AND registration_possible != "booked" ';
+        $result = rex_sql::factory();
+        $result->setQuery($query);
+        
+        if ($result->getRows() > 0) {
+            return true;
+        }
+        return false;
+    }
+    
+    /**
      * Creates an empty object.
      * @return Course empty course object
      */
