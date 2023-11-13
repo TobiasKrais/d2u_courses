@@ -25,6 +25,7 @@ $startpage = 'REX_VALUE[1]';
 
 $news_category_id = (int) 'REX_VALUE[5]';
 $news = [];
+$new_category = false;
 if ($news_category_id > 0) { /** @phpstan-ignore-line */
     $new_category = new \D2U_News\Category($news_category_id, rex_clang::getCurrentId());
     $news = $new_category->getNews(true);
@@ -138,7 +139,7 @@ if (!function_exists('printBoxModule26_1')) {
 
 if (rex::isBackend()) {
     echo 'Ausgabe Veranstaltungen des D2U Veranstaltungen Addons'
-        . ($new_category > 0 ? ' / mit News aus dem D2U News Addon' : '') /** @phpstan-ignore-line */
+        . ($news_category_id > 0 ? ' / mit News aus dem D2U News Addon' : '') /** @phpstan-ignore-line */
         . ($linkbox_category_id > 0 ? ' / mit Linxboxen aus dem D2U Linkbox Addon' : ''); /** @phpstan-ignore-line */
 } else {
     // Course search box
