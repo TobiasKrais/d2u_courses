@@ -242,9 +242,11 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 <h2>Changelog</h2>
 <p>3.4.0-DEV:</p>
 <ul>
+	<li>Plugin Buchungsdaten hinzugefügt. Dieses Plugin ermöglicht die Erfassung und den Export von Teilnehmerdaten.</li>
 	<li>Option in den Einstellungen hinzugefügt, um Teilnehmerinformationen als CSV Dateianhang zu Bestellmails hinzuzufügen.</li>
 	<li>Methode Course::existCoursesForCart() hinzugefügt, um zu prüfen ob überhaupt Veranstaltungen mit Anmeldeoption existieren.</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": automatische Weiterleitung bei einem Kurs in einer Kategorie hatte nicht funktioniert und Warnung beseitigt.</li>
+	<li>Modul 26-2 "Warenkorb": Bugfix: Löschen des zweiten Teilnehmers hatte komplette Veranstaltung aus Warenkorb gelöscht.</li>
 	<li>Bugfix: Ausgabe im JSON Format kodiert nun einfache Anführungszeichen korrekt.</li>
 </ul>
 <p>3.3.3:</p>

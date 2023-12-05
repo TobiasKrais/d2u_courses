@@ -8,13 +8,8 @@ $cart = \D2U_Courses\Cart::getCart();
 if (filter_input(INPUT_GET, 'delete', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0) {
     $delete_course_id = (int) filter_input(INPUT_GET, 'delete', FILTER_VALIDATE_INT);
     $delete_participant_id = (int) filter_input(INPUT_GET, 'participant', FILTER_VALIDATE_INT);
-    if ($delete_participant_id > 0) {
-        // Delete course
-        $cart->deleteCourse($delete_course_id);
-    } else {
-        // Delete participant
-        $cart->deleteParticipant($delete_course_id, $delete_participant_id);
-    }
+    // Delete participant, if last patricipant, course ist also deleted
+    $cart->deleteParticipant($delete_course_id, $delete_participant_id);
 }
 
 // Add course
@@ -809,12 +804,12 @@ if (isset($form_data['invoice_form'])) {
         echo '<div class="col-12"><br></div>';
         echo '<div class="row">';
 
-        echo '<div class="col-12 col-sm-6 spacer">';
-        echo '<button type="submit" class="save_cart" name="participant_save" value="'. $tag_open .'d2u_courses_cart_save'. $tag_close .'">'. $tag_open .'d2u_courses_cart_save'. $tag_close .'</button>';
+        echo '<div class="col-12 col-sm-6 spacer d-flex">';
+        echo '<button type="submit" class="save_cart flex-fill" name="participant_save" value="'. $tag_open .'d2u_courses_cart_save'. $tag_close .'">'. $tag_open .'d2u_courses_cart_save'. $tag_close .'</button>';
         echo '</div>';
 
-        echo '<div class="col-12 col-sm-6 spacer">';
-        echo '<input type="submit" class="save_cart" name="request_courses" value="'. $tag_open .'d2u_courses_cart_checkout'. $tag_close .'">';
+        echo '<div class="col-12 col-sm-6 spacer d-flex">';
+        echo '<input type="submit" class="save_cart flex-fill" name="request_courses" value="'. $tag_open .'d2u_courses_cart_checkout'. $tag_close .'">';
         echo '</div>';
 
         echo '</div>';
