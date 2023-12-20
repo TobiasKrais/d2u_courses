@@ -11,6 +11,11 @@ Kurse oder Veranstaltungen für Redaxo 5 mit optionaler Buchungsoption und Beisp
 
 ## Plugins
 
+### customer_bookings: speichert die Anmeldedaten
+
+Diese Plugin wird nur benötigt, wenn die Daten der Teilnehmer gespeichert werden sollen. Dann können Teilnehmerlisten exportiert werden. Auch ein CSV Export für die Schweizerische NDS Datenbank (Freiwilliger Schulsport) kann erstellt werden. Teilnehmerdaten werden nur gespeichert, wenn in den Veranstaltungen im Feld "Anmeldung möglich?" der Wert "Ja, für jeden Teilnehmer Details erfragen" ausgewählt wird. Welche Details erfragt werden sollen, kann im Modul eingestellt werden. Sobald diese Option in einer Veranstaltung aktiviert ist, wird die Anzahl Anmeldungen aus der Teilnehmerliste berechnet und kann nicht mehr manuell eingegeben werden. Dabei gibt es allerdings eine Ausnahme: wenn der Kurs von KuferSQL importiert wurde, gibt Kufer die Anmeldezahlen vor und nicht die Teilnehmerdatenbank.
+Wird ein Kurs gelöscht, zu dem es Teilnehmerdaten gibt, werden die Daten der Teilnehmer ebenfalls gelöscht.
+
 ### kufer_sync: importiert eine von Kufer SQL generierte XML Datei
 
 Diese Plugin wird nur benötigt, wenn die VHS Kursverwaltung Kufer SQL genutzt wird. Die Kufer Software kann einen XML Export erstellen (Lizenz erforderlich, nicht im Basisprogramm enthalten) der mit diesem Plugin eingelesen werden kann. Dies ist auch auch automatisch per CronJob möglich. Für die importierten Kurse werden Anmeldungen nicht per Mail versandt, sondern als XML Dateien in ein gesichertes Verzeichnis gelegt, die Kufer SQL eingelesen werden kann.

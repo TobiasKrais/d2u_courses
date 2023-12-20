@@ -17,6 +17,7 @@ requires:
     redaxo: '>=5.10.0'
     packages:
         d2u_helper: '>=1.8.5'
+        phpmailer: '>=2.12.0'
         sprog: '>=1.0.0'
         url: '>=2.1'
         yrewrite: '>=2.0.1'
@@ -27,6 +28,7 @@ conflicts:
         multinewsletter: '<3.2.1'
 
 default_config:
+    allow_company: 'true'
     forward_single_course: 'active'
 
 installer_ignore:

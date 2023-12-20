@@ -155,7 +155,6 @@ if (rex::isBackend()) {
         echo '</div>';
         echo '</div>';
     }
-
     $courses = [];
     // Get courses if search field was used
     if (null !== filter_input(INPUT_POST, 'course_search')) {
@@ -184,10 +183,17 @@ if (rex::isBackend()) {
     }
     // Deal with location categories
     elseif (rex_plugin::get('d2u_courses', 'locations')->isAvailable() && $location_category instanceof LocationCategory) {
+        $locations = $location_category->getLocations(true);
+        if (1 === count($locations) && (bool) rex_config::get('d2u_courses', 'forward_single_location', false)) {
+            foreach ($locations as $current_location) {
+                header('Location: '. $current_location->getUrl());
+                exit;
+            }
+        }
         echo '<div class="col-12 course-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'location_bg_color', '#41b23b') .' !important">';
         echo '<h1 class="page_title">'. $location_category->name .'</h1>';
         echo '</div></div>';
-        foreach ($location_category->getLocations(true) as $current_location) {
+        foreach ($locations as $current_location) {
             printBoxModule26_1($current_location->name, $current_location->picture, (string) rex_config::get('d2u_courses', 'location_bg_color', '#41b23b'), $current_location->getUrl(), $box_per_line);
         }
     }
@@ -277,7 +283,6 @@ if (rex::isBackend()) {
                     echo '</div>';
                     echo '</div>';
                 }
-                echo '</div>';
                 echo '</div>';
                 echo '</div>';
             }

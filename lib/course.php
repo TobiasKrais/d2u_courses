@@ -172,10 +172,26 @@ class Course
                     $this->location = $result->getValue('location_id') > 0 ? new Location((int) $result->getValue('location_id')) : false;
                     $this->room = stripslashes((string) $result->getValue('room'));
                 }
+                if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
+                    // value has to be initialized before participants numbers are read / calculated
+                    $this->import_type = (string) $result->getValue('import_type');
+                }
                 $this->participants_max = (int) $result->getValue('participants_max');
                 $this->participants_min = (int) $result->getValue('participants_min');
                 $this->participants_number = (int) $result->getValue('participants_number');
                 $this->participants_wait_list = (int) $result->getValue('participants_wait_list');
+                if (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable() && 'KuferSQL' !== $this->import_type) {
+                    $number_participants = count(CustomerBooking::getAllForCourse($course_id));
+                    if ($this->participants_max > 0 && $number_participants > $this->participants_max) {
+                        $this->participants_number = $this->participants_max;
+                        $this->participants_wait_list = $number_participants - $this->participants_max;
+                    }
+                    else {
+                        $this->participants_number = $number_participants;
+                        $this->participants_wait_list = 0;
+                    }
+                }
+
                 $this->registration_possible = (string) $result->getValue('registration_possible');
                 $this->online_status = (string) $result->getValue('online_status');
                 $this->google_type = (string) $result->getValue('google_type');
@@ -187,9 +203,6 @@ class Course
                 $this->downloads = is_array($downloads) ? $downloads : [];
                 $this->updatedate = (string) $result->getValue('updatedate');
 
-                if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-                    $this->import_type = (string) $result->getValue('import_type');
-                }
             }
 
             // Get secondary category ids
@@ -264,6 +277,12 @@ class Course
             $query = 'DELETE FROM '. rex::getTablePrefix() .'d2u_courses_2_categories '
                     .'WHERE course_id = '. $this->course_id;
             $result->setQuery($query);
+
+            if (rex_plugin::get('d2u_courses', 'customer_bookings')->isInstalled()) {
+                $query = 'DELETE FROM '. rex::getTablePrefix() .'d2u_courses_customer_bookings '
+                        .'WHERE course_id = '. $this->course_id;
+                $result->setQuery($query);
+            }
 
             if (rex_plugin::get('d2u_courses', 'schedule_categories')->isInstalled()) {
                 $query = 'DELETE FROM '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories '

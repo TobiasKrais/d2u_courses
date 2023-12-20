@@ -14,6 +14,7 @@ use Exception;
 use rex_config;
 
 use rex_mailer;
+use rex_plugin;
 use rex_request;
 
 use function array_key_exists;
@@ -60,7 +61,19 @@ class Cart
             $this->updateParticipantNumber($course_id, 1, null, rex_request('participant_price_salery_level_row_add', 'int', 0));
         } else {
             // registration with person details
-            $cart[$course_id][] = ['firstname' => '', 'lastname' => '', 'birthday' => '', 'age' => '', 'emergency_number' => '', 'gender' => '', 'price' => '', 'price_salery_level_row_number' => rex_request('participant_price_salery_level_row_add', 'int', 0)];
+            $cart[$course_id][] = [
+                'firstname' => '',
+                'lastname' => '',
+                'birthday' => '',
+                'age' => '',
+                'emergency_number' => '',
+                'gender' => '',
+                'pension_insurance_id' => '',
+                'nationality' => '',
+                'nativeLanguage' => '',
+                'price' => '',
+                'price_salery_level_row_number' => rex_request('participant_price_salery_level_row_add', 'int', 0)
+            ];
         }
         rex_request::setSession('cart', $cart);
     }
@@ -79,7 +92,19 @@ class Cart
             $cart[$course_id] = [];
         }
         if (is_array($cart[$course_id])) {
-            $cart[$course_id][] = ['firstname' => '', 'lastname' => '', 'birthday' => '', 'age' => '', 'emergency_number' => '', 'gender' => '', 'price' => '', 'price_salery_level_row_number' => rex_request('participant_price_salery_level_row_add', 'int', 0)];
+            $cart[$course_id][] = [
+                'firstname' => '',
+                'lastname' => '',
+                'birthday' => '',
+                'age' => '',
+                'emergency_number' => '',
+                'gender' => '',
+                'pension_insurance_id' => '',
+                'nationality' => '',
+                'nativeLanguage' => '',
+                'price' => '',
+                'price_salery_level_row_number' => rex_request('participant_price_salery_level_row_add', 'int', 0)
+            ];
         }
         rex_request::setSession('cart', $cart);
     }
@@ -119,6 +144,9 @@ class Cart
      *				[age] =>
      *				[emergency_number] =>
      *				[gender] =>
+     *				[pension_insurance_id] =>
+     *              [nationality] =>
+     *              [nativeLanguage] =>
      *				[price] =>
      *				[price_salery_level_row_number] =>
      *			]
@@ -684,6 +712,63 @@ class Cart
     }
 
     /**
+     * Save bookings in case customer_bookings plugin is installed
+     * @param array<int,array<int|string,string|array<string,string>>> $cart with course details
+     * @param array<string,string> $invoice_address Array with invoice address details
+     * @return bool true if saved successfully
+     */
+    public function saveBookings($cart, $invoice_address)
+    {
+        if (!rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable()) {
+            return false;
+        }
+
+        $return = true;
+        foreach ($cart as $course_id => $participant) {
+            foreach ($participant as $id => $participant_data) {
+                if(!is_array($participant_data)) {
+                    // if course->registration_possible !== yes, no participant details are available
+                    continue;
+                }
+                $booking = CustomerBooking::factory();
+                $booking->givenName = $participant_data['firstname'];
+                $booking->familyName = $participant_data['lastname'];
+                $booking->birthDate = $participant_data['birthday'] .' 00:00:00';
+                $booking->gender = $participant_data['gender'];
+                $booking->street = $invoice_address['address'];
+                $booking->zipCode = $invoice_address['zipcode'];
+                $booking->city = $invoice_address['city'];
+                $booking->country = $invoice_address['country'];
+                $booking->pension_insurance_id = $participant_data['pension_insurance_id'];
+                $booking->nationality = $participant_data['nationality'];
+                $booking->nativeLanguage = $participant_data['nativeLanguage'];
+                $booking->emergency_number = array_key_exists('emergency_number', $participant_data) && '' !== $participant_data['emergency_number'] ? $participant_data['emergency_number'] : $invoice_address['phone'];
+                $booking->email = $invoice_address['e-mail'];
+                $booking->kids_go_home_alone = 'yes' === $invoice_address['kids_go_home_alone'];
+                if ($course_id > 0) {
+                    $course = new Course($course_id);
+                    if ($course instanceof Course && $course->price_salery_level) {
+                        $price_level_row_counter = 0;
+                        foreach ($course->price_salery_level_details as $level_price) {
+                            ++$price_level_row_counter;
+                            if ($price_level_row_counter === (int) $participant_data['price_salery_level_row_number']) {
+                                $booking->salery_level = $level_price;
+                                break;
+                            }
+                        }
+                    }
+                }
+                $booking->course_id = $course_id;
+                $booking->ipAddress = $_SERVER['REMOTE_ADDR'];
+                if (false === $booking->save()) {
+                    $return = false;
+                }
+            }
+        }
+        return $return;
+    }
+    
+    /**
      * Send registrations via mail.
      * @param array<int,array<int|string,string|array<string,string>>> $cart with course details
      * @param array<string,string> $invoice_address Array with invoice address details
@@ -709,7 +794,6 @@ class Cart
         $body .= '<p>vielen Dank für Ihre Anmeldung / Bestellung. Nachfolgend die Details:</p>';
 
         $price_full = 0;
-        $csv_array = [];
         // Course information
         foreach ($cart as $course_id => $participant) {
             $body .= '<br>';
@@ -749,6 +833,15 @@ class Cart
                         if (array_key_exists('emergency_number', $participant_data) && '' !== $participant_data['emergency_number']) {
                             $body .= 'Notfallnummer: '. $participant_data['emergency_number']  .'<br>';
                         }
+                        if (array_key_exists('pension_insurance_id', $participant_data) && '' !== $participant_data['pension_insurance_id']) {
+                            $body .= 'Rentenversicherungsnummer: '. $participant_data['pension_insurance_id']  .'<br>';
+                        }
+                        if (array_key_exists('nationality', $participant_data) && '' !== $participant_data['nationality']) {
+                            $body .= 'Nationalität: '. $participant_data['nationality']  .'<br>';
+                        }
+                        if (array_key_exists('nativeLanguage', $participant_data) && '' !== $participant_data['nativeLanguage']) {
+                            $body .= 'Muttersprache: '. $participant_data['nativeLanguage']  .'<br>';
+                        }
                         if (isset($participant_data['gender']) && '' !== $participant_data['gender']) {
                             $body .= 'Geschlecht: '. $participant_data['gender']  .'<br>';
                         }
@@ -767,22 +860,6 @@ class Cart
                         }
                         $body .= '<br>';
 
-                        if ((bool) rex_config::get('d2u_courses', 'send_email_file' , false)) {
-                            // collect data for CSV attachment
-                            $csv_array[] = [
-                                'Event-ID' => $course->course_id, 
-                                'Eventname' => $course->name,
-                                'Lastname' => $participant_data['lastname'],
-                                'Firstname' => $participant_data['firstname'],
-                                'Street' => $invoice_address['address'],
-                                'City' => $invoice_address['zipcode'] .' '. $invoice_address['city'],
-                                'Phone' => array_key_exists('emergency_number', $participant_data) && '' !== $participant_data['emergency_number'] ? $participant_data['emergency_number'] : $invoice_address['phone'],
-                                'E-Mail' => $invoice_address['e-mail'],
-                                'Minors may go home by their own' => isset($invoice_address['kids_go_home_alone']) && 'yes' === $invoice_address['kids_go_home_alone'] ? 'Yes' : 'No',
-                                'Salery level' => $price_level_description,
-                                'Company' => $invoice_address['company'],
-                            ];
-                        }
                     }
                 }
             } elseif (!is_array($participant['participant_number'])) {
@@ -794,7 +871,7 @@ class Cart
         }
 
         // invoice data
-        $body .= '<br><b>Rechnungsadresse:</b><br>';
+        $body .= '<br><b>Adresse:</b><br>';
         if (isset($invoice_address['type']) && 'B' === $invoice_address['type']) {
             $body .= $invoice_address['company'] .'<br>';
         }
@@ -804,17 +881,19 @@ class Cart
         $body .= $invoice_address['country'] .'<br>';
         $body .= $invoice_address['phone'] .'<br>';
         $body .= '<a href="'. $invoice_address['e-mail'] .'">'. $invoice_address['e-mail']  .'</a><br>';
-        $body .= 'Gewünschte Zahlungsart: ';
-        if (isset($invoice_address['payment']) && 'L' === $invoice_address['payment']) {
-            $body .= 'Lastschrift<br>';
-            $body .= 'Name der Bank: '. $invoice_address['bank']  .'<br>';
-            $body .= 'Kontoinhaber: '. $invoice_address['account_owner']  .'<br>';
-            $body .= 'BIC: '. $invoice_address['bic']  .'<br>';
-            $body .= 'IBAN: '. $invoice_address['iban'];
-        } elseif (isset($invoice_address['payment']) && 'Ü' === $invoice_address['payment']) {
-            $body .= 'Überweisung';
-        } elseif (isset($invoice_address['payment']) && 'B' === $invoice_address['payment']) {
-            $body .= 'Barzahlung';
+        if (isset($invoice_address['payment']) && '' !== $invoice_address['payment']) {
+            $body .= 'Gewünschte Zahlungsart: ';
+            if (isset($invoice_address['payment']) && 'L' === $invoice_address['payment']) {
+                $body .= 'Lastschrift<br>';
+                $body .= 'Name der Bank: '. $invoice_address['bank']  .'<br>';
+                $body .= 'Kontoinhaber: '. $invoice_address['account_owner']  .'<br>';
+                $body .= 'BIC: '. $invoice_address['bic']  .'<br>';
+                $body .= 'IBAN: '. $invoice_address['iban'];
+            } elseif (isset($invoice_address['payment']) && 'Ü' === $invoice_address['payment']) {
+                $body .= 'Überweisung';
+            } elseif (isset($invoice_address['payment']) && 'B' === $invoice_address['payment']) {
+                $body .= 'Barzahlung';
+            }
         }
         $body .= '<br>';
         if (isset($invoice_address['vacation_pass']) && (int) $invoice_address['vacation_pass'] > 0) {
@@ -831,40 +910,11 @@ class Cart
 
         $mail->Body = $body;
 
-        $csv_name = '';
-        if ((bool) rex_config::get('d2u_courses', 'send_email_file' , false)) {
-            // attach participant data as CSV file
-            $csv_filename = 'participants_'. date('Y-m-d_H-i-s', time()) .'.csv';
-            $csv_name = \rex_path::addonCache('d2u_courses', $csv_filename);
-            if (!file_exists(\rex_path::addonCache('d2u_courses'))) {
-                \rex_dir::create(\rex_path::addonCache('d2u_courses'));
-            }
-    
-            $csv_file = fopen($csv_name, 'w');
-            if (is_resource($csv_file)) {
-                $first_line = true;
-                foreach ($csv_array as $csv_line) {
-                    if ($first_line) {
-                        fputcsv($csv_file, array_keys($csv_line));
-                        $first_line = false;
-                    }
-                    fputcsv($csv_file, $csv_line);
-                }
-                fclose($csv_file);
-                $mail->addAttachment($csv_name, $csv_filename);
-            }
-        }
-
         if ($mail_has_content) {
-            $success = $mail->send();
-            if ('' !== $csv_name && file_exists($csv_name)) {
-                unlink($csv_name);
-            }
-            return $success;
+            return $mail->send();
         }
 
         return $mail_has_content;
-
     }
 
     /**
@@ -879,8 +929,8 @@ class Cart
      * Update course participant.
      * @param int $course_id Course ID
      * @param int $participant_id Participant ID
-     * @param string[] $participant_data Array with participant data. Allowed keys
-     * are "firstname", "lastname", "birthday", "age", "gender", "emergency_number", "salery_level"
+     * @param array<string,string> $participant_data Array with participant data. Allowed keys
+     * are "firstname", "lastname", "birthday", "age", "gender", "emergency_number", "pension_insurance_id", "nationality", "nativeLanguage", "salery_level"
      */
     public function updateParticipant($course_id, $participant_id, $participant_data): void
     {

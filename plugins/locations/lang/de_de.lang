@@ -19,5 +19,6 @@ d2u_courses_location_room = Raum
 
 d2u_courses_location_settings_article = Redaxo Artikel Örtlichkeiten
 d2u_courses_location_settings_bg_color = Hintergrundfarbe
+d2u_courses_location_settings_forward_single_location = Wenn nur eine Örtlichkeit in einer Ortskategorie vorhanden ist, direkt zur Kursliste der Örtlichkeit weiterleiten.
 
 d2u_courses_locations_rights_locations = D2U Veranstaltungen Addon: Örtlichkeiten

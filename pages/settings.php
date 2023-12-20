@@ -17,6 +17,7 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 
     if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
         $settings['article_id_locations'] = is_array($link_ids['REX_INPUT_LINK']) && $link_ids['REX_INPUT_LINK'][5] > 0 ? $link_ids['REX_INPUT_LINK'][5] : $settings['article_id_courses'];
+		$settings['forward_single_location'] = array_key_exists('forward_single_location', $settings);
     }
     if (rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
         $settings['article_id_schedule_categories'] = is_array($link_ids['REX_INPUT_LINK']) && $link_ids['REX_INPUT_LINK'][6] > 0 ? $link_ids['REX_INPUT_LINK'][6] : $settings['article_id_courses'];
@@ -26,12 +27,12 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
     }
 
     // Checkbox also need special treatment if empty
+    $settings['allow_company'] = array_key_exists('allow_company', $settings);
     $settings['allow_company_bank_transfer'] = array_key_exists('allow_company_bank_transfer', $settings);
     $settings['ask_kids_go_home_alone'] = array_key_exists('ask_kids_go_home_alone', $settings) ? 'active' : 'inactive';
     $settings['ask_vacation_pass'] = array_key_exists('ask_vacation_pass', $settings) ? 'active' : 'inactive';
     $settings['forward_single_course'] = array_key_exists('forward_single_course', $settings) ? 'active' : 'inactive';
     $settings['lang_wildcard_overwrite'] = array_key_exists('lang_wildcard_overwrite', $settings) ? 'true' : 'false';
-    $settings['send_email_file'] = array_key_exists('send_email_file', $settings);
 	
     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
         $settings['kufer_sync_autoimport'] = array_key_exists('kufer_sync_autoimport', $settings) ? 'active' : 'inactive';
@@ -354,9 +355,26 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
                             'cash' => rex_i18n::msg('d2u_courses_payment_cash'),
                         ];
                         d2u_addon_backend_helper::form_select('d2u_courses_payment', 'settings[payment_options][]', $options_paymant, rex_config::get('d2u_courses', 'payment_options', []), 3, true); /** @phpstan-ignore-line */
+                        d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_allow_company', 'settings[allow_company]', 'true', (bool) rex_config::get('d2u_courses', 'allow_company'));
                         d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_payment_options_allow_company_bank_transfer', 'settings[allow_company_bank_transfer]', 'true', (bool) rex_config::get('d2u_courses', 'allow_company_bank_transfer'));
-                        d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_send_email_file', 'settings[send_email_file]', 'true', (bool) rex_config::get('d2u_courses', 'send_email_file', false));
                     ?>
+					<script>
+						function changeType() {
+							if($('input[name="settings\\[allow_company\\]"]').is(':checked')) {
+								$('#settings\\[allow_company_bank_transfer\\]').fadeIn();
+							}
+							else {
+								$('#settings\\[allow_company_bank_transfer\\]').hide();
+							}
+						}
+
+						// On init
+						changeType();
+						// On change
+						$('input[name="settings\\[allow_company\\]"]').on('change', function() {
+							changeType();
+						});
+					</script>
 				</div>
 			</fieldset>
 			<fieldset>
@@ -392,7 +410,8 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 						<?php
                             d2u_addon_backend_helper::form_input('d2u_courses_location_settings_bg_color', 'settings[location_bg_color]', (string) rex_config::get('d2u_courses', 'location_bg_color'), true, false, 'color');
                             d2u_addon_backend_helper::form_linkfield('d2u_courses_location_settings_article', '5', (int) rex_config::get('d2u_courses', 'article_id_locations'), (int) rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
-                        ?>
+							d2u_addon_backend_helper::form_checkbox('d2u_courses_location_settings_forward_single_location', 'settings[forward_single_location]', 'true', (bool) rex_config::get('d2u_courses', 'forward_single_location'));
+						?>
 					</div>
 				</fieldset>
 			<?php

@@ -25,7 +25,7 @@
 		<input type="checkbox" name="REX_INPUT_VALUE[3]" value="true" <?= 'REX_VALUE[3]' === 'true' ? ' checked="checked"' : '' /** @phpstan-ignore-line */ ?> class="form-control d2u_helper_toggle" onChange="toggleDetailsView()"/>
 	</div>
 	<div class="col-xs-8">
-		Altersabfrage auf ausgewählte Hauptkategorien begrenzen?<br />
+		Altersabfrage der Teilnehmer auf ausgewählte Hauptkategorien begrenzen?<br />
 	</div>
 	<div class="col-xs-12">&nbsp;</div>
 </div>
@@ -63,6 +63,61 @@
 		toggleDetailsView();
 	});
 </script>
+<div class="row">
+	<div class="col-xs-4">
+		<input type="checkbox" name="REX_INPUT_VALUE[6]" value="true" <?= 'REX_VALUE[6]' === 'true' ? ' checked="checked"' : '' /** @phpstan-ignore-line */ ?> class="form-control d2u_helper_toggle" />
+	</div>
+	<div class="col-xs-8">
+		Im Anmeldeprozess nach einer Notfallnummer der Teilnehmer fragen
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">&nbsp;</div>
+</div>
+<div class="row">
+	<div class="col-xs-4">
+		<input type="checkbox" name="REX_INPUT_VALUE[7]" value="true" <?= 'REX_VALUE[7]' === 'true' ? ' checked="checked"' : '' /** @phpstan-ignore-line */ ?> class="form-control d2u_helper_toggle" />
+	</div>
+	<div class="col-xs-8">
+		Im Anmeldeprozess nach Rentenversicherungsnummer der Teilnehmer fragen
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">&nbsp;</div>
+</div>
+<div class="row">
+	<div class="col-xs-4">
+		<input type="checkbox" name="REX_INPUT_VALUE[8]" value="true" <?= 'REX_VALUE[8]' === 'true' ? ' checked="checked"' : '' /** @phpstan-ignore-line */ ?> class="form-control d2u_helper_toggle" />
+	</div>
+	<div class="col-xs-8">
+		Im Anmeldeprozess nach Nationalität der Teilnehmer fragen
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">&nbsp;</div>
+</div>
+<div class="row">
+	<div class="col-xs-4">
+		<input type="checkbox" name="REX_INPUT_VALUE[9]" value="true" <?= 'REX_VALUE[9]' === 'true' ? ' checked="checked"' : '' /** @phpstan-ignore-line */ ?> class="form-control d2u_helper_toggle" />
+	</div>
+	<div class="col-xs-8">
+		Im Anmeldeprozess nach Muttersprache der Teilnehmer fragen
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">&nbsp;</div>
+</div>
+<div class="row">
+	<div class="col-xs-4">
+		<input type="checkbox" name="REX_INPUT_VALUE[5]" value="true" <?= 'REX_VALUE[5]' === 'true' ? ' checked="checked"' : '' /** @phpstan-ignore-line */ ?> class="form-control d2u_helper_toggle" />
+	</div>
+	<div class="col-xs-8">
+		Im Anmeldeprozess <b>nicht</b> nach dem Geschlecht der Teilnehmer fragen
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">&nbsp;</div>
+</div>
 <?php
     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
 ?>
@@ -80,17 +135,7 @@
 <?php
     }
 ?>
-<div class="row">
-	<div class="col-xs-4">
-		<input type="checkbox" name="REX_INPUT_VALUE[5]" value="true" <?= 'REX_VALUE[5]' === 'true' ? ' checked="checked"' : '' /** @phpstan-ignore-line */ ?> class="form-control d2u_helper_toggle" />
-	</div>
-	<div class="col-xs-8">
-		Im Anmeldeprozess <b>nicht</b> nach dem Geschlecht fragen
-	</div>
-</div>
-<div class="row">
-	<div class="col-xs-12">&nbsp;</div>
-</div>
+
 <div class="row">
 	<div class="col-xs-12">
 		<p>Einstellung für den Warenkorb werden im <a href="index.php?page=d2u_courses/settings">D2U Veranstaltungen Addon > Einstellungen</a> verwaltet.</p>

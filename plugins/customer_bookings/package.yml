@@ -1,0 +1,12 @@
+package: d2u_courses/customer_bookings
+version: '3.4.0'
+author: Tobias Krais
+supportpage: http://github.com/tobiaskrais/d2u_courses
+
+page:
+    title: 'translate:d2u_courses_customer_bookings'
+    perm: 'd2u_courses[customer_bookings]'
+    icon: rex-icon fa-user
+    subpages:
+        customer_bookings: { title: 'translate:d2u_courses_customer_bookings', icon: rex-icon fa-user }
+        export: { title: 'translate:d2u_courses_customer_bookings_export', icon: rex-icon fa-cloud-download }

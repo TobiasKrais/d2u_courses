@@ -1,6 +1,7 @@
 <?php
 
 use D2U_Courses\Category;
+use D2U_Courses\CustomerBooking;
 use D2U_Courses\Location;
 use D2U_Courses\LocationCategory;
 use D2U_Courses\ScheduleCategory;
@@ -47,15 +48,15 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $course->time = $form['time'];
     $course->category = $form['category_id'] > 0 ? new D2U_Courses\Category($form['category_id']) : false;
     $course->secondary_category_ids = $form['secondary_category_ids'] ?? [];
-    $course->participants_number = (int) $form['participants_number'];
     $course->participants_max = (int) $form['participants_max'];
     $course->participants_min = (int) $form['participants_min'];
+    $course->participants_number = (int) $form['participants_number'];
     $course->participants_wait_list = (int) $form['participants_wait_list'];
     $course->registration_possible = $form['registration_possible'];
     $course->online_status = array_key_exists('online_status', $form) ? 'online' : 'offline';
     $course->google_type = $form['google_type'];
     $course->url_external = $form['url_external'];
-    $course->redaxo_article = $input_link['1'];
+    $course->redaxo_article = (int) $input_link['1'];
     $course->instructor = $form['instructor'];
     $course->course_number = $form['course_number'];
     $downloads = preg_grep('/^\s*$/s', explode(',', $input_media_list['1']), PREG_GREP_INVERT);
@@ -164,10 +165,37 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                                 unset($options_registration['yes_number']);
                             }
                             d2u_addon_backend_helper::form_select('d2u_courses_registration_possible', 'form[registration_possible]', $options_registration, [$course->registration_possible], 1, false, $readonly);
-                            d2u_addon_backend_helper::form_input('d2u_courses_participants_number', 'form[participants_number]', $course->participants_number, false, $readonly, 'number');
                             d2u_addon_backend_helper::form_input('d2u_courses_participants_max', 'form[participants_max]', $course->participants_max, false, $readonly, 'number');
                             d2u_addon_backend_helper::form_input('d2u_courses_participants_min', 'form[participants_min]', $course->participants_min, false, $readonly, 'number');
+                            d2u_addon_backend_helper::form_input('d2u_courses_participants_number', 'form[participants_number]', $course->participants_number, false, $readonly, 'number');
                             d2u_addon_backend_helper::form_input('d2u_courses_participants_wait_list', 'form[participants_wait_list]', $course->participants_wait_list, false, $readonly, 'number');
+                            if (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable() && 'KuferSQL' !== $course->import_type) {
+                                ?>
+                                <script>
+                                    function participants_changer() {
+                                        if ($("select[name='form[registration_possible]']").val() === "yes") {
+                                            $("input[name='form[participants_number]']").parent().parent().fadeOut();
+                                            $("input[name='form[participants_wait_list]']").parent().parent().fadeOut();
+                                        }
+                                        else {
+                                            $("input[name='form[participants_number]']").parent().parent().fadeIn();
+                                            $("input[name='form[participants_wait_list]']").parent().parent().fadeIn();
+                                        }
+                                    }
+        
+                                    // Hide on document load
+                                    $(document).ready(function() {
+                                        participants_changer();
+                                    });
+        
+                                    // Hide on selection change
+                                    $("select[name='form[registration_possible]']").on('change', function(e) {
+                                        participants_changer();
+                                    });
+                                </script>
+                                <?php
+                            }
+            
                             d2u_addon_backend_helper::form_input('d2u_courses_date_start', 'form[date_start]', $course->date_start, false, $readonly, 'date');
                             d2u_addon_backend_helper::form_input('d2u_courses_date_end', 'form[date_end]', $course->date_end, false, $readonly, 'date');
                             d2u_addon_backend_helper::form_input('d2u_courses_time', 'form[time]', $course->time, false, $readonly, 'text');
@@ -268,7 +296,15 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
 						<button class="btn btn-abort" type="submit" name="btn_abort" formnovalidate="formnovalidate" value="1"><?= rex_i18n::msg('form_abort') ?></button>
 						<?php
                             if (!$readonly) {
-                                echo '<button class="btn btn-delete" type="submit" name="btn_delete" formnovalidate="formnovalidate" data-confirm="'. rex_i18n::msg('form_delete') .'?" value="1">'. rex_i18n::msg('form_delete') .'</button>';
+                                $has_bookings = false;
+                                if (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable()) {
+                                    $bookings = CustomerBooking::getAllForCourse($course->course_id);
+                                    if (count($bookings) > 0) {
+                                        $has_bookings = true;
+                                    }
+                                }
+                                echo '<button class="btn btn-delete" type="submit" name="btn_delete" formnovalidate="formnovalidate" data-confirm="'. rex_i18n::msg($has_bookings ? 'd2u_courses_customer_bookings_delete': 'd2u_helper_confirm_delete') .'" value="1">'
+                                    . rex_i18n::msg('form_delete') . ($has_bookings ? ' (<i class="rex-icon fa-leanpub"></i>+<i class="rex-icon fa-user"></i>)' : '') .'</button>';
                             }
                         ?>
 					</div>
@@ -334,10 +370,25 @@ if ('' === $func) {
     $list->setColumnLayout(rex_i18n::msg('d2u_helper_clone'), ['', '<td class="rex-table-action">###VALUE###</td>']);
     $list->setColumnParams(rex_i18n::msg('d2u_helper_clone'), ['func' => 'clone', 'entry_id' => '###course_id###']);
 
-    $list->addColumn(rex_i18n::msg('delete_module'), '<i class="rex-icon rex-icon-delete"></i> ' . rex_i18n::msg('delete'));
-    $list->setColumnLayout(rex_i18n::msg('delete_module'), ['', '<td class="rex-table-action">###VALUE###</td>']);
-    $list->setColumnParams(rex_i18n::msg('delete_module'), ['func' => 'delete', 'entry_id' => '###course_id###']);
-    $list->addLinkAttribute(rex_i18n::msg('delete_module'), 'data-confirm', rex_i18n::msg('d2u_helper_confirm_delete'));
+    $list->addColumn(rex_i18n::msg('delete'), '<i class="rex-icon rex-icon-delete"></i> ' . rex_i18n::msg('delete'));
+    $list->setColumnLayout(rex_i18n::msg('delete'), ['', '<td class="rex-table-action">###VALUE###</td>']);
+    if (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable()) {
+        $list->setColumnFormat(rex_i18n::msg('delete'), 'custom', static function ($params) {
+            $list_params = $params['list'];
+            $course_id = $list_params->getValue('course_id');
+            $bookings = CustomerBooking::getAllForCourse($course_id);
+            return '<a href="index.php?page='. rex_be_controller::getCurrentPage() .'&amp;func=delete&amp;entry_id='. $course_id .'" '
+                .'data-confirm="'. rex_i18n::msg(count($bookings) > 0 ? 'd2u_courses_customer_bookings_delete': 'd2u_helper_confirm_delete')
+                .'" class="rex-link-expanded">'
+                .'<i class="rex-icon rex-icon-delete"></i> '
+                . rex_i18n::msg('delete') 
+                . (count($bookings) > 0 ? ' (<i class="rex-icon fa-leanpub"></i>+<i class="rex-icon fa-user"></i>)' : '')
+                .'</a>';
+        });
+    }
+    else {
+        $list->addLinkAttribute(rex_i18n::msg('delete'), 'data-confirm', rex_i18n::msg('d2u_helper_confirm_delete'));
+    }
 
     $list->setNoRowsMessage(rex_i18n::msg('d2u_courses_no_courses_found'));
 

@@ -1,0 +1,46 @@
+d2u_courses_customer_bookings = Buchungsdaten
+d2u_courses_customer_bookings_birthDate = Geburtsdatum
+d2u_courses_customer_bookings_bookingDate = Buchungsdatum
+d2u_courses_customer_bookings_city = Ort
+d2u_courses_customer_bookings_country = Land
+d2u_courses_customer_bookings_country_others = Anderes Land
+d2u_courses_customer_bookings_country_CH = Schweiz
+d2u_courses_customer_bookings_country_DE = Deutschland
+d2u_courses_customer_bookings_country_FL = Lichtenstein
+d2u_courses_customer_bookings_country_FR = Frankreich
+d2u_courses_customer_bookings_country_IT = Italien
+d2u_courses_customer_bookings_delete = Hiermit löschen Sie auch alle Buchungen, die zu diesem Kurs gehören. Wollen Sie wirklich löschen?
+d2u_courses_customer_bookings_email = E-Mail-Adresse
+d2u_courses_customer_bookings_emergency_number = Notfall Telefonnummer
+d2u_courses_customer_bookings_gender = Geschlecht
+d2u_courses_customer_bookings_gender_divers = Divers
+d2u_courses_customer_bookings_gender_female = Weiblich
+d2u_courses_customer_bookings_gender_male = Männlich
+d2u_courses_customer_bookings_gender_none = Keine Angabe
+d2u_courses_customer_bookings_givenName = Vorname
+d2u_courses_customer_bookings_familyName = Nachname
+d2u_courses_customer_bookings_ipAddress = IP Adresse
+d2u_courses_customer_bookings_kids_go_home_alone = Darf alleine nach Hause gehen
+d2u_courses_customer_bookings_nationality = Nationalität
+d2u_courses_customer_bookings_nationality_others = Andere Nationalität
+d2u_courses_customer_bookings_nationality_CH = Schweiz
+d2u_courses_customer_bookings_nationality_DE = Deutsch
+d2u_courses_customer_bookings_nationality_FL = Lichtenstein
+d2u_courses_customer_bookings_nationality_FR = Frankreich
+d2u_courses_customer_bookings_nationality_IT = Italien
+d2u_courses_customer_bookings_nativeLanguage = Muttersprache
+d2u_courses_customer_bookings_nativeLanguage_others = Andere Sprache
+d2u_courses_customer_bookings_nativeLanguage_DE = Deutsch
+d2u_courses_customer_bookings_nativeLanguage_FR = Französisch
+d2u_courses_customer_bookings_nativeLanguage_IT = Italienisch
+d2u_courses_customer_bookings_pension_insurance_id = Rentennummer
+d2u_courses_customer_bookings_street = Straße
+d2u_courses_customer_bookings_zipCode = Postleitzahl
+
+d2u_courses_customer_bookings_export = Export
+d2u_courses_customer_bookings_export_nds = NDS Eport
+d2u_courses_customer_bookings_export_participants = Teilnehmerliste
+
+d2u_courses_customer_bookings_no_bookings_found = Keine Buchungsdaten gefunden
+
+d2u_courses_customer_bookings_rights_customer_bookings = D2U Veranstaltungen Addon: Buchungsdaten
