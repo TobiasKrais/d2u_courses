@@ -25,13 +25,14 @@ if ('' !== $download) {
                     $course_booking->gender,
                     $course_booking->pension_insurance_id,
                     $course_booking->nationality,
+                    $course_booking->nativeLanguage,
                     $course_booking->zipCode,
                     $course_booking->city,
                     $course_booking->country];
             }
         }
         else {
-            $data[] = ['Kurs ID', 'Nae Kurs', 'Name', 'Vorname', 'Straße ', 'Ort', 'Tel.', 'E-Mail', 'Alleine n. Hause', 'Gehaltsstufe'];
+            $data[] = ['Kurs ID', 'Name Kurs', 'Name', 'Vorname', 'Straße ', 'Ort', 'Tel.', 'E-Mail', 'Alleine n. Hause', 'Gehaltsstufe'];
             foreach ($course_bookings as $course_booking) {
                 $data[] = [
                     $course_booking->course_id,

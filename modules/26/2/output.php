@@ -200,7 +200,8 @@ if (isset($form_data['invoice_form'])) {
         $cart->unsetCart();
     } else {
         echo '<div class="col-12">';
-        echo '<h1>'. $tag_open .'d2u_courses_cart_error'. $tag_close .'</h1><p><a href="'. rex_getUrl((int) rex_config::get('d2u_helper', 'article_id_impress', rex_article::getSiteStartArticleId())) .'">'. $tag_open .'d2u_courses_cart_error_details'. $tag_close .'</a></p>';
+        echo '<h1>'. $tag_open .'d2u_courses_cart_error'. $tag_close .'</h1>'
+            .'<p>'. $tag_open .'d2u_courses_cart_error_details'. $tag_close .'</p>';
         echo '</div>';
     }
 } elseif (isset($form_data['request_courses']) && '' !== $form_data['request_courses']) {

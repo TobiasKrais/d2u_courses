@@ -359,7 +359,7 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
                         d2u_addon_backend_helper::form_checkbox('d2u_courses_settings_payment_options_allow_company_bank_transfer', 'settings[allow_company_bank_transfer]', 'true', (bool) rex_config::get('d2u_courses', 'allow_company_bank_transfer'));
                     ?>
 					<script>
-						function changeType() {
+						function changeCompany() {
 							if($('input[name="settings\\[allow_company\\]"]').is(':checked')) {
 								$('#settings\\[allow_company_bank_transfer\\]').fadeIn();
 							}
@@ -369,10 +369,10 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 						}
 
 						// On init
-						changeType();
+						changeCompany();
 						// On change
 						$('input[name="settings\\[allow_company\\]"]').on('change', function() {
-							changeType();
+							changeCompany();
 						});
 					</script>
 				</div>

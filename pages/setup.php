@@ -240,6 +240,10 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 </fieldset>
 
 <h2>Changelog</h2>
+<p>3.4.1-DEV:</p>
+<ul>
+	<li>Modul 26-2 "Warenkorb": Link bei Fehlermeldung entfernt.</li>
+</ul>
 <p>3.4.0:</p>
 <ul>
 	<li>Plugin Buchungsdaten hinzugefügt. Dieses Plugin ermöglicht die Erfassung und den Export von Teilnehmerdaten.</li>
