@@ -245,6 +245,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 	<li>Plugin Buchungsdaten hinzugefügt. Dieses Plugin ermöglicht die Erfassung und den Export von Teilnehmerdaten.</li>
 	<li>Methode Course::existCoursesForCart() hinzugefügt, um zu prüfen ob überhaupt Veranstaltungen mit Anmeldeoption existieren.</li>
 	<li>locations Plugin: Weiterleitungsoption in den Einstellungen hinzugefügt, wenn nur ein Ort in einer Ortskategorie vorhanden ist.</li>
+	<li>Option für eine gewerbliche Anmeldung in den Einstellungen hinzugefügt.</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": automatische Weiterleitung bei einem Kurs in einer Kategorie hatte nicht funktioniert und Warnung beseitigt.</li>
 	<li>Modul 26-2 "Warenkorb": Bugfix: Löschen des zweiten Teilnehmers hatte komplette Veranstaltung aus Warenkorb gelöscht.</li>
 	<li>Modul 26-2 "Warenkorb": Weitere optionale Felder für Teilnehmerdaten hinzugefügt.</li>

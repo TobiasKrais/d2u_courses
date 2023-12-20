@@ -11,9 +11,9 @@ $download = rex_request('download', 'string');
 $course_id = (int) rex_request('course_id', 'int');
 $export_types = ['nds', 'participants'];
 $course = new Course($course_id);
-if ($course instanceof Course && '' !== $download) {
+if ('' !== $download) {
     $course_bookings = CustomerBooking::getAllForCourse($course_id);
-    if (count($course_bookings) > 0 && in_array($download, $export_types)) {
+    if (count($course_bookings) > 0 && in_array($download, $export_types, true)) {
         $data = [];
         if ('nds' === $download) {
             $data[] = ['NAME', 'VORNAME', 'GEBURTSDATUM', 'GESCHLECHT', 'AHV_NR', 'NATIONALITAET', 'MUTTERSPRACHE', 'PLZ', 'ORT', 'LAND'];
@@ -30,7 +30,7 @@ if ($course instanceof Course && '' !== $download) {
                     $course_booking->country];
             }
         }
-        else if ('participants' === $download) {
+        else {
             $data[] = ['Kurs ID', 'Nae Kurs', 'Name', 'Vorname', 'Straße ', 'Ort', 'Tel.', 'E-Mail', 'Alleine n. Hause', 'Gehaltsstufe'];
             foreach ($course_bookings as $course_booking) {
                 $data[] = [
@@ -52,7 +52,10 @@ if ($course instanceof Course && '' !== $download) {
             
         // Create file
         $fp = fopen('php://output', 'w');
-        
+        if (false === $fp) {
+            die('Cannot write export. Please contact your website administrator.');
+        }
+
         // set headers
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment; filename="' . $filename . '"');

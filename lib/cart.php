@@ -747,7 +747,7 @@ class Cart
                 $booking->kids_go_home_alone = 'yes' === $invoice_address['kids_go_home_alone'];
                 if ($course_id > 0) {
                     $course = new Course($course_id);
-                    if ($course instanceof Course && $course->price_salery_level) {
+                    if ($course->price_salery_level) {
                         $price_level_row_counter = 0;
                         foreach ($course->price_salery_level_details as $level_price) {
                             ++$price_level_row_counter;
@@ -759,7 +759,7 @@ class Cart
                     }
                 }
                 $booking->course_id = $course_id;
-                $booking->ipAddress = $_SERVER['REMOTE_ADDR'];
+                $booking->ipAddress = rex_request::server('REMOTE_ADDR', 'string');
                 if (false === $booking->save()) {
                     $return = false;
                 }
@@ -883,15 +883,15 @@ class Cart
         $body .= '<a href="'. $invoice_address['e-mail'] .'">'. $invoice_address['e-mail']  .'</a><br>';
         if (isset($invoice_address['payment']) && '' !== $invoice_address['payment']) {
             $body .= 'Gewünschte Zahlungsart: ';
-            if (isset($invoice_address['payment']) && 'L' === $invoice_address['payment']) {
+            if ('L' === $invoice_address['payment']) {
                 $body .= 'Lastschrift<br>';
                 $body .= 'Name der Bank: '. $invoice_address['bank']  .'<br>';
                 $body .= 'Kontoinhaber: '. $invoice_address['account_owner']  .'<br>';
                 $body .= 'BIC: '. $invoice_address['bic']  .'<br>';
                 $body .= 'IBAN: '. $invoice_address['iban'];
-            } elseif (isset($invoice_address['payment']) && 'Ü' === $invoice_address['payment']) {
+            } elseif ('Ü' === $invoice_address['payment']) {
                 $body .= 'Überweisung';
-            } elseif (isset($invoice_address['payment']) && 'B' === $invoice_address['payment']) {
+            } elseif ('B' === $invoice_address['payment']) {
                 $body .= 'Barzahlung';
             }
         }

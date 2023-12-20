@@ -786,7 +786,7 @@ if (isset($form_data['invoice_form'])) {
                         }
 
                         // Emergency phone number
-                        if ($ask_emergency_number) {
+                        if ($ask_emergency_number) { /** @phpstan-ignore-line */
                             echo '<div class="col-12 col-sm-6 col-md-4">'. \Sprog\Wildcard::get('d2u_courses_cart_emergency_number') .'</div>';
                             echo '<div class="col-10 col-sm-5 col-md-7 div_cart">';
                             echo '<input type="text" class="date" name="participant_'. $course_id .'['. $participant_id .'][emergency_number]" value="'. $participant_data['emergency_number'] .'" required>';
@@ -794,7 +794,7 @@ if (isset($form_data['invoice_form'])) {
                         }
 
                         // Pension insurance id
-                        if ($ask_penson_assurance_id) {
+                        if ($ask_penson_assurance_id) { /** @phpstan-ignore-line */
                             echo '<div class="col-12 col-sm-6 col-md-4">'. \Sprog\Wildcard::get('d2u_courses_cart_pension_insurance_id') .'</div>';
                             echo '<div class="col-10 col-sm-5 col-md-7 div_cart">';
                             echo '<input type="text" class="date" name="participant_'. $course_id .'['. $participant_id .'][pension_insurance_id]" value="'. $participant_data['pension_insurance_id'] .'" required>';
@@ -802,7 +802,7 @@ if (isset($form_data['invoice_form'])) {
                         }
 
                         // Nationality
-                        if ($ask_nationality) {
+                        if ($ask_nationality) { /** @phpstan-ignore-line */
                             echo '<div class="col-12 col-sm-6 col-md-4">'. \Sprog\Wildcard::get('d2u_courses_cart_nationality') .'</div>';
                             echo '<div class="col-10 col-sm-5 col-md-7 div_cart">';
                             echo '<select name="participant_'. $course_id .'['. $participant_id .'][nationality]" value="'. $participant_data['nationality'] .'">';
@@ -822,7 +822,7 @@ if (isset($form_data['invoice_form'])) {
                         }
 
                         // Native language
-                        if ($ask_nativeLanguage) {
+                        if ($ask_nativeLanguage) { /** @phpstan-ignore-line */
                             echo '<div class="col-12 col-sm-6 col-md-4">'. \Sprog\Wildcard::get('d2u_courses_cart_nativeLanguage') .'</div>';
                             echo '<div class="col-10 col-sm-5 col-md-7 div_cart">';
                             echo '<select name="participant_'. $course_id .'['. $participant_id .'][nativeLanguage]" value="'. $participant_data['nativeLanguage'] .'">';

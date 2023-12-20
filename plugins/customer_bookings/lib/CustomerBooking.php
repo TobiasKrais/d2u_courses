@@ -127,7 +127,7 @@ class CustomerBooking
                 $customer_booking->city = (string) $result->getValue('city');
                 $customer_booking->country = (string) $result->getValue('country');
                 $customer_booking->pension_insurance_id = (string) $result->getValue('pension_insurance_id');
-                $customer_booking->kids_go_home_alone = (string) $result->getValue('kids_go_home_alone');
+                $customer_booking->kids_go_home_alone = 1 === (int) $result->getValue('kids_go_home_alone');
                 $customer_booking->salery_level = (string) $result->getValue('salery_level');
                 $customer_booking->emergency_number = (string) $result->getValue('emergency_number');
                 $customer_booking->email = (string) $result->getValue('email');
@@ -144,30 +144,11 @@ class CustomerBooking
     }
 
     /**
-     * Get customer age
-     * @param string $datetime Datetime value in format "Y-m-d H:m:s"
-     * @return int|bool Age in full years or false if age could not be calculated
-     */
-    function getAge($datetime = 'now')
-    {
-        $birthDate = new DateTime($this->birthDate);
-        $targetDate = new DateTime($datetime);
-        
-        if ($birthDate instanceof DateTime && $targetDate instanceof DateTime) {
-            $difference = $birthDate->diff($targetDate);
-            if ($difference instanceof DateInterval) {
-                return $difference->y;
-            }
-        }
-        return false;        
-    }
-
-    /**
      * Get all customer bookings for course.
      * @param int $course_id Course ID
-     * @return array<CustomerBooking> Array with customer booking objects
+     * @return array<int,CustomerBooking> Array with customer booking objects
      */
-    public static function getAllForCourse($course_id = false)
+    public static function getAllForCourse($course_id)
     {
         $query = 'SELECT id FROM '. rex::getTablePrefix() .'d2u_courses_customer_bookings '
             .' WHERE course_id = '. $course_id;
@@ -176,7 +157,10 @@ class CustomerBooking
 
         $bookings = [];
         for ($i = 0; $i < $result->getRows(); ++$i) {
-            $bookings[] = self::get((int) $result->getValue('id'));
+            $booking = self::get((int) $result->getValue('id'));
+            if ($booking instanceof self) {
+                $bookings[] = $booking;
+            }
             $result->next();
         }
         return $bookings;
@@ -215,7 +199,7 @@ class CustomerBooking
         }
         else {
             $sql->setValue('ipAddress', $this->ipAddress);
-            $sql->setValue('bookingDate', $sql->datetime());
+            $sql->setValue('bookingDate', rex_sql::datetime());
             $sql->insert();
             $this->id = (int) $sql->getLastId();
         }

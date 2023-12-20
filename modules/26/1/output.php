@@ -746,7 +746,7 @@ if (rex::isBackend()) {
                             }
                             else {
                                 // Geolocation 1.x
-                                \Geolocation\tools::echoAssetTags();
+                                \Geolocation\tools::echoAssetTags(); /** @phpstan-ignore-line */
                             }
                         }
             ?>
@@ -838,7 +838,7 @@ if (rex::isBackend()) {
                     }
                     else {
                         // Geolocation 1.x
-                        echo \Geolocation\mapset::take($mapsetId)
+                        echo \Geolocation\mapset::take($mapsetId) /** @phpstan-ignore-line */
                         ->attributes('id', (string) $mapsetId)
                         ->attributes('style', 'height:400px;width:100%;')
                         ->dataset('center', [[$course->location->latitude, $course->location->longitude], $course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10])

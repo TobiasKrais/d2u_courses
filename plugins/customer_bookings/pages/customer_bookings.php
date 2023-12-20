@@ -124,7 +124,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                     d2u_addon_backend_helper::form_checkbox('d2u_courses_customer_bookings_kids_go_home_alone', 'form[kids_go_home_alone]', 'true', $customerBooking->kids_go_home_alone, false);
                     if ($customerBooking->course_id > 0) {
                         $course = new Course($customerBooking->course_id);
-                        if ($course instanceof Course && $course->price_salery_level) {
+                        if ($course->price_salery_level) {
                             $options_salery_level = [];
                             foreach ($course->price_salery_level_details as $description => $price) {
                                 $options_salery_level[$price] = $description .': '. $price;
