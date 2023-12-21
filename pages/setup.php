@@ -243,6 +243,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 <p>3.4.1-DEV:</p>
 <ul>
 	<li>Modul 26-2 "Warenkorb": Link bei Fehlermeldung entfernt.</li>
+	<li>Bugfix: In den Einstellungen wurden die ausgewählten MultiNewsletter Gruppen nach dem Speichern nicht korrekt angezeigt.</li>
 </ul>
 <p>3.4.0:</p>
 <ul>

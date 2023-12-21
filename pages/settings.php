@@ -480,7 +480,7 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
                             foreach (MultinewsletterGroup::getAll() as $group) {
                                 $options_groups[$group->id] = $group->name;
                             }
-                            d2u_addon_backend_helper::form_select('d2u_courses_settings_multinewsletter_group', 'settings[multinewsletter_group][]', $options_groups, rex_config::get('d2u_courses', 'multinewsletter_group'), 3, true, false); /** @phpstan-ignore-line */
+                            d2u_addon_backend_helper::form_select('d2u_courses_settings_multinewsletter_group', 'settings[multinewsletter_group][]', $options_groups, array_map('intval', rex_config::get('d2u_courses', 'multinewsletter_group')), 3, true, false); /** @phpstan-ignore-line */
                         ?>
 						<script>
 							function changeType() {
