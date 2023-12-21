@@ -35,7 +35,9 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $customerBooking->nativeLanguage = $form['nativeLanguage'];
     $customerBooking->pension_insurance_id = $form['pension_insurance_id'];
     $customerBooking->kids_go_home_alone = array_key_exists('kids_go_home_alone', $form);
-    $customerBooking->salery_level = $form['salery_level'];
+    if (array_key_exists('salery_level', $form)) {
+        $customerBooking->salery_level = $form['salery_level'];
+    }
     $customerBooking->course_id = $form['course_id'];
 
     // message output
@@ -82,7 +84,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                     }
                     d2u_addon_backend_helper::form_input('d2u_courses_customer_bookings_givenName', 'form[givenName]', $customerBooking->givenName, true, false);
                     d2u_addon_backend_helper::form_input('d2u_courses_customer_bookings_familyName', 'form[familyName]', $customerBooking->familyName, true, false);
-                    d2u_addon_backend_helper::form_input('d2u_courses_customer_bookings_birthDate', 'form[birthDate]', $customerBooking->birthDate, false, false);
+                    d2u_addon_backend_helper::form_input('d2u_courses_customer_bookings_birthDate', 'form[birthDate]', $customerBooking->birthDate, false, false, 'datetime-local');
                     $options_gender = [
                         '' => rex_i18n::msg('d2u_courses_customer_bookings_gender_none'),
                         'male' => rex_i18n::msg('d2u_courses_customer_bookings_gender_male'),
@@ -139,7 +141,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                     natsort($options_courses);
                     d2u_addon_backend_helper::form_select('d2u_courses_courses', 'form[course_id]', $options_courses, [$customerBooking->course_id], 1, false, false);
                     d2u_addon_backend_helper::form_input('d2u_courses_customer_bookings_ipAddress', 'form[ipAddress]', $customerBooking->ipAddress, false, true);
-                    d2u_addon_backend_helper::form_input('d2u_courses_customer_bookings_bookingDate', 'form[bookingDate]', $customerBooking->bookingDate, false, true);
+                    d2u_addon_backend_helper::form_input('d2u_courses_customer_bookings_bookingDate', 'form[bookingDate]', $customerBooking->bookingDate, false, true, 'datetime-local');
                 ?>
 			</div>
 			<footer class="panel-footer">
@@ -193,6 +195,10 @@ if ('' === $func) {
     $list->addColumn(rex_i18n::msg('module_functions'), '<i class="rex-icon rex-icon-edit"></i> ' . rex_i18n::msg('edit'));
     $list->setColumnLayout(rex_i18n::msg('module_functions'), ['<th class="rex-table-action">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);
     $list->setColumnParams(rex_i18n::msg('module_functions'), ['func' => 'edit', 'entry_id' => '###id###']);
+
+    $list->addColumn(rex_i18n::msg('d2u_helper_clone'), '<i class="rex-icon fa-copy"></i> ' . rex_i18n::msg('d2u_helper_clone'));
+    $list->setColumnLayout(rex_i18n::msg('d2u_helper_clone'), ['', '<td class="rex-table-action">###VALUE###</td>']);
+    $list->setColumnParams(rex_i18n::msg('d2u_helper_clone'), ['func' => 'clone', 'entry_id' => '###id###']);
 
     $list->addColumn(rex_i18n::msg('delete_module'), '<i class="rex-icon rex-icon-delete"></i> ' . rex_i18n::msg('delete'));
     $list->setColumnLayout(rex_i18n::msg('delete_module'), ['', '<td class="rex-table-action">###VALUE###</td>']);
