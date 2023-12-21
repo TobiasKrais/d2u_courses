@@ -58,8 +58,9 @@ if ('' !== $download) {
         }
 
         // set headers
-        header('Content-Type: text/csv');
+        header('Content-Type: text/csv; charset=UTF-8');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
+        echo "\xEF\xBB\xBF"; // UTF-8 BOM
         
         // write content to file
         foreach ($data as $row) {

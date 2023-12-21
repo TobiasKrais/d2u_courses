@@ -245,6 +245,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 	<li>Modul 26-2 "Warenkorb": Link bei Fehlermeldung entfernt.</li>
 	<li>Bugfix: In den Einstellungen wurden die ausgewählten MultiNewsletter Gruppen nach dem Speichern nicht korrekt angezeigt.</li>
 	<li>Bugfix Buchungsdaten Plugin: Beim manuellen hinzufügen von Buchungen konnte nicht gespeichert werden wenn der Kurs kein gehaltsabhängiges Preismodell hatte.</li>
+	<li>Bugfix Buchungsdaten Plugin: Export erzwingt nun UTF-8 als Format.</li>
 </ul>
 <p>3.4.0:</p>
 <ul>
