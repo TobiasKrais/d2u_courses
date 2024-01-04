@@ -243,6 +243,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 <p>3.4.1-DEV:</p>
 <ul>
 	<li>Modul 26-2 "Warenkorb": Link bei Fehlermeldung entfernt.</li>
+	<li>Modul 26-2 "Warenkorb": Mindestalter in Anmeldeformular aufgehoben.</li>
 	<li>Bugfix: In den Einstellungen wurden die ausgewählten MultiNewsletter Gruppen nach dem Speichern nicht korrekt angezeigt.</li>
 	<li>Buchungsdaten Plugin: Buchungen können nun geklont werden.</li>
 	<li>Bugfix Buchungsdaten Plugin: Beim manuellen hinzufügen von Buchungen konnte nicht gespeichert werden wenn der Kurs kein gehaltsabhängiges Preismodell hatte.</li>
