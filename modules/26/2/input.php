@@ -35,7 +35,7 @@
 		<?php
             echo '<select name="REX_INPUT_VALUE[4][]" class="form-control selectpicker" multiple="multiple">';
             foreach (\D2U_Courses\Category::getAllParents() as $root_category) {
-                echo '<option value="'. $root_category->category_id .'" '. (in_array($root_category->category_id, is_array(rex_var::toArray('REX_VALUE[4]')) ? rex_var::toArray('REX_VALUE[4]') : [], true) ? 'selected="selected" ' : '') .'>'. $root_category->name .'</option>';
+                echo '<option value="'. $root_category->category_id .'" '. (in_array($root_category->category_id, array_map('intval', is_array(rex_var::toArray('REX_VALUE[4]')) ? rex_var::toArray('REX_VALUE[4]') : []), true) ? 'selected="selected" ' : '') .'>'. $root_category->name .'</option>';
             }
             echo '</select>';
         ?>

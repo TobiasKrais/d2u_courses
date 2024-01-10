@@ -94,9 +94,9 @@ $ask_penson_assurance_id = 'REX_VALUE[7]' === 'true' ? true : false; /** @phpsta
 $ask_nationality = 'REX_VALUE[8]' === 'true' ? true : false; /** @phpstan-ignore-line */
 $ask_nativeLanguage = 'REX_VALUE[9]' === 'true' ? true : false; /** @phpstan-ignore-line */
 
-$ask_age_root_category_id = [];
+$ask_age_root_category_ids = [];
 if ('REX_VALUE[3]' === 'true' && is_array(rex_var::toArray('REX_VALUE[4]'))) { /** @phpstan-ignore-line */
-    $ask_age_root_category_id = array_map('intval', rex_var::toArray('REX_VALUE[4]'));
+    $ask_age_root_category_ids = array_map('intval', rex_var::toArray('REX_VALUE[4]'));
 }
 
 // Invoice form
@@ -540,7 +540,7 @@ if (isset($form_data['invoice_form'])) {
                     echo '<li>'. (array_key_exists('firstname', $participant) && '' !== $participant['firstname'] ? $participant['firstname'] .' ' : '')
                         . (array_key_exists('lastname', $participant) && '' !== $participant['lastname'] ? $participant['lastname'] .' ' : '');
 
-                    if ($ask_gender || ($course->category instanceof Category && in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_id, true))) { /** @phpstan-ignore-line */
+                    if ($ask_gender || ($course->category instanceof Category && in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_ids, true))) { /** @phpstan-ignore-line */
                         echo ' (';
                         $age_seperator = false;
                         if (1 === $ask_age && array_key_exists('birthday', $participant) && '' !== $participant['birthday']) { /** @phpstan-ignore-line */
@@ -775,7 +775,7 @@ if (isset($form_data['invoice_form'])) {
                         echo '<div class="col-10 col-sm-5 col-md-7 div_cart"><input type="text" class="text_cart" name="participant_'. $course_id .'['. $participant_id .'][lastname]" value="'. (array_key_exists('lastname', $participant_data) ? $participant_data['lastname'] : '') .'" required maxlength="20"></div>';
 
                         // Age / Birthday
-                        if ($ask_age > 0 || (0 === $ask_age && $course->category instanceof Category && in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_id, true))) { /** @phpstan-ignore-line */
+                        if ($ask_age > 0 && (count($ask_age_root_category_ids) === 0 || ($course->category instanceof Category && in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_ids, true)))) { /** @phpstan-ignore-line */
                             echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open . (1 === $ask_age ? 'd2u_courses_birthdate' : 'd2u_courses_age'). $tag_close .'</div>'; /** @phpstan-ignore-line */
                             echo '<div class="col-10 col-sm-5 col-md-7 div_cart">';
                             if (1 === $ask_age && array_key_exists('birthday', $participant_data)) { /** @phpstan-ignore-line */
