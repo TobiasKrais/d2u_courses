@@ -249,6 +249,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 	<li>Buchungsdaten Plugin: Buchungen können nun geklont werden.</li>
 	<li>Bugfix Buchungsdaten Plugin: Beim manuellen hinzufügen von Buchungen konnte nicht gespeichert werden wenn der Kurs kein gehaltsabhängiges Preismodell hatte.</li>
 	<li>Bugfix Buchungsdaten Plugin: Export erzwingt nun UTF-8 als Format.</li>
+	<li>Bugfix Buchungsdaten Plugin: Warnung im Warenkorb entfernt.</li>
 </ul>
 <p>3.4.0:</p>
 <ul>

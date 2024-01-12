@@ -744,7 +744,7 @@ class Cart
                 $booking->nativeLanguage = $participant_data['nativeLanguage'];
                 $booking->emergency_number = array_key_exists('emergency_number', $participant_data) && '' !== $participant_data['emergency_number'] ? $participant_data['emergency_number'] : $invoice_address['phone'];
                 $booking->email = $invoice_address['e-mail'];
-                $booking->kids_go_home_alone = 'yes' === $invoice_address['kids_go_home_alone'];
+                $booking->kids_go_home_alone = array_key_exists('kids_go_home_alone', $invoice_address) && 'yes' === $invoice_address['kids_go_home_alone'];
                 if ($course_id > 0) {
                     $course = new Course($course_id);
                     if ($course->price_salery_level) {
