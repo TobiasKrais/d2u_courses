@@ -148,8 +148,8 @@ if (rex::isBackend()) {
         echo '<div class="d-none d-sm-block col-sm-6 col-md-8 spacer d-print-none">&nbsp;</div>';
         echo '<div class="col-12 col-sm-6 col-md-4 spacer d-print-none">';
         echo '<div class="search_div">';
-        echo '<form action="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_courses')) .'" method="post">'
-            . '<input class="search_box" name="course_search" value="'. filter_input(INPUT_POST, 'course_search') .'" type="text">'
+        echo '<form action="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_courses')) .'" method="post">';
+        echo '<input class="search_box" name="course_search" value="'. filter_input(INPUT_POST, 'course_search') .'" type="text">'
             . '<button class="search_button"><img src="'. rex_url::addonAssets('d2u_courses', 'lens.png').'"></button>'
             . '</form>';
         echo '</div>';
@@ -468,13 +468,18 @@ if (rex::isBackend()) {
             $box_details .= '<div class="course_box spacer_box"><b>'. $tag_open .'d2u_courses_fee'. $tag_close .':</b> ';
             if ($course->price_salery_level) {
                 $box_details .= $tag_open. 'd2u_courses_price_salery_level_details'. $tag_close .'<br>';
-                $box_details .= '<select class="participant" name="participant_price_salery_level_row_add"'. ($course->category instanceof Category ? ' style="border-color: '. $course->category->color .'"' : '') .'>';
+                $box_details .= '<select class="participant" name="participant_price_salery_level_row_add_selector"'. ($course->category instanceof Category ? ' style="border-color: '. $course->category->color .'"' : '') .'>';
                 $counter_row_price_salery_level_details = 0;
                 foreach ($course->price_salery_level_details as $key => $value) {
                     ++$counter_row_price_salery_level_details;
                     $box_details .= '<option value="'. $counter_row_price_salery_level_details .'">'. $key .': '. $value .'</option>';
                 }
-                $box_details .= '</select>';
+                $box_details .= '</select>'. PHP_EOL;
+                $box_details .= '<script type="text/javascript">'. PHP_EOL
+                    .'document.getElementsByName("participant_price_salery_level_row_add_selector")[0].addEventListener("change", function() {'. PHP_EOL
+                    .'    document.getElementsByName("participant_price_salery_level_row_add")[0].value = this.value;'. PHP_EOL
+                    .'});'. PHP_EOL
+                    .'</script>';
             } else {
                 $box_details .= number_format($course->price, 2, ',', '.') .' €';
                 if ($course->price_discount > 0 && $course->price_discount < $course->price) {
@@ -583,6 +588,9 @@ if (rex::isBackend()) {
                 $box_details .= '<a href="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'">'. $tag_open .'d2u_courses_cart_course_already_in'. $tag_close .' - '. $tag_open .'d2u_courses_cart_go_to'. $tag_close .'</a>';
             } else {
                 $box_details .= '<form action="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'" method="post">';
+                if ($course->price_salery_level) {
+                    $box_details .= '<input type="hidden" value="" name="participant_price_salery_level_row_add" />';
+                }
                 $box_details .= '<input type="hidden" name="course_id" value="'. $course->course_id .'">';
                 $box_details .= '<input type="submit" class="add_cart" name="submit" value="'. $tag_open .'d2u_courses_cart_add'. $tag_close .'"'. ($course->category instanceof Category ? ' style="background-color: '. $course->category->color .'"' : '') .'>';
             }

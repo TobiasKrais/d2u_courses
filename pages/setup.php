@@ -242,6 +242,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 <h2>Changelog</h2>
 <p>3.4.1-DEV:</p>
 <ul>
+	<li>Modul 26-1 "Ausgabe Veranstaltungen": Auswahl der Preisstufe wird ins Anmeldeformular übernommen.</li>
 	<li>Modul 26-2 "Warenkorb": Link bei Fehlermeldung entfernt.</li>
 	<li>Modul 26-2 "Warenkorb": Mindestalter in Anmeldeformular aufgehoben.</li>
 	<li>Modul 26-2 "Warenkorb": Altersabfrage mit Begrenzung auf aussgewählte Kategorien funktionierte nicht korrekt.</li>
