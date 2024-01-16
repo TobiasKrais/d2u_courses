@@ -3,6 +3,7 @@
 namespace D2U_Courses;
 
 use rex_config;
+use rex_i18n;
 use rex_plugin;
 use rex_view;
 
@@ -35,17 +36,31 @@ class KuferSync
 
     /**
      * Imports data from Kufer SQL exported XML file.
+     * If an error occurs, a message is printed using echo command.
      */
     public static function sync(): void
     {
         // Read XML file
         $context = stream_context_create(['http' => ['header' => 'Accept: application/xml']]);
         $xmlstring = file_get_contents((string) rex_config::get('d2u_courses', 'kufer_sync_xml_url', ''), false, $context);
-        if (false === $xmlstring || '' === $xmlstring) {
+        if (false === $xmlstring) {
+            echo rex_view::error(rex_i18n::msg('d2u_courses_import_error_corrupt'));
             return;
         }
+        else if ('' === $xmlstring) {
+            echo rex_view::error(rex_i18n::msg('d2u_courses_import_error_empty'));
+            return;
+        }
+        libxml_use_internal_errors(true);
         $kufer_courses = simplexml_load_string($xmlstring, null, LIBXML_NOCDATA);
         if (false === $kufer_courses) {
+            echo rex_view::error(rex_i18n::msg('d2u_courses_import_error_corrupt'));
+            echo rex_i18n::msg('d2u_courses_import_error_corrupt_details') .'<br>';
+            foreach(libxml_get_errors() as $error) {
+                echo rex_i18n::msg('d2u_courses_import_error_line') .' '. $error->line
+                    .' '. rex_i18n::msg('d2u_courses_import_error_message') .' '. mb_convert_encoding($error->message, 'ISO-8859-1', 'UTF-8')
+                    .'<br>';
+            }
             return;
         }
 

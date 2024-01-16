@@ -251,6 +251,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 	<li>Bugfix Buchungsdaten Plugin: Beim manuellen hinzufügen von Buchungen konnte nicht gespeichert werden wenn der Kurs kein gehaltsabhängiges Preismodell hatte.</li>
 	<li>Bugfix Buchungsdaten Plugin: Export erzwingt nun UTF-8 als Format.</li>
 	<li>Bugfix Buchungsdaten Plugin: Warnung im Warenkorb entfernt.</li>
+	<li>Bugfix Kufer Import Plugin: Fehlerausgabe beim Import verbessert.</li>
 </ul>
 <p>3.4.0:</p>
 <ul>

@@ -3,6 +3,12 @@ d2u_courses_kufer_sync = Kufer Sync
 d2u_courses_kufer_categories = Kufer Bezeichnungsstrukturen<br>Je eine pro Zeile<br>Kategorietrenner: " / "
 d2u_courses_kufer_categories_target_group_name = Name in KuferSQL
 
+d2u_courses_import_error_corrupt = Die XML Datei ist fehlerhaft.
+d2u_courses_import_error_corrupt_details = Folgende Fehler traten auf:
+d2u_courses_import_error_empty = Die XML Datei ist leer.
+d2u_courses_import_error_line = Zeile:
+d2u_courses_import_error_message = Fehlermeldung:
+
 d2u_courses_import_settings_autoimport = Täglichen Autoimport aktivieren.
 d2u_courses_import_settings_default_category = Standard Kategorie
 d2u_courses_import_settings_default_location = Standard Örtlichkeit
