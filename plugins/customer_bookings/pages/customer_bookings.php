@@ -35,7 +35,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $customerBooking->nativeLanguage = $form['nativeLanguage'];
     $customerBooking->pension_insurance_id = $form['pension_insurance_id'];
     $customerBooking->kids_go_home_alone = array_key_exists('kids_go_home_alone', $form);
-    if (array_key_exists('salery_level', $form)) {
+    if (array_key_exists('salery_level', $form) && null !== $form['salery_level']) {
         $customerBooking->salery_level = $form['salery_level'];
     }
     $customerBooking->course_id = $form['course_id'];
