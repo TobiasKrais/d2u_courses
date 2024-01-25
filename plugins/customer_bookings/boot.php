@@ -48,7 +48,7 @@ if ('' !== $download) {
                     $course_booking->salery_level,
                     $course_booking->paid ? 'Ja' : 'Nein',
                     $course_booking->remarks,
-                    $course_booking ? 'Ja' : 'Nein'
+                    $course_booking->waitlist ? 'Ja' : 'Nein'
                 ];
             }
         }

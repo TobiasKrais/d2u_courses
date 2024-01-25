@@ -240,7 +240,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 </fieldset>
 
 <h2>Changelog</h2>
-<p>3.4.1-DEV:</p>
+<p>3.4.1:</p>
 <ul>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": Auswahl der Preisstufe wird ins Anmeldeformular übernommen.</li>
 	<li>Modul 26-2 "Warenkorb": Link bei Fehlermeldung entfernt.</li>
