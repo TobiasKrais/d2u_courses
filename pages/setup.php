@@ -248,7 +248,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 	<li>Modul 26-2 "Warenkorb": Altersabfrage mit Begrenzung auf aussgewählte Kategorien funktionierte nicht korrekt.</li>
 	<li>Bugfix: In den Einstellungen wurden die ausgewählten MultiNewsletter Gruppen nach dem Speichern nicht korrekt angezeigt.</li>
 	<li>Buchungsdaten Plugin: Buchungen können nun geklont werden.</li>
-	<li>Buchungsdaten Plugin: Felder bezahlt und interne Bemerkungen hinzugefügt.</li>
+	<li>Buchungsdaten Plugin: Felder bezahlt, Warteliste und interne Bemerkungen hinzugefügt.</li>
 	<li>Bugfix Buchungsdaten Plugin: Beim manuellen hinzufügen von Buchungen konnte nicht gespeichert werden wenn der Kurs kein gehaltsabhängiges Preismodell hatte.</li>
 	<li>Bugfix Buchungsdaten Plugin: Export erzwingt nun UTF-8 als Format.</li>
 	<li>Bugfix Buchungsdaten Plugin: Warnung im Warenkorb entfernt.</li>
