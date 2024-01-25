@@ -63,11 +63,20 @@ class CustomerBooking
     /** @var bool kids may go home alone */
     public bool $kids_go_home_alone = true;
 
+    /** @var bool True if customer is on waitlist */
+    public bool $waitlist = false;
+
     /** @var string Salery level */
     public string $salery_level = '';
 
     /** @var int Booked course id */
     public int $course_id = 0;
+
+    /** @var bool True if customer has paid */
+    public bool $paid = false;
+
+    /** @var string Internal remarks */
+    public string $remarks = '';
 
     /** @var string IP address from which customer did the booking */
     public string $ipAddress = '';
@@ -134,8 +143,11 @@ class CustomerBooking
                 $customer_booking->nationality = (string) $result->getValue('nationality');
                 $customer_booking->nativeLanguage = (string) $result->getValue('nativeLanguage');
                 $customer_booking->course_id = (int) $result->getValue('course_id');
+                $customer_booking->paid = 1 === (int) $result->getValue('paid');
+                $customer_booking->remarks = (string) $result->getValue('remarks');
                 $customer_booking->ipAddress = (string) $result->getValue('ipAddress');
                 $customer_booking->bookingDate = (string) $result->getValue('bookingDate');
+                $customer_booking->waitlist = 1 === (int) $result->getValue('waitlist');
                 return $customer_booking;
             }
         }
@@ -167,6 +179,21 @@ class CustomerBooking
     }
 
     /**
+     * Get all customer bookings for course.
+     * @param int $course_id Course ID
+     * @return int Number bookings
+     */
+    public static function getNumberForCourse($course_id)
+    {
+        $query = 'SELECT COUNT(id) AS `number` FROM '. rex::getTablePrefix() .'d2u_courses_customer_bookings '
+            .' WHERE course_id = '. $course_id;
+        $result = rex_sql::factory();
+        $result->setQuery($query);
+
+        return (int) $result->getValue('number');
+    }
+
+    /**
      * Save object.
      * @return bool true if successful
      */
@@ -192,6 +219,9 @@ class CustomerBooking
         $sql->setValue('kids_go_home_alone', (int) $this->kids_go_home_alone);
         $sql->setValue('salery_level', $this->salery_level);
         $sql->setValue('course_id', $this->course_id);
+        $sql->setValue('paid', (int) $this->paid);
+        $sql->setValue('remarks', $this->remarks);
+        $sql->setValue('waitlist', (int) $this->waitlist);
 
         if ($this->id > 0) {
             $sql->setWhere(['id' => $this->id]);

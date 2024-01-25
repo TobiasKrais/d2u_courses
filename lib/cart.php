@@ -749,10 +749,10 @@ class Cart
                     $course = new Course($course_id);
                     if ($course->price_salery_level) {
                         $price_level_row_counter = 0;
-                        foreach ($course->price_salery_level_details as $level_price) {
+                        foreach ($course->price_salery_level_details as $level_description => $level_price) {
                             ++$price_level_row_counter;
                             if ($price_level_row_counter === (int) $participant_data['price_salery_level_row_number']) {
-                                $booking->salery_level = $level_price;
+                                $booking->salery_level = $level_description;
                                 break;
                             }
                         }
@@ -760,6 +760,9 @@ class Cart
                 }
                 $booking->course_id = $course_id;
                 $booking->ipAddress = rex_request::server('REMOTE_ADDR', 'string');
+                if('booked' === $course->registration_possible || ($course->participants_max > 0 && CustomerBooking::getNumberForCourse($course->course_id) > $course->participants_max)) {
+                    $booking->waitlist = true;
+                }
                 if (false === $booking->save()) {
                     $return = false;
                 }
@@ -858,11 +861,15 @@ class Cart
                             $body .= 'Preis nach Preismodell: '. $participant_data['price']  .' (monatliches Familieneinkommen: '. $price_level_description .')<br>';
                             $price_full = $price_full + ((float) str_replace(',', '.', str_replace('.', '', $participant_data['price'])));
                         }
-                        $body .= '<br>';
 
+                        if('booked' === $course->registration_possible || ($course->participants_max > 0 && CustomerBooking::getNumberForCourse($course->course_id) > $course->participants_max)) {
+                            $body .= 'Mit dieser Buchung sind Sie auf der Warteliste eingetragen.<br>';
+                        }
+                        $body .= '<br>';
                     }
                 }
-            } elseif (!is_array($participant['participant_number'])) {
+            }
+            elseif (!is_array($participant['participant_number'])) {
                 $body .= 'Anzahl Anmeldungen: '. $participant['participant_number'] .'<br>';
             }
         }

@@ -39,6 +39,9 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
         $customerBooking->salery_level = $form['salery_level'];
     }
     $customerBooking->course_id = $form['course_id'];
+    $customerBooking->paid = array_key_exists('paid', $form);
+    $customerBooking->waitlist = array_key_exists('waitlist', $form);
+    $customerBooking->remarks = $form['remarks'];
 
     // message output
     $message = 'form_save_error';
@@ -128,18 +131,22 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                         $course = new Course($customerBooking->course_id);
                         if ($course->price_salery_level) {
                             $options_salery_level = [];
+                            $options_salery_level[''] = rex_i18n::msg('d2u_courses_customer_bookings_salery_level_none');
                             foreach ($course->price_salery_level_details as $description => $price) {
-                                $options_salery_level[$price] = $description .': '. $price;
+                                $options_salery_level[$description] = $description .': '. $price;
                             }
                             d2u_addon_backend_helper::form_select('d2u_courses_price_salery_level_detail', 'form[salery_level]', $options_salery_level, [$customerBooking->salery_level], 1, false, false);
                         }
                     }
+                    d2u_addon_backend_helper::form_checkbox('d2u_courses_customer_bookings_paid', 'form[paid]', 'true', $customerBooking->paid, false);
+                    d2u_addon_backend_helper::form_checkbox('d2u_courses_customer_bookings_waitlist_text', 'form[waitlist]', 'true', $customerBooking->waitlist, false);
                     $options_courses = [];
                     foreach (Course::getAll() as $course) {
                         $options_courses[$course->course_id] = $course->name;
                     }
                     natsort($options_courses);
                     d2u_addon_backend_helper::form_select('d2u_courses_courses', 'form[course_id]', $options_courses, [$customerBooking->course_id], 1, false, false);
+                    d2u_addon_backend_helper::form_textarea('d2u_courses_customer_bookings_internal_remarks', 'form[remarks]', $customerBooking->remarks, 5, false, false, false);
                     d2u_addon_backend_helper::form_input('d2u_courses_customer_bookings_ipAddress', 'form[ipAddress]', $customerBooking->ipAddress, false, true);
                     d2u_addon_backend_helper::form_input('d2u_courses_customer_bookings_bookingDate', 'form[bookingDate]', $customerBooking->bookingDate, false, true, 'datetime-local');
                 ?>
@@ -150,8 +157,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
 						<button class="btn btn-save rex-form-aligned" type="submit" name="btn_save" value="1"><?= rex_i18n::msg('form_save') ?></button>
 						<button class="btn btn-apply" type="submit" name="btn_apply" value="1"><?= rex_i18n::msg('form_apply') ?></button>
 						<button class="btn btn-abort" type="submit" name="btn_abort" formnovalidate="formnovalidate" value="1"><?= rex_i18n::msg('form_abort') ?></button>
-						<?= '<button class="btn btn-delete" type="submit" name="btn_delete" formnovalidate="formnovalidate" data-confirm="'. rex_i18n::msg('form_delete') .'?" value="1">'. rex_i18n::msg('form_delete') .'</button>';
-                        ?>
+						<?= '<button class="btn btn-delete" type="submit" name="btn_delete" formnovalidate="formnovalidate" data-confirm="'. rex_i18n::msg('form_delete') .'?" value="1">'. rex_i18n::msg('form_delete') .'</button>'; ?>
 					</div>
 				</div>
 			</footer>
@@ -165,7 +171,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
 }
 
 if ('' === $func) {
-    $query = 'SELECT customerBooking.id, customerBooking.givenName, customerBooking.familyName, courses.name '
+    $query = 'SELECT customerBooking.id, customerBooking.givenName, customerBooking.familyName, courses.name, waitlist '
         . 'FROM '. rex::getTablePrefix() .'d2u_courses_customer_bookings AS customerBooking '
         . 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses '
             . 'ON customerBooking.course_id = courses.course_id ';
@@ -191,6 +197,13 @@ if ('' === $func) {
     $list->setColumnParams('givenName', ['func' => 'edit', 'entry_id' => '###id###']);
 
     $list->setColumnLabel('name', rex_i18n::msg('d2u_courses_course'));
+
+    $list->setColumnLabel('waitlist', rex_i18n::msg('d2u_courses_customer_bookings_waitlist'));
+    $list->setColumnFormat('waitlist', 'custom', static function ($params) {
+        $list_params = $params['list'];
+        $waitlist = $list_params->getValue('waitlist');
+        return 1 === $waitlist ? rex_i18n::msg('d2u_courses_customer_bookings_yes') : rex_i18n::msg('d2u_courses_customer_bookings_no');
+    });
 
     $list->addColumn(rex_i18n::msg('module_functions'), '<i class="rex-icon rex-icon-edit"></i> ' . rex_i18n::msg('edit'));
     $list->setColumnLayout(rex_i18n::msg('module_functions'), ['<th class="rex-table-action">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);

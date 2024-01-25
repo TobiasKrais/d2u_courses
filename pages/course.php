@@ -5,6 +5,7 @@ use D2U_Courses\CustomerBooking;
 use D2U_Courses\Location;
 use D2U_Courses\LocationCategory;
 use D2U_Courses\ScheduleCategory;
+use PhpParser\Node\Expr\Cast\String_;
 
 $func = rex_request('func', 'string');
 $entry_id = (int) rex_request('entry_id', 'int');
@@ -35,14 +36,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $course->picture = $input_media[1];
     $course->price = (float) $form['price'];
     $course->price_discount = (float) $form['price_discount'];
-    $course->price_salery_level = array_key_exists('price_salery_level', $form);
-    $course->price_salery_level_details = [];
-    foreach (explode(PHP_EOL, $form['price_salery_level_details']) as $price_salery_level_details_line) {
-        $line = explode(':', $price_salery_level_details_line);
-        if (2 === count($line)) {
-            $course->price_salery_level_details[trim($line[0])] = trim($line[1]);
-        }
-    }
+    $course->price_salery_level = array_key_exists('price_salery_level', $form) ? (String) $form['price_salery_level'] : '';
     $course->date_start = $form['date_start'];
     $course->date_end = $form['date_end'];
     $course->time = $form['time'];

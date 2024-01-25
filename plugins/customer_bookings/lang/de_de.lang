@@ -20,6 +20,7 @@ d2u_courses_customer_bookings_gender_none = Keine Angabe
 d2u_courses_customer_bookings_givenName = Vorname
 d2u_courses_customer_bookings_familyName = Nachname
 d2u_courses_customer_bookings_ipAddress = IP Adresse
+d2u_courses_customer_bookings_internal_remarks = Interne Bemerkungen
 d2u_courses_customer_bookings_kids_go_home_alone = Darf alleine nach Hause gehen
 d2u_courses_customer_bookings_nationality = Nationalität
 d2u_courses_customer_bookings_nationality_others = Andere Nationalität
@@ -33,12 +34,18 @@ d2u_courses_customer_bookings_nativeLanguage_others = Andere Sprache
 d2u_courses_customer_bookings_nativeLanguage_DE = Deutsch
 d2u_courses_customer_bookings_nativeLanguage_FR = Französisch
 d2u_courses_customer_bookings_nativeLanguage_IT = Italienisch
+d2u_courses_customer_bookings_no = Nein
 d2u_courses_customer_bookings_pension_insurance_id = Rentennummer
+d2u_courses_customer_bookings_paid = Bezahlt
+d2u_courses_customer_bookings_salery_level_none = Keine Angabe
 d2u_courses_customer_bookings_street = Straße
+d2u_courses_customer_bookings_waitlist = Warteliste
+d2u_courses_customer_bookings_waitlist_text = Teilnehmer ist auf der Warteliste
+d2u_courses_customer_bookings_yes = Ja
 d2u_courses_customer_bookings_zipCode = Postleitzahl
 
 d2u_courses_customer_bookings_export = Export
-d2u_courses_customer_bookings_export_nds = NDS Eport
+d2u_courses_customer_bookings_export_nds = Personenexport Jugendausbildung des Bundesamt für Sport (Schweiz)
 d2u_courses_customer_bookings_export_participants = Teilnehmerliste
 
 d2u_courses_customer_bookings_no_bookings_found = Keine Buchungsdaten gefunden

@@ -15,10 +15,13 @@
     ->ensureColumn(new \rex_sql_column('emergency_number', 'VARCHAR(50)', true))
     ->ensureColumn(new \rex_sql_column('email', 'VARCHAR(100)', true))
     ->ensureColumn(new \rex_sql_column('kids_go_home_alone', 'TINYINT(1)', true))
+    ->ensureColumn(new \rex_sql_column('waitlist', 'INT(1)', true))
     ->ensureColumn(new \rex_sql_column('salery_level', 'VARCHAR(100)', true))
+    ->ensureColumn(new \rex_sql_column('paid', 'INT(1)', true))
     ->ensureColumn(new \rex_sql_column('nationality', 'VARCHAR(50)', true))
     ->ensureColumn(new \rex_sql_column('nativeLanguage', 'VARCHAR(50)', true))
     ->ensureColumn(new \rex_sql_column('course_id', 'INT(11)', true))
+    ->ensureColumn(new \rex_sql_column('remarks', 'TEXT', true))
     ->ensureColumn(new \rex_sql_column('ipAddress', 'VARCHAR(39)', true))
     ->ensureColumn(new \rex_sql_column('bookingDate', 'DATETIME'))
     ->ensure();

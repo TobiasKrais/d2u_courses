@@ -32,10 +32,11 @@ if ('' !== $download) {
             }
         }
         else {
-            $data[] = ['Kurs ID', 'Name Kurs', 'Name', 'Vorname', 'Straße ', 'Ort', 'Tel.', 'E-Mail', 'Alleine n. Hause', 'Gehaltsstufe'];
+            $data[] = ['Name Kurs', 'Name', 'Vorname', 'Straße ', 'Ort', 'Tel.', 'E-Mail', 'Darf alleine nach Hause', 'Gehaltsstufe', 'Bezahlt', ' Interne Bemerkungen', 'Warteliste'];
+            $participant_counter = 0;
             foreach ($course_bookings as $course_booking) {
+                $participant_counter++;
                 $data[] = [
-                    $course_booking->course_id,
                     $course->name,
                     $course_booking->familyName,
                     $course_booking->givenName,
@@ -43,8 +44,11 @@ if ('' !== $download) {
                     $course_booking->zipCode .' '. $course_booking->city,
                     $course_booking->emergency_number,
                     $course_booking->email,
-                    $course_booking->kids_go_home_alone ? 'Yes' : 'No',
-                    $course_booking->salery_level
+                    $course_booking->kids_go_home_alone ? 'Ja' : 'Nein',
+                    $course_booking->salery_level,
+                    $course_booking->paid ? 'Ja' : 'Nein',
+                    $course_booking->remarks,
+                    $course_booking ? 'Ja' : 'Nein'
                 ];
             }
         }
