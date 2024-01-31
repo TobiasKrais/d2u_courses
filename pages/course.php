@@ -381,6 +381,7 @@ if ('' === $func) {
         });
     }
     else {
+        $list->setColumnParams(rex_i18n::msg('delete'), ['func' => 'delete', 'entry_id' => '###course_id###']);
         $list->addLinkAttribute(rex_i18n::msg('delete'), 'data-confirm', rex_i18n::msg('d2u_helper_confirm_delete'));
     }
 

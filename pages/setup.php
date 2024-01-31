@@ -240,6 +240,11 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 </fieldset>
 
 <h2>Changelog</h2>
+<p>3.4.2-DEV:</p>
+<ul>
+	<li>Bugfix: Veranstaltung löschen ohne installiertes Buchungsdaten Plugin nicht mehr möglich.</li>
+
+</ul>
 <p>3.4.1:</p>
 <ul>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": Auswahl der Preisstufe wird ins Anmeldeformular übernommen.</li>
