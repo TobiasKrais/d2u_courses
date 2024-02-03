@@ -243,7 +243,8 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 <p>3.4.2-DEV:</p>
 <ul>
 	<li>Bugfix: Veranstaltung löschen ohne installiertes Buchungsdaten Plugin nicht mehr möglich.</li>
-
+	<li>Bugfix Buchungsdaten Plugin: Export für Schweizer Bundesamt für Sport BASPO korrigiert.</li>
+	<li>Bugfix Buchungsdaten Plugin: Geschlecht wurde bei Änderungen nicht korrekt gespeichert.</li>
 </ul>
 <p>3.4.1:</p>
 <ul>

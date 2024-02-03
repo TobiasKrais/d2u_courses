@@ -90,9 +90,9 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                     d2u_addon_backend_helper::form_input('d2u_courses_customer_bookings_birthDate', 'form[birthDate]', $customerBooking->birthDate, false, false, 'datetime-local');
                     $options_gender = [
                         '' => rex_i18n::msg('d2u_courses_customer_bookings_gender_none'),
-                        'male' => rex_i18n::msg('d2u_courses_customer_bookings_gender_male'),
-                        'female' => rex_i18n::msg('d2u_courses_customer_bookings_gender_female'),
-                        'divers' => rex_i18n::msg('d2u_courses_customer_bookings_gender_divers')
+                        'M' => rex_i18n::msg('d2u_courses_customer_bookings_gender_male'),
+                        'W' => rex_i18n::msg('d2u_courses_customer_bookings_gender_female'),
+                        'D' => rex_i18n::msg('d2u_courses_customer_bookings_gender_divers')
                     ];
                     d2u_addon_backend_helper::form_select('d2u_courses_customer_bookings_gender', 'form[gender]', $options_gender, [$customerBooking->gender], 1, false, false);
                     d2u_addon_backend_helper::form_input('d2u_courses_customer_bookings_street', 'form[street]', $customerBooking->street, false, false);
