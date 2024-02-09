@@ -218,7 +218,7 @@ if (class_exists('D2UModuleManager')) {
         15);
     $modules[] = new D2UModule('26-2',
         'D2U Veranstaltungen - Warenkorb',
-        10);
+        11);
     $modules[] = new D2UModule('26-3',
         'D2U Veranstaltungen - Ausgabe Veranstaltungen einer Kategorie in Boxen',
         4);

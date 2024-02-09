@@ -131,6 +131,16 @@ if (isset($form_data['invoice_form'])) {
 //						$kufer_others[$course_id][] = $participant;
 //					}
                 }
+                
+                // update participant and waitlist numbers
+                if($course->participants_number < $course->participants_max) {
+                    $course->participants_number++;
+                    $course->save();
+                }
+                else {
+                    $course->participants_wait_list++;
+                    $course->save();
+                }
             }
         } else {
             $mail_registration[$course_id] = D2U_Courses\Cart::getCourseParticipants($course_id);
@@ -157,7 +167,7 @@ if (isset($form_data['invoice_form'])) {
         $cart->saveBookings($mail_registration, $form_data['invoice_form']);
     }
 
-    // MultiNewsletter Anmeldemail senden
+    // Send MultiNewsletter registration
     if (rex_addon::get('multinewsletter')->isAvailable() && array_key_exists('multinewsletter', $form_data['invoice_form']) && is_array($form_data['invoice_form']['multinewsletter']) && count($form_data['invoice_form']['multinewsletter']) > 0) {
         $user = MultinewsletterUser::initByMail((string) filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL));
         $anrede = 'W' === $form_data['invoice_form']['gender'] ? 1 : 0;
@@ -167,7 +177,8 @@ if (isset($form_data['invoice_form'])) {
             $user->firstname = $form_data['invoice_form']['firstname'];
             $user->lastname = $form_data['invoice_form']['lastname'];
             $user->clang_id = rex_clang::getCurrentId();
-        } else {
+        }
+        else {
             $user = MultinewsletterUser::factory(
                 $form_data['invoice_form']['e-mail'],
                 $anrede,
