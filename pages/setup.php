@@ -245,6 +245,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 	<li>Bugfix: Veranstaltung löschen ohne installiertes Buchungsdaten Plugin nicht mehr möglich.</li>
 	<li>Bugfix Buchungsdaten Plugin: Export für Schweizer Bundesamt für Sport BASPO korrigiert.</li>
 	<li>Bugfix Buchungsdaten Plugin: Geschlecht wurde bei Änderungen nicht korrekt gespeichert.</li>
+	<li>Modul 26-1 "Ausgabe Veranstaltungen": Roter Button bei ausgebucht wird nun auch angezeigt, wenn die maximale Teilnehmeranzahl erreicht ist.</li>
 	<li>Modul 26-2 "Warenkorb": Bei Kufer Anmeldungen werden die Anzahl Teilnehmer / Personen auf der Warteliste automatisiert hochgezählt.</li>
 </ul>
 <p>3.4.1:</p>

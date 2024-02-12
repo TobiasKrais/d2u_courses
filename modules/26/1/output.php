@@ -377,9 +377,9 @@ if (rex::isBackend()) {
                 if (rex_plugin::get('d2u_courses', 'locations')->isAvailable() && $list_course->location instanceof Location && $list_course->location->location_category instanceof LocationCategory) {
                     echo $list_course->location->location_category->name;
                 }
-                if ('yes' === $list_course->registration_possible || 'yes_number' === $list_course->registration_possible) {
+                if (('yes' === $list_course->registration_possible || 'yes_number' === $list_course->registration_possible) && $list_course->participants_max > 0 && $list_course->participants_number < $list_course->participants_max) {
                     echo ' <div class="open"></div>';
-                } elseif ('booked' === $list_course->registration_possible) {
+                } elseif ('booked' === $list_course->registration_possible || ($list_course->participants_max > 0 && $list_course->participants_number >= $list_course->participants_max)) {
                     echo ' <div class="closed"></div>';
                 }
                 echo '</div>';
@@ -410,9 +410,9 @@ if (rex::isBackend()) {
         if ('' !== $course->course_number) {
             echo ' ('. $course->course_number .')';
         }
-        if ('yes' === $course->registration_possible || 'yes_number' === $course->registration_possible) {
+        if (('yes' === $course->registration_possible || 'yes_number' === $course->registration_possible) && $course->participants_max > 0 && $course->participants_number < $course->participants_max) {
             echo ' <div class="open"></div>';
-        } elseif ('booked' === $course->registration_possible) {
+        } elseif ('booked' === $course->registration_possible || ($course->participants_max > 0 && $course->participants_number >= $course->participants_max)) {
             echo ' <div class="closed"></div>';
         }
         echo '</h1>'. ('' !== $course->details_age ? '<div class="details_age">'. $course->details_age .'</div>' : '');
