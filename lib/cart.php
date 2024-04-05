@@ -862,7 +862,7 @@ class Cart
                             $price_full = $price_full + ((float) str_replace(',', '.', str_replace('.', '', $participant_data['price'])));
                         }
 
-                        if('booked' === $course->registration_possible || ($course->participants_max > 0 && CustomerBooking::getNumberForCourse($course->course_id) > $course->participants_max)) {
+                        if('booked' === $course->registration_possible || (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable() && $course->participants_max > 0 && CustomerBooking::getNumberForCourse($course->course_id) > $course->participants_max)) {
                             $body .= 'Mit dieser Buchung sind Sie auf der Warteliste eingetragen.<br>';
                         }
                         $body .= '<br>';
