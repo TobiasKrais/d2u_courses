@@ -3,7 +3,7 @@
 use D2U_Courses\LocationCategory;
 
 $func = rex_request('func', 'string');
-$entry_id = (int) rex_request('entry_id', 'int');
+$entry_id = rex_request('entry_id', 'int');
 $message = rex_get('message', 'string');
 
 // Print comments
@@ -96,11 +96,11 @@ if ('edit' === $func || 'add' === $func) {
 				<?php
 
                     $location = new D2U_Courses\Location($entry_id);
-                    d2u_addon_backend_helper::form_input('d2u_helper_name', 'form[name]', $location->name, true, false);
-                    d2u_addon_backend_helper::form_input('d2u_courses_location_street', 'form[street]', $location->street, true, false, 'text');
-                    d2u_addon_backend_helper::form_input('d2u_courses_location', 'form[city]', $location->city, true, false, 'text');
-                    d2u_addon_backend_helper::form_input('d2u_courses_location_zip_code', 'form[zip_code]', $location->zip_code, true, false, 'text');
-                    d2u_addon_backend_helper::form_input('d2u_courses_location_country_code', 'form[country_code]', $location->country_code, true, false, 'text');
+                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_helper_name', 'form[name]', $location->name, true, false);
+                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location_street', 'form[street]', $location->street, true, false, 'text');
+                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location', 'form[city]', $location->city, true, false, 'text');
+                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location_zip_code', 'form[zip_code]', $location->zip_code, true, false, 'text');
+                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location_country_code', 'form[country_code]', $location->country_code, true, false, 'text');
 
                     $d2u_helper = rex_addon::get('d2u_helper');
                     $api_key = '';
@@ -143,16 +143,16 @@ if ('edit' === $func || 'add' === $func) {
                             echo '<script>jQuery(document).ready(function($) { $("#check_geocode").parent().hide(); });</script>';
                         }
                     }
-                    d2u_addon_backend_helper::form_infotext('d2u_helper_geocode_hint', 'hint_geocoding');
-                    d2u_addon_backend_helper::form_input('d2u_courses_location_latitude', 'form[latitude]', (string) $location->latitude, false, false, 'text');
-                    d2u_addon_backend_helper::form_input('d2u_courses_location_longitude', 'form[longitude]', (string) $location->longitude, false, false, 'text');
-                    d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $location->picture, false);
-                    d2u_addon_backend_helper::form_mediafield('d2u_courses_location_site_plan', '2', $location->site_plan, false);
+                    \TobiasKrais\D2UHelper\BackendHelper::form_infotext('d2u_helper_geocode_hint', 'hint_geocoding');
+                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location_latitude', 'form[latitude]', (string) $location->latitude, false, false, 'text');
+                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location_longitude', 'form[longitude]', (string) $location->longitude, false, false, 'text');
+                    \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_helper_picture', '1', $location->picture, false);
+                    \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_courses_location_site_plan', '2', $location->site_plan, false);
                     $options_categories = [];
                     foreach (D2U_Courses\LocationCategory::getAll(false) as $location_category) {
                         $options_categories[$location_category->location_category_id] = $location_category->name;
                     }
-                    d2u_addon_backend_helper::form_select('d2u_helper_category', 'form[location_category_id]', $options_categories, $location->location_category instanceof LocationCategory ? [$location->location_category->location_category_id] : [-1], 1, false, false);
+                    \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_helper_category', 'form[location_category_id]', $options_categories, $location->location_category instanceof LocationCategory ? [$location->location_category->location_category_id] : [-1], 1, false, false);
                     $options_users = [];
                     $user_result = \rex_sql::factory();
                     $user_result->setQuery('SELECT login, name FROM '. rex::getTablePrefix() .'user ORDER BY name');
@@ -160,9 +160,9 @@ if ('edit' === $func || 'add' === $func) {
                         $options_users[(string) $user_result->getValue('login')] = (string) $user_result->getValue('name');
                         $user_result->next();
                     }
-                    d2u_addon_backend_helper::form_select('d2u_courses_location_rexuser', 'form[redaxo_users][]', $options_users, $location->redaxo_users, 5, true, false);
+                    \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_location_rexuser', 'form[redaxo_users][]', $options_users, $location->redaxo_users, 5, true, false);
                     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-                        d2u_addon_backend_helper::form_input('d2u_courses_kufer_sync_location_id', 'form[kufer_location_id]', $location->kufer_location_id, false, false, 'number');
+                        \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_kufer_sync_location_id', 'form[kufer_location_id]', $location->kufer_location_id, false, false, 'number');
                     }
                 ?>
 			</div>
@@ -181,9 +181,9 @@ if ('edit' === $func || 'add' === $func) {
 	</form>
 	<br>
 	<?php
-        echo d2u_addon_backend_helper::getCSS();
-        echo d2u_addon_backend_helper::getJS();
-        echo d2u_addon_backend_helper::getJSOpenAll();
+        echo \TobiasKrais\D2UHelper\BackendHelper::getCSS();
+        echo \TobiasKrais\D2UHelper\BackendHelper::getJS();
+        echo \TobiasKrais\D2UHelper\BackendHelper::getJSOpenAll();
 }
 
 if ('' === $func) {

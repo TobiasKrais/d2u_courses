@@ -1,6 +1,6 @@
 <?php
 $func = rex_request('func', 'string');
-$entry_id = (int) rex_request('entry_id', 'int');
+$entry_id = rex_request('entry_id', 'int');
 $message = rex_get('message', 'string');
 
 // Print comments
@@ -79,12 +79,12 @@ if ('edit' === $func || 'add' === $func) {
 				<?php
 
                     $target_group = new D2U_Courses\TargetGroup($entry_id);
-                    d2u_addon_backend_helper::form_input('d2u_helper_name', 'form[name]', $target_group->name, true, false);
-                    d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $target_group->picture, false);
-                    d2u_addon_backend_helper::form_input('header_priority', 'form[priority]', $target_group->priority, true, false, 'number');
+                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_helper_name', 'form[name]', $target_group->name, true, false);
+                    \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_helper_picture', '1', $target_group->picture, false);
+                    \TobiasKrais\D2UHelper\BackendHelper::form_input('header_priority', 'form[priority]', $target_group->priority, true, false, 'number');
                     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-                        d2u_addon_backend_helper::form_input('d2u_courses_kufer_categories_target_group_name', 'form[kufer_target_group_name]', $target_group->kufer_target_group_name, false, false);
-                        d2u_addon_backend_helper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $target_group->kufer_categories), 5, false, false, false);
+                        \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_kufer_categories_target_group_name', 'form[kufer_target_group_name]', $target_group->kufer_target_group_name, false, false);
+                        \TobiasKrais\D2UHelper\BackendHelper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $target_group->kufer_categories), 5, false, false, false);
                     }
                 ?>
 			</div>
@@ -103,9 +103,9 @@ if ('edit' === $func || 'add' === $func) {
 	</form>
 	<br>
 	<?php
-        echo d2u_addon_backend_helper::getCSS();
-        echo d2u_addon_backend_helper::getJS();
-        echo d2u_addon_backend_helper::getJSOpenAll();
+        echo \TobiasKrais\D2UHelper\BackendHelper::getCSS();
+        echo \TobiasKrais\D2UHelper\BackendHelper::getJS();
+        echo \TobiasKrais\D2UHelper\BackendHelper::getJSOpenAll();
 }
 
 if ('' === $func) {

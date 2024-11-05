@@ -3,7 +3,7 @@
 use D2U_Courses\ScheduleCategory;
 
 $func = rex_request('func', 'string');
-$entry_id = (int) rex_request('entry_id', 'int');
+$entry_id = rex_request('entry_id', 'int');
 $message = rex_get('message', 'string');
 
 // Print comments
@@ -86,16 +86,16 @@ if ('edit' === $func || 'add' === $func) {
 				<?php
 
                     $schedule_category = new D2U_Courses\ScheduleCategory($entry_id);
-                    d2u_addon_backend_helper::form_input('d2u_helper_name', 'form[name]', $schedule_category->name, true, false);
-                    d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $schedule_category->picture, false);
-                    d2u_addon_backend_helper::form_input('header_priority', 'form[priority]', $schedule_category->priority, true, false, 'number');
+                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_helper_name', 'form[name]', $schedule_category->name, true, false);
+                    \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_helper_picture', '1', $schedule_category->picture, false);
+                    \TobiasKrais\D2UHelper\BackendHelper::form_input('header_priority', 'form[priority]', $schedule_category->priority, true, false, 'number');
                     $options_parents = [-1 => rex_i18n::msg('d2u_courses_categories_parent_category_none')];
                     foreach (D2U_Courses\ScheduleCategory::getAllParents() as $parent) {
                         $options_parents[$parent->schedule_category_id] = $parent->name;
                     }
-                    d2u_addon_backend_helper::form_select('d2u_courses_categories_parent_category', 'form[parent_schedule_category_id]', $options_parents, $schedule_category->parent_schedule_category instanceof ScheduleCategory ? [$schedule_category->parent_schedule_category->schedule_category_id] : [-1], 1, false, false);
+                    \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_categories_parent_category', 'form[parent_schedule_category_id]', $options_parents, $schedule_category->parent_schedule_category instanceof ScheduleCategory ? [$schedule_category->parent_schedule_category->schedule_category_id] : [-1], 1, false, false);
                     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-                        d2u_addon_backend_helper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $schedule_category->kufer_categories), 5, false, false, false);
+                        \TobiasKrais\D2UHelper\BackendHelper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $schedule_category->kufer_categories), 5, false, false, false);
                     }
                 ?>
 			</div>
@@ -114,9 +114,9 @@ if ('edit' === $func || 'add' === $func) {
 	</form>
 	<br>
 	<?php
-        echo d2u_addon_backend_helper::getCSS();
-        echo d2u_addon_backend_helper::getJS();
-        echo d2u_addon_backend_helper::getJSOpenAll();
+        echo \TobiasKrais\D2UHelper\BackendHelper::getCSS();
+        echo \TobiasKrais\D2UHelper\BackendHelper::getJS();
+        echo \TobiasKrais\D2UHelper\BackendHelper::getJSOpenAll();
 }
 
 if ('' === $func) {

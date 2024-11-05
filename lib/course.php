@@ -7,7 +7,6 @@
 
 namespace D2U_Courses;
 
-use d2u_addon_backend_helper;
 use d2u_courses_frontend_helper;
 use DateTime;
 use rex;
@@ -256,7 +255,7 @@ class Course
         }
 
         // Don't forget to regenerate URL cache to make online course available
-        d2u_addon_backend_helper::generateUrlCache();
+        \TobiasKrais\D2UHelper\BackendHelper::generateUrlCache();
     }
 
     /**
@@ -297,7 +296,7 @@ class Course
             }
 
             // Don't forget to regenerate URL cache
-            d2u_addon_backend_helper::generateUrlCache('course_id');
+            \TobiasKrais\D2UHelper\BackendHelper::generateUrlCache('course_id');
 
             return $return;
         }
@@ -430,11 +429,11 @@ class Course
         if ($this->location instanceof Location) {
             $json_data .= '"location" : {'. PHP_EOL
                     .'"@type" : "Place",'. PHP_EOL
-                    .'"name" : "'. json_encode($this->location->name, JSON_UNESCAPED_UNICODE) .'",'. PHP_EOL
+                    .'"name" : '. json_encode($this->location->name, JSON_UNESCAPED_UNICODE) .','. PHP_EOL
                     .'"address" : {'. PHP_EOL
                         .'"@type" : "PostalAddress"'
-                        .('' === $this->location->street ? '' : ','. PHP_EOL .'"streetAddress" : "'. json_encode($this->location->street, JSON_UNESCAPED_UNICODE) .'"')
-                        .('' === $this->location->city ? '' : ','. PHP_EOL .'"addressLocality" : "'. json_encode($this->location->city, JSON_UNESCAPED_UNICODE) .'"')
+                        .('' === $this->location->street ? '' : ','. PHP_EOL .'"streetAddress" : '. json_encode($this->location->street, JSON_UNESCAPED_UNICODE))
+                        .('' === $this->location->city ? '' : ','. PHP_EOL .'"addressLocality" : '. json_encode($this->location->city, JSON_UNESCAPED_UNICODE))
                         .('' === $this->location->zip_code ? '' : ','. PHP_EOL .'"postalCode" : "'. $this->location->zip_code .'"')
                         .('' === $this->location->country_code ? '' : ','. PHP_EOL .'"addressCountry" : "'. $this->location->country_code .'"')
                     . PHP_EOL.'}'. PHP_EOL
@@ -445,7 +444,7 @@ class Course
                 .'"'. rex_yrewrite::getCurrentDomain()->getUrl() . ltrim(rex_url::media($this->picture), '/') .'"'
                 .'],'. PHP_EOL;
         }
-        $json_data .= '"description" : "'. ('' !== $this->teaser ? json_encode($this->teaser, JSON_UNESCAPED_UNICODE) : json_encode($this->name, JSON_UNESCAPED_UNICODE)) .'",'. PHP_EOL
+        $json_data .= '"description" : '. ('' !== $this->teaser ? json_encode($this->teaser, JSON_UNESCAPED_UNICODE) : json_encode($this->name, JSON_UNESCAPED_UNICODE)) .','. PHP_EOL
                 .'"offers" : {'. PHP_EOL
                     .'"@type" : "Offer",'. PHP_EOL
                     .'"url" : "'. $this->getUrl(true) .'",'. PHP_EOL;
@@ -467,7 +466,7 @@ class Course
         }
         $json_data .= '"organizer" : {'. PHP_EOL
                     .'"@type" : "Organization",'. PHP_EOL
-                    .'"name" : "'. json_encode((string) rex_config::get('d2u_courses', 'company_name', ''), JSON_UNESCAPED_UNICODE) .'",'. PHP_EOL
+                    .'"name" : '. json_encode((string) rex_config::get('d2u_courses', 'company_name', ''), JSON_UNESCAPED_UNICODE) .','. PHP_EOL
                     .'"url" : "'. rex_yrewrite::getCurrentDomain()->getUrl() .'"'. PHP_EOL
                 .'}'. PHP_EOL
             .'}'. PHP_EOL
@@ -559,7 +558,7 @@ class Course
             $this->course_id = (int) $result->getLastId();
         }
         if (!$result->hasError() && $pre_save_object->name !== $this->name) {
-            d2u_addon_backend_helper::generateUrlCache('course_id');
+            \TobiasKrais\D2UHelper\BackendHelper::generateUrlCache('course_id');
         }
 
         // Save secondary category IDs

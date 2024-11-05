@@ -169,17 +169,17 @@ if (isset($form_data['invoice_form'])) {
 
     // Send MultiNewsletter registration
     if (rex_addon::get('multinewsletter')->isAvailable() && array_key_exists('multinewsletter', $form_data['invoice_form']) && is_array($form_data['invoice_form']['multinewsletter']) && count($form_data['invoice_form']['multinewsletter']) > 0) {
-        $user = MultinewsletterUser::initByMail((string) filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL));
+        $user = FriendsOfRedaxo\MultiNewsletter\User::initByMail((string) filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL));
         $anrede = 'W' === $form_data['invoice_form']['gender'] ? 1 : 0;
 
-        if ($user instanceof MultinewsletterUser) {
+        if ($user instanceof FriendsOfRedaxo\MultiNewsletter\User) {
             $user->title = $anrede;
             $user->firstname = $form_data['invoice_form']['firstname'];
             $user->lastname = $form_data['invoice_form']['lastname'];
             $user->clang_id = rex_clang::getCurrentId();
         }
         else {
-            $user = MultinewsletterUser::factory(
+            $user = FriendsOfRedaxo\MultiNewsletter\User::factory(
                 $form_data['invoice_form']['e-mail'],
                 $anrede,
                 '',
@@ -641,7 +641,7 @@ if (isset($form_data['invoice_form'])) {
             } else {
                 echo $tag_open .'d2u_courses_multinewsletter'. $tag_close .'<br>';
                 foreach ($multinewsletter_group as $newsletter_group_id) {
-                    $multinewsletter_group = new MultinewsletterGroup((int) $newsletter_group_id);
+                    $multinewsletter_group = new FriendsOfRedaxo\MultiNewsletter\Group((int) $newsletter_group_id);
                     if ($multinewsletter_group->id > 0) {
                         echo '<input type="checkbox" class="cart_checkbox" name="invoice_form[multinewsletter][]" id="invoice_form-multinewsletter" value="'. $multinewsletter_group->id .'">';
                         echo '<label class="cart_checkbox" for="invoice_form-multinewsletter">'. $multinewsletter_group->name .'</label><br>';

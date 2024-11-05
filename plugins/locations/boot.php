@@ -5,8 +5,8 @@ if (\rex::isBackend() && is_object(\rex::getUser())) {
 }
 
 if (\rex::isBackend()) {
-    rex_extension::register('ART_PRE_DELETED', 'rex_d2u_courses_locations_article_is_in_use');
-    rex_extension::register('MEDIA_IS_IN_USE', 'rex_d2u_courses_locations_media_is_in_use');
+    rex_extension::register('ART_PRE_DELETED', rex_d2u_courses_locations_article_is_in_use(...));
+    rex_extension::register('MEDIA_IS_IN_USE', rex_d2u_courses_locations_media_is_in_use(...));
 }
 
 /**

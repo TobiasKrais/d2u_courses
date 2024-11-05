@@ -57,7 +57,7 @@
 // Online categories (changes need to be done in install.php and pages/settings.php)
 $sql = rex_sql::factory();
 $showTimeWhere = 'date_start = "" OR date_start > CURDATE()';
-if (class_exists('d2u_courses_frontend_helper') && method_exists('d2u_courses_frontend_helper', 'getShowTimeWhere')) { /** @phpstan-ignore-line */
+if (class_exists(d2u_courses_frontend_helper::class) && is_callable(d2u_courses_frontend_helper::getShowTimeWhere(...))) {
     $showTimeWhere = d2u_courses_frontend_helper::getShowTimeWhere();
 }
 $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_categories AS '
@@ -211,23 +211,23 @@ if (!rex_config::has('d2u_courses', 'article_id_courses')) {
 // END default settings
 
 // Update modules
-if (class_exists('D2UModuleManager')) {
+if (class_exists(TobiasKrais\D2UHelper\ModuleManager::class)) {
     $modules = [];
-    $modules[] = new D2UModule('26-1',
+    $modules[] = new \TobiasKrais\D2UHelper\Module('26-1',
         'D2U Veranstaltungen - Ausgabe Veranstaltungen',
         16);
-    $modules[] = new D2UModule('26-2',
+    $modules[] = new \TobiasKrais\D2UHelper\Module('26-2',
         'D2U Veranstaltungen - Warenkorb',
         11);
-    $modules[] = new D2UModule('26-3',
+    $modules[] = new \TobiasKrais\D2UHelper\Module('26-3',
         'D2U Veranstaltungen - Ausgabe Veranstaltungen einer Kategorie in Boxen',
         4);
-    $d2u_module_manager = new D2UModuleManager($modules, '', 'd2u_courses');
+    $d2u_module_manager = new \TobiasKrais\D2UHelper\ModuleManager($modules, '', 'd2u_courses');
     $d2u_module_manager->autoupdate();
 }
 
 // Update translations
-if (!class_exists('d2u_courses_lang_helper')) {
+if (!class_exists(d2u_courses_lang_helper::class)) {
     // Load class in case addon is deactivated
     require_once 'lib/d2u_courses_lang_helper.php';
 }

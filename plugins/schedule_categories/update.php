@@ -3,7 +3,7 @@
 $sql = rex_sql::factory();
 // 3.0.4 Database update
 $sql->setQuery('SHOW COLUMNS FROM '. \rex::getTablePrefix() ."d2u_courses_schedule_categories LIKE 'priority';");
-if (0 === (int) $sql->getRows()) {
+if (0 === $sql->getRows()) {
     $sql->setQuery('ALTER TABLE `'. \rex::getTablePrefix() .'d2u_courses_schedule_categories` ADD `priority` INT(10) NULL DEFAULT 0 AFTER `picture`;');
     $sql->setQuery('SELECT schedule_category_id FROM `'. \rex::getTablePrefix() .'d2u_courses_schedule_categories` ORDER BY name;');
     $update_sql = rex_sql::factory();

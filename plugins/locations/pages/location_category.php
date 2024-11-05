@@ -74,9 +74,9 @@ if ('edit' === $func || 'add' === $func) {
 				<?php
 
                     $location_category = new D2U_Courses\LocationCategory($entry_id);
-                    d2u_addon_backend_helper::form_input('d2u_helper_name', 'form[name]', $location_category->name, true, false);
-                    d2u_addon_backend_helper::form_input('d2u_courses_location_zoomlevel', 'form[zoom_level]', $location_category->zoom_level, true, false, 'number');
-                    d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $location_category->picture, false);
+                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_helper_name', 'form[name]', $location_category->name, true, false);
+                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location_zoomlevel', 'form[zoom_level]', $location_category->zoom_level, true, false, 'number');
+                    \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_helper_picture', '1', $location_category->picture, false);
                 ?>
 			</div>
 			<footer class="panel-footer">
@@ -94,9 +94,9 @@ if ('edit' === $func || 'add' === $func) {
 	</form>
 	<br>
 	<?php
-        echo d2u_addon_backend_helper::getCSS();
-        echo d2u_addon_backend_helper::getJS();
-        echo d2u_addon_backend_helper::getJSOpenAll();
+        echo \TobiasKrais\D2UHelper\BackendHelper::getCSS();
+        echo \TobiasKrais\D2UHelper\BackendHelper::getJS();
+        echo \TobiasKrais\D2UHelper\BackendHelper::getJSOpenAll();
 }
 
 if ('' === $func) {

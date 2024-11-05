@@ -14,18 +14,19 @@ page:
         help: { title: 'translate:package_hhelp', icon: rex-icon rex-icon-help, itemClass: pull-right }
 
 requires:
-    redaxo: '>=5.10.0'
+    redaxo: '>=5.16.0'
     packages:
-        d2u_helper: '>=1.8.5'
+        d2u_helper: '>=1.14.0'
         phpmailer: '>=2.12.0'
         sprog: '>=1.0.0'
         url: '>=2.1'
         yrewrite: '>=2.0.1'
-    php: '>=7.4'
+    php: '>=8.0'
 
 conflicts:
     packages:
-        multinewsletter: '<3.2.1'
+        d2u_linkbox: '<1.5.0'
+        multinewsletter: '<3.6.0'
 
 default_config:
     allow_company: 'true'

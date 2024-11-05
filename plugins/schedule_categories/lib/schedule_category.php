@@ -7,11 +7,9 @@
 
 namespace D2U_Courses;
 
-use d2u_addon_backend_helper;
 use d2u_courses_frontend_helper;
 use rex;
 use rex_addon;
-use rex_addon_interface;
 use rex_config;
 use rex_plugin;
 use rex_sql;
@@ -101,7 +99,7 @@ class ScheduleCategory
             $this->setPriority(true);
 
             // Don't forget to regenerate URL cache
-            d2u_addon_backend_helper::generateUrlCache('schedule_category_id');
+            \TobiasKrais\D2UHelper\BackendHelper::generateUrlCache('schedule_category_id');
 
             return $return;
         }
@@ -361,7 +359,7 @@ class ScheduleCategory
         }
 
         if (!$result->hasError() && $pre_save_object->name !== $this->name) {
-            d2u_addon_backend_helper::generateUrlCache('schedule_category_id');
+            \TobiasKrais\D2UHelper\BackendHelper::generateUrlCache('schedule_category_id');
         }
 
         return !$result->hasError();
@@ -386,7 +384,7 @@ class ScheduleCategory
 
         // When prio is too high or was deleted, simply add at end
         if ($this->priority > $result->getRows() || $delete) {
-            $this->priority = (int) $result->getRows() + 1;
+            $this->priority = $result->getRows() + 1;
         }
 
         $target_groups = [];

@@ -7,7 +7,6 @@
 
 namespace D2U_Courses;
 
-use d2u_addon_backend_helper;
 use d2u_courses_frontend_helper;
 use rex;
 use rex_addon;
@@ -118,7 +117,7 @@ class Location
             $result->setQuery($query);
 
             // Don't forget to regenerate URL cache
-            d2u_addon_backend_helper::generateUrlCache('location_id');
+            \TobiasKrais\D2UHelper\BackendHelper::generateUrlCache('location_id');
 
             return $result->hasError() ? false : true;
         }
@@ -280,7 +279,7 @@ class Location
         }
 
         if (!$result->hasError() && $pre_save_object->name !== $this->name) {
-            d2u_addon_backend_helper::generateUrlCache('location_id');
+            \TobiasKrais\D2UHelper\BackendHelper::generateUrlCache('location_id');
         }
 
         return !$result->hasError();

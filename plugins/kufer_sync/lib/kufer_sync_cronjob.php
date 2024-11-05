@@ -2,7 +2,7 @@
 /**
  * Administrates background import cronjob for Kufer Sync.
  */
-class kufer_sync_cronjob extends D2U_Helper\ACronJob
+class kufer_sync_cronjob extends TobiasKrais\D2UHelper\ACronJob
 {
     /**
      * Create a new instance of object.

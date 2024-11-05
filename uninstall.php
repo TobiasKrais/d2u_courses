@@ -18,7 +18,7 @@ $sql->setQuery('DROP TABLE IF EXISTS ' . \rex::getTablePrefix() . 'd2u_courses_2
 $sql->setQuery('DROP TABLE IF EXISTS ' . \rex::getTablePrefix() . 'd2u_courses_courses');
 
 // Delete language replacements
-if (!class_exists('d2u_courses_lang_helper')) {
+if (!class_exists(d2u_courses_lang_helper::class)) {
     // Load class in case addon is deactivated
     require_once 'lib/d2u_courses_lang_helper.php';
 }

@@ -159,7 +159,7 @@ if (rex_addon::get('d2u_news')->isAvailable()) {
     }
 }
 if (rex_addon::get('d2u_linkbox')->isAvailable()) {
-    $categories = \D2U_Linkbox\Category::getAll(rex_clang::getCurrentId(), true);
+    $categories = \TobiasKrais\D2ULinkbox\Category::getAll(rex_clang::getCurrentId(), true);
     if (count($categories) > 0) {
 ?>
 		<div class="row">

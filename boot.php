@@ -8,15 +8,15 @@ if (\rex::isBackend() && is_object(\rex::getUser())) {
 }
 
 if (\rex::isBackend()) {
-    rex_extension::register('ART_PRE_DELETED', 'rex_d2u_courses_article_is_in_use');
-    rex_extension::register('MEDIA_IS_IN_USE', 'rex_d2u_courses_media_is_in_use');
+    rex_extension::register('ART_PRE_DELETED', rex_d2u_courses_article_is_in_use(...));
+    rex_extension::register('MEDIA_IS_IN_USE', rex_d2u_courses_media_is_in_use(...));
 }
 
 /**
  * Checks if article is used by this addon.
  * @param rex_extension_point<string> $ep Redaxo extension point
  * @throws rex_api_exception If article is used
- * @return string Warning message as array
+ * @return string Warning message
  */
 function rex_d2u_courses_article_is_in_use(rex_extension_point $ep)
 {
@@ -74,7 +74,7 @@ function rex_d2u_courses_media_is_in_use(rex_extension_point $ep)
 
     // Courses
     $sql_courses = \rex_sql::factory();
-    $sql_courses->setQuery('SELECT course_id, name FROM `' . \rex::getTablePrefix() . 'd2u_courses_courses` '
+    $sql_courses->setQuery('SELECT course_id, `name` FROM `' . \rex::getTablePrefix() . 'd2u_courses_courses` '
         .'WHERE FIND_IN_SET("'. $filename .'", downloads) OR picture = "'. $filename .'" OR description LIKE "%'. $filename .'%"');
 
     // Categories

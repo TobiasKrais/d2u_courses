@@ -33,7 +33,7 @@ if ($news_category_id > 0) { /** @phpstan-ignore-line */
 $linkbox_category_id = (int) 'REX_VALUE[6]';
 $linkboxes = [];
 if ($linkbox_category_id > 0) { /** @phpstan-ignore-line */
-    $new_category = new \D2U_Linkbox\Category($linkbox_category_id, rex_clang::getCurrentId());
+    $new_category = new \TobiasKrais\D2ULinkbox\Category($linkbox_category_id, rex_clang::getCurrentId());
     $linkboxes = $new_category->getLinkboxes(true);
 }
 $box_per_line = 4 === (int) 'REX_VALUE[8]' ? 4 : 3; /** @phpstan-ignore-line */
@@ -42,8 +42,8 @@ $sprog = rex_addon::get('sprog');
 $tag_open = $sprog->getConfig('wildcard_open_tag');
 $tag_close = $sprog->getConfig('wildcard_close_tag');
 
-$url_namespace = d2u_addon_frontend_helper::getUrlNamespace();
-$url_id = d2u_addon_frontend_helper::getUrlId();
+$url_namespace = TobiasKrais\D2UHelper\FrontendHelper::getUrlNamespace();
+$url_id = TobiasKrais\D2UHelper\FrontendHelper::getUrlId();
 
 // Courses
 if (filter_input(INPUT_GET, 'course_id', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0 || 'course_id' === $url_namespace) {
@@ -276,10 +276,10 @@ if (rex::isBackend()) {
                         echo '<a href="'. $selected_news->getUrl() .'">';
                     }
                     echo '<div class="box_title">'. $selected_news->name .'</div>';
-                    echo '<div class="box_description">'. $selected_news->teaser .'</div>';
                     if ($url) {
                         echo '</a>';
                     }
+                    echo '<div class="box_description">'. $selected_news->teaser .'</div>';
                     echo '</div>';
                     echo '</div>';
                 }

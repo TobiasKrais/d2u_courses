@@ -7,11 +7,9 @@
 
 namespace D2U_Courses;
 
-use d2u_addon_backend_helper;
 use d2u_courses_frontend_helper;
 use rex;
 use rex_addon;
-use rex_addon_interface;
 use rex_config;
 use rex_plugin;
 use rex_sql;
@@ -108,8 +106,8 @@ class TargetGroup
             $this->setPriority(true);
 
             // Don't forget to regenerate URL cache
-            d2u_addon_backend_helper::generateUrlCache('target_group_id');
-            d2u_addon_backend_helper::generateUrlCache('target_group_child_id');
+            \TobiasKrais\D2UHelper\BackendHelper::generateUrlCache('target_group_id');
+            \TobiasKrais\D2UHelper\BackendHelper::generateUrlCache('target_group_child_id');
 
             return $return;
         }
@@ -332,8 +330,8 @@ class TargetGroup
             }
 
             if (!$result->hasError() && $pre_save_object->name !== $this->name) {
-                d2u_addon_backend_helper::generateUrlCache('target_group_id');
-                d2u_addon_backend_helper::generateUrlCache('target_group_child_id');
+                \TobiasKrais\D2UHelper\BackendHelper::generateUrlCache('target_group_id');
+                \TobiasKrais\D2UHelper\BackendHelper::generateUrlCache('target_group_child_id');
             }
 
             return !$result->hasError();
@@ -362,7 +360,7 @@ class TargetGroup
 
         // When prio is too high or was deleted, simply add at end
         if ($this->priority > $result->getRows() || $delete) {
-            $this->priority = (int) $result->getRows() + 1;
+            $this->priority = $result->getRows() + 1;
         }
 
         $target_groups = [];

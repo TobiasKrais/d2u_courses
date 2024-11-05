@@ -3,7 +3,7 @@
 // 3.0.1 Database update: set priorities
 $sql = rex_sql::factory();
 $sql->setQuery('SHOW COLUMNS FROM '. \rex::getTablePrefix() ."d2u_courses_categories LIKE 'priority';");
-if (0 === (int) $sql->getRows()) {
+if (0 === $sql->getRows()) {
     $sql->setQuery('ALTER TABLE `'. \rex::getTablePrefix() .'d2u_courses_categories` ADD `priority` INT(10) NULL DEFAULT 0 AFTER `parent_category_id`;');
     $sql->setQuery('SELECT category_id FROM `'. \rex::getTablePrefix() .'d2u_courses_categories` ORDER BY name;');
     $update_sql = rex_sql::factory();

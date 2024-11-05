@@ -3,7 +3,7 @@
 use D2U_Courses\Category;
 
 $func = rex_request('func', 'string');
-$entry_id = (int) rex_request('entry_id', 'int');
+$entry_id = rex_request('entry_id', 'int');
 $message = rex_get('message', 'string');
 
 // Print comments
@@ -95,10 +95,10 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
 				<input type="hidden" name="form[category_id]" value="<?= 'edit' === $func ? $entry_id : 0 ?>">
 				<?php
                     $category = new D2U_Courses\Category($entry_id);
-                    d2u_addon_backend_helper::form_input('d2u_helper_name', 'form[name]', $category->name, true, false);
-                    d2u_addon_backend_helper::form_textarea('d2u_courses_description', 'form[description]', $category->description, 5, false, false, true);
-                    d2u_addon_backend_helper::form_input('d2u_courses_categories_color', 'form[color]', $category->color, true, false, 'color');
-                    d2u_addon_backend_helper::form_mediafield('d2u_helper_picture', '1', $category->picture, false);
+                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_helper_name', 'form[name]', $category->name, true, false);
+                    \TobiasKrais\D2UHelper\BackendHelper::form_textarea('d2u_courses_description', 'form[description]', $category->description, 5, false, false, true);
+                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_categories_color', 'form[color]', $category->color, true, false, 'color');
+                    \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_helper_picture', '1', $category->picture, false);
                     $options_parents = [-1 => rex_i18n::msg('d2u_courses_categories_parent_category_none')];
                     foreach (D2U_Courses\Category::getAllParents() as $parent) {
                         if ($parent->category_id !== $category->category_id) {
@@ -115,18 +115,18 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                             }
                         }
                     }
-                    d2u_addon_backend_helper::form_select('d2u_courses_categories_parent_category', 'form[parent_category_id]', $options_parents, [$category->parent_category instanceof Category ? $category->parent_category->category_id : -1], 1, false, false);
-                    d2u_addon_backend_helper::form_input('header_priority', 'form[priority]', $category->priority, true, false, 'number');
+                    \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_categories_parent_category', 'form[parent_category_id]', $options_parents, [$category->parent_category instanceof Category ? $category->parent_category->category_id : -1], 1, false, false);
+                    \TobiasKrais\D2UHelper\BackendHelper::form_input('header_priority', 'form[priority]', $category->priority, true, false, 'number');
                     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-                        d2u_addon_backend_helper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $category->kufer_categories), 5, false, false, false);
+                        \TobiasKrais\D2UHelper\BackendHelper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $category->kufer_categories), 5, false, false, false);
                         $options_google_type = [
                             '' => rex_i18n::msg('d2u_courses_google_type_none'),
                             'course' => rex_i18n::msg('d2u_courses_google_type_course'),
                             'event' => rex_i18n::msg('d2u_courses_google_type_event'),
                         ];
-                        d2u_addon_backend_helper::form_select('d2u_courses_google_type', 'form[google_type]', $options_google_type, [$category->google_type], 1, false, false);
+                        \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_google_type', 'form[google_type]', $options_google_type, [$category->google_type], 1, false, false);
                         if (!rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-                            d2u_addon_backend_helper::form_infotext('d2u_courses_google_type_event_hint', 'google_type_event_hint');
+                            \TobiasKrais\D2UHelper\BackendHelper::form_infotext('d2u_courses_google_type_event_hint', 'google_type_event_hint');
                         }
                     }
                 ?>
@@ -146,9 +146,9 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
 	</form>
 	<br>
 	<?php
-        echo d2u_addon_backend_helper::getCSS();
-        echo d2u_addon_backend_helper::getJS();
-        echo d2u_addon_backend_helper::getJSOpenAll();
+        echo \TobiasKrais\D2UHelper\BackendHelper::getCSS();
+        echo \TobiasKrais\D2UHelper\BackendHelper::getJS();
+        echo \TobiasKrais\D2UHelper\BackendHelper::getJSOpenAll();
 }
 
 if ('' === $func) {

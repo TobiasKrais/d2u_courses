@@ -29,8 +29,8 @@ class d2u_courses_frontend_helper
     {
         $breadcrumbs = [];
 
-        $url_namespace = d2u_addon_frontend_helper::getUrlNamespace();
-        $url_id = d2u_addon_frontend_helper::getUrlId();
+        $url_namespace = \TobiasKrais\D2UHelper\FrontendHelper::getUrlNamespace();
+        $url_id = \TobiasKrais\D2UHelper\FrontendHelper::getUrlId();
 
         // Courses
         if (filter_input(INPUT_GET, 'course_id', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0 || 'course_id' === $url_namespace) {
