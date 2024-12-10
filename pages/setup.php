@@ -244,6 +244,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 <ul>
 	<li>Vorbereitung auf R6: Folgende Klassen werden ab Version 4 dieses Addons umbenannt. Schon jetzt stehen die neuen Klassen für die Übergangszeit zur Verfügung:
 		<ul>
+			<li><code>d2u_courses_frontend_helper</code> wird zu <code>TobiasKrais\D2UCourses\FrontendHelper</code>.</li>
 			<li><code>D2U_Courses\Cart</code> wird zu <code>TobiasKrais\D2UCourses\Cart</code>.</li>
 			<li><code>D2U_Courses\Category</code> wird zu <code>TobiasKrais\D2UCourses\Category</code>.</li>
 			<li><code>D2U_Courses\Course</code> wird zu <code>TobiasKrais\D2UCourses\Course</code>.</li>
@@ -256,7 +257,6 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 		</ul>
 		Folgende interne Klassen wurden wurden ebenfalls umbenannt. Hier gibt es keine Übergangszeit, da sie nicht öffentlich sind:
 		<ul>
-			<li><code>d2u_courses_frontend_helper</code> wird zu <code>TobiasKrais\D2UCourses\FrontendHelper</code>.</li>
 			<li><code>d2u_courses_lang_helper</code> wird zu <code>TobiasKrais\D2UCourses\LangHelper</code>.</li>
 			<li><code>D2UCoursesModules</code> wird zu <code>TobiasKrais\D2UCourses\Module</code>.</li>
 			<li><code>kufer_sync_cronjob</code> wird zu <code>TobiasKrais\D2UCourses\KuferSyncCronjob</code>.</li>
@@ -269,6 +269,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 	<li>Bugfix Buchungsdaten Plugin: Export für Schweizer Bundesamt für Sport BASPO korrigiert.</li>
 	<li>Bugfix Buchungsdaten Plugin: Geschlecht wurde bei Änderungen nicht korrekt gespeichert.</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": Roter Button bei ausgebucht wird nun auch angezeigt, wenn die maximale Teilnehmeranzahl erreicht ist.</li>
+	<li>Modul 26-1 "Ausgabe Veranstaltungen": Unterstützt nur noch Geolocation Addon Version 2.x (Wegfall Unterstützung Version 1.x).</li>
 	<li>Modul 26-2 "Warenkorb": Bei Kufer Anmeldungen werden die Anzahl Teilnehmer / Personen auf der Warteliste automatisiert hochgezählt.</li>
 	<li>Alle Module auf neuen Namespace und Klassennamen angepasst.</li>
 </ul>
