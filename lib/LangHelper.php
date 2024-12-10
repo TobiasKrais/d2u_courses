@@ -1,9 +1,14 @@
 <?php
+namespace TobiasKrais\D2UCourses;
+
+use rex_clang;
+use rex_config;
+
 /**
  * @api
  * Offers helper functions for language issues.
  */
-class d2u_courses_lang_helper extends \TobiasKrais\D2UHelper\ALangHelper
+class LangHelper extends \TobiasKrais\D2UHelper\ALangHelper
 {
     /**
      * @var array<string,string> Array with english replacements. Key is the wildcard,

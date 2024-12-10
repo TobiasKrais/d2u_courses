@@ -1,6 +1,6 @@
 <?php
-use D2U_Courses\Course;
-use D2U_Courses\CustomerBooking;
+use TobiasKrais\D2UCourses\Course;
+use TobiasKrais\D2UCourses\CustomerBooking;
 
 /*
  * Export itself can be found in boot.php

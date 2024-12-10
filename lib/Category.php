@@ -5,9 +5,8 @@
  * @author <a href="http://www.design-to-use.de">www.design-to-use.de</a>
  */
 
-namespace D2U_Courses;
+namespace TobiasKrais\D2UCourses;
 
-use d2u_courses_frontend_helper;
 use rex;
 use rex_addon;
 use rex_config;
@@ -173,7 +172,7 @@ class Category
             } else {
                 $query .= "WHERE online_status = 'online' ";
             }
-            $query .= 'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') '
+            $query .= 'AND ('. FrontendHelper::getShowTimeWhere() .') '
                     .'GROUP BY category_id ';
         }
         if ('priority' === rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
@@ -317,7 +316,7 @@ class Category
                 .'WHERE c2c.category_id = '. $this->category_id .' AND courses.course_id  > 0 ';
         if ($online_only) {
             $query .= "AND online_status = 'online' "
-                .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') ';
+                .'AND ('. FrontendHelper::getShowTimeWhere() .') ';
         }
         $query .= 'ORDER BY date_start, name';
         $result = rex_sql::factory();

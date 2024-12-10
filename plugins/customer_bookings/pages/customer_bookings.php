@@ -1,7 +1,7 @@
 <?php
 
-use D2U_Courses\Course;
-use D2U_Courses\CustomerBooking;
+use TobiasKrais\D2UCourses\Course;
+use TobiasKrais\D2UCourses\CustomerBooking;
 
 $func = rex_request('func', 'string');
 $entry_id = rex_request('entry_id', 'int');

@@ -5,9 +5,8 @@
  * @author <a href="http://www.design-to-use.de">www.design-to-use.de</a>
  */
 
-namespace D2U_Courses;
+namespace TobiasKrais\D2UCourses;
 
-use d2u_courses_frontend_helper;
 use DateTime;
 use rex;
 use rex_addon;
@@ -319,7 +318,7 @@ class Course
     {
         $query = 'SELECT course_id FROM '. rex::getTablePrefix() .'d2u_courses_courses '
             ."WHERE online_status = 'online' "
-                .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') '
+                .'AND ('. FrontendHelper::getShowTimeWhere() .') '
                 .'AND registration_possible != "no" '
                 .'AND registration_possible != "booked" ';
         $result = rex_sql::factory();
@@ -612,7 +611,7 @@ class Course
         $query .= 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_categories AS categories '
                 .'ON courses.category_id = categories.category_id '
             ."WHERE courses.online_status = 'online'"
-                .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') '
+                .'AND ('. FrontendHelper::getShowTimeWhere() .') '
                 .'AND ('
                     ."courses.description LIKE '%". $keyword ."%' "
                     ."OR courses.instructor LIKE '%". $keyword ."%' "

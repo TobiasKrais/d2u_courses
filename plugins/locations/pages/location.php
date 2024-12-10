@@ -1,6 +1,6 @@
 <?php
 
-use D2U_Courses\LocationCategory;
+use TobiasKrais\D2UCourses\LocationCategory;
 
 $func = rex_request('func', 'string');
 $entry_id = rex_request('entry_id', 'int');
@@ -19,7 +19,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $input_media = rex_post('REX_INPUT_MEDIA', 'array', []);
 
     $location_id = $form['location_id'];
-    $location = new D2U_Courses\Location($location_id);
+    $location = new TobiasKrais\D2UCourses\Location($location_id);
     $location->name = $form['name'];
     $location->latitude = $form['latitude'];
     $location->longitude = $form['longitude'];
@@ -27,7 +27,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $location->zip_code = $form['zip_code'];
     $location->country_code = $form['country_code'];
     $location->street = $form['street'];
-    $location->location_category = $form['location_category_id'] > 0 ? new D2U_Courses\LocationCategory($form['location_category_id']) : false;
+    $location->location_category = $form['location_category_id'] > 0 ? new TobiasKrais\D2UCourses\LocationCategory($form['location_category_id']) : false;
     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
         $location->kufer_location_id = (int) $form['kufer_location_id'];
     }
@@ -56,7 +56,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
         $form = rex_post('form', 'array', []);
         $location_id = $form['location_id'];
     }
-    $location = new D2U_Courses\Location($location_id);
+    $location = new TobiasKrais\D2UCourses\Location($location_id);
 
     // Check if object is used
     $uses_courses = $location->getCourses(false);
@@ -95,7 +95,7 @@ if ('edit' === $func || 'add' === $func) {
 				<input type="hidden" name="form[location_id]" value="<?= $entry_id ?>">
 				<?php
 
-                    $location = new D2U_Courses\Location($entry_id);
+                    $location = new TobiasKrais\D2UCourses\Location($entry_id);
                     \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_helper_name', 'form[name]', $location->name, true, false);
                     \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location_street', 'form[street]', $location->street, true, false, 'text');
                     \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location', 'form[city]', $location->city, true, false, 'text');
@@ -149,7 +149,7 @@ if ('edit' === $func || 'add' === $func) {
                     \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_helper_picture', '1', $location->picture, false);
                     \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_courses_location_site_plan', '2', $location->site_plan, false);
                     $options_categories = [];
-                    foreach (D2U_Courses\LocationCategory::getAll(false) as $location_category) {
+                    foreach (TobiasKrais\D2UCourses\LocationCategory::getAll(false) as $location_category) {
                         $options_categories[$location_category->location_category_id] = $location_category->name;
                     }
                     \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_helper_category', 'form[location_category_id]', $options_categories, $location->location_category instanceof LocationCategory ? [$location->location_category->location_category_id] : [-1], 1, false, false);

@@ -5,12 +5,10 @@
  * @author <a href="http://www.design-to-use.de">www.design-to-use.de</a>
  */
 
-namespace D2U_Courses;
+namespace TobiasKrais\D2UCourses;
 
-use d2u_courses_frontend_helper;
 use rex;
 use rex_addon;
-use rex_addon_interface;
 use rex_config;
 use rex_plugin;
 use rex_sql;
@@ -136,7 +134,7 @@ class Location
         $query = 'SELECT * FROM '. rex::getTablePrefix() .'d2u_courses_courses '
                 .'WHERE location_id = '. $this->location_id .' '
                     ."AND online_status = 'online' "
-                    .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') ';
+                    .'AND ('. FrontendHelper::getShowTimeWhere() .') ';
         $result = rex_sql::factory();
         $result->setQuery($query);
         return $result->getRows() > 0 ? true : false;
@@ -156,7 +154,7 @@ class Location
                 .'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_locations AS locations '
                     .'ON courses.location_id = locations.location_id '
                 ."WHERE online_status = 'online' "
-                    .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') '
+                    .'AND ('. FrontendHelper::getShowTimeWhere() .') '
                 .'GROUP BY location_id';
         }
         $result = rex_sql::factory();
@@ -198,7 +196,7 @@ class Location
                 .'WHERE location_id = '. $this->location_id .' ';
         if ($online_only) {
             $query .= "AND online_status = 'online' "
-                .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')';
+                .'AND ('. FrontendHelper::getShowTimeWhere() .')';
         }
         $query .= 'ORDER BY date_start, name';
         $result = rex_sql::factory();

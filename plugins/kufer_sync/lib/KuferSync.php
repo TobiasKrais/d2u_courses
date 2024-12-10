@@ -1,6 +1,6 @@
 <?php
 
-namespace D2U_Courses;
+namespace TobiasKrais\D2UCourses;
 
 use rex_config;
 use rex_i18n;

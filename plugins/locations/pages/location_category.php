@@ -15,7 +15,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     // Media fields and links need special treatment
     $input_media = rex_post('REX_INPUT_MEDIA', 'array', []);
 
-    $location_category = new D2U_Courses\LocationCategory($form['location_category_id']);
+    $location_category = new TobiasKrais\D2UCourses\LocationCategory($form['location_category_id']);
     $location_category->zoom_level = $form['zoom_level'];
     $location_category->picture = $input_media[1];
     $location_category->name = $form['name'];
@@ -41,7 +41,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
         $form = rex_post('form', 'array', []);
         $location_category_id = $form['location_category_id'];
     }
-    $location_category = new D2U_Courses\LocationCategory($location_category_id);
+    $location_category = new TobiasKrais\D2UCourses\LocationCategory($location_category_id);
 
     // Check if object is used
     $uses_locations = $location_category->getLocations(false);
@@ -73,7 +73,7 @@ if ('edit' === $func || 'add' === $func) {
 				<input type="hidden" name="form[location_category_id]" value="<?= $entry_id ?>">
 				<?php
 
-                    $location_category = new D2U_Courses\LocationCategory($entry_id);
+                    $location_category = new TobiasKrais\D2UCourses\LocationCategory($entry_id);
                     \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_helper_name', 'form[name]', $location_category->name, true, false);
                     \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location_zoomlevel', 'form[zoom_level]', $location_category->zoom_level, true, false, 'number');
                     \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_helper_picture', '1', $location_category->picture, false);

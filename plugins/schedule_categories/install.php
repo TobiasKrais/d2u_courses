@@ -27,11 +27,11 @@ $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_ur
 	LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses
 		ON c2s.course_id = courses.course_id
 	WHERE courses.online_status = "online"
-		AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+		AND ('. TobiasKrais\D2UCourses\FrontendHelper::getShowTimeWhere() .')
 		AND courses.updatedate = (
 			SELECT MAX(courses_max.updatedate) FROM '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories AS schedules_max
 			LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max ON schedules_max.course_id = courses_max.course_id
-			WHERE schedules.schedule_category_id = schedules_max.schedule_category_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+			WHERE schedules.schedule_category_id = schedules_max.schedule_category_id AND courses_max.online_status = "online" AND ('. TobiasKrais\D2UCourses\FrontendHelper::getShowTimeWhere() .')
 		)
 	GROUP BY schedule_category_id, name, seo_title, picture, priority, updatedate, parent_schedule_category_id
 	UNION
@@ -45,12 +45,12 @@ $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_ur
 		ON schedules.parent_schedule_category_id = parents.schedule_category_id
 	WHERE parents.schedule_category_id > 0
 		AND courses.online_status = "online"
-		AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+		AND ('. TobiasKrais\D2UCourses\FrontendHelper::getShowTimeWhere() .')
 		AND courses.updatedate = (
 			SELECT MAX(courses_max.updatedate) FROM '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories AS c2s_max
 			LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max ON c2s_max.course_id = courses_max.course_id
 			LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS schedules_max ON c2s_max.schedule_category_id = c2s_max.schedule_category_id
-			WHERE schedules.parent_schedule_category_id = schedules_max.schedule_category_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+			WHERE schedules.parent_schedule_category_id = schedules_max.schedule_category_id AND courses_max.online_status = "online" AND ('. TobiasKrais\D2UCourses\FrontendHelper::getShowTimeWhere() .')
 		)
 	GROUP BY schedule_category_id, name, seo_title, picture, priority, updatedate, parent_schedule_category_id;');
 // END create views for url addon

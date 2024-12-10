@@ -5,12 +5,10 @@
  * @author <a href="http://www.design-to-use.de">www.design-to-use.de</a>
  */
 
-namespace D2U_Courses;
+namespace TobiasKrais\D2UCourses;
 
-use d2u_courses_frontend_helper;
 use rex;
 use rex_addon;
-use rex_addon_interface;
 use rex_config;
 use rex_sql;
 use rex_yrewrite;
@@ -95,7 +93,7 @@ class LocationCategory
                     .'ON courses.location_id = locations.location_id '
                 .'WHERE locations.location_category_id = '. $this->location_category_id .' '
                     ."AND courses.online_status = 'online' "
-                    .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') ';
+                    .'AND ('. FrontendHelper::getShowTimeWhere() .') ';
         $result = rex_sql::factory();
         $result->setQuery($query);
 
@@ -116,7 +114,7 @@ class LocationCategory
                 .'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_locations AS locations '
                     .'ON courses.location_id = locations.location_id '
                 ."WHERE courses.online_status = 'online' "
-                    .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') '
+                    .'AND ('. FrontendHelper::getShowTimeWhere() .') '
                 .'GROUP BY locations.location_category_id';
         }
         $result = rex_sql::factory();
@@ -145,7 +143,7 @@ class LocationCategory
                 .'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_locations AS locations '
                     .'ON courses.location_id = locations.location_id '
                 ."WHERE online_status = 'online' AND location_category_id = ". $this->location_category_id .' '
-                    .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') '
+                    .'AND ('. FrontendHelper::getShowTimeWhere() .') '
                 .'GROUP BY location_id';
         }
         $result = rex_sql::factory();

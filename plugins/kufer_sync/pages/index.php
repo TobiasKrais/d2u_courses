@@ -3,7 +3,7 @@
 // import
 if ('kufer_sync' === rex_request('import', 'string')) {
     echo "<fieldset style='padding: 1em; border: 1px solid #dfe3e9;'>";
-    D2U_Courses\KuferSync::sync();
+    TobiasKrais\D2UCourses\KuferSync::sync();
     echo '</fieldset><br>';
 }
 if ('' !== trim((string) \rex_config::get('d2u_courses', 'kufer_sync_xml_url', ''))) {

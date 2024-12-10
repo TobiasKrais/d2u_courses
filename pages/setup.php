@@ -2,7 +2,7 @@
 /*
  * Modules
  */
-$d2u_module_manager = new \TobiasKrais\D2UHelper\ModuleManager(D2UCoursesModules::getModules(), 'modules/', 'd2u_courses');
+$d2u_module_manager = new \TobiasKrais\D2UHelper\ModuleManager(TobiasKrais\D2UCourses\Module::getModules(), 'modules/', 'd2u_courses');
 
 // \TobiasKrais\D2UHelper\ModuleManager actions
 $d2u_module_id = rex_request('d2u_module_id', 'string');
@@ -240,8 +240,28 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 </fieldset>
 
 <h2>Changelog</h2>
-<p>3.4.2-DEV:</p>
+<p>3.5.0-DEV:</p>
 <ul>
+	<li>Vorbereitung auf R6: Folgende Klassen werden ab Version 4 dieses Addons umbenannt. Schon jetzt stehen die neuen Klassen für die Übergangszeit zur Verfügung:
+		<ul>
+			<li><code>D2U_Courses\Cart</code> wird zu <code>TobiasKrais\D2UCourses\Cart</code>.</li>
+			<li><code>D2U_Courses\Category</code> wird zu <code>TobiasKrais\D2UCourses\Category</code>.</li>
+			<li><code>D2U_Courses\Course</code> wird zu <code>TobiasKrais\D2UCourses\Course</code>.</li>
+			<li><code>D2U_Courses\CustomerBooking</code> wird zu <code>TobiasKrais\D2UCourses\CustomerBooking</code>.</li>
+			<li><code>D2U_Courses\KuferSync</code> wird zu <code>TobiasKrais\D2UCourses\KuferSync</code>.</li>
+			<li><code>D2U_Courses\Location</code> wird zu <code>TobiasKrais\D2UCourses\Location</code>.</li>
+			<li><code>D2U_Courses\LocationCategory</code> wird zu <code>TobiasKrais\D2UCourses\LocationCategory</code>.</li>
+			<li><code>D2U_Courses\ScheduleCategory</code> wird zu <code>TobiasKrais\D2UCourses\ScheduleCategory</code>.</li>
+			<li><code>D2U_Courses\TargetGroup</code> wird zu <code>TobiasKrais\D2UCourses\TargetGroup</code>.</li>
+		</ul>
+		Folgende interne Klassen wurden wurden ebenfalls umbenannt. Hier gibt es keine Übergangszeit, da sie nicht öffentlich sind:
+		<ul>
+			<li><code>d2u_courses_frontend_helper</code> wird zu <code>TobiasKrais\D2UCourses\FrontendHelper</code>.</li>
+			<li><code>d2u_courses_lang_helper</code> wird zu <code>TobiasKrais\D2UCourses\LangHelper</code>.</li>
+			<li><code>D2UCoursesModules</code> wird zu <code>TobiasKrais\D2UCourses\Module</code>.</li>
+			<li><code>kufer_sync_cronjob</code> wird zu <code>TobiasKrais\D2UCourses\KuferSyncCronjob</code>.</li>
+		</ul>
+	</li>
 	<li>Feld Preis Hinweise hinzugefügt.</li>
 	<li>Anpassungen Kufer Sync.</li>
 	<li>Support für Geolocation 1.x entfernt. Bitte auf Geolocation 2.x updaten.</li>
@@ -250,6 +270,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 	<li>Bugfix Buchungsdaten Plugin: Geschlecht wurde bei Änderungen nicht korrekt gespeichert.</li>
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": Roter Button bei ausgebucht wird nun auch angezeigt, wenn die maximale Teilnehmeranzahl erreicht ist.</li>
 	<li>Modul 26-2 "Warenkorb": Bei Kufer Anmeldungen werden die Anzahl Teilnehmer / Personen auf der Warteliste automatisiert hochgezählt.</li>
+	<li>Alle Module auf neuen Namespace und Klassennamen angepasst.</li>
 </ul>
 <p>3.4.1:</p>
 <ul>

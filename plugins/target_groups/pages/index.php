@@ -16,7 +16,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $input_media = rex_post('REX_INPUT_MEDIA', 'array', []);
 
     $target_group_id = $form['target_group_id'];
-    $target_group = new D2U_Courses\TargetGroup($target_group_id);
+    $target_group = new TobiasKrais\D2UCourses\TargetGroup($target_group_id);
     $target_group->name = $form['name'];
     $target_group->picture = $input_media[1];
     $target_group->priority = $form['priority'];
@@ -47,7 +47,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
         $form = rex_post('form', 'array', []);
         $target_group_id = $form['target_group_id'];
     }
-    $target_group = new D2U_Courses\TargetGroup($target_group_id);
+    $target_group = new TobiasKrais\D2UCourses\TargetGroup($target_group_id);
 
     // Check if object is used
     $uses_courses = $target_group->getCourses();
@@ -78,7 +78,7 @@ if ('edit' === $func || 'add' === $func) {
 				<input type="hidden" name="form[target_group_id]" value="<?= $entry_id ?>">
 				<?php
 
-                    $target_group = new D2U_Courses\TargetGroup($entry_id);
+                    $target_group = new TobiasKrais\D2UCourses\TargetGroup($entry_id);
                     \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_helper_name', 'form[name]', $target_group->name, true, false);
                     \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_helper_picture', '1', $target_group->picture, false);
                     \TobiasKrais\D2UHelper\BackendHelper::form_input('header_priority', 'form[priority]', $target_group->priority, true, false, 'number');

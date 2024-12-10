@@ -1,8 +1,10 @@
 <?php
 // save settings
 
-use D2U_Courses\Category;
-use D2U_Courses\LocationCategory;
+use TobiasKrais\D2UCourses\Category;
+use TobiasKrais\D2UCourses\FrontendHelper;
+use TobiasKrais\D2UCourses\KuferSyncCronjob;
+use TobiasKrais\D2UCourses\LocationCategory;
 
 if ('save' === filter_input(INPUT_POST, 'btn_save')) {
     $settings = rex_post('settings', 'array', []);
@@ -69,7 +71,7 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
             // START update views for url addon
             $sql = rex_sql::factory();
             // Online courses (changes need to be done in install.php and pages/settings.php)
-            $showTimeWhere = d2u_courses_frontend_helper::getShowTimeWhere();
+            $showTimeWhere = FrontendHelper::getShowTimeWhere();
             $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_categories AS '
                 // Categories with courses
                 .'SELECT categories.category_id, categories.name, parents.name AS parent_name, categories.name AS seo_title, categories.picture, courses.updatedate, IF(categories.parent_category_id > 0, categories.parent_category_id, -1) AS parent_category_id, IF(parents.parent_category_id > 0, parents.parent_category_id, -1) AS grand_parent_category_id, IF(grand_parents.parent_category_id > 0, grand_parents.parent_category_id, -1) AS great_grand_parent_category_id
@@ -180,10 +182,10 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 					LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_locations AS locations
 						ON courses.location_id = locations.location_id
 					WHERE courses.online_status = "online"
-						AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+						AND ('. FrontendHelper::getShowTimeWhere() .')
 						AND courses.updatedate = (
 							SELECT MAX(courses_max.updatedate) FROM '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max
-							WHERE locations.location_id = courses_max.location_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+							WHERE locations.location_id = courses_max.location_id AND courses_max.online_status = "online" AND ('. FrontendHelper::getShowTimeWhere() .')
 						)
 					GROUP BY location_id, name, seo_title, picture, updatedate, location_category_id;');
                 // Online location categories (changes need to be done here and plugin install.php)
@@ -195,12 +197,12 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 					LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_location_categories AS categories
 						ON locations.location_category_id = categories.location_category_id
 					WHERE courses.online_status = "online"
-						AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+						AND ('. FrontendHelper::getShowTimeWhere() .')
 						AND courses.updatedate = (
 							SELECT MAX(courses_max.updatedate) FROM '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max
 							LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_locations AS locations_max
 								ON courses_max.location_id = locations_max.location_id
-							WHERE categories.location_category_id = locations_max.location_category_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+							WHERE categories.location_category_id = locations_max.location_category_id AND courses_max.online_status = "online" AND ('. FrontendHelper::getShowTimeWhere() .')
 						)
 					GROUP BY location_category_id, name, seo_title, picture, updatedate;');
                 // END create views for url addon
@@ -215,11 +217,11 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 					LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses
 						ON c2s.course_id = courses.course_id
 					WHERE courses.online_status = "online"
-						AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+						AND ('. FrontendHelper::getShowTimeWhere() .')
 						AND courses.updatedate = (
 							SELECT MAX(courses_max.updatedate) FROM '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories AS schedules_max
 							LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max ON schedules_max.course_id = courses_max.course_id
-							WHERE schedules.schedule_category_id = schedules_max.schedule_category_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+							WHERE schedules.schedule_category_id = schedules_max.schedule_category_id AND courses_max.online_status = "online" AND ('. FrontendHelper::getShowTimeWhere() .')
 						)
 					GROUP BY schedule_category_id, name, seo_title, picture, priority, updatedate, parent_schedule_category_id
 					UNION
@@ -233,12 +235,12 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 						ON schedules.parent_schedule_category_id = parents.schedule_category_id
 					WHERE parents.schedule_category_id > 0
 						AND courses.online_status = "online"
-						AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+						AND ('. FrontendHelper::getShowTimeWhere() .')
 						AND courses.updatedate = (
 							SELECT MAX(courses_max.updatedate) FROM '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories AS c2s_max
 							LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max ON c2s_max.course_id = courses_max.course_id
 							LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS schedules_max ON c2s_max.schedule_category_id = c2s_max.schedule_category_id
-							WHERE schedules.parent_schedule_category_id = schedules_max.schedule_category_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+							WHERE schedules.parent_schedule_category_id = schedules_max.schedule_category_id AND courses_max.online_status = "online" AND ('. FrontendHelper::getShowTimeWhere() .')
 						)
 					GROUP BY schedule_category_id, name, seo_title, picture, priority, updatedate, parent_schedule_category_id;');
             }
@@ -257,11 +259,11 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 						ON c2c.category_id = categories.category_id
 					WHERE categories.category_id > 0
 						AND courses.online_status = "online"
-						AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+						AND ('. FrontendHelper::getShowTimeWhere() .')
 						AND courses.updatedate = (
 							SELECT MAX(courses_max.updatedate) FROM '. rex::getTablePrefix() .'d2u_courses_2_categories AS categories_max
 							LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max ON categories_max.course_id = courses_max.course_id
-							WHERE categories.category_id = categories_max.category_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+							WHERE categories.category_id = categories_max.category_id AND courses_max.online_status = "online" AND ('. FrontendHelper::getShowTimeWhere() .')
 						)
 					GROUP BY target_group_id, category_id, target_group_child_id, name, seo_title, picture, updatedate;');
                 // Online target groups (changes need to be done here and plugin install.php / update.php)
@@ -273,11 +275,11 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
 					LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses
 						ON c2t.course_id = courses.course_id
 					WHERE courses.online_status = "online"
-						AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+						AND ('. FrontendHelper::getShowTimeWhere() .')
 						AND courses.updatedate = (
 							SELECT MAX(courses_max.updatedate) FROM '. rex::getTablePrefix() .'d2u_courses_2_target_groups AS targets_max
 							LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max ON targets_max.course_id = courses_max.course_id
-							WHERE target.target_group_id = targets_max.target_group_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+							WHERE target.target_group_id = targets_max.target_group_id AND courses_max.online_status = "online" AND ('. FrontendHelper::getShowTimeWhere() .')
 						)
 					GROUP BY target_group_id, name, seo_title, picture, priority, updatedate;');
             }
@@ -287,11 +289,11 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
         }
 
         // Install / update language replacements
-        d2u_courses_lang_helper::factory()->install();
+        TobiasKrais\D2UCourses\LangHelper::factory()->install();
 
         // Install / remove Cronjob
         if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-            $kufer_cronjob = kufer_sync_cronjob::factory();
+            $kufer_cronjob = KuferSyncCronjob::factory();
             if ('active' === rex_config::get('d2u_courses', 'kufer_sync_autoimport')) {
                 if (!$kufer_cronjob->isInstalled()) {
                     $kufer_cronjob->install();
@@ -451,13 +453,13 @@ if ('save' === filter_input(INPUT_POST, 'btn_save')) {
                             \TobiasKrais\D2UHelper\BackendHelper::form_checkbox('d2u_courses_import_settings_autoimport', 'settings[kufer_sync_autoimport]', 'active', 'active' === rex_config::get('d2u_courses', 'kufer_sync_autoimport'));
                             \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_import_settings_xml_url', 'settings[kufer_sync_xml_url]', (string) rex_config::get('d2u_courses', 'kufer_sync_xml_url'), true, false, 'text');
                             $options_categories = [];
-                            foreach (\D2U_Courses\Category::getAllNotParents() as $category) {
+                            foreach (\TobiasKrais\D2UCourses\Category::getAllNotParents() as $category) {
                                 $options_categories[$category->category_id] = ($category->parent_category instanceof Category ? ($category->parent_category->parent_category instanceof Category ? ($category->parent_category->parent_category->parent_category instanceof Category ? $category->parent_category->parent_category->parent_category->name .' → ' : ''). $category->parent_category->parent_category->name .' → ' : ''). $category->parent_category->name .' → ' : ''). $category->name;
                             }
                             \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_import_settings_default_category', 'settings[kufer_sync_default_category_id]', $options_categories, [(int) rex_config::get('d2u_courses', 'kufer_sync_default_category_id')], 1, false, false);
                             if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
                                 $options_locations = [];
-                                foreach (\D2U_Courses\Location::getAll() as $location) {
+                                foreach (\TobiasKrais\D2UCourses\Location::getAll() as $location) {
                                     $options_locations[$location->location_id] = ($location->location_category instanceof LocationCategory ? $location->location_category->name .' → ' : ''). $location->name;
                                 }
                                 asort($options_locations);

@@ -1,6 +1,6 @@
 <?php
-use D2U_Courses\Course;
-use D2U_Courses\CustomerBooking;
+use TobiasKrais\D2UCourses\Course;
+use TobiasKrais\D2UCourses\CustomerBooking;
 
 if (\rex::isBackend() && is_object(\rex::getUser())) {
     rex_perm::register('d2u_courses[customer_bookings]', rex_i18n::msg('d2u_courses_customer_bookings_rights_customer_bookings'), rex_perm::OPTIONS);

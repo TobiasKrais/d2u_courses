@@ -31,11 +31,11 @@ if (rex_plugin::get('d2u_courses', 'target_groups')->isInstalled()) {
 
 // Delete CronJob if activated
 if ('active' === rex_config::get('d2u_courses', 'kufer_sync_autoimport', 'inactive')) {
-    if (!class_exists(kufer_sync_cronjob::class)) {
+    if (!class_exists(TobiasKrais\D2UCourses\KuferSyncCronjob::class)) {
         // Load class in case addon is deactivated
-        require_once 'lib/kufer_sync_cronjob.php';
+        require_once 'lib/KuferSyncCronjob.php';
     }
-    $kufer_cronjob = kufer_sync_cronjob::factory();
+    $kufer_cronjob = TobiasKrais\D2UCourses\KuferSyncCronjob::factory();
     if ($kufer_cronjob->isInstalled()) {
         $kufer_cronjob->delete();
     }

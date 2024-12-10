@@ -5,9 +5,8 @@
  * @author <a href="http://www.design-to-use.de">www.design-to-use.de</a>
  */
 
-namespace D2U_Courses;
+namespace TobiasKrais\D2UCourses;
 
-use d2u_courses_frontend_helper;
 use rex;
 use rex_addon;
 use rex_config;
@@ -118,7 +117,7 @@ class ScheduleCategory
             .'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses ON c2s.course_id = courses.course_id '
                 .'WHERE c2s.schedule_category_id = '. $this->schedule_category_id .' '
                     ."AND online_status = 'online' "
-                    .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') ';
+                    .'AND ('. FrontendHelper::getShowTimeWhere() .') ';
         $result = rex_sql::factory();
         $result->setQuery($query);
         $num_rows = $result->getRows();
@@ -156,7 +155,7 @@ class ScheduleCategory
                     . 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses '
                         .'ON c2s.course_id = courses.course_id AND courses.course_id > 0 '
                     ."WHERE online_status = 'online' "
-                        .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') '
+                        .'AND ('. FrontendHelper::getShowTimeWhere() .') '
                         . ($parent_category_id > 0 ? 'AND parent_schedule_category_id = '. $parent_category_id .' ' : '')
                     .'GROUP BY c2s.schedule_category_id, schedule_categories.name ';
             if ('priority' === rex_addon::get('d2u_courses')->getConfig('default_category_sort', 'name')) {
@@ -282,7 +281,7 @@ class ScheduleCategory
                 .'WHERE c2s.schedule_category_id = '. $this->schedule_category_id .' ';
         if ($online_only) {
             $query .= "AND online_status = 'online' "
-                .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') ';
+                .'AND ('. FrontendHelper::getShowTimeWhere() .') ';
         }
         $query .= 'ORDER BY date_start, name';
 

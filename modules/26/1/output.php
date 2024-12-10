@@ -1,11 +1,11 @@
 <?php
 
-use D2U_Courses\Category;
-use D2U_Courses\Course;
-use D2U_Courses\Location;
-use D2U_Courses\LocationCategory;
-use D2U_Courses\ScheduleCategory;
-use D2U_Courses\TargetGroup;
+use TobiasKrais\D2UCourses\Category;
+use TobiasKrais\D2UCourses\Course;
+use TobiasKrais\D2UCourses\Location;
+use TobiasKrais\D2UCourses\LocationCategory;
+use TobiasKrais\D2UCourses\ScheduleCategory;
+use TobiasKrais\D2UCourses\TargetGroup;
 
 if (PHP_SESSION_NONE === session_status()) {
     session_start();
@@ -50,7 +50,7 @@ if (filter_input(INPUT_GET, 'course_id', FILTER_VALIDATE_INT, ['options' => ['de
     $course_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'course_id', FILTER_VALIDATE_INT);
 
     if ($course_id > 0) {
-        $course = new D2U_Courses\Course($course_id);
+        $course = new TobiasKrais\D2UCourses\Course($course_id);
         // Redirect if object is not online
         if ('online' !== $course->online_status) {
             rex_redirect(rex_article::getNotfoundArticleId(), rex_clang::getCurrentId());
@@ -62,7 +62,7 @@ elseif (filter_input(INPUT_GET, 'courses_category_id', FILTER_VALIDATE_INT, ['op
     $category_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'courses_category_id', FILTER_VALIDATE_INT);
 
     if ($category_id > 0) {
-        $category = new D2U_Courses\Category($category_id);
+        $category = new TobiasKrais\D2UCourses\Category($category_id);
     }
 }
 // Locations
@@ -70,7 +70,7 @@ elseif (filter_input(INPUT_GET, 'location_id', FILTER_VALIDATE_INT, ['options' =
     $location_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'location_id', FILTER_VALIDATE_INT);
 
     if ($location_id > 0 && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-        $location = new D2U_Courses\Location($location_id);
+        $location = new TobiasKrais\D2UCourses\Location($location_id);
     }
 }
 // Location category
@@ -78,7 +78,7 @@ elseif (filter_input(INPUT_GET, 'location_category_id', FILTER_VALIDATE_INT, ['o
     $location_category_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'location_category_id', FILTER_VALIDATE_INT);
 
     if ($location_category_id > 0 && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-        $location_category = new D2U_Courses\LocationCategory($location_category_id);
+        $location_category = new TobiasKrais\D2UCourses\LocationCategory($location_category_id);
     }
 }
 // Schedule category
@@ -86,7 +86,7 @@ elseif (filter_input(INPUT_GET, 'schedule_category_id', FILTER_VALIDATE_INT, ['o
     $schedule_category_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'schedule_category_id', FILTER_VALIDATE_INT);
 
     if ($schedule_category_id > 0 && rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
-        $schedule_category = new D2U_Courses\ScheduleCategory($schedule_category_id);
+        $schedule_category = new ScheduleCategory($schedule_category_id);
     }
 }
 // Target groups
@@ -94,7 +94,7 @@ elseif (filter_input(INPUT_GET, 'target_group_id', FILTER_VALIDATE_INT, ['option
     $target_group_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'target_group_id', FILTER_VALIDATE_INT);
 
     if ($target_group_id > 0 && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-        $target_group = new D2U_Courses\TargetGroup($target_group_id);
+        $target_group = new TargetGroup($target_group_id);
     }
 }
 // Target group children
@@ -102,7 +102,7 @@ elseif (filter_input(INPUT_GET, 'target_group_child_id', FILTER_VALIDATE_INT, ['
     $target_group_child_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (string) filter_input(INPUT_GET, 'target_group_child_id');
 
     if ($target_group_child_id > 0 && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-        $target_group = D2U_Courses\TargetGroup::getByChildID((string) $target_group_child_id);
+        $target_group = TargetGroup::getByChildID((string) $target_group_child_id);
     }
 }
 
@@ -158,7 +158,7 @@ if (rex::isBackend()) {
     $courses = [];
     // Get courses if search field was used
     if (null !== filter_input(INPUT_POST, 'course_search')) {
-        $courses = D2U_Courses\Course::search((string) filter_input(INPUT_POST, 'course_search'));
+        $courses = TobiasKrais\D2UCourses\Course::search((string) filter_input(INPUT_POST, 'course_search'));
     }
     // Deal with categories
     elseif ($category instanceof Category) {
@@ -238,23 +238,23 @@ if (rex::isBackend()) {
             echo '<div class="row">';
         }
         if ('locations' === $startpage && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) { /** @phpstan-ignore-line */
-            $location_categories = D2U_Courses\LocationCategory::getAll(true);
+            $location_categories = TobiasKrais\D2UCourses\LocationCategory::getAll(true);
             foreach ($location_categories as $current_location_category) {
                 printBoxModule26_1($current_location_category->name, $current_location_category->picture, (string) rex_config::get('d2u_courses', 'location_bg_color', '#41b23b'), $current_location_category->getUrl(), $tmp_box_per_line);
             }
         } elseif ('schedule_categories' === $startpage && rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) { /** @phpstan-ignore-line */
-            $schedule_categories = D2U_Courses\ScheduleCategory::getAllParents(true);
+            $schedule_categories = ScheduleCategory::getAllParents(true);
             foreach ($schedule_categories as $currecnt_schedule_category) {
                 printBoxModule26_1($currecnt_schedule_category->name, $currecnt_schedule_category->picture, (string) rex_config::get('d2u_courses', 'schedule_category_bg_color', '#66ccc2'), $currecnt_schedule_category->getUrl(), $tmp_box_per_line);
             }
         } elseif ('target_groups' === $startpage && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) { /** @phpstan-ignore-line */
-            $target_groups = D2U_Courses\TargetGroup::getAll(true);
+            $target_groups = TargetGroup::getAll(true);
             foreach ($target_groups as $current_target_group) {
                 printBoxModule26_1($current_target_group->name, $current_target_group->picture, (string) rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a'), $current_target_group->getUrl(), $tmp_box_per_line);
             }
         } elseif (false === $course) {
             // Only show default if no course should be shown
-            $categories = D2U_Courses\Category::getAllParents(true);
+            $categories = TobiasKrais\D2UCourses\Category::getAllParents(true);
             foreach ($categories as $current_category) {
                 printBoxModule26_1($current_category->name, $current_category->picture, $current_category->color, $current_category->getUrl(), $tmp_box_per_line);
             }
@@ -587,7 +587,7 @@ if (rex::isBackend()) {
         if ('yes' === $course->registration_possible || 'yes_number' === $course->registration_possible || 'booked' === $course->registration_possible) {
             $box_details .= '<div class="col-12 course_row">';
             $box_details .= '<div class="course_box spacer_box add_cart"'. ($course->category instanceof Category ? ' style="background-color: '. $course->category->color .'"' : '') .'>';
-            if (D2U_Courses\Cart::getCart()->hasCourse($course->course_id)) {
+            if (TobiasKrais\D2UCourses\Cart::getCart()->hasCourse($course->course_id)) {
                 $box_details .= '<a href="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'">'. $tag_open .'d2u_courses_cart_course_already_in'. $tag_close .' - '. $tag_open .'d2u_courses_cart_go_to'. $tag_close .'</a>';
             } else {
                 $box_details .= '<form action="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_shopping_cart', rex_article::getSiteStartArticleId())) .'" method="post">';

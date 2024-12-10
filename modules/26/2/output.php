@@ -1,8 +1,8 @@
 <?php
 
-use D2U_Courses\Category;
+use TobiasKrais\D2UCourses\Category;
 
-$cart = \D2U_Courses\Cart::getCart();
+$cart = \TobiasKrais\D2UCourses\Cart::getCart();
 
 // Delete course / participant
 if (filter_input(INPUT_GET, 'delete', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0) {
@@ -29,8 +29,8 @@ if (is_array($form_data) && array_key_exists('participant_add', $form_data) && i
 }
 
 // Add participant data
-foreach (\D2U_Courses\Cart::getCourseIDs() as $course_id) {
-    $course = new \D2U_Courses\Course($course_id);
+foreach (\TobiasKrais\D2UCourses\Cart::getCourseIDs() as $course_id) {
+    $course = new \TobiasKrais\D2UCourses\Course($course_id);
 
     if (is_array($form_data) && array_key_exists('participant_'. $course_id, $form_data) && is_array($form_data['participant_'. $course_id])) {
         // courses with person details
@@ -106,15 +106,15 @@ if (isset($form_data['invoice_form'])) {
     $kufer_children = [];
     $kufer_self = [];
     $mail_registration = [];
-    foreach (D2U_Courses\Cart::getCourseIDs() as $course_id) {
-        $course = new D2U_Courses\Course($course_id);
+    foreach (TobiasKrais\D2UCourses\Cart::getCourseIDs() as $course_id) {
+        $course = new TobiasKrais\D2UCourses\Course($course_id);
         if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && 'KuferSQL' === $course->import_type && '' !== $course->course_number) {
-            foreach (D2U_Courses\Cart::getCourseParticipants($course_id) as $participant) {
+            foreach (TobiasKrais\D2UCourses\Cart::getCourseParticipants($course_id) as $participant) {
                 if (is_array($participant) && array_key_exists('firstname', $participant) && $participant['firstname'] === $form_data['invoice_form']['firstname'] && $participant['lastname'] === $form_data['invoice_form']['lastname']) {
                     // Treat children currently like normal persons
                     $kufer_self[$course_id][] = $participant;
                     // Otherwise uncomment next lines
-//					if(D2U_Courses\Cart::calculateAge($participant['birthday']) < 18) {
+//					if(TobiasKrais\D2UCourses\Cart::calculateAge($participant['birthday']) < 18) {
 //						$kufer_children[$course_id][] = $participant;
 //					}
 //					else {
@@ -124,7 +124,7 @@ if (isset($form_data['invoice_form'])) {
                     // Treat children currently like normal persons
                     $kufer_others[$course_id][] = $participant;
                     // Otherwise uncomment next lines
-//					if(D2U_Courses\Cart::calculateAge($participant['birthday']) < 18) {
+//					if(TobiasKrais\D2UCourses\Cart::calculateAge($participant['birthday']) < 18) {
 //						$kufer_children[$course_id][] = $participant;
 //					}
 //					else {
@@ -143,7 +143,7 @@ if (isset($form_data['invoice_form'])) {
                 }
             }
         } else {
-            $mail_registration[$course_id] = D2U_Courses\Cart::getCourseParticipants($course_id);
+            $mail_registration[$course_id] = TobiasKrais\D2UCourses\Cart::getCourseParticipants($course_id);
         }
     }
 
@@ -489,8 +489,8 @@ if (isset($form_data['invoice_form'])) {
     // Bestellübersicht
     echo '<div class="registration_header cart_row_title"><h1>'. $tag_open .'d2u_courses_order_overview'. $tag_close .'</h1></div>';
     $has_minor_participants = false;
-    foreach (D2U_Courses\Cart::getCourseIDs() as $course_id) {
-        $course = new D2U_Courses\Course($course_id);
+    foreach (TobiasKrais\D2UCourses\Cart::getCourseIDs() as $course_id) {
+        $course = new TobiasKrais\D2UCourses\Course($course_id);
         echo '<div class="row">';
         echo '<div class="col-12 spacer">';
         echo '<div class="cart_row_title" style="background-color: '. ($course->category instanceof Category ? $course->category->color : 'grey') .'">';
@@ -505,10 +505,10 @@ if (isset($form_data['invoice_form'])) {
             echo $tag_open .'d2u_courses_date'. $tag_close .': ';
             $date = '';
             if ('' !== $course->date_start) {
-                $date .= D2U_Courses\Cart::formatCourseDate($course->date_start);
+                $date .= TobiasKrais\D2UCourses\Cart::formatCourseDate($course->date_start);
             }
             if ('' !== $course->date_end) {
-                $date .= ' - '. D2U_Courses\Cart::formatCourseDate($course->date_end);
+                $date .= ' - '. TobiasKrais\D2UCourses\Cart::formatCourseDate($course->date_end);
             }
             if ('' !== $course->time) {
                 if ('' !== $date) {
@@ -528,7 +528,7 @@ if (isset($form_data['invoice_form'])) {
             }
         }
         if ('yes_number' === $course->registration_possible) {
-            $participant_data = D2U_Courses\Cart::getCourseParticipants($course_id);
+            $participant_data = TobiasKrais\D2UCourses\Cart::getCourseParticipants($course_id);
             if (array_key_exists('participant_number', $participant_data) && !is_array($participant_data['participant_number'])) {
                 echo '<ul>';
                 echo '<li>'. $tag_open .'d2u_courses_participant_number'. $tag_close .': '. $participant_data['participant_number'];
@@ -549,7 +549,7 @@ if (isset($form_data['invoice_form'])) {
         } else {
             // registration with person details
             echo '<ul>';
-            foreach (D2U_Courses\Cart::getCourseParticipants($course_id) as $id => $participant) {
+            foreach (TobiasKrais\D2UCourses\Cart::getCourseParticipants($course_id) as $id => $participant) {
                 if (is_array($participant)) {
                     echo '<li>'. (array_key_exists('firstname', $participant) && '' !== $participant['firstname'] ? $participant['firstname'] .' ' : '')
                         . (array_key_exists('lastname', $participant) && '' !== $participant['lastname'] ? $participant['lastname'] .' ' : '');
@@ -558,10 +558,10 @@ if (isset($form_data['invoice_form'])) {
                         echo ' (';
                         $age_seperator = false;
                         if (1 === $ask_age && array_key_exists('birthday', $participant) && '' !== $participant['birthday']) { /** @phpstan-ignore-line */
-                            echo $tag_open .'d2u_courses_birthdate'. $tag_close .': '. D2U_Courses\Cart::formatCourseDate($participant['birthday']);
+                            echo $tag_open .'d2u_courses_birthdate'. $tag_close .': '. TobiasKrais\D2UCourses\Cart::formatCourseDate($participant['birthday']);
                             $age_seperator = true;
                         } elseif (2 === $ask_age && array_key_exists('age', $participant)) { /** @phpstan-ignore-line */
-                            echo $tag_open .'d2u_courses_age'. $tag_close .': '. D2U_Courses\Cart::formatCourseDate($participant['age']);
+                            echo $tag_open .'d2u_courses_age'. $tag_close .': '. TobiasKrais\D2UCourses\Cart::formatCourseDate($participant['age']);
                             $age_seperator = true;
                         }
                         if ($ask_gender) { /** @phpstan-ignore-line */
@@ -693,7 +693,7 @@ if (isset($form_data['invoice_form'])) {
     echo '</div>';
     echo '</div>';
 
-    if (0 === count(D2U_Courses\Cart::getCourseIDs())) {
+    if (0 === count(TobiasKrais\D2UCourses\Cart::getCourseIDs())) {
         echo '<div class="col-12 col-md-9 spacer">';
         echo '<div class="cart_row_title" id="cart_empty">'. $tag_open .'d2u_courses_cart_empty'. $tag_close .'</div>';
         echo '</div>';
@@ -701,8 +701,8 @@ if (isset($form_data['invoice_form'])) {
         echo '<div class="col-12 col-md-9">';
         echo '<form action="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'" method="post">';
         echo '<div class="row">';
-        foreach (D2U_Courses\Cart::getCourseIDs() as $course_id) {
-            $course = new D2U_Courses\Course($course_id);
+        foreach (TobiasKrais\D2UCourses\Cart::getCourseIDs() as $course_id) {
+            $course = new TobiasKrais\D2UCourses\Course($course_id);
             echo '<div class="col-12 spacer">';
             echo '<div class="cart_row_title" style="background-color: '. ($course->category instanceof Category ? $course->category->color : 'grey') .'">';
             echo '<div class="row">';
@@ -717,10 +717,10 @@ if (isset($form_data['invoice_form'])) {
                 echo $tag_open .'d2u_courses_date'. $tag_close .': ';
                 $date = '';
                 if ('' !== $course->date_start) {
-                    $date .= D2U_Courses\Cart::formatCourseDate($course->date_start);
+                    $date .= TobiasKrais\D2UCourses\Cart::formatCourseDate($course->date_start);
                 }
                 if ('' !== $course->date_end) {
-                    $date .= ' - '. D2U_Courses\Cart::formatCourseDate($course->date_end);
+                    $date .= ' - '. TobiasKrais\D2UCourses\Cart::formatCourseDate($course->date_end);
                 }
                 if ('' !== $course->time) {
                     if ('' !== $date) {
@@ -745,7 +745,7 @@ if (isset($form_data['invoice_form'])) {
 
             if ('yes_number' === $course->registration_possible) {
                 // registration without person details
-                $participants_data = D2U_Courses\Cart::getCourseParticipants($course_id);
+                $participants_data = TobiasKrais\D2UCourses\Cart::getCourseParticipants($course_id);
                 echo '<br>';
                 echo '<div class="row">';
                 echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open .'d2u_courses_participant_number'. $tag_close .'</div>'
@@ -769,7 +769,7 @@ if (isset($form_data['invoice_form'])) {
                 // registration with person details
                 echo '<div class="row">';
                 echo '<div class="col-12">&nbsp;</div>';
-                foreach (D2U_Courses\Cart::getCourseParticipants($course_id) as $participant_id => $participant_data) {
+                foreach (TobiasKrais\D2UCourses\Cart::getCourseParticipants($course_id) as $participant_id => $participant_data) {
                     if (is_array($participant_data)) {
                         echo '<div class="col-12"><p><b>'. \Sprog\Wildcard::get('d2u_courses_cart_participant') .'</b></p></div>';
 
@@ -780,7 +780,7 @@ if (isset($form_data['invoice_form'])) {
                         // Delete button
                         echo '<div class="col-2 col-sm-1">';
                         $ask_delete = '';
-                        if (1 === D2U_Courses\Cart::getCourseParticipantsNumber($course_id)) {
+                        if (1 === TobiasKrais\D2UCourses\Cart::getCourseParticipantsNumber($course_id)) {
                             $ask_delete = ' onclick="return window.confirm(\''. $tag_open .'d2u_courses_cart_delete_course'. $tag_close .'\');"';
                         }
                         echo '<a href="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_shopping_cart')) .'?delete='. $course_id .'&participant='. $participant_id .'" tabindex="-1" '. $ask_delete .'>';

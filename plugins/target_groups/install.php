@@ -26,11 +26,11 @@ $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_ur
 	LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses
 		ON c2t.course_id = courses.course_id
 	WHERE courses.online_status = "online"
-		AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+		AND ('. TobiasKrais\D2UCourses\FrontendHelper::getShowTimeWhere() .')
 		AND courses.updatedate = (
 			SELECT MAX(courses_max.updatedate) FROM '. rex::getTablePrefix() .'d2u_courses_2_target_groups AS targets_max
 			LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max ON targets_max.course_id = courses_max.course_id
-			WHERE target.target_group_id = targets_max.target_group_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+			WHERE target.target_group_id = targets_max.target_group_id AND courses_max.online_status = "online" AND ('. TobiasKrais\D2UCourses\FrontendHelper::getShowTimeWhere() .')
 		)
 	GROUP BY target_group_id, name, seo_title, picture, priority, updatedate;');
 // Online target groups childs (separator is 00000 - ugly, but only digits are allowed) (changes need to be done here, pages/settings.php and update.php)
@@ -47,11 +47,11 @@ $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_ur
 		ON c2c.category_id = categories.category_id
 	WHERE categories.category_id > 0
 		AND courses.online_status = "online"
-		AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+		AND ('. TobiasKrais\D2UCourses\FrontendHelper::getShowTimeWhere() .')
 		AND courses.updatedate = (
 			SELECT MAX(courses_max.updatedate) FROM '. rex::getTablePrefix() .'d2u_courses_2_categories AS categories_max
 			LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max ON categories_max.course_id = courses_max.course_id
-			WHERE categories.category_id = categories_max.category_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+			WHERE categories.category_id = categories_max.category_id AND courses_max.online_status = "online" AND ('. TobiasKrais\D2UCourses\FrontendHelper::getShowTimeWhere() .')
 		)
 	GROUP BY target_group_id, category_id, target_group_child_id, name, seo_title, picture, updatedate;');
 // END create views for url addon

@@ -40,10 +40,10 @@ $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_ur
 	LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_locations AS locations
 		ON courses.location_id = locations.location_id
 	WHERE courses.online_status = "online"
-		AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+		AND ('. TobiasKrais\D2UCourses\FrontendHelper::getShowTimeWhere() .')
 		AND courses.updatedate = (
 			SELECT MAX(courses_max.updatedate) FROM '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max
-			WHERE locations.location_id = courses_max.location_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+			WHERE locations.location_id = courses_max.location_id AND courses_max.online_status = "online" AND ('. TobiasKrais\D2UCourses\FrontendHelper::getShowTimeWhere() .')
 		)
 	GROUP BY location_id, name, seo_title, picture, updatedate, location_category_id;');
 // Online location categories (changes need to be done here and addon pages/settings.php)
@@ -55,12 +55,12 @@ $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_ur
 	LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_location_categories AS categories
 		ON locations.location_category_id = categories.location_category_id
 	WHERE courses.online_status = "online"
-		AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+		AND ('. TobiasKrais\D2UCourses\FrontendHelper::getShowTimeWhere() .')
 		AND courses.updatedate = (
 			SELECT MAX(courses_max.updatedate) FROM '. rex::getTablePrefix() .'d2u_courses_courses AS courses_max
 			LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_locations AS locations_max
 				ON courses_max.location_id = locations_max.location_id
-			WHERE categories.location_category_id = locations_max.location_category_id AND courses_max.online_status = "online" AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .')
+			WHERE categories.location_category_id = locations_max.location_category_id AND courses_max.online_status = "online" AND ('. TobiasKrais\D2UCourses\FrontendHelper::getShowTimeWhere() .')
 		)
 	GROUP BY location_category_id, name, seo_title, picture, updatedate;');
 // END create views for url addon

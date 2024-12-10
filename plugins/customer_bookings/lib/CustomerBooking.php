@@ -5,10 +5,8 @@
  * @author <a href="http://www.design-to-use.de">www.design-to-use.de</a>
  */
 
-namespace D2U_Courses;
+namespace TobiasKrais\D2UCourses;
 
-use DateInterval;
-use DateTime;
 use rex;
 use rex_sql;
 

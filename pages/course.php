@@ -1,10 +1,10 @@
 <?php
 
-use D2U_Courses\Category;
-use D2U_Courses\CustomerBooking;
-use D2U_Courses\Location;
-use D2U_Courses\LocationCategory;
-use D2U_Courses\ScheduleCategory;
+use TobiasKrais\D2UCourses\Category;
+use TobiasKrais\D2UCourses\CustomerBooking;
+use TobiasKrais\D2UCourses\Location;
+use TobiasKrais\D2UCourses\LocationCategory;
+use TobiasKrais\D2UCourses\ScheduleCategory;
 
 $func = rex_request('func', 'string');
 $entry_id = rex_request('entry_id', 'int');
@@ -25,7 +25,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $input_link = rex_post('REX_INPUT_LINK', 'array', []);
 
     $course_id = $form['course_id'];
-    $course = new D2U_Courses\Course($course_id);
+    $course = new TobiasKrais\D2UCourses\Course($course_id);
     $course->name = $form['name'];
     $course->teaser = $form['teaser'];
     $course->description = $form['description'];
@@ -47,7 +47,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $course->date_start = $form['date_start'];
     $course->date_end = $form['date_end'];
     $course->time = $form['time'];
-    $course->category = $form['category_id'] > 0 ? new D2U_Courses\Category($form['category_id']) : false;
+    $course->category = $form['category_id'] > 0 ? new TobiasKrais\D2UCourses\Category($form['category_id']) : false;
     $course->secondary_category_ids = $form['secondary_category_ids'] ?? [];
     $course->participants_max = (int) $form['participants_max'];
     $course->participants_min = (int) $form['participants_min'];
@@ -64,7 +64,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $course->downloads = is_array($downloads) ? $downloads : [];
     // Locations plugin
     if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-        $course->location = $form['location_id'] > 0 ? new D2U_Courses\Location($form['location_id']) : false;
+        $course->location = $form['location_id'] > 0 ? new TobiasKrais\D2UCourses\Location($form['location_id']) : false;
         $course->room = $form['room'];
     }
     // Schedule categories plugin
@@ -97,7 +97,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
         $form = rex_post('form', 'array', []);
         $course_id = $form['course_id'];
     }
-    $course = new D2U_Courses\Course($course_id);
+    $course = new TobiasKrais\D2UCourses\Course($course_id);
 
     if ($course->delete()) {
         echo rex_view::success(rex_i18n::msg('d2u_helper_deleted') . $message);
@@ -109,7 +109,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
 }
 // Change online status of machine
 elseif ('changestatus' === $func) {
-    $course = new D2U_Courses\Course($entry_id);
+    $course = new TobiasKrais\D2UCourses\Course($entry_id);
     $course->changeStatus();
 
     header('Location: '. rex_url::currentBackendPage());
@@ -117,7 +117,7 @@ elseif ('changestatus' === $func) {
 }
 // Form
 if ('edit' === $func || 'clone' === $func || 'add' === $func) {
-    $course = new D2U_Courses\Course($entry_id);
+    $course = new TobiasKrais\D2UCourses\Course($entry_id);
 
     $readonly = false;
     if (rex::getUser() instanceof rex_user && !rex::getUser()->isAdmin() && !rex::getUser()->hasPerm('d2u_courses[courses_all]')
@@ -237,7 +237,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
 					<div class="panel-body-wrapper slide">
 						<?php
                             $options_categories = [];
-                            foreach (D2U_Courses\Category::getAllNotParents() as $category) {
+                            foreach (TobiasKrais\D2UCourses\Category::getAllNotParents() as $category) {
                                 $options_categories[$category->category_id] = ($category->parent_category instanceof Category ? ($category->parent_category->parent_category instanceof Category ? ($category->parent_category->parent_category->parent_category instanceof Category ? $category->parent_category->parent_category->parent_category->name .' → ' : ''). $category->parent_category->parent_category->name .' → ' : ''). $category->parent_category->name .' → ' : ''). $category->name;
                             }
                             \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_category_primary', 'form[category_id]', $options_categories, $course->category instanceof Category ? [$course->category->category_id] : [], 1, false, $readonly);
@@ -254,7 +254,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                             // Schedule categories plugin
                             if (rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
                                 $options_schedule_categories = [];
-                                foreach (D2U_Courses\ScheduleCategory::getAllNotParents() as $schedule_category) {
+                                foreach (ScheduleCategory::getAllNotParents() as $schedule_category) {
                                     $options_schedule_categories[$schedule_category->schedule_category_id] = ($schedule_category->parent_schedule_category instanceof ScheduleCategory ? $schedule_category->parent_schedule_category->name .' → ' : ''). $schedule_category->name;
                                 }
                                 \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_schedule_categories', 'form[schedule_category_ids][]', $options_schedule_categories, $course->schedule_category_ids, 10, true, $readonly);
@@ -262,7 +262,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                             // Target groups plugin
                             if (rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
                                 $options_target_groups = [];
-                                foreach (D2U_Courses\TargetGroup::getAll() as $target_groups) {
+                                foreach (TobiasKrais\D2UCourses\TargetGroup::getAll() as $target_groups) {
                                     $options_target_groups[$target_groups->target_group_id] = $target_groups->name;
                                 }
                                 \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_target_groups', 'form[target_group_ids][]', $options_target_groups, $course->target_group_ids, 5, true, $readonly);
@@ -270,7 +270,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                             // Locations plugin
                             if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
                                 $options_locations = [];
-                                foreach (D2U_Courses\Location::getAll() as $location) {
+                                foreach (TobiasKrais\D2UCourses\Location::getAll() as $location) {
                                     // Add location only if user has the right to edit courses for location
                                     if (rex::getUser() instanceof rex_user && (rex::getUser()->isAdmin() || rex::getUser()->hasPerm('d2u_courses[courses_all]') || in_array(rex::getUser()->getLogin(), $location->redaxo_users, true))) {
                                         $options_locations[$location->location_id] = ($location->location_category instanceof LocationCategory ? $location->location_category->name .' → ' : ''). $location->name;

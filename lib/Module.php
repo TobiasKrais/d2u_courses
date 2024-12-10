@@ -1,10 +1,12 @@
 <?php
+namespace TobiasKrais\D2UCourses;
+
 /**
  * Class managing modules published by www.design-to-use.de.
  *
  * @author Tobias Krais
  */
-class D2UCoursesModules
+class Module
 {
     /**
      * Get modules offered by this addon.
@@ -21,7 +23,7 @@ class D2UCoursesModules
             11);
         $modules[] = new \TobiasKrais\D2UHelper\Module('26-3',
             'D2U Veranstaltungen - Ausgabe Veranstaltungen einer Kategorie in Boxen',
-            4);
+            5);
         return $modules;
     }
 }

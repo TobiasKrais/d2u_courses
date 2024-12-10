@@ -5,9 +5,8 @@
  * @author <a href="http://www.design-to-use.de">www.design-to-use.de</a>
  */
 
-namespace D2U_Courses;
+namespace TobiasKrais\D2UCourses;
 
-use d2u_courses_frontend_helper;
 use rex;
 use rex_addon;
 use rex_config;
@@ -227,7 +226,7 @@ class TargetGroup
         }
         if ($online_only) {
             $query .= "AND online_status = 'online' "
-                .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') ';
+                .'AND ('. FrontendHelper::getShowTimeWhere() .') ';
         }
         $query .= 'GROUP BY course_id '
             .'ORDER BY date_start, name';
@@ -253,7 +252,7 @@ class TargetGroup
                 .'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses ON c2t.course_id = courses.course_id'
                 .'WHERE c2t.target_group_id = '. $this->target_group_id .' '
                     ."AND online_status = 'online' "
-                    .'AND ('. d2u_courses_frontend_helper::getShowTimeWhere() .') ';
+                    .'AND ('. FrontendHelper::getShowTimeWhere() .') ';
         $result = rex_sql::factory();
         $result->setQuery($query);
 

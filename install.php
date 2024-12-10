@@ -58,8 +58,8 @@
 // Online categories (changes need to be done in install.php and pages/settings.php)
 $sql = rex_sql::factory();
 $showTimeWhere = 'date_start = "" OR date_start > CURDATE()';
-if (class_exists(d2u_courses_frontend_helper::class) && is_callable(d2u_courses_frontend_helper::getShowTimeWhere(...))) {
-    $showTimeWhere = d2u_courses_frontend_helper::getShowTimeWhere();
+if (class_exists(TobiasKrais\D2UCourses\FrontendHelper::class) && is_callable(TobiasKrais\D2UCourses\FrontendHelper::getShowTimeWhere(...))) {
+    $showTimeWhere = TobiasKrais\D2UCourses\FrontendHelper::getShowTimeWhere();
 }
 $sql->setQuery('CREATE OR REPLACE VIEW '. rex::getTablePrefix() .'d2u_courses_url_categories AS '
     // Categories with courses
@@ -228,8 +228,8 @@ if (class_exists(TobiasKrais\D2UHelper\ModuleManager::class)) {
 }
 
 // Update translations
-if (!class_exists(d2u_courses_lang_helper::class)) {
+if (!class_exists(TobiasKrais\D2UCourses\LangHelper::class)) {
     // Load class in case addon is deactivated
-    require_once 'lib/d2u_courses_lang_helper.php';
+    require_once 'lib/LangHelper.php';
 }
-d2u_courses_lang_helper::factory()->install();
+TobiasKrais\D2UCourses\LangHelper::factory()->install();

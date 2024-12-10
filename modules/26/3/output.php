@@ -3,11 +3,11 @@
  * Get parameters
  */
 
-use D2U_Courses\Category;
-use D2U_Courses\Course;
+use TobiasKrais\D2UCourses\Category;
+use TobiasKrais\D2UCourses\Course;
 
 $category_id = (int) 'REX_VALUE[1]';
-$category = $category_id > 0 ? new \D2U_Courses\Category($category_id) : false; /** @phpstan-ignore-line */
+$category = $category_id > 0 ? new \TobiasKrais\D2UCourses\Category($category_id) : false; /** @phpstan-ignore-line */
 $courses = $category instanceof Category ? $category->getCourses(true) : []; /** @phpstan-ignore-line */
 $box_per_line = 4 === (int) 'REX_VALUE[5]' ? 4 : 3; /** @phpstan-ignore-line */
 

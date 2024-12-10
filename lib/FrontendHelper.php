@@ -1,15 +1,14 @@
 <?php
-
-use D2U_Courses\Category;
-use D2U_Courses\LocationCategory;
-use D2U_Courses\ScheduleCategory;
-use D2U_Courses\TargetGroup;
+namespace TobiasKrais\D2UCourses;
+use rex_addon;
+use rex_config;
+use rex_plugin;
 
 /**
  * @api
  * Offers helper functions for frontend.
  */
-class d2u_courses_frontend_helper
+class FrontendHelper
 {
     /**
      * Returns alternate URLs. Key is Redaxo language id, value is URL.
@@ -37,7 +36,7 @@ class d2u_courses_frontend_helper
             $course_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'course_id', FILTER_VALIDATE_INT);
 
             if ($course_id > 0) {
-                $course = new D2U_Courses\Course($course_id);
+                $course = new Course($course_id);
                 if ($course->category instanceof Category) {
                     if ($course->category->parent_category instanceof Category) {
                         if ($course->category->parent_category->parent_category instanceof Category) {
@@ -58,7 +57,7 @@ class d2u_courses_frontend_helper
             $category_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'courses_category_id', FILTER_VALIDATE_INT);
 
             if ($category_id > 0) {
-                $category = new D2U_Courses\Category($category_id);
+                $category = new Category($category_id);
                 if ($category->parent_category instanceof Category) {
                     if ($category->parent_category->parent_category instanceof Category) {
                         $breadcrumbs[] = '<a href="' . $category->parent_category->parent_category->getUrl() . '">' . $category->parent_category->parent_category->name . '</a>';
@@ -73,7 +72,7 @@ class d2u_courses_frontend_helper
             $location_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'location_id', FILTER_VALIDATE_INT);
 
             if ($location_id > 0 && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-                $location = new D2U_Courses\Location($location_id);
+                $location = new Location($location_id);
                 if ($location->location_category instanceof LocationCategory) {
                     $breadcrumbs[] = '<a href="' . $location->location_category->getUrl() . '">' . $location->location_category->name . '</a>';
                 }
@@ -85,7 +84,7 @@ class d2u_courses_frontend_helper
             $location_category_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'location_category_id', FILTER_VALIDATE_INT);
 
             if ($location_category_id > 0 && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-                $location_category = new D2U_Courses\LocationCategory($location_category_id);
+                $location_category = new LocationCategory($location_category_id);
                 $breadcrumbs[] = '<a href="' . $location_category->getUrl() . '">' . $location_category->name . '</a>';
             }
         }
@@ -94,7 +93,7 @@ class d2u_courses_frontend_helper
             $schedule_category_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'schedule_category_id', FILTER_VALIDATE_INT);
 
             if ($schedule_category_id > 0 && rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
-                $schedule_category = new D2U_Courses\ScheduleCategory($schedule_category_id);
+                $schedule_category = new ScheduleCategory($schedule_category_id);
                 if ($schedule_category->parent_schedule_category instanceof ScheduleCategory) {
                     $breadcrumbs[] = '<a href="' . $schedule_category->parent_schedule_category->getUrl() . '">' . $schedule_category->parent_schedule_category->name . '</a>';
                 }
@@ -106,7 +105,7 @@ class d2u_courses_frontend_helper
             $target_group_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'target_group_id', FILTER_VALIDATE_INT);
 
             if ($target_group_id > 0 && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-                $target_group = new D2U_Courses\TargetGroup($target_group_id);
+                $target_group = new TargetGroup($target_group_id);
                 $breadcrumbs[] = '<a href="' . $target_group->getUrl() . '">' . $target_group->name . '</a>';
             }
         }
@@ -115,7 +114,7 @@ class d2u_courses_frontend_helper
             $target_group_child_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (string) filter_input(INPUT_GET, 'target_group_child_id');
 
             if ($target_group_child_id > 0 && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
-                $target_group_child = D2U_Courses\TargetGroup::getByChildID((string) $target_group_child_id);
+                $target_group_child = TargetGroup::getByChildID((string) $target_group_child_id);
                 if ($target_group_child->parent_target_group instanceof TargetGroup) {
                     $breadcrumbs[] = '<a href="' . $target_group_child->parent_target_group->getUrl() . '">' . $target_group_child->parent_target_group->name . '</a>';
                 }

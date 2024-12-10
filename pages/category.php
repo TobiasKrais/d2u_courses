@@ -1,6 +1,6 @@
 <?php
 
-use D2U_Courses\Category;
+use TobiasKrais\D2UCourses\Category;
 
 $func = rex_request('func', 'string');
 $entry_id = rex_request('entry_id', 'int');
@@ -19,10 +19,10 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $input_media = rex_post('REX_INPUT_MEDIA', 'array', []);
 
     $category_id = $form['category_id'];
-    $category = new D2U_Courses\Category($category_id);
+    $category = new TobiasKrais\D2UCourses\Category($category_id);
     $category->color = $form['color'];
     $category->picture = $input_media[1];
-    $category->parent_category = $form['parent_category_id'] > 0 ? new D2U_Courses\Category($form['parent_category_id']) : false;
+    $category->parent_category = $form['parent_category_id'] > 0 ? new TobiasKrais\D2UCourses\Category($form['parent_category_id']) : false;
     $category->priority = $form['priority'];
     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
         $kufer_categories = preg_grep('/^\s*$/s', explode(PHP_EOL, $form['kufer_categories']), PREG_GREP_INVERT);
@@ -53,7 +53,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
         $form = rex_post('form', 'array', []);
         $category_id = $form['category_id'];
     }
-    $category = new D2U_Courses\Category($category_id);
+    $category = new TobiasKrais\D2UCourses\Category($category_id);
 
     // Check if object is used
     $uses_courses = $category->getCourses();
@@ -94,13 +94,13 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
 			<div class="panel-body">
 				<input type="hidden" name="form[category_id]" value="<?= 'edit' === $func ? $entry_id : 0 ?>">
 				<?php
-                    $category = new D2U_Courses\Category($entry_id);
+                    $category = new TobiasKrais\D2UCourses\Category($entry_id);
                     \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_helper_name', 'form[name]', $category->name, true, false);
                     \TobiasKrais\D2UHelper\BackendHelper::form_textarea('d2u_courses_description', 'form[description]', $category->description, 5, false, false, true);
                     \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_categories_color', 'form[color]', $category->color, true, false, 'color');
                     \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_helper_picture', '1', $category->picture, false);
                     $options_parents = [-1 => rex_i18n::msg('d2u_courses_categories_parent_category_none')];
-                    foreach (D2U_Courses\Category::getAllParents() as $parent) {
+                    foreach (TobiasKrais\D2UCourses\Category::getAllParents() as $parent) {
                         if ($parent->category_id !== $category->category_id) {
                             $options_parents[$parent->category_id] = $parent->name;
                             foreach ($parent->getChildren() as $child) {

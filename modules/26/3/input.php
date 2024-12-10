@@ -10,7 +10,7 @@
         $select_link->setAttribute('class', 'form-control');
         $select_link->setAttribute('id', 'selector');
 
-        $categories = \D2U_Courses\Category::getAllNotParents();
+        $categories = \TobiasKrais\D2UCourses\Category::getAllNotParents();
         foreach ($categories as $category) {
             $select_link->addOption($category->name, $category->category_id);
         }

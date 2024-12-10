@@ -1,6 +1,6 @@
 <?php
 
-use D2U_Courses\ScheduleCategory;
+use TobiasKrais\D2UCourses\ScheduleCategory;
 
 $func = rex_request('func', 'string');
 $entry_id = rex_request('entry_id', 'int');
@@ -19,11 +19,11 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $input_media = rex_post('REX_INPUT_MEDIA', 'array', []);
 
     $schedule_category_id = $form['schedule_category_id'];
-    $schedule_category = new D2U_Courses\ScheduleCategory($schedule_category_id);
+    $schedule_category = new ScheduleCategory($schedule_category_id);
     $schedule_category->name = $form['name'];
     $schedule_category->picture = $input_media[1];
     $schedule_category->priority = $form['priority'];
-    $schedule_category->parent_schedule_category = $form['parent_schedule_category_id'] > 0 ? new D2U_Courses\ScheduleCategory($form['parent_schedule_category_id']) : false;
+    $schedule_category->parent_schedule_category = $form['parent_schedule_category_id'] > 0 ? new ScheduleCategory($form['parent_schedule_category_id']) : false;
     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
         $kufer_categories = preg_grep('/^\s*$/s', explode(PHP_EOL, $form['kufer_categories']), PREG_GREP_INVERT);
         $schedule_category->kufer_categories = is_array($kufer_categories) ? array_map('trim', $kufer_categories) : [];
@@ -50,7 +50,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
         $form = rex_post('form', 'array', []);
         $schedule_category_id = $form['schedule_category_id'];
     }
-    $schedule_category = new D2U_Courses\ScheduleCategory($schedule_category_id);
+    $schedule_category = new ScheduleCategory($schedule_category_id);
 
     // Check if object is used
     $uses_courses = $schedule_category->getCourses();
@@ -85,12 +85,12 @@ if ('edit' === $func || 'add' === $func) {
 				<input type="hidden" name="form[schedule_category_id]" value="<?= $entry_id ?>">
 				<?php
 
-                    $schedule_category = new D2U_Courses\ScheduleCategory($entry_id);
+                    $schedule_category = new ScheduleCategory($entry_id);
                     \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_helper_name', 'form[name]', $schedule_category->name, true, false);
                     \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_helper_picture', '1', $schedule_category->picture, false);
                     \TobiasKrais\D2UHelper\BackendHelper::form_input('header_priority', 'form[priority]', $schedule_category->priority, true, false, 'number');
                     $options_parents = [-1 => rex_i18n::msg('d2u_courses_categories_parent_category_none')];
-                    foreach (D2U_Courses\ScheduleCategory::getAllParents() as $parent) {
+                    foreach (ScheduleCategory::getAllParents() as $parent) {
                         $options_parents[$parent->schedule_category_id] = $parent->name;
                     }
                     \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_categories_parent_category', 'form[parent_schedule_category_id]', $options_parents, $schedule_category->parent_schedule_category instanceof ScheduleCategory ? [$schedule_category->parent_schedule_category->schedule_category_id] : [-1], 1, false, false);
