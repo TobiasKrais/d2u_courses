@@ -35,6 +35,7 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $course->picture = $input_media[1];
     $course->price = (float) $form['price'];
     $course->price_discount = (float) $form['price_discount'];
+    $course->price_notes = $form['price_notes'];
     $course->price_salery_level = array_key_exists('price_salery_level', $form) ? (string) $form['price_salery_level'] : '';
     $course->price_salery_level_details = [];
     foreach (explode(PHP_EOL, $form['price_salery_level_details']) as $price_salery_level_details_line) {
@@ -155,6 +156,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                             }
                             \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_price', 'form[price]', (string) $course->price, false, $readonly, 'text');
                             \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_price_discount', 'form[price_discount]', (string) $course->price_discount, false, $readonly, 'text');
+                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_price_notes', 'form[price_notes]', (string) $course->price_notes, false, $readonly, 'text');
                             $options_registration = [
                                 'yes' => rex_i18n::msg('d2u_courses_yes'),
                                 'yes_number' => rex_i18n::msg('d2u_courses_yes_number'),

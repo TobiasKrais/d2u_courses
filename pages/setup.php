@@ -242,6 +242,9 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 <h2>Changelog</h2>
 <p>3.4.2-DEV:</p>
 <ul>
+	<li>Feld Preis Hinweise hinzugefügt.</li>
+	<li>Anpassungen Kufer Sync.</li>
+	<li>Support für Geolocation 1.x entfernt. Bitte auf Geolocation 2.x updaten.</li>
 	<li>Bugfix: Veranstaltung löschen ohne installiertes Buchungsdaten Plugin nicht mehr möglich.</li>
 	<li>Bugfix Buchungsdaten Plugin: Export für Schweizer Bundesamt für Sport BASPO korrigiert.</li>
 	<li>Bugfix Buchungsdaten Plugin: Geschlecht wurde bei Änderungen nicht korrekt gespeichert.</li>

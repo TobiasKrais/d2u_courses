@@ -57,6 +57,9 @@ class Course
     /** @var float Own cost contribution (discount price) */
     public float $price_discount = 0;
 
+    /** @var string Extra notes, e.g. included costs */
+    public string $price_notes = '';
+
     /** @var bool Is price based on salery level */
     public bool $price_salery_level = false;
 
@@ -158,6 +161,7 @@ class Course
                 $this->picture = (string) $result->getValue('picture');
                 $this->price = (float) $result->getValue('price');
                 $this->price_discount = (float) $result->getValue('price_discount');
+                $this->price_notes = stripslashes((string) $result->getValue('price_notes'));
                 $this->price_salery_level = $result->getValue('price_salery_level') > 0 ? true : false;
                 $price_salery_level_details_json = json_decode((string) $result->getValue('price_salery_level_details'), true);
                 $this->price_salery_level_details = is_array($price_salery_level_details_json) ? $price_salery_level_details_json : []; /** @phpstan-ignore-line */
@@ -262,7 +266,7 @@ class Course
      * Delete object in database.
      * @return bool true if successful, otherwise false
      */
-    public function delete()
+    public function delete(): bool
     {
         if ($this->course_id > 0) {
             $result = rex_sql::factory();
@@ -311,7 +315,7 @@ class Course
      * is needed or not.
      * @return bool True if courses exisit that can be booked.
      */
-    public static function existCoursesForCart()
+    public static function existCoursesForCart(): bool
     {
         $query = 'SELECT course_id FROM '. rex::getTablePrefix() .'d2u_courses_courses '
             ."WHERE online_status = 'online' "
@@ -331,7 +335,7 @@ class Course
      * Creates an empty object.
      * @return Course empty course object
      */
-    public static function factory()
+    public static function factory(): self
     {
         $course = new self(0);
         return $course;
@@ -342,7 +346,7 @@ class Course
      * is in future.
      * @return bool true if online, otherwise false
      */
-    public function isOnline()
+    public function isOnline(): bool
     {
         if ('online' === $this->online_status && $this->date_start > date('Y-m-d', time())) {
             return true;
@@ -357,7 +361,7 @@ class Course
      * @param bool $online_only if true, return only online courses
      * @return Course[] Array with Course objects
      */
-    public static function getAll($online_only = false)
+    public static function getAll($online_only = false): array
     {
         $query = 'SELECT course_id FROM '. rex::getTablePrefix() .'d2u_courses_courses';
         if ($online_only) {
@@ -378,7 +382,7 @@ class Course
      * Get course as structured data JSON LD code for Google course carousel.
      * @return string JSON LD code including script tag
      */
-    public function getJsonLdCourseCarouselCode()
+    public function getJsonLdCourseCarouselCode(): string
     {
         $json_data = '<script type="application/ld+json">'. PHP_EOL
             .'{'.PHP_EOL
@@ -400,7 +404,7 @@ class Course
      * Get course as structured data JSON LD code for Google events.
      * @return string JSON LD code including script tag
      */
-    public function getJsonLdEventCode()
+    public function getJsonLdEventCode(): string
     {
         // Only return content if minimum requirements are matched
         if ('' === $this->date_start || false === $this->location) {
@@ -479,7 +483,7 @@ class Course
      * @param bool $including_domain true if Domain name should be included
      * @return string URL
      */
-    public function getUrl($including_domain = false)
+    public function getUrl($including_domain = false): string
     {
         if ('' === $this->url) {
             $parameterArray = [];
@@ -504,7 +508,7 @@ class Course
      * Save object.
      * @return bool true if successful
      */
-    public function save()
+    public function save(): bool
     {
         $pre_save_object = new self($this->course_id);
 
@@ -522,6 +526,7 @@ class Course
             .'picture = "'. $this->picture .'", '
             .'price = '. number_format($this->price > 0 ? $this->price : 0, 2, '.', '') .', '
             .'price_discount = '. number_format($this->price_discount > 0 ? $this->price_discount : 0, 2, '.', '') .', '
+            .'price_notes = "'. addslashes($this->price_notes) .'", '
             .'price_salery_level = '. ($this->price_salery_level ? 1 : 0) .', '
             ."price_salery_level_details = '". json_encode($this->price_salery_level_details, JSON_UNESCAPED_UNICODE) ."', "
             .'date_start = "'. $this->date_start .'", '
@@ -597,7 +602,7 @@ class Course
      * @param string $keyword Keyword
      * @return array<int, Course> Array with courses
      */
-    public static function search($keyword)
+    public static function search($keyword): array
     {
         $query = 'SELECT courses.course_id FROM '. rex::getTablePrefix() .'d2u_courses_courses AS courses ';
         if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {

@@ -25,6 +25,7 @@
     ->ensureColumn(new \rex_sql_column('picture', 'VARCHAR(255)', true))
     ->ensureColumn(new \rex_sql_column('price', 'DECIMAL(7,2)', true))
     ->ensureColumn(new \rex_sql_column('price_discount', 'DECIMAL(7,2)', true))
+    ->ensureColumn(new \rex_sql_column('price_notes', 'VARCHAR(191)', true))
     ->ensureColumn(new \rex_sql_column('price_salery_level', 'TINYINT(1)', false, '0'))
     ->ensureColumn(new \rex_sql_column('price_salery_level_details', 'TEXT', true))
     ->ensureColumn(new \rex_sql_column('date_start', 'VARCHAR(10)', true))

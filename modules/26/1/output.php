@@ -485,6 +485,9 @@ if (rex::isBackend()) {
                 if ($course->price_discount > 0 && $course->price_discount < $course->price) {
                     $box_details .= ' ('. $tag_open .'d2u_courses_discount'. $tag_close .': '. number_format($course->price_discount, 2, ',', '.') .' €)';
                 }
+                if ('' !== $course->price_notes) {
+                    $box_details .= ' '. $course->price_notes;
+                }
             }
             $box_details .= '</div>';
             $box_details .= '</div>';
@@ -752,10 +755,6 @@ if (rex::isBackend()) {
                                 // Geolocation 2.x
                                 \FriendsOfRedaxo\Geolocation\Tools::echoAssetTags();
                             }
-                            else {
-                                // Geolocation 1.x
-                                \Geolocation\tools::echoAssetTags(); /** @phpstan-ignore-line */
-                            }
                         }
             ?>
 				<script>
@@ -843,16 +842,6 @@ if (rex::isBackend()) {
                             ->dataset('position', [$course->location->latitude, $course->location->longitude])
                             ->dataset('infobox', [[$course->location->latitude, $course->location->longitude], $course->location->name])
                             ->parse();
-                    }
-                    else {
-                        // Geolocation 1.x
-                        echo \Geolocation\mapset::take($mapsetId) /** @phpstan-ignore-line */
-                        ->attributes('id', (string) $mapsetId)
-                        ->attributes('style', 'height:400px;width:100%;')
-                        ->dataset('center', [[$course->location->latitude, $course->location->longitude], $course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10])
-                        ->dataset('position', [$course->location->latitude, $course->location->longitude])
-                        ->dataset('infobox', [[$course->location->latitude, $course->location->longitude], $course->location->name])
-                        ->parse();
                     }
                 }
                 echo '</div>';

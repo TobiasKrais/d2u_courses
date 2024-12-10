@@ -41,6 +41,7 @@ d2u_courses_payment_cash = Barzahlung
 d2u_courses_payment_direct_debit = Lastschrift
 d2u_courses_price = Kosten (Normalpreis)
 d2u_courses_price_discount = Kosten (ermäßigt)
+d2u_courses_price_notes = Kosten Hinweise
 d2u_courses_price_salery_level = Einkommensbasiertes Preismodell?
 d2u_courses_price_salery_level_detail = Preisstufe
 d2u_courses_price_salery_level_details = Preisstufen

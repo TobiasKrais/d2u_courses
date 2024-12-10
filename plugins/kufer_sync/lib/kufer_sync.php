@@ -130,8 +130,12 @@ class KuferSync
                 $new_course->course_number = (string) $kufer_course->knr;
             }
 
-            // Title
-            if (isset($kufer_course->titelkurz) && '' !== (string) $kufer_course->titelkurz) {
+            // Title titelkurz_bf
+            if (isset($kufer_course->titelkurz_bf) && '' !== (string) $kufer_course->titelkurz_bf) {
+                $new_course->name = str_replace('"', "'", (string) $kufer_course->titelkurz_bf);
+            } elseif (isset($kufer_course->haupttitel) && '' !== (string) $kufer_course->haupttitel) {
+                $new_course->name = str_replace('"', "'", (string) $kufer_course->haupttitel);
+            } elseif (isset($kufer_course->titelkurz) && '' !== (string) $kufer_course->titelkurz) {
                 $new_course->name = str_replace('"', "'", (string) $kufer_course->titelkurz);
             } elseif (isset($kufer_course->titellang) && '' !== (string) $kufer_course->titellang) {
                 $new_course->name = str_replace('"', "'", (string) $kufer_course->titellang);
@@ -202,8 +206,8 @@ class KuferSync
             }
 
             // Deadline infos
-            if (isset($kufer_course->dauerdetails) && '' !== (string) $kufer_course->dauerdetails) {
-                $new_course->details_deadline = $kufer_course->dauerdetails;
+            if (isset($kufer_course->anm_ende) && '' !== (string) $kufer_course->anm_ende) {
+                $new_course->details_deadline = $kufer_course->anm_ende;
             }
 
             // Location: take from settings
@@ -227,6 +231,9 @@ class KuferSync
             }
             if (isset($kufer_course->geberm) && (float) str_replace(',', '.', $kufer_course->geberm) > 0) {
                 $new_course->price_discount = (float) str_replace(',', '.', $kufer_course->geberm);
+            }
+            if (isset($kufer_course->gebuehrergaenztext) && '' !== $kufer_course->gebuehrergaenztext) {
+                $new_course->price_notes = $kufer_course->gebuehrergaenztext;
             }
 
             // Max. participants

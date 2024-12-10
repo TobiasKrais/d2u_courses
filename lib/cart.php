@@ -571,7 +571,7 @@ class Cart
      * Deletes course.
      * @param int $course_id Course ID
      */
-    public function deleteCourse($course_id): void
+    public function deleteCourse(int $course_id): void
     {
         $cart = rex_request::session('cart');
         if (is_array($cart)) {
@@ -586,7 +586,7 @@ class Cart
      * @param int $course_id Course ID
      * @param int $delete_participant_id Participant number
      */
-    public function deleteParticipant($course_id, $delete_participant_id): void
+    public function deleteParticipant(int $course_id, int $delete_participant_id): void
     {
         $cart = rex_request::session('cart');
         if (is_array($cart) && is_array($cart[$course_id])) {
@@ -609,7 +609,7 @@ class Cart
      * @param string $date Date: format ist 2015-12-31
      * @return string Reformatted date, e.g. 31.12.2015
      */
-    public static function formatCourseDate($date)
+    public static function formatCourseDate($date): string
     {
         if (str_contains($date, '-')) {
             $d = explode('-', $date);
@@ -627,7 +627,7 @@ class Cart
      * Get Cart.
      * @return \D2U_Courses\Cart
      */
-    public static function getCart()
+    public static function getCart(): self
     {
         return new self();
     }
@@ -636,7 +636,7 @@ class Cart
      * Get Cart Courses.
      * @return int[] Course IDs
      */
-    public static function getCourseIDs()
+    public static function getCourseIDs(): array
     {
         // Session is needed
         if (PHP_SESSION_NONE === session_status()) {
@@ -660,7 +660,7 @@ class Cart
      * @param int $course_id Course ID
      * @return array<int,array<string,string>>|array<string,string> Participants
      */
-    public static function getCourseParticipants($course_id)
+    public static function getCourseParticipants(int $course_id): array
     {
         $cart = rex_request::session('cart');
         if (is_array($cart)) {
@@ -678,7 +678,7 @@ class Cart
      * @param int $course_id Course ID
      * @return int number of participants
      */
-    public static function getCourseParticipantsNumber($course_id)
+    public static function getCourseParticipantsNumber(int $course_id): int
     {
         $cart = rex_request::session('cart');
         if (is_array($cart)) {
@@ -702,7 +702,7 @@ class Cart
      * @param int $course_id Course ID
      * @return bool true if course is in cart available, otherwise false
      */
-    public function hasCourse($course_id)
+    public function hasCourse(int $course_id): bool
     {
         $cart = rex_request::session('cart');
         if (is_array($cart) && array_key_exists($course_id, $cart)) {
@@ -717,7 +717,7 @@ class Cart
      * @param array<string,string> $invoice_address Array with invoice address details
      * @return bool true if saved successfully
      */
-    public function saveBookings($cart, $invoice_address)
+    public function saveBookings($cart, $invoice_address): bool
     {
         if (!rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable()) {
             return false;
@@ -777,7 +777,7 @@ class Cart
      * @param array<string,string> $invoice_address Array with invoice address details
      * @return bool true if mail was sent successfully
      */
-    public function sendRegistrations($cart, $invoice_address)
+    public function sendRegistrations($cart, $invoice_address): bool
     {
         $mail_has_content = false;
 

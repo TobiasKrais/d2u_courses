@@ -523,6 +523,9 @@ if (isset($form_data['invoice_form'])) {
             if ($course->price_discount > 0) {
                 echo ' ('. $tag_open .'d2u_courses_discount'. $tag_close .': '. number_format($course->price_discount, 2, ',', '.') .' €)<br>';
             }
+            if ('' !== $course->price_notes) {
+                echo ' '. $course->price_notes;
+            }
         }
         if ('yes_number' === $course->registration_possible) {
             $participant_data = D2U_Courses\Cart::getCourseParticipants($course_id);
@@ -734,6 +737,9 @@ if (isset($form_data['invoice_form'])) {
                 echo $tag_open .'d2u_courses_fee'. $tag_close . ': '. number_format($course->price, 2, ',', '.') .' €';
                 if ($course->price_discount > 0) {
                     echo ' ('. $tag_open .'d2u_courses_discount'. $tag_close .': '. number_format($course->price_discount, 2, ',', '.') .' €)<br>';
+                }
+                if ('' !== $course->price_notes) {
+                    echo ' '. $course->price_notes;
                 }
             }
 
