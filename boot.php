@@ -1,5 +1,7 @@
 <?php
 
+use TobiasKrais\D2UCourses\FrontendHelper;
+
 if (\rex::isBackend() && is_object(\rex::getUser())) {
     rex_perm::register('d2u_courses[]', rex_i18n::msg('d2u_courses_rights_all'));
     rex_perm::register('d2u_courses[courses_all]', rex_i18n::msg('d2u_courses_rights_courses_all'), rex_perm::OPTIONS);
@@ -10,6 +12,9 @@ if (\rex::isBackend() && is_object(\rex::getUser())) {
 if (\rex::isBackend()) {
     rex_extension::register('ART_PRE_DELETED', rex_d2u_courses_article_is_in_use(...));
     rex_extension::register('MEDIA_IS_IN_USE', rex_d2u_courses_media_is_in_use(...));
+}
+else {
+    rex_extension::register('D2U_HELPER_BREADCRUMBS', rex_d2u_courses_breadcrumbs(...));
 }
 
 /**
@@ -59,6 +64,25 @@ function rex_d2u_courses_article_is_in_use(rex_extension_point $ep)
 
     return '';
 
+}
+
+/**
+ * Get breadcrumb part for courses.
+ * @param rex_extension_point<array<string>> $ep Redaxo extension point
+ * @return array<int,string> HTML formatted breadcrumb elements
+ */
+function rex_d2u_courses_breadcrumbs(rex_extension_point $ep)
+{
+    $params = $ep->getParams();
+    $url_namespace = (string) $params['url_namespace'];
+    $url_id = (int) $params['url_id'];
+
+    $breadcrumbs = FrontendHelper::getBreadcrumbs($url_namespace, $url_id);
+    if (count($breadcrumbs) === 0) {
+        $breadcrumbs = $ep->getSubject();
+    }
+
+    return $breadcrumbs;
 }
 
 /**
