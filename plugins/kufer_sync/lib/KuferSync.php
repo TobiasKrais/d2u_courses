@@ -130,9 +130,9 @@ class KuferSync
                 $new_course->course_number = (string) $kufer_course->knr;
             }
 
-            // Title titelkurz_bf
-            if (isset($kufer_course->titelkurz_bf) && '' !== (string) $kufer_course->titelkurz_bf) {
-                $new_course->name = str_replace('"', "'", (string) $kufer_course->titelkurz_bf);
+            // Title 
+            if (isset($kufer_course->titellang_bf) && '' !== (string) $kufer_course->titellang_bf) {
+                $new_course->name = str_replace('"', "'", (string) $kufer_course->titellang_bf);
             } elseif (isset($kufer_course->haupttitel) && '' !== (string) $kufer_course->haupttitel) {
                 $new_course->name = str_replace('"', "'", (string) $kufer_course->haupttitel);
             } elseif (isset($kufer_course->titelkurz) && '' !== (string) $kufer_course->titelkurz) {
