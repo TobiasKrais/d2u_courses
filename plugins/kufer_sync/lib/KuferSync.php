@@ -153,6 +153,7 @@ class KuferSync
             }
 
             // Course details, e.g. material costs
+            $new_course->details_course = ''; // Reset first
             if (isset($kufer_course->material) && '' !== (string) $kufer_course->material) {
                 $new_course->details_course = $kufer_course->material;
             }
@@ -168,6 +169,9 @@ class KuferSync
             }
 
             // Date
+            $new_course->date_start = '';
+            $new_course->date_end = '';
+            $new_course->time = '';
             if (isset($kufer_course->beginndat) && '' !== (string) $kufer_course->beginndat) {
                 // Start
                 $new_course->date_start = self::formatDate($kufer_course->beginndat);
@@ -206,7 +210,7 @@ class KuferSync
             }
 
             // Deadline infos
-            if (isset($kufer_course->anm_ende) && '' !== (string) $kufer_course->anm_ende) {
+            if (isset($kufer_course->anm_ende)) {
                 $new_course->details_deadline = $kufer_course->anm_ende;
             }
 
@@ -220,18 +224,21 @@ class KuferSync
                 }
 
                 // room name
-                if (isset($kufer_course->ortraumname) && '' !== (string) $kufer_course->ortraumname) {
+                if (isset($kufer_course->ortraumname)) {
                     $new_course->room = str_replace('"', "'", (string) $kufer_course->ortraumname);
                 }
             }
 
             // Price
+            $new_course->price = 0;
             if (isset($kufer_course->gebnorm) && (float) str_replace(',', '.', $kufer_course->gebnorm) > 0) {
                 $new_course->price = (float) str_replace(',', '.', $kufer_course->gebnorm);
             }
+            $new_course->price_discount = 0;
             if (isset($kufer_course->geberm) && (float) str_replace(',', '.', $kufer_course->geberm) > 0) {
                 $new_course->price_discount = (float) str_replace(',', '.', $kufer_course->geberm);
             }
+            $new_course->price_notes = '';
             if (isset($kufer_course->gebuehrergaenztext) && '' !== $kufer_course->gebuehrergaenztext) {
                 $new_course->price_notes = $kufer_course->gebuehrergaenztext;
             }
@@ -331,6 +338,7 @@ class KuferSync
 
             // Target group
             if (rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
+                $new_course->target_group_ids = [];
                 if (isset($kufer_course->zielgruppe) && '' !== (string) $kufer_course->zielgruppe) {
                     foreach ($target_groups as $target_group) {
                         if ($target_group->kufer_target_group_name === (string) $kufer_course->zielgruppe && !in_array($target_group->target_group_id, $new_course->target_group_ids, true)) {
