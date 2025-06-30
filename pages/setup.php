@@ -240,7 +240,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 </fieldset>
 
 <h2>Changelog</h2>
-<p>3.5.0-DEV:</p>
+<p>3.5.0:</p>
 <ul>
 	<li>Vorbereitung auf R6: Folgende Klassen werden ab Version 4 dieses Addons umbenannt. Schon jetzt stehen die neuen Klassen für die Übergangszeit zur Verfügung:
 		<ul>
@@ -272,6 +272,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 	<li>Modul 26-1 "Ausgabe Veranstaltungen": Unterstützt nur noch Geolocation Addon Version 2.x (Wegfall Unterstützung Version 1.x).</li>
 	<li>Modul 26-2 "Warenkorb": Bei Kufer Anmeldungen werden die Anzahl Teilnehmer / Personen auf der Warteliste automatisiert hochgezählt.</li>
 	<li>Alle Module auf neuen Namespace und Klassennamen angepasst.</li>
+	<li>Anpassungen für verbesserte Barrierefreiheit.</li>
 </ul>
 <p>3.4.1:</p>
 <ul>

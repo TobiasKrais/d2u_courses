@@ -101,119 +101,129 @@ if ('REX_VALUE[3]' === 'true' && is_array(rex_var::toArray('REX_VALUE[4]'))) { /
 
 // Invoice form
 if (isset($form_data['invoice_form'])) {
-    // Devide participants because Kufer SQL has different registration types
-    $kufer_others = [];
-    $kufer_children = [];
-    $kufer_self = [];
-    $mail_registration = [];
-    foreach (TobiasKrais\D2UCourses\Cart::getCourseIDs() as $course_id) {
-        $course = new TobiasKrais\D2UCourses\Course($course_id);
-        if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && 'KuferSQL' === $course->import_type && '' !== $course->course_number) {
-            foreach (TobiasKrais\D2UCourses\Cart::getCourseParticipants($course_id) as $participant) {
-                if (is_array($participant) && array_key_exists('firstname', $participant) && $participant['firstname'] === $form_data['invoice_form']['firstname'] && $participant['lastname'] === $form_data['invoice_form']['lastname']) {
-                    // Treat children currently like normal persons
-                    $kufer_self[$course_id][] = $participant;
-                    // Otherwise uncomment next lines
-//					if(TobiasKrais\D2UCourses\Cart::calculateAge($participant['birthday']) < 18) {
-//						$kufer_children[$course_id][] = $participant;
-//					}
-//					else {
-//						$kufer_self[$course_id][] = $participant;
-//					}
-                } else {
-                    // Treat children currently like normal persons
-                    $kufer_others[$course_id][] = $participant;
-                    // Otherwise uncomment next lines
-//					if(TobiasKrais\D2UCourses\Cart::calculateAge($participant['birthday']) < 18) {
-//						$kufer_children[$course_id][] = $participant;
-//					}
-//					else {
-//						$kufer_others[$course_id][] = $participant;
-//					}
-                }
-                
-                // update participant and waitlist numbers
-                if($course->participants_number < $course->participants_max) {
-                    $course->participants_number++;
-                    $course->save();
-                }
-                else {
-                    $course->participants_wait_list++;
-                    $course->save();
-                }
-            }
-        } else {
-            $mail_registration[$course_id] = TobiasKrais\D2UCourses\Cart::getCourseParticipants($course_id);
-        }
-    }
-
-    $error = false;
-    // Create Kufer XML registrations
-    if (count($kufer_self) > 0 && false === $cart->createXMLRegistration($kufer_self, $form_data['invoice_form'], 'selbst')) {
-        $error = true;
-    }
-//    if (count($kufer_children) > 0 && false === $cart->createXMLRegistration($kufer_children, $form_data['invoice_form'], 'kind')) {
-//        $error = true;
-//    }
-    foreach ($kufer_others as $course_id => $participant) {
-        foreach ($participant as $id => $cur_participant) {
-            $cart->createXMLRegistration([$course_id => [$cur_participant]], $form_data['invoice_form'], 'andere');
-        }
-    }
-    if (count($mail_registration) > 0 && false === $cart->sendRegistrations($mail_registration, $form_data['invoice_form'])) {
-        $error = true;
-    }
-    if (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable()) {
-        $cart->saveBookings($mail_registration, $form_data['invoice_form']);
-    }
-
-    // Send MultiNewsletter registration
-    if (rex_addon::get('multinewsletter')->isAvailable() && array_key_exists('multinewsletter', $form_data['invoice_form']) && is_array($form_data['invoice_form']['multinewsletter']) && count($form_data['invoice_form']['multinewsletter']) > 0) {
-        $user = FriendsOfRedaxo\MultiNewsletter\User::initByMail((string) filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL));
-        $anrede = 'W' === $form_data['invoice_form']['gender'] ? 1 : 0;
-
-        if ($user instanceof FriendsOfRedaxo\MultiNewsletter\User) {
-            $user->title = $anrede;
-            $user->firstname = $form_data['invoice_form']['firstname'];
-            $user->lastname = $form_data['invoice_form']['lastname'];
-            $user->clang_id = rex_clang::getCurrentId();
-        }
-        else {
-            $user = FriendsOfRedaxo\MultiNewsletter\User::factory(
-                $form_data['invoice_form']['e-mail'],
-                $anrede,
-                '',
-                $form_data['invoice_form']['firstname'],
-                $form_data['invoice_form']['lastname'],
-                rex_clang::getCurrentId(),
-            );
-        }
-        $user->group_ids = array_map('intval', $form_data['invoice_form']['multinewsletter']);
-        $user->status = 0;
-        $user->subscriptiontype = 'web';
-        $user->privacy_policy_accepted = 1;
-        $user->activationkey = (string) random_int(100000, 999999);
-        $user->save();
-
-        // Send activationmail
-        $user->sendActivationMail(
-            (string) rex_config::get('multinewsletter', 'sender'),
-            (string) rex_config::get('multinewsletter', 'lang_'. rex_clang::getCurrentId() .'_sendername'),
-            (string) rex_config::get('multinewsletter', 'lang_'. rex_clang::getCurrentId() .'_confirmsubject'),
-            (string) rex_config::get('multinewsletter', 'lang_'. rex_clang::getCurrentId() .'_confirmcontent'),
-        );
-    }
-
-    if (false === $error) {
-        echo '<div class="col-12">';
-        echo '<h1>'. $tag_open .'d2u_courses_cart_thanks'. $tag_close .'</h1><p>'. $tag_open .'d2u_courses_cart_thanks_details'. $tag_close .'</p>';
-        echo '</div>';
-        $cart->unsetCart();
-    } else {
+    // check if honeypot was filled out
+    if (filter_input(INPUT_POST, 'e-mail') !== false && '' !== filter_input(INPUT_POST, 'e-mail')) {
+        // honeypot filled out
         echo '<div class="col-12">';
         echo '<h1>'. $tag_open .'d2u_courses_cart_error'. $tag_close .'</h1>'
-            .'<p>'. $tag_open .'d2u_courses_cart_error_details'. $tag_close .'</p>';
-        echo '</div>';
+            .'<p>'. $tag_open .'d2u_courses_cart_error_honeypot'. $tag_close .'</p>';
+        echo '</div>';        
+    }
+    else {
+        // Devide participants because Kufer SQL has different registration types
+        $kufer_others = [];
+        $kufer_children = [];
+        $kufer_self = [];
+        $mail_registration = [];
+        foreach (TobiasKrais\D2UCourses\Cart::getCourseIDs() as $course_id) {
+            $course = new TobiasKrais\D2UCourses\Course($course_id);
+            if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && 'KuferSQL' === $course->import_type && '' !== $course->course_number) {
+                foreach (TobiasKrais\D2UCourses\Cart::getCourseParticipants($course_id) as $participant) {
+                    if (is_array($participant) && array_key_exists('firstname', $participant) && $participant['firstname'] === $form_data['invoice_form']['firstname'] && $participant['lastname'] === $form_data['invoice_form']['lastname']) {
+                        // Treat children currently like normal persons
+                        $kufer_self[$course_id][] = $participant;
+                        // Otherwise uncomment next lines
+//				    	if(TobiasKrais\D2UCourses\Cart::calculateAge($participant['birthday']) < 18) {
+//					    	$kufer_children[$course_id][] = $participant;
+//					    }
+//					    else {
+//					    	$kufer_self[$course_id][] = $participant;
+//					    }
+                    } else {
+                        // Treat children currently like normal persons
+                        $kufer_others[$course_id][] = $participant;
+                        // Otherwise uncomment next lines
+//					    if(TobiasKrais\D2UCourses\Cart::calculateAge($participant['birthday']) < 18) {
+//					    	$kufer_children[$course_id][] = $participant;
+//					    }
+//					    else {
+//						    $kufer_others[$course_id][] = $participant;
+//					    }
+                    }
+                    
+                    // update participant and waitlist numbers
+                    if($course->participants_number < $course->participants_max) {
+                        $course->participants_number++;
+                        $course->save();
+                    }
+                    else {
+                        $course->participants_wait_list++;
+                        $course->save();
+                    }
+                }
+            } else {
+                $mail_registration[$course_id] = TobiasKrais\D2UCourses\Cart::getCourseParticipants($course_id);
+            }
+        }
+
+        $error = false;
+        // Create Kufer XML registrations
+        if (count($kufer_self) > 0 && false === $cart->createXMLRegistration($kufer_self, $form_data['invoice_form'], 'selbst')) {
+            $error = true;
+        }
+    //    if (count($kufer_children) > 0 && false === $cart->createXMLRegistration($kufer_children, $form_data['invoice_form'], 'kind')) {
+    //        $error = true;
+    //    }
+        foreach ($kufer_others as $course_id => $participant) {
+            foreach ($participant as $id => $cur_participant) {
+                $cart->createXMLRegistration([$course_id => [$cur_participant]], $form_data['invoice_form'], 'andere');
+            }
+        }
+        if (count($mail_registration) > 0 && false === $cart->sendRegistrations($mail_registration, $form_data['invoice_form'])) {
+            $error = true;
+        }
+        if (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable()) {
+            $cart->saveBookings($mail_registration, $form_data['invoice_form']);
+        }
+
+        // Send MultiNewsletter registration
+        if (rex_addon::get('multinewsletter')->isAvailable() && array_key_exists('multinewsletter', $form_data['invoice_form']) && is_array($form_data['invoice_form']['multinewsletter']) && count($form_data['invoice_form']['multinewsletter']) > 0) {
+            $user = FriendsOfRedaxo\MultiNewsletter\User::initByMail((string) filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL));
+            $anrede = 'W' === $form_data['invoice_form']['gender'] ? 1 : 0;
+
+            if ($user instanceof FriendsOfRedaxo\MultiNewsletter\User) {
+                $user->title = $anrede;
+                $user->firstname = $form_data['invoice_form']['firstname'];
+                $user->lastname = $form_data['invoice_form']['lastname'];
+                $user->clang_id = rex_clang::getCurrentId();
+            }
+            else {
+                $user = FriendsOfRedaxo\MultiNewsletter\User::factory(
+                    $form_data['invoice_form']['e-mail'],
+                    $anrede,
+                    '',
+                    $form_data['invoice_form']['firstname'],
+                    $form_data['invoice_form']['lastname'],
+                    rex_clang::getCurrentId(),
+                );
+            }
+            $user->group_ids = array_map('intval', $form_data['invoice_form']['multinewsletter']);
+            $user->status = 0;
+            $user->subscriptiontype = 'web';
+            $user->privacy_policy_accepted = 1;
+            $user->activationkey = (string) random_int(100000, 999999);
+            $user->save();
+
+            // Send activationmail
+            $user->sendActivationMail(
+                (string) rex_config::get('multinewsletter', 'sender'),
+                (string) rex_config::get('multinewsletter', 'lang_'. rex_clang::getCurrentId() .'_sendername'),
+                (string) rex_config::get('multinewsletter', 'lang_'. rex_clang::getCurrentId() .'_confirmsubject'),
+                (string) rex_config::get('multinewsletter', 'lang_'. rex_clang::getCurrentId() .'_confirmcontent'),
+            );
+        }
+
+        if (false === $error) {
+            echo '<div class="col-12">';
+            echo '<h1>'. $tag_open .'d2u_courses_cart_thanks'. $tag_close .'</h1><p>'. $tag_open .'d2u_courses_cart_thanks_details'. $tag_close .'</p>';
+            echo '</div>';
+            $cart->unsetCart();
+        } else {
+            echo '<div class="col-12">';
+            echo '<h1>'. $tag_open .'d2u_courses_cart_error'. $tag_close .'</h1>'
+                .'<p>'. $tag_open .'d2u_courses_cart_error_details'. $tag_close .'</p>';
+            echo '</div>';
+        }
     }
 } elseif (isset($form_data['request_courses']) && '' !== $form_data['request_courses']) {
     $payment_options = rex_config::get('d2u_courses', 'payment_options', []);
@@ -313,6 +323,11 @@ if (isset($form_data['invoice_form'])) {
     echo '<input type="email" class="cart_text" name="invoice_form[e-mail-verification]" id="invoice_form-e-mail-verification" value="" required onblur="checkEmail();">';
     echo ' <span id="email_wrong">'. \Sprog\Wildcard::get('d2u_courses_email_verification_failure') .'</span>';
     echo '</p>';
+
+    echo '<p class="d-none">';
+    echo '<label class="cart_text" for="e-mail">Leave empty</label>';
+    echo '<input type="text" class="cart_text" name="e-mail" id="e-mail" value="">';
+    echo '</p>'; 
 ?>
 	<script>
 		// verify e-mail

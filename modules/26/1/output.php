@@ -149,8 +149,9 @@ if (rex::isBackend()) {
         echo '<div class="col-12 col-sm-6 col-md-4 spacer d-print-none">';
         echo '<div class="search_div">';
         echo '<form action="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_courses')) .'" method="post">';
-        echo '<input class="search_box" name="course_search" value="'. filter_input(INPUT_POST, 'course_search') .'" type="text">'
-            . '<button class="search_button"><img src="'. rex_url::addonAssets('d2u_courses', 'lens.png').'"></button>'
+        echo '<label class="d-none" for="course_search">'. Sprog\Wildcard::get('d2u_courses_search') .'</label>';
+        echo '<input class="search_box" name="course_search" id="course_search" value="'. filter_input(INPUT_POST, 'course_search') .'" type="text">'
+            . '<button class="search_button" title="'. Sprog\Wildcard::get('d2u_courses_search') .'"><img src="'. rex_url::addonAssets('d2u_courses', 'lens.png').'" alt="'. Sprog\Wildcard::get('d2u_courses_search') .'"></button>'
             . '</form>';
         echo '</div>';
         echo '</div>';
@@ -218,12 +219,12 @@ if (rex::isBackend()) {
     // Deal with target groups
     elseif ($target_group instanceof TargetGroup) {
         if (count($target_group->getChildren()) > 0) {
-            echo '<div class="col-12 course-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a') .' !important">';
+            echo '<div class="col-12 course-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'target_group_bg_color', '#b57a00') .' !important">';
             echo '<h1 class="page_title">'. $target_group->name .'</h1>';
             echo '</div></div>';
             // Children
             foreach ($target_group->getChildren() as $child_target_group) {
-                printBoxModule26_1($child_target_group->name, $child_target_group->picture, (string) rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a'), $child_target_group->getUrl(), $box_per_line);
+                printBoxModule26_1($child_target_group->name, $child_target_group->picture, (string) rex_config::get('d2u_courses', 'target_group_bg_color', '#b57a00'), $child_target_group->getUrl(), $box_per_line);
             }
         } else {
             $courses = $target_group->getCourses(true);
@@ -250,7 +251,7 @@ if (rex::isBackend()) {
         } elseif ('target_groups' === $startpage && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) { /** @phpstan-ignore-line */
             $target_groups = TargetGroup::getAll(true);
             foreach ($target_groups as $current_target_group) {
-                printBoxModule26_1($current_target_group->name, $current_target_group->picture, (string) rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a'), $current_target_group->getUrl(), $tmp_box_per_line);
+                printBoxModule26_1($current_target_group->name, $current_target_group->picture, (string) rex_config::get('d2u_courses', 'target_group_bg_color', '#b57a00'), $current_target_group->getUrl(), $tmp_box_per_line);
             }
         } elseif (false === $course) {
             // Only show default if no course should be shown
@@ -303,7 +304,7 @@ if (rex::isBackend()) {
             echo '</div>';
             echo '</div>';
         } elseif ($target_group instanceof TargetGroup) {
-            echo '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'target_group_bg_color', '#fab20a') .' !important">';
+            echo '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="background-color: '. rex_config::get('d2u_courses', 'target_group_bg_color', '#b57a00') .' !important">';
             echo '<h1 class="page_title">';
             echo $target_group->name;
             echo '</h1>';
