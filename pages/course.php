@@ -5,6 +5,7 @@ use TobiasKrais\D2UCourses\CustomerBooking;
 use TobiasKrais\D2UCourses\Location;
 use TobiasKrais\D2UCourses\LocationCategory;
 use TobiasKrais\D2UCourses\ScheduleCategory;
+use TobiasKrais\D2UHelper\BackendHelper;
 
 $func = rex_request('func', 'string');
 $entry_id = rex_request('entry_id', 'int');
@@ -169,8 +170,13 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                             \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_registration_possible', 'form[registration_possible]', $options_registration, [$course->registration_possible], 1, false, $readonly);
                             \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_participants_max', 'form[participants_max]', $course->participants_max, false, $readonly, 'number');
                             \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_participants_min', 'form[participants_min]', $course->participants_min, false, $readonly, 'number');
-                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_participants_number', 'form[participants_number]', $course->participants_number, false, $readonly, 'number');
-                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_participants_wait_list', 'form[participants_wait_list]', $course->participants_wait_list, false, $readonly, 'number');
+                            if (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable() && 'KuferSQL' !== $course->import_type) {
+                                BackendHelper::form_infotext('d2u_courses_customer_bookings_participants_hint', 'd2u_courses_customer_bookings_participants_hint');
+                            }
+                            else {
+                                \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_participants_number', 'form[participants_number]', $course->participants_number, false, $readonly, 'number');
+                                \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_participants_wait_list', 'form[participants_wait_list]', $course->participants_wait_list, false, $readonly, 'number');
+                            }
                             if (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable() && 'KuferSQL' !== $course->import_type) {
                                 ?>
                                 <script>

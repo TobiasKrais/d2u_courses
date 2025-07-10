@@ -35,6 +35,7 @@ d2u_courses_customer_bookings_nativeLanguage_DE = Deutsch
 d2u_courses_customer_bookings_nativeLanguage_FR = Französisch
 d2u_courses_customer_bookings_nativeLanguage_IT = Italienisch
 d2u_courses_customer_bookings_no = Nein
+d2u_courses_customer_bookings_participants_hint = Dieser Anzahl Teilnehmer und der Warteliste wird bei aktiviertem Buchungsdaten Plugin automatisch berechnet, wenn der Teilnehmer sich für einen Kurs an- oder abmeldet.
 d2u_courses_customer_bookings_pension_insurance_id = Rentennummer
 d2u_courses_customer_bookings_paid = Bezahlt
 d2u_courses_customer_bookings_salery_level_none = Keine Angabe
