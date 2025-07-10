@@ -240,6 +240,10 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 </fieldset>
 
 <h2>Changelog</h2>
+<p>3.5.1-DEV:</p>
+<ul>
+	<li>Bugfix: Wenn das Buchungsdaten Plugin aktiviert ist, werden die Anzahl der Teilnehmer und Warteliste berechnet. Diese Felder werden somit ausgeblendet.</li>
+</ul>
 <p>3.5.0:</p>
 <ul>
 	<li>Vorbereitung auf R6: Folgende Klassen werden ab Version 4 dieses Addons umbenannt. Schon jetzt stehen die neuen Klassen für die Übergangszeit zur Verfügung:
