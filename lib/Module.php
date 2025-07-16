@@ -17,7 +17,7 @@ class Module
         $modules = [];
         $modules[] = new \TobiasKrais\D2UHelper\Module('26-1',
             'D2U Veranstaltungen - Ausgabe Veranstaltungen',
-            16);
+            17);
         $modules[] = new \TobiasKrais\D2UHelper\Module('26-2',
             'D2U Veranstaltungen - Warenkorb',
             11);

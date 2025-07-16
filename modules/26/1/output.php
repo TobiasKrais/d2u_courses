@@ -256,8 +256,14 @@ if (rex::isBackend()) {
         } elseif (false === $course) {
             // Only show default if no course should be shown
             $categories = TobiasKrais\D2UCourses\Category::getAllParents(true);
-            foreach ($categories as $current_category) {
-                printBoxModule26_1($current_category->name, $current_category->picture, $current_category->color, $current_category->getUrl(), $tmp_box_per_line);
+            if (count($categories) === 0) {
+                echo '<div class="col-12"><h1>'. Sprog\Wildcard::get('d2u_courses_none_found_heading') .'</h1></div>';
+                echo '<div class="col-12">'. Sprog\Wildcard::get('d2u_courses_none_found') .'</div>';
+            }
+            else {
+                foreach ($categories as $current_category) {
+                    printBoxModule26_1($current_category->name, $current_category->picture, $current_category->color, $current_category->getUrl(), $tmp_box_per_line);
+                }
             }
             if (count($linkboxes) > 0) { /** @phpstan-ignore-line */
                 foreach ($linkboxes as $linkbox) {
