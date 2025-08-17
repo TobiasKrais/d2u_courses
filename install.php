@@ -212,20 +212,9 @@ if (!rex_config::has('d2u_courses', 'article_id_courses')) {
 // END default settings
 
 // Update modules
-if (class_exists(TobiasKrais\D2UHelper\ModuleManager::class)) {
-    $modules = [];
-    $modules[] = new \TobiasKrais\D2UHelper\Module('26-1',
-        'D2U Veranstaltungen - Ausgabe Veranstaltungen',
-        16);
-    $modules[] = new \TobiasKrais\D2UHelper\Module('26-2',
-        'D2U Veranstaltungen - Warenkorb',
-        11);
-    $modules[] = new \TobiasKrais\D2UHelper\Module('26-3',
-        'D2U Veranstaltungen - Ausgabe Veranstaltungen einer Kategorie in Boxen',
-        4);
-    $d2u_module_manager = new \TobiasKrais\D2UHelper\ModuleManager($modules, '', 'd2u_courses');
-    $d2u_module_manager->autoupdate();
-}
+include __DIR__ . DIRECTORY_SEPARATOR .'lib'. DIRECTORY_SEPARATOR .'Module.php';
+$d2u_module_manager = new \TobiasKrais\D2UHelper\ModuleManager(\TobiasKrais\D2UCourses\Module::getModules(), '', 'd2u_courses');
+$d2u_module_manager->autoupdate();
 
 // Update translations
 if (!class_exists(TobiasKrais\D2UCourses\LangHelper::class)) {

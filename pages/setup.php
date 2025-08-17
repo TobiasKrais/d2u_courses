@@ -242,7 +242,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 <h2>Changelog</h2>
 <p>3.5.2-DEV:</p>
 <ul>
-	<li>...</li>
+	<li>Bugfix: Module wurden beim Update nicht korrekt aktualisiert.</li>
 </ul>
 <p>3.5.1:</p>
 <ul>
