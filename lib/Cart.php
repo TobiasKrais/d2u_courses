@@ -250,6 +250,18 @@ class Cart
                         $firstname = $xml->createElement('VORNAME');
                         $firstname->appendChild($xml->createTextNode((string) $participant_data['firstname']));
                         $stammdaten->appendChild($firstname);
+                        // <STRASSE>Street and number</STRASSE>
+                        $strasse = $xml->createElement('STRASSE');
+                        $strasse->appendChild($xml->createTextNode($invoice_address['address']));
+                        $stammdaten->appendChild($strasse);
+                        // <ORT>City</ORT>
+                        $city = $xml->createElement('ORT');
+                        $city->appendChild($xml->createTextNode($invoice_address['zipcode'] .' '. $invoice_address['city']));
+                        $stammdaten->appendChild($city);
+                        // <NATION>Land</NATION>
+                        $country = $xml->createElement('NATION');
+                        $country->appendChild($xml->createTextNode($invoice_address['country']));
+                        $stammdaten->appendChild($country);
                         if (array_key_exists('gender', $participant_data) && '' !== $participant_data['gender']) {
                             // <GESCHLECHT>M = male, W = female, F = company</GESCHLECHT>
                             $gender = $xml->createElement('GESCHLECHT');
@@ -482,13 +494,15 @@ class Cart
                             $weiterstamm = $xml->createElement('WEITERSTAMM');
                             $weiteranm->appendChild($weiterstamm);
                             // <NAME_TITEL>M = Herr, W = Frau, F = Herr</NAME_TITEL>
-                            $name_titel = $xml->createElement('NAME_TITEL');
-                            if ('W' === $participant_data['gender']) {
-                                $name_titel->appendChild($xml->createTextNode('Frau'));
-                            } else {
-                                $name_titel->appendChild($xml->createTextNode('Herr'));
+                            if ('' !== $participant_data['gender']) {
+                                $name_titel = $xml->createElement('NAME_TITEL');
+                                if ('W' === $participant_data['gender']) {
+                                    $name_titel->appendChild($xml->createTextNode('Frau'));
+                                } else {
+                                    $name_titel->appendChild($xml->createTextNode('Herr'));
+                                }
+                                $weiterstamm->appendChild($name_titel);
                             }
-                            $weiterstamm->appendChild($name_titel);
                             // <NAME>Last name</NAME>
                             $name = $xml->createElement('NAME');
                             $name->appendChild($xml->createTextNode((string) $participant_data['lastname']));
