@@ -223,8 +223,6 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 		Naturheilpraxis am Lehbühl</a>.</li>
 	<li>D2U Veranstaltungen Addon ohne Plugins: <a href="https://frauenfasten.de/" target="_blank">
 		Naturzentrum am Lehbühl</a>.</li>
-	<li>D2U Veranstaltungen Addon: <a href="https://kaltenbach-stiftung.de/" target="_blank">
-		kaltenbach-stiftung.de</a>.</li>
 </ul>
 <h2>Support</h2>
 <p>Fehlermeldungen bitte im Git Projekt unter
@@ -243,6 +241,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 <p>3.5.2-DEV:</p>
 <ul>
 	<li>Bugfix: Module wurden beim Update nicht korrekt aktualisiert.</li>
+	<li>Buchungs Plugin: PHP Warnung im CSV Export verhindert.</li>
 </ul>
 <p>3.5.1:</p>
 <ul>

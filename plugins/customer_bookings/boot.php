@@ -73,7 +73,7 @@ if ('' !== $download) {
                 
         // write content to file
         foreach ($data as $row) {
-            fputcsv($fp, $row, ';');
+            fputcsv($fp, $row, ';', '"', '\\');
         }
 
         // close file
