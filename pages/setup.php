@@ -241,6 +241,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 <p>3.5.2-DEV:</p>
 <ul>
 	<li>Bugfix: Module wurden beim Update nicht korrekt aktualisiert.</li>
+	<li>Bugfix: Es war möglich einen Teilnehmer mehr als die maximale Teilnehmeranzahl anzumelden.</li>
 	<li>Buchungs Plugin: PHP Warnung im CSV Export verhindert.</li>
 </ul>
 <p>3.5.1:</p>

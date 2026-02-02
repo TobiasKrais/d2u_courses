@@ -774,7 +774,7 @@ class Cart
                 }
                 $booking->course_id = $course_id;
                 $booking->ipAddress = rex_request::server('REMOTE_ADDR', 'string');
-                if('booked' === $course->registration_possible || ($course->participants_max > 0 && CustomerBooking::getNumberForCourse($course->course_id) > $course->participants_max)) {
+                if('booked' === $course->registration_possible || ($course->participants_max > 0 && CustomerBooking::getNumberForCourse($course->course_id) >= $course->participants_max)) {
                     $booking->waitlist = true;
                 }
                 if (false === $booking->save()) {
