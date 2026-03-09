@@ -40,8 +40,9 @@ d2u_courses/
 │   ├── course.php          # Course management (CRUD, clone, status)
 │   ├── category.php        # Category management
 │   ├── settings.php        # Addon settings
-│   ├── setup.php           # Module manager + changelog
-│   └── help.php            # Help page
+│   ├── setup.php           # Module manager
+│   ├── help.readme.php     # Help/README page
+│   └── help.changelog.php  # Changelog
 └── plugins/                # 5 plugins
     ├── customer_bookings/  # Customer booking management + export
     ├── kufer_sync/         # KuferSQL XML import/sync (cronjob)
@@ -112,7 +113,7 @@ d2u_courses/
 
 Each module has a revision number defined in `lib/Module.php` inside the `getModules()` method. When a module is changed:
 
-1. Add a changelog entry in `pages/setup.php` describing the change.
+1. Add a changelog entry in `pages/help.changelog.php` describing the change.
 2. Increment the module's revision number in `Module::getModules()` by one.
 
 **Important:** The revision only needs to be incremented **once per release**, not per commit. Check the changelog: if the version number is followed by `-DEV`, the release is still in development and no additional revision bump is needed.
@@ -160,8 +161,14 @@ Managed via `pages/settings.php` and stored in `rex_config`:
 
 ## Versioning
 
-This addon follows [Semantic Versioning](https://semver.org/). The version number is maintained in `package.yml`. During development, the changelog uses a `-DEV` suffix.
+This addon follows [Semantic Versioning](https://semver.org/):
+
+- **Major** (1st digit): Breaking changes (e.g. removed classes, renamed methods, incompatible DB changes)
+- **Minor** (2nd digit): New features, new modules, new database fields (backward compatible)
+- **Patch** (3rd digit): Bug fixes, small improvements (backward compatible)
+
+The version number is maintained in `package.yml`. During development, the changelog uses a `-DEV` suffix.
 
 ## Changelog
 
-The changelog is located in `pages/setup.php`.
+The changelog is located in `pages/help.changelog.php`.

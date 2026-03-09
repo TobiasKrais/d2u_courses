@@ -1,4 +1,7 @@
 <?php
+$showChangelogOnly = defined('D2U_COURSES_SHOW_CHANGELOG');
+
+if (!$showChangelogOnly) {
 /*
  * Modules
  */
@@ -227,16 +230,10 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 <h2>Support</h2>
 <p>Fehlermeldungen bitte im Git Projekt unter
 	<a href="https://github.com/TobiasKrais/d2u_courses/issues" target="_blank">https://github.com/TobiasKrais/d2u_courses/issues</a> melden.</p>
-<fieldset style='padding: 1em; border: 1px solid #dfe3e9;'>
-	<p style="margin-bottom: 0.5em;">Sag einfach Danke oder unterstütze die Weiterentwicklung durch eine Spende:</p>
-	<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-		<input type="hidden" name="cmd" value="_s-xclick" />
-		<input type="hidden" name="hosted_button_id" value="CB7B6QTLM76N6" />
-		<input type="image" src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donateCC_LG.gif" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Spenden mit dem PayPal-Button" />
-		<img alt="" src="https://www.paypal.com/de_DE/i/scr/pixel.gif" width="1" height="1" />
-	</form>
-</fieldset>
 
+<?php } ?>
+
+<?php if ($showChangelogOnly) { ?>
 <h2>Changelog</h2>
 <p>3.5.2-DEV:</p>
 <ul>
@@ -268,6 +265,7 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 		<ul>
 			<li><code>d2u_courses_lang_helper</code> wird zu <code>TobiasKrais\D2UCourses\LangHelper</code>.</li>
 			<li><code>D2UCoursesModules</code> wird zu <code>TobiasKrais\D2UCourses\Module</code>.</li>
+<?php } ?>
 			<li><code>kufer_sync_cronjob</code> wird zu <code>TobiasKrais\D2UCourses\KuferSyncCronjob</code>.</li>
 		</ul>
 	</li>

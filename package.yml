@@ -11,7 +11,13 @@ page:
         category: { title: 'translate:d2u_helper_categories', icon: rex-icon rex-icon-open-category, perm: 'd2u_courses[categories]' }
         setup: { title: 'translate:d2u_helper_setup', icon: rex-icon rex-icon-install, itemClass: pull-right, perm: 'd2u_courses[settings]' }
         settings: { title: 'translate:d2u_helper_settings', icon: rex-icon rex-icon-system, itemClass: pull-right, perm: 'd2u_courses[settings]' }
-        help: { title: 'translate:package_hhelp', icon: rex-icon rex-icon-help, itemClass: pull-right }
+        help:
+            title: ''
+            icon: rex-icon rex-icon-help
+            itemClass: pull-right
+            subpages:
+                readme: { title: 'README' }
+                changelog: { title: 'translate:d2u_helper_help_chapter_changelog' }
 
 requires:
     redaxo: '>=5.16.0'
