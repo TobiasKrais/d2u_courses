@@ -371,8 +371,8 @@ class ScheduleCategory
     private function setPriority($delete = false): void
     {
         // Pull prios from database
-        $query = 'SELECT schedule_category_id, priority FROM '. rex::getTablePrefix() .'d2u_courses_schedule_categories '
-            .'WHERE schedule_category_id <> '. $this->schedule_category_id .' ORDER BY priority';
+        $query = 'SELECT schedule_category_id FROM '. rex::getTablePrefix() .'d2u_courses_schedule_categories '
+            .'WHERE schedule_category_id <> '. $this->schedule_category_id .' ORDER BY priority, schedule_category_id';
         $result = rex_sql::factory();
         $result->setQuery($query);
 
@@ -388,7 +388,7 @@ class ScheduleCategory
 
         $target_groups = [];
         for ($i = 0; $i < $result->getRows(); ++$i) {
-            $target_groups[$result->getValue('priority')] = $result->getValue('schedule_category_id');
+            $target_groups[] = (int) $result->getValue('schedule_category_id');
             $result->next();
         }
         array_splice($target_groups, $this->priority - 1, 0, [$this->schedule_category_id]);

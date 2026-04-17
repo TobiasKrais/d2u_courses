@@ -347,8 +347,8 @@ class TargetGroup
     private function setPriority($delete = false): void
     {
         // Pull prios from database
-        $query = 'SELECT target_group_id, priority FROM '. rex::getTablePrefix() .'d2u_courses_target_groups '
-            .'WHERE target_group_id <> '. $this->target_group_id .' ORDER BY priority';
+        $query = 'SELECT target_group_id FROM '. rex::getTablePrefix() .'d2u_courses_target_groups '
+            .'WHERE target_group_id <> '. $this->target_group_id .' ORDER BY priority, target_group_id';
         $result = rex_sql::factory();
         $result->setQuery($query);
 
@@ -364,7 +364,7 @@ class TargetGroup
 
         $target_groups = [];
         for ($i = 0; $i < $result->getRows(); ++$i) {
-            $target_groups[$result->getValue('priority')] = $result->getValue('target_group_id');
+            $target_groups[] = (int) $result->getValue('target_group_id');
             $result->next();
         }
         array_splice($target_groups, $this->priority - 1, 0, [$this->target_group_id]);
