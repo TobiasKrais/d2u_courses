@@ -1,4 +1,6 @@
 <?php
+
+use TobiasKrais\D2UHelper\BackendHelper;
 $func = rex_request('func', 'string');
 $entry_id = rex_request('entry_id', 'int', 0);
 $message = rex_get('message', 'string');
@@ -74,9 +76,9 @@ if ('edit' === $func || 'add' === $func) {
 				<?php
 
                     $location_category = new TobiasKrais\D2UCourses\LocationCategory($entry_id);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_helper_name', 'form[name]', $location_category->name, true, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location_zoomlevel', 'form[zoom_level]', $location_category->zoom_level, true, false, 'number');
-                    \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_helper_picture', '1', $location_category->picture, false);
+                    BackendHelper::form_input('d2u_helper_name', 'form[name]', $location_category->name, true, false);
+                    BackendHelper::form_input('d2u_courses_location_zoomlevel', 'form[zoom_level]', $location_category->zoom_level, true, false, 'number');
+                    BackendHelper::form_mediafield('d2u_helper_picture', '1', $location_category->picture, false);
                 ?>
 			</div>
 			<footer class="panel-footer">
@@ -94,16 +96,15 @@ if ('edit' === $func || 'add' === $func) {
 	</form>
 	<br>
 	<?php
-        echo \TobiasKrais\D2UHelper\BackendHelper::getCSS();
-        echo \TobiasKrais\D2UHelper\BackendHelper::getJS();
-        echo \TobiasKrais\D2UHelper\BackendHelper::getJSOpenAll();
+        echo BackendHelper::getCSS();
+        echo BackendHelper::getJS();
+        echo BackendHelper::getJSOpenAll();
 }
 
 if ('' === $func) {
     $query = 'SELECT location_category_id, name '
-        . 'FROM '. rex::getTablePrefix() .'d2u_courses_location_categories '
-        .'ORDER BY name ASC';
-    $list = rex_list::factory($query, 1000);
+        . 'FROM '. rex::getTablePrefix() .'d2u_courses_location_categories ';
+    $list = rex_list::factory(query: $query, rowsPerPage: 1000, defaultSort: ['name' => 'ASC']);
 
     $list->addTableAttribute('class', 'table-striped table-hover');
 
@@ -116,9 +117,11 @@ if ('' === $func) {
 
     $list->setColumnLabel('location_category_id', rex_i18n::msg('id'));
     $list->setColumnLayout('location_category_id', ['<th class="rex-table-id">###VALUE###</th>', '<td class="rex-table-id">###VALUE###</td>']);
+    $list->setColumnSortable('location_category_id');
 
     $list->setColumnLabel('name', rex_i18n::msg('d2u_helper_name'));
     $list->setColumnParams('name', ['func' => 'edit', 'entry_id' => '###location_category_id###']);
+    $list->setColumnSortable('name');
 
     $list->addColumn(rex_i18n::msg('module_functions'), '<i class="rex-icon rex-icon-edit"></i> ' . rex_i18n::msg('edit'));
     $list->setColumnLayout(rex_i18n::msg('module_functions'), ['<th class="rex-table-action" colspan="2">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);
@@ -128,6 +131,14 @@ if ('' === $func) {
     $list->setColumnLayout(rex_i18n::msg('delete_module'), ['', '<td class="rex-table-action">###VALUE###</td>']);
     $list->setColumnParams(rex_i18n::msg('delete_module'), ['func' => 'delete', 'entry_id' => '###location_category_id###']);
     $list->addLinkAttribute(rex_i18n::msg('delete_module'), 'data-confirm', rex_i18n::msg('d2u_helper_confirm_delete'));
+
+    $list->addColumn(rex_i18n::msg('d2u_helper_open_frontend'), '');
+    $list->setColumnLayout(rex_i18n::msg('d2u_helper_open_frontend'), ['', '<td class="rex-table-action">###VALUE###</td>']);
+    $list->setColumnFormat(rex_i18n::msg('d2u_helper_open_frontend'), 'custom', static function ($params) {
+        $listParams = $params['list'];
+
+        return BackendHelper::getFrontendLinkButton((new \TobiasKrais\D2UCourses\LocationCategory((int) $listParams->getValue('location_category_id')))->getUrl());
+    });
 
     $list->setNoRowsMessage(rex_i18n::msg('d2u_helper_no_categories_found'));
 

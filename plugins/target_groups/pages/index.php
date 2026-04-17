@@ -1,4 +1,6 @@
 <?php
+
+use TobiasKrais\D2UHelper\BackendHelper;
 $func = rex_request('func', 'string');
 $entry_id = rex_request('entry_id', 'int');
 $message = rex_get('message', 'string');
@@ -67,6 +69,20 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
 
     $func = '';
 }
+elseif ('priority_down' === $func || 'priority_up' === $func) {
+    $target_group = new TobiasKrais\D2UCourses\TargetGroup($entry_id);
+
+    if ('priority_down' === $func) {
+        ++$target_group->priority;
+        $target_group->save();
+    } elseif ($target_group->priority > 1) {
+        --$target_group->priority;
+        $target_group->save();
+    }
+
+    header('Location: '. BackendHelper::getCurrentBackendPage(['message' => 'd2u_helper_priority_changed'], ['func', 'entry_id']));
+    exit;
+}
 
 // Form
 if ('edit' === $func || 'add' === $func) {
@@ -79,12 +95,12 @@ if ('edit' === $func || 'add' === $func) {
 				<?php
 
                     $target_group = new TobiasKrais\D2UCourses\TargetGroup($entry_id);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_helper_name', 'form[name]', $target_group->name, true, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_helper_picture', '1', $target_group->picture, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('header_priority', 'form[priority]', $target_group->priority, true, false, 'number');
+                    BackendHelper::form_input('d2u_helper_name', 'form[name]', $target_group->name, true, false);
+                    BackendHelper::form_mediafield('d2u_helper_picture', '1', $target_group->picture, false);
+                    BackendHelper::form_input('header_priority', 'form[priority]', $target_group->priority, true, false, 'number');
                     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-                        \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_kufer_categories_target_group_name', 'form[kufer_target_group_name]', $target_group->kufer_target_group_name, false, false);
-                        \TobiasKrais\D2UHelper\BackendHelper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $target_group->kufer_categories), 5, false, false, false);
+                        BackendHelper::form_input('d2u_courses_kufer_categories_target_group_name', 'form[kufer_target_group_name]', $target_group->kufer_target_group_name, false, false);
+                        BackendHelper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $target_group->kufer_categories), 5, false, false, false);
                     }
                 ?>
 			</div>
@@ -103,20 +119,20 @@ if ('edit' === $func || 'add' === $func) {
 	</form>
 	<br>
 	<?php
-        echo \TobiasKrais\D2UHelper\BackendHelper::getCSS();
-        echo \TobiasKrais\D2UHelper\BackendHelper::getJS();
-        echo \TobiasKrais\D2UHelper\BackendHelper::getJSOpenAll();
+        echo BackendHelper::getCSS();
+        echo BackendHelper::getJS();
+        echo BackendHelper::getJSOpenAll();
 }
 
 if ('' === $func) {
-    $query = 'SELECT target_group_id, name, priority '
+    $query = 'SELECT target_group_id, name, priority, '
+        . '(SELECT MAX(priority) FROM '. rex::getTablePrefix() .'d2u_courses_target_groups) AS max_priority '
         . 'FROM '. rex::getTablePrefix() .'d2u_courses_target_groups ';
+    $defaultSort = ['name' => 'ASC'];
     if ('priority' === rex_config::get('d2u_courses', 'default_category_sort', 'name')) {
-        $query .= 'ORDER BY priority ASC';
-    } else {
-        $query .= 'ORDER BY name ASC';
+        $defaultSort = ['priority' => 'ASC'];
     }
-    $list = rex_list::factory($query, 1000);
+    $list = rex_list::factory(query: $query, rowsPerPage: 1000, defaultSort: $defaultSort);
 
     $list->addTableAttribute('class', 'table-striped table-hover');
 
@@ -129,11 +145,25 @@ if ('' === $func) {
 
     $list->setColumnLabel('target_group_id', rex_i18n::msg('id'));
     $list->setColumnLayout('target_group_id', ['<th class="rex-table-id">###VALUE###</th>', '<td class="rex-table-id">###VALUE###</td>']);
+    $list->setColumnSortable('target_group_id');
 
     $list->setColumnLabel('name', rex_i18n::msg('d2u_helper_name'));
     $list->setColumnParams('name', ['func' => 'edit', 'entry_id' => '###target_group_id###']);
+    $list->setColumnSortable('name');
 
     $list->setColumnLabel('priority', rex_i18n::msg('header_priority'));
+    $list->setColumnSortable('priority');
+    $list->setColumnFormat('priority', 'custom', static function ($params) {
+        $listParams = $params['list'];
+
+        return BackendHelper::getPriorityButtons(
+            (int) $listParams->getValue('target_group_id'),
+            (int) $listParams->getValue('priority'),
+            (int) $listParams->getValue('max_priority')
+        );
+    });
+
+    $list->removeColumn('max_priority');
 
     $list->addColumn(rex_i18n::msg('module_functions'), '<i class="rex-icon rex-icon-edit"></i> ' . rex_i18n::msg('edit'));
     $list->setColumnLayout(rex_i18n::msg('module_functions'), ['<th class="rex-table-action" colspan="2">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);
@@ -143,6 +173,14 @@ if ('' === $func) {
     $list->setColumnLayout(rex_i18n::msg('delete_module'), ['', '<td class="rex-table-action">###VALUE###</td>']);
     $list->setColumnParams(rex_i18n::msg('delete_module'), ['func' => 'delete', 'entry_id' => '###target_group_id###']);
     $list->addLinkAttribute(rex_i18n::msg('delete_module'), 'data-confirm', rex_i18n::msg('d2u_helper_confirm_delete'));
+
+    $list->addColumn(rex_i18n::msg('d2u_helper_open_frontend'), '');
+    $list->setColumnLayout(rex_i18n::msg('d2u_helper_open_frontend'), ['', '<td class="rex-table-action">###VALUE###</td>']);
+    $list->setColumnFormat(rex_i18n::msg('d2u_helper_open_frontend'), 'custom', static function ($params) {
+        $listParams = $params['list'];
+
+        return BackendHelper::getFrontendLinkButton((new \TobiasKrais\D2UCourses\TargetGroup((int) $listParams->getValue('target_group_id')))->getUrl());
+    });
 
     $list->setNoRowsMessage(rex_i18n::msg('d2u_courses_target_groups_no_target_groups_found'));
 

@@ -1,6 +1,7 @@
 <?php
 
 use TobiasKrais\D2UCourses\ScheduleCategory;
+use TobiasKrais\D2UHelper\BackendHelper;
 
 $func = rex_request('func', 'string');
 $entry_id = rex_request('entry_id', 'int');
@@ -74,6 +75,20 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_delete', FILTER_VALIDATE_INT) || '
 
     $func = '';
 }
+elseif ('priority_down' === $func || 'priority_up' === $func) {
+    $schedule_category = new ScheduleCategory($entry_id);
+
+    if ('priority_down' === $func) {
+        ++$schedule_category->priority;
+        $schedule_category->save();
+    } elseif ($schedule_category->priority > 1) {
+        --$schedule_category->priority;
+        $schedule_category->save();
+    }
+
+    header('Location: '. BackendHelper::getCurrentBackendPage(['message' => 'd2u_helper_priority_changed'], ['func', 'entry_id']));
+    exit;
+}
 
 // Form
 if ('edit' === $func || 'add' === $func) {
@@ -86,16 +101,16 @@ if ('edit' === $func || 'add' === $func) {
 				<?php
 
                     $schedule_category = new ScheduleCategory($entry_id);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_helper_name', 'form[name]', $schedule_category->name, true, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_helper_picture', '1', $schedule_category->picture, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('header_priority', 'form[priority]', $schedule_category->priority, true, false, 'number');
+                    BackendHelper::form_input('d2u_helper_name', 'form[name]', $schedule_category->name, true, false);
+                    BackendHelper::form_mediafield('d2u_helper_picture', '1', $schedule_category->picture, false);
+                    BackendHelper::form_input('header_priority', 'form[priority]', $schedule_category->priority, true, false, 'number');
                     $options_parents = [-1 => rex_i18n::msg('d2u_courses_categories_parent_category_none')];
                     foreach (ScheduleCategory::getAllParents() as $parent) {
                         $options_parents[$parent->schedule_category_id] = $parent->name;
                     }
-                    \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_categories_parent_category', 'form[parent_schedule_category_id]', $options_parents, $schedule_category->parent_schedule_category instanceof ScheduleCategory ? [$schedule_category->parent_schedule_category->schedule_category_id] : [-1], 1, false, false);
+                    BackendHelper::form_select('d2u_courses_categories_parent_category', 'form[parent_schedule_category_id]', $options_parents, $schedule_category->parent_schedule_category instanceof ScheduleCategory ? [$schedule_category->parent_schedule_category->schedule_category_id] : [-1], 1, false, false);
                     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-                        \TobiasKrais\D2UHelper\BackendHelper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $schedule_category->kufer_categories), 5, false, false, false);
+                        BackendHelper::form_textarea('d2u_courses_kufer_categories', 'form[kufer_categories]', implode(PHP_EOL, $schedule_category->kufer_categories), 5, false, false, false);
                     }
                 ?>
 			</div>
@@ -114,22 +129,22 @@ if ('edit' === $func || 'add' === $func) {
 	</form>
 	<br>
 	<?php
-        echo \TobiasKrais\D2UHelper\BackendHelper::getCSS();
-        echo \TobiasKrais\D2UHelper\BackendHelper::getJS();
-        echo \TobiasKrais\D2UHelper\BackendHelper::getJSOpenAll();
+        echo BackendHelper::getCSS();
+        echo BackendHelper::getJS();
+        echo BackendHelper::getJSOpenAll();
 }
 
 if ('' === $func) {
-    $query = 'SELECT category.schedule_category_id, CONCAT_WS(" → ", parents.name, category.name) AS full_name, category.priority '
+    $query = 'SELECT category.schedule_category_id, CONCAT_WS(" → ", parents.name, category.name) AS full_name, category.priority, '
+        . '(SELECT MAX(priority) FROM '. rex::getTablePrefix() .'d2u_courses_schedule_categories) AS max_priority '
         . 'FROM '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS category '
         . 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_schedule_categories AS parents '
             . 'ON category.parent_schedule_category_id = parents.schedule_category_id ';
+    $defaultSort = ['full_name' => 'ASC'];
     if ('priority' === rex_config::get('d2u_courses', 'default_category_sort', 'name')) {
-        $query .= 'ORDER BY priority ASC';
-    } else {
-        $query .= 'ORDER BY full_name ASC';
+        $defaultSort = ['priority' => 'ASC'];
     }
-    $list = rex_list::factory($query, 1000);
+    $list = rex_list::factory(query: $query, rowsPerPage: 1000, defaultSort: $defaultSort);
 
     $list->addTableAttribute('class', 'table-striped table-hover');
 
@@ -142,11 +157,25 @@ if ('' === $func) {
 
     $list->setColumnLabel('schedule_category_id', rex_i18n::msg('id'));
     $list->setColumnLayout('schedule_category_id', ['<th class="rex-table-id">###VALUE###</th>', '<td class="rex-table-id">###VALUE###</td>']);
+    $list->setColumnSortable('schedule_category_id');
 
     $list->setColumnLabel('full_name', rex_i18n::msg('d2u_helper_name'));
     $list->setColumnParams('full_name', ['func' => 'edit', 'entry_id' => '###schedule_category_id###']);
+    $list->setColumnSortable('full_name');
 
     $list->setColumnLabel('priority', rex_i18n::msg('header_priority'));
+    $list->setColumnSortable('priority');
+    $list->setColumnFormat('priority', 'custom', static function ($params) {
+        $listParams = $params['list'];
+
+        return BackendHelper::getPriorityButtons(
+            (int) $listParams->getValue('schedule_category_id'),
+            (int) $listParams->getValue('priority'),
+            (int) $listParams->getValue('max_priority')
+        );
+    });
+
+    $list->removeColumn('max_priority');
 
     $list->addColumn(rex_i18n::msg('module_functions'), '<i class="rex-icon rex-icon-edit"></i> ' . rex_i18n::msg('edit'));
     $list->setColumnLayout(rex_i18n::msg('module_functions'), ['<th class="rex-table-action" colspan="2">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);
@@ -156,6 +185,14 @@ if ('' === $func) {
     $list->setColumnLayout(rex_i18n::msg('delete_module'), ['', '<td class="rex-table-action">###VALUE###</td>']);
     $list->setColumnParams(rex_i18n::msg('delete_module'), ['func' => 'delete', 'entry_id' => '###schedule_category_id###']);
     $list->addLinkAttribute(rex_i18n::msg('delete_module'), 'data-confirm', rex_i18n::msg('d2u_helper_confirm_delete'));
+
+    $list->addColumn(rex_i18n::msg('d2u_helper_open_frontend'), '');
+    $list->setColumnLayout(rex_i18n::msg('d2u_helper_open_frontend'), ['', '<td class="rex-table-action">###VALUE###</td>']);
+    $list->setColumnFormat(rex_i18n::msg('d2u_helper_open_frontend'), 'custom', static function ($params) {
+        $listParams = $params['list'];
+
+        return BackendHelper::getFrontendLinkButton((new \TobiasKrais\D2UCourses\ScheduleCategory((int) $listParams->getValue('schedule_category_id')))->getUrl());
+    });
 
     $list->setNoRowsMessage(rex_i18n::msg('d2u_helper_no_categories_found'));
 

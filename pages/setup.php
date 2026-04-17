@@ -235,6 +235,15 @@ if ('d2u_courses' === rex_request('import', 'string') && $old_tables_available) 
 
 <?php if ($showChangelogOnly) { ?>
 <h2>Changelog</h2>
+<p>3.6.0-DEV:</p>
+<ul>
+	<li>Neue Module 26-4 bis 26-6 als Bootstrap-5-Varianten der bestehenden Beispielmodule hinzugefügt.</li>
+	<li>Module 26-1 bis 26-3 als "(BS4, deprecated)" markiert. Die BS4-Varianten werden im nächsten Major Release entfernt.</li>
+	<li>Benötigt d2u_helper &gt;= 2.1.0.</li>
+	<li>Bugfix: Prioritäten werden bei Kategorien sowie bei Termin- und Zielgruppen nach dem Speichern wieder stabil neu durchnummeriert, auch wenn in der Datenbank bereits doppelte Werte vorhanden sind.</li>
+	<li>Backend-Listen im Addon und in den Plugins sortierbar gemacht und Standardsortierungen von SQL-Queries auf <code>rex_list</code>-<code>defaultSort</code> umgestellt.</li>
+	<li>Die Priorität von Kategorien sowie von Termin- und Zielgruppen kann in den Backend-Listen jetzt direkt per Hoch-/Runter-Buttons geändert werden.</li>
+</ul>
 <p>3.5.2-DEV:</p>
 <ul>
 	<li>Bugfix: Module wurden beim Update nicht korrekt aktualisiert.</li>

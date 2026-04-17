@@ -1,6 +1,7 @@
 <?php
 
 use TobiasKrais\D2UCourses\LocationCategory;
+use TobiasKrais\D2UHelper\BackendHelper;
 
 $func = rex_request('func', 'string');
 $entry_id = rex_request('entry_id', 'int');
@@ -96,11 +97,11 @@ if ('edit' === $func || 'add' === $func) {
 				<?php
 
                     $location = new TobiasKrais\D2UCourses\Location($entry_id);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_helper_name', 'form[name]', $location->name, true, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location_street', 'form[street]', $location->street, true, false, 'text');
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location', 'form[city]', $location->city, true, false, 'text');
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location_zip_code', 'form[zip_code]', $location->zip_code, true, false, 'text');
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location_country_code', 'form[country_code]', $location->country_code, true, false, 'text');
+                    BackendHelper::form_input('d2u_helper_name', 'form[name]', $location->name, true, false);
+                    BackendHelper::form_input('d2u_courses_location_street', 'form[street]', $location->street, true, false, 'text');
+                    BackendHelper::form_input('d2u_courses_location', 'form[city]', $location->city, true, false, 'text');
+                    BackendHelper::form_input('d2u_courses_location_zip_code', 'form[zip_code]', $location->zip_code, true, false, 'text');
+                    BackendHelper::form_input('d2u_courses_location_country_code', 'form[country_code]', $location->country_code, true, false, 'text');
 
                     $d2u_helper = rex_addon::get('d2u_helper');
                     $api_key = '';
@@ -143,16 +144,16 @@ if ('edit' === $func || 'add' === $func) {
                             echo '<script>jQuery(document).ready(function($) { $("#check_geocode").parent().hide(); });</script>';
                         }
                     }
-                    \TobiasKrais\D2UHelper\BackendHelper::form_infotext('d2u_helper_geocode_hint', 'hint_geocoding');
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location_latitude', 'form[latitude]', (string) $location->latitude, false, false, 'text');
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location_longitude', 'form[longitude]', (string) $location->longitude, false, false, 'text');
-                    \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_helper_picture', '1', $location->picture, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_courses_location_site_plan', '2', $location->site_plan, false);
+                    BackendHelper::form_infotext('d2u_helper_geocode_hint', 'hint_geocoding');
+                    BackendHelper::form_input('d2u_courses_location_latitude', 'form[latitude]', (string) $location->latitude, false, false, 'text');
+                    BackendHelper::form_input('d2u_courses_location_longitude', 'form[longitude]', (string) $location->longitude, false, false, 'text');
+                    BackendHelper::form_mediafield('d2u_helper_picture', '1', $location->picture, false);
+                    BackendHelper::form_mediafield('d2u_courses_location_site_plan', '2', $location->site_plan, false);
                     $options_categories = [];
                     foreach (TobiasKrais\D2UCourses\LocationCategory::getAll(false) as $location_category) {
                         $options_categories[$location_category->location_category_id] = $location_category->name;
                     }
-                    \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_helper_category', 'form[location_category_id]', $options_categories, $location->location_category instanceof LocationCategory ? [$location->location_category->location_category_id] : [-1], 1, false, false);
+                    BackendHelper::form_select('d2u_helper_category', 'form[location_category_id]', $options_categories, $location->location_category instanceof LocationCategory ? [$location->location_category->location_category_id] : [-1], 1, false, false);
                     $options_users = [];
                     $user_result = \rex_sql::factory();
                     $user_result->setQuery('SELECT login, name FROM '. rex::getTablePrefix() .'user ORDER BY name');
@@ -160,9 +161,9 @@ if ('edit' === $func || 'add' === $func) {
                         $options_users[(string) $user_result->getValue('login')] = (string) $user_result->getValue('name');
                         $user_result->next();
                     }
-                    \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_location_rexuser', 'form[redaxo_users][]', $options_users, $location->redaxo_users, 5, true, false);
+                    BackendHelper::form_select('d2u_courses_location_rexuser', 'form[redaxo_users][]', $options_users, $location->redaxo_users, 5, true, false);
                     if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
-                        \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_kufer_sync_location_id', 'form[kufer_location_id]', $location->kufer_location_id, false, false, 'number');
+                        BackendHelper::form_input('d2u_courses_kufer_sync_location_id', 'form[kufer_location_id]', $location->kufer_location_id, false, false, 'number');
                     }
                 ?>
 			</div>
@@ -181,18 +182,17 @@ if ('edit' === $func || 'add' === $func) {
 	</form>
 	<br>
 	<?php
-        echo \TobiasKrais\D2UHelper\BackendHelper::getCSS();
-        echo \TobiasKrais\D2UHelper\BackendHelper::getJS();
-        echo \TobiasKrais\D2UHelper\BackendHelper::getJSOpenAll();
+        echo BackendHelper::getCSS();
+        echo BackendHelper::getJS();
+        echo BackendHelper::getJSOpenAll();
 }
 
 if ('' === $func) {
     $query = 'SELECT location_id, locations.name, categories.name AS category_name '
         .'FROM '. rex::getTablePrefix() .'d2u_courses_locations AS locations '
         .'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_location_categories as categories '
-            .'ON locations.location_category_id = categories.location_category_id '
-        .'ORDER BY name ASC';
-    $list = rex_list::factory($query, 1000);
+            .'ON locations.location_category_id = categories.location_category_id ';
+    $list = rex_list::factory(query: $query, rowsPerPage: 1000, defaultSort: ['name' => 'ASC']);
 
     $list->addTableAttribute('class', 'table-striped table-hover');
 
@@ -205,11 +205,14 @@ if ('' === $func) {
 
     $list->setColumnLabel('location_id', rex_i18n::msg('id'));
     $list->setColumnLayout('location_id', ['<th class="rex-table-id">###VALUE###</th>', '<td class="rex-table-id">###VALUE###</td>']);
+    $list->setColumnSortable('location_id');
 
     $list->setColumnLabel('name', rex_i18n::msg('d2u_helper_name'));
     $list->setColumnParams('name', ['func' => 'edit', 'entry_id' => '###location_id###']);
+    $list->setColumnSortable('name');
 
     $list->setColumnLabel('category_name', rex_i18n::msg('d2u_helper_category'));
+    $list->setColumnSortable('category_name');
 
     $list->addColumn(rex_i18n::msg('module_functions'), '<i class="rex-icon rex-icon-edit"></i> ' . rex_i18n::msg('edit'));
     $list->setColumnLayout(rex_i18n::msg('module_functions'), ['<th class="rex-table-action" colspan="2">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);
@@ -219,6 +222,14 @@ if ('' === $func) {
     $list->setColumnLayout(rex_i18n::msg('delete_module'), ['', '<td class="rex-table-action">###VALUE###</td>']);
     $list->setColumnParams(rex_i18n::msg('delete_module'), ['func' => 'delete', 'entry_id' => '###location_id###']);
     $list->addLinkAttribute(rex_i18n::msg('delete_module'), 'data-confirm', rex_i18n::msg('d2u_helper_confirm_delete'));
+
+    $list->addColumn(rex_i18n::msg('d2u_helper_open_frontend'), '');
+    $list->setColumnLayout(rex_i18n::msg('d2u_helper_open_frontend'), ['', '<td class="rex-table-action">###VALUE###</td>']);
+    $list->setColumnFormat(rex_i18n::msg('d2u_helper_open_frontend'), 'custom', static function ($params) {
+        $listParams = $params['list'];
+
+        return BackendHelper::getFrontendLinkButton((new \TobiasKrais\D2UCourses\Location((int) $listParams->getValue('location_id')))->getUrl());
+    });
 
     $list->setNoRowsMessage(rex_i18n::msg('d2u_courses_location_no_locations_found'));
 

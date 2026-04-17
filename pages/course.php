@@ -135,29 +135,29 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
 					<legend><?= rex_i18n::msg('d2u_courses_course_data') ?></legend>
 					<div class="panel-body-wrapper slide">
 						<?php
-                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_helper_name', 'form[name]', $course->name, true, $readonly);
-                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_course_number', 'form[course_number]', $course->course_number, false, $readonly, 'text');
-                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_instructor', 'form[instructor]', $course->instructor, false, $readonly, 'text');
-                            \TobiasKrais\D2UHelper\BackendHelper::form_checkbox('d2u_helper_online_status', 'form[online_status]', 'online', 'online' === $course->online_status, $readonly);
-                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_teaser', 'form[teaser]', $course->teaser, false, $readonly, 'text');
-                            \TobiasKrais\D2UHelper\BackendHelper::form_textarea('d2u_courses_description', 'form[description]', $course->description, 5, false, $readonly, true);
-                            \TobiasKrais\D2UHelper\BackendHelper::form_textarea('d2u_courses_details_course', 'form[details_course]', $course->details_course, 3, false, $readonly, true);
-                            \TobiasKrais\D2UHelper\BackendHelper::form_textarea('d2u_courses_details_deadline', 'form[details_deadline]', $course->details_deadline, 3, false, $readonly, false);
-                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_details_age', 'form[details_age]', $course->details_age, false, $readonly, 'text');
-                            \TobiasKrais\D2UHelper\BackendHelper::form_mediafield('d2u_helper_picture', '1', $course->picture, $readonly);
-                            \TobiasKrais\D2UHelper\BackendHelper::form_medialistfield('d2u_courses_downloads', 1, $course->downloads, $readonly);
+                            BackendHelper::form_input('d2u_helper_name', 'form[name]', $course->name, true, $readonly);
+                            BackendHelper::form_input('d2u_courses_course_number', 'form[course_number]', $course->course_number, false, $readonly, 'text');
+                            BackendHelper::form_input('d2u_courses_instructor', 'form[instructor]', $course->instructor, false, $readonly, 'text');
+                            BackendHelper::form_checkbox('d2u_helper_online_status', 'form[online_status]', 'online', 'online' === $course->online_status, $readonly);
+                            BackendHelper::form_input('d2u_courses_teaser', 'form[teaser]', $course->teaser, false, $readonly, 'text');
+                            BackendHelper::form_textarea('d2u_courses_description', 'form[description]', $course->description, 5, false, $readonly, true);
+                            BackendHelper::form_textarea('d2u_courses_details_course', 'form[details_course]', $course->details_course, 3, false, $readonly, true);
+                            BackendHelper::form_textarea('d2u_courses_details_deadline', 'form[details_deadline]', $course->details_deadline, 3, false, $readonly, false);
+                            BackendHelper::form_input('d2u_courses_details_age', 'form[details_age]', $course->details_age, false, $readonly, 'text');
+                            BackendHelper::form_mediafield('d2u_helper_picture', '1', $course->picture, $readonly);
+                            BackendHelper::form_medialistfield('d2u_courses_downloads', 1, $course->downloads, $readonly);
                             if (!rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && 'KuferSQL' !== $course->import_type) {
-                                \TobiasKrais\D2UHelper\BackendHelper::form_checkbox('d2u_courses_price_salery_level', 'form[price_salery_level]', 'true', $course->price_salery_level, $readonly);
+                                BackendHelper::form_checkbox('d2u_courses_price_salery_level', 'form[price_salery_level]', 'true', $course->price_salery_level, $readonly);
                                 $price_salery_level_details = '';
                                 foreach ($course->price_salery_level_details as $key => $value) {
                                     $price_salery_level_details .= $key .': '. $value .PHP_EOL;
                                 }
-                                \TobiasKrais\D2UHelper\BackendHelper::form_textarea('d2u_courses_price_salery_level_details', 'form[price_salery_level_details]', $price_salery_level_details, 5, false, $readonly, false);
-                                \TobiasKrais\D2UHelper\BackendHelper::form_infotext('d2u_courses_price_salery_level_details_description', 'd2u_courses_price_salery_level_details_description');
+                                BackendHelper::form_textarea('d2u_courses_price_salery_level_details', 'form[price_salery_level_details]', $price_salery_level_details, 5, false, $readonly, false);
+                                BackendHelper::form_infotext('d2u_courses_price_salery_level_details_description', 'd2u_courses_price_salery_level_details_description');
                             }
-                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_price', 'form[price]', (string) $course->price, false, $readonly, 'text');
-                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_price_discount', 'form[price_discount]', (string) $course->price_discount, false, $readonly, 'text');
-                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_price_notes', 'form[price_notes]', (string) $course->price_notes, false, $readonly, 'text');
+                            BackendHelper::form_input('d2u_courses_price', 'form[price]', (string) $course->price, false, $readonly, 'text');
+                            BackendHelper::form_input('d2u_courses_price_discount', 'form[price_discount]', (string) $course->price_discount, false, $readonly, 'text');
+                            BackendHelper::form_input('d2u_courses_price_notes', 'form[price_notes]', (string) $course->price_notes, false, $readonly, 'text');
                             $options_registration = [
                                 'yes' => rex_i18n::msg('d2u_courses_yes'),
                                 'yes_number' => rex_i18n::msg('d2u_courses_yes_number'),
@@ -167,15 +167,15 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                             if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && 'KuferSQL' === $course->import_type && '' !== $course->course_number) {
                                 unset($options_registration['yes_number']);
                             }
-                            \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_registration_possible', 'form[registration_possible]', $options_registration, [$course->registration_possible], 1, false, $readonly);
-                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_participants_max', 'form[participants_max]', $course->participants_max, false, $readonly, 'number');
-                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_participants_min', 'form[participants_min]', $course->participants_min, false, $readonly, 'number');
+                            BackendHelper::form_select('d2u_courses_registration_possible', 'form[registration_possible]', $options_registration, [$course->registration_possible], 1, false, $readonly);
+                            BackendHelper::form_input('d2u_courses_participants_max', 'form[participants_max]', $course->participants_max, false, $readonly, 'number');
+                            BackendHelper::form_input('d2u_courses_participants_min', 'form[participants_min]', $course->participants_min, false, $readonly, 'number');
                             if (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable() && 'KuferSQL' !== $course->import_type) {
                                 BackendHelper::form_infotext('d2u_courses_customer_bookings_participants_hint', 'd2u_courses_customer_bookings_participants_hint');
                             }
                             else {
-                                \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_participants_number', 'form[participants_number]', $course->participants_number, false, $readonly, 'number');
-                                \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_participants_wait_list', 'form[participants_wait_list]', $course->participants_wait_list, false, $readonly, 'number');
+                                BackendHelper::form_input('d2u_courses_participants_number', 'form[participants_number]', $course->participants_number, false, $readonly, 'number');
+                                BackendHelper::form_input('d2u_courses_participants_wait_list', 'form[participants_wait_list]', $course->participants_wait_list, false, $readonly, 'number');
                             }
                             if (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable() && 'KuferSQL' !== $course->import_type) {
                                 ?>
@@ -204,11 +204,11 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                                 <?php
                             }
             
-                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_date_start', 'form[date_start]', $course->date_start, false, $readonly, 'date');
-                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_date_end', 'form[date_end]', $course->date_end, false, $readonly, 'date');
-                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_time', 'form[time]', $course->time, false, $readonly, 'text');
-                            \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_url_external', 'form[url_external]', $course->url_external, false, $readonly, 'text');
-                            \TobiasKrais\D2UHelper\BackendHelper::form_linkfield('d2u_courses_redaxo_article', '1', $course->redaxo_article, (int) rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()), $readonly);
+                            BackendHelper::form_input('d2u_courses_date_start', 'form[date_start]', $course->date_start, false, $readonly, 'date');
+                            BackendHelper::form_input('d2u_courses_date_end', 'form[date_end]', $course->date_end, false, $readonly, 'date');
+                            BackendHelper::form_input('d2u_courses_time', 'form[time]', $course->time, false, $readonly, 'text');
+                            BackendHelper::form_input('d2u_courses_url_external', 'form[url_external]', $course->url_external, false, $readonly, 'text');
+                            BackendHelper::form_linkfield('d2u_courses_redaxo_article', '1', $course->redaxo_article, (int) rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()), $readonly);
                         ?>
 						<script>
 							function container_changer() {
@@ -246,16 +246,16 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                             foreach (TobiasKrais\D2UCourses\Category::getAllNotParents() as $category) {
                                 $options_categories[$category->category_id] = ($category->parent_category instanceof Category ? ($category->parent_category->parent_category instanceof Category ? ($category->parent_category->parent_category->parent_category instanceof Category ? $category->parent_category->parent_category->parent_category->name .' → ' : ''). $category->parent_category->parent_category->name .' → ' : ''). $category->parent_category->name .' → ' : ''). $category->name;
                             }
-                            \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_category_primary', 'form[category_id]', $options_categories, $course->category instanceof Category ? [$course->category->category_id] : [], 1, false, $readonly);
-                            \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_category_secondary', 'form[secondary_category_ids][]', $options_categories, $course->secondary_category_ids, 10, true, $readonly);
+                            BackendHelper::form_select('d2u_courses_category_primary', 'form[category_id]', $options_categories, $course->category instanceof Category ? [$course->category->category_id] : [], 1, false, $readonly);
+                            BackendHelper::form_select('d2u_courses_category_secondary', 'form[secondary_category_ids][]', $options_categories, $course->secondary_category_ids, 10, true, $readonly);
                             $options_google_type = [
                                 '' => rex_i18n::msg('d2u_courses_google_type_none'),
                                 'course' => rex_i18n::msg('d2u_courses_google_type_course'),
                                 'event' => rex_i18n::msg('d2u_courses_google_type_event'),
                             ];
-                            \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_google_type', 'form[google_type]', $options_google_type, [$course->google_type], 1, false, $readonly);
+                            BackendHelper::form_select('d2u_courses_google_type', 'form[google_type]', $options_google_type, [$course->google_type], 1, false, $readonly);
                             if (!rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
-                                \TobiasKrais\D2UHelper\BackendHelper::form_infotext('d2u_courses_google_type_event_hint', 'google_type_event_hint');
+                                BackendHelper::form_infotext('d2u_courses_google_type_event_hint', 'google_type_event_hint');
                             }
                             // Schedule categories plugin
                             if (rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
@@ -263,7 +263,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                                 foreach (ScheduleCategory::getAllNotParents() as $schedule_category) {
                                     $options_schedule_categories[$schedule_category->schedule_category_id] = ($schedule_category->parent_schedule_category instanceof ScheduleCategory ? $schedule_category->parent_schedule_category->name .' → ' : ''). $schedule_category->name;
                                 }
-                                \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_schedule_categories', 'form[schedule_category_ids][]', $options_schedule_categories, $course->schedule_category_ids, 10, true, $readonly);
+                                BackendHelper::form_select('d2u_courses_schedule_categories', 'form[schedule_category_ids][]', $options_schedule_categories, $course->schedule_category_ids, 10, true, $readonly);
                             }
                             // Target groups plugin
                             if (rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
@@ -271,7 +271,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                                 foreach (TobiasKrais\D2UCourses\TargetGroup::getAll() as $target_groups) {
                                     $options_target_groups[$target_groups->target_group_id] = $target_groups->name;
                                 }
-                                \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_target_groups', 'form[target_group_ids][]', $options_target_groups, $course->target_group_ids, 5, true, $readonly);
+                                BackendHelper::form_select('d2u_courses_target_groups', 'form[target_group_ids][]', $options_target_groups, $course->target_group_ids, 5, true, $readonly);
                             }
                             // Locations plugin
                             if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
@@ -283,8 +283,8 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                                     }
                                 }
                                 asort($options_locations);
-                                \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_location', 'form[location_id]', $options_locations, $course->location instanceof Location ? [$course->location->location_id] : [], 1, false, $readonly);
-                                \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_location_room', 'form[room]', $course->room, false, $readonly, 'text');
+                                BackendHelper::form_select('d2u_courses_location', 'form[location_id]', $options_locations, $course->location instanceof Location ? [$course->location->location_id] : [], 1, false, $readonly);
+                                BackendHelper::form_input('d2u_courses_location_room', 'form[room]', $course->room, false, $readonly, 'text');
                             }
                         ?>
 					</div>
@@ -322,9 +322,9 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
 	</form>
 	<br>
 	<?php
-        echo \TobiasKrais\D2UHelper\BackendHelper::getCSS();
-        echo \TobiasKrais\D2UHelper\BackendHelper::getJS();
-        echo \TobiasKrais\D2UHelper\BackendHelper::getJSOpenAll();
+        echo BackendHelper::getCSS();
+        echo BackendHelper::getJS();
+        echo BackendHelper::getJSOpenAll();
 }
 
 if ('' === $func) {
@@ -401,6 +401,14 @@ if ('' === $func) {
         $list->setColumnParams(rex_i18n::msg('delete'), ['func' => 'delete', 'entry_id' => '###course_id###']);
         $list->addLinkAttribute(rex_i18n::msg('delete'), 'data-confirm', rex_i18n::msg('d2u_helper_confirm_delete'));
     }
+
+    $list->addColumn(rex_i18n::msg('d2u_helper_open_frontend'), '');
+    $list->setColumnLayout(rex_i18n::msg('d2u_helper_open_frontend'), ['', '<td class="rex-table-action">###VALUE###</td>']);
+    $list->setColumnFormat(rex_i18n::msg('d2u_helper_open_frontend'), 'custom', static function ($params) {
+        $listParams = $params['list'];
+
+        return BackendHelper::getFrontendLinkButton((new \TobiasKrais\D2UCourses\Course((int) $listParams->getValue('course_id')))->getUrl());
+    });
 
     $list->setNoRowsMessage(rex_i18n::msg('d2u_courses_no_courses_found'));
 

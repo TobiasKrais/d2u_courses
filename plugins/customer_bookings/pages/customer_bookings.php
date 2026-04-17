@@ -2,6 +2,7 @@
 
 use TobiasKrais\D2UCourses\Course;
 use TobiasKrais\D2UCourses\CustomerBooking;
+use TobiasKrais\D2UHelper\BackendHelper;
 
 $func = rex_request('func', 'string');
 $entry_id = rex_request('entry_id', 'int');
@@ -85,19 +86,19 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                     if (null === $customerBooking) {
                         $customerBooking = CustomerBooking::factory();
                     }
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_customer_bookings_givenName', 'form[givenName]', $customerBooking->givenName, true, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_customer_bookings_familyName', 'form[familyName]', $customerBooking->familyName, true, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_customer_bookings_birthDate', 'form[birthDate]', $customerBooking->birthDate, false, false, 'datetime-local');
+                    BackendHelper::form_input('d2u_courses_customer_bookings_givenName', 'form[givenName]', $customerBooking->givenName, true, false);
+                    BackendHelper::form_input('d2u_courses_customer_bookings_familyName', 'form[familyName]', $customerBooking->familyName, true, false);
+                    BackendHelper::form_input('d2u_courses_customer_bookings_birthDate', 'form[birthDate]', $customerBooking->birthDate, false, false, 'datetime-local');
                     $options_gender = [
                         '' => rex_i18n::msg('d2u_courses_customer_bookings_gender_none'),
                         'M' => rex_i18n::msg('d2u_courses_customer_bookings_gender_male'),
                         'W' => rex_i18n::msg('d2u_courses_customer_bookings_gender_female'),
                         'D' => rex_i18n::msg('d2u_courses_customer_bookings_gender_divers')
                     ];
-                    \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_customer_bookings_gender', 'form[gender]', $options_gender, [$customerBooking->gender], 1, false, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_customer_bookings_street', 'form[street]', $customerBooking->street, false, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_customer_bookings_zipCode', 'form[zipCode]', $customerBooking->zipCode, false, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_customer_bookings_city', 'form[city]', $customerBooking->city, false, false);
+                    BackendHelper::form_select('d2u_courses_customer_bookings_gender', 'form[gender]', $options_gender, [$customerBooking->gender], 1, false, false);
+                    BackendHelper::form_input('d2u_courses_customer_bookings_street', 'form[street]', $customerBooking->street, false, false);
+                    BackendHelper::form_input('d2u_courses_customer_bookings_zipCode', 'form[zipCode]', $customerBooking->zipCode, false, false);
+                    BackendHelper::form_input('d2u_courses_customer_bookings_city', 'form[city]', $customerBooking->city, false, false);
                     $options_country = [
                         '' => rex_i18n::msg('d2u_courses_customer_bookings_country_others'),
                         'CH' => rex_i18n::msg('d2u_courses_customer_bookings_country_CH'),
@@ -106,10 +107,10 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                         'FR' => rex_i18n::msg('d2u_courses_customer_bookings_country_FR'),
                         'IT' => rex_i18n::msg('d2u_courses_customer_bookings_country_IT')
                     ];
-                    \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_customer_bookings_country', 'form[country]', $options_country, [$customerBooking->country], 1, false, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_customer_bookings_pension_insurance_id', 'form[pension_insurance_id]', $customerBooking->pension_insurance_id, false, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_customer_bookings_emergency_number', 'form[emergency_number]', $customerBooking->emergency_number, false, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_customer_bookings_email', 'form[email]', $customerBooking->email, false, false);
+                    BackendHelper::form_select('d2u_courses_customer_bookings_country', 'form[country]', $options_country, [$customerBooking->country], 1, false, false);
+                    BackendHelper::form_input('d2u_courses_customer_bookings_pension_insurance_id', 'form[pension_insurance_id]', $customerBooking->pension_insurance_id, false, false);
+                    BackendHelper::form_input('d2u_courses_customer_bookings_emergency_number', 'form[emergency_number]', $customerBooking->emergency_number, false, false);
+                    BackendHelper::form_input('d2u_courses_customer_bookings_email', 'form[email]', $customerBooking->email, false, false);
                     $options_nationality = [
                         'Andere' => rex_i18n::msg('d2u_courses_customer_bookings_nationality_others'),
                         'CH' => rex_i18n::msg('d2u_courses_customer_bookings_nationality_CH'),
@@ -118,15 +119,15 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                         'FR' => rex_i18n::msg('d2u_courses_customer_bookings_nationality_FR'),
                         'IT' => rex_i18n::msg('d2u_courses_customer_bookings_nationality_IT')
                     ];
-                    \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_customer_bookings_nationality', 'form[nationality]', $options_nationality, [$customerBooking->nationality], 1, false, false);
+                    BackendHelper::form_select('d2u_courses_customer_bookings_nationality', 'form[nationality]', $options_nationality, [$customerBooking->nationality], 1, false, false);
                     $options_nativeLanguage = [
                         'Andere' => rex_i18n::msg('d2u_courses_customer_bookings_nativeLanguage_others'),
                         'DE' => rex_i18n::msg('d2u_courses_customer_bookings_nativeLanguage_DE'),
                         'FR' => rex_i18n::msg('d2u_courses_customer_bookings_nativeLanguage_FR'),
                         'IT' => rex_i18n::msg('d2u_courses_customer_bookings_nativeLanguage_IT')
                     ];
-                    \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_customer_bookings_nativeLanguage', 'form[nativeLanguage]', $options_nativeLanguage, [$customerBooking->nativeLanguage], 1, false, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_checkbox('d2u_courses_customer_bookings_kids_go_home_alone', 'form[kids_go_home_alone]', 'true', $customerBooking->kids_go_home_alone, false);
+                    BackendHelper::form_select('d2u_courses_customer_bookings_nativeLanguage', 'form[nativeLanguage]', $options_nativeLanguage, [$customerBooking->nativeLanguage], 1, false, false);
+                    BackendHelper::form_checkbox('d2u_courses_customer_bookings_kids_go_home_alone', 'form[kids_go_home_alone]', 'true', $customerBooking->kids_go_home_alone, false);
                     if ($customerBooking->course_id > 0) {
                         $course = new Course($customerBooking->course_id);
                         if ($course->price_salery_level) {
@@ -135,20 +136,20 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                             foreach ($course->price_salery_level_details as $description => $price) {
                                 $options_salery_level[$description] = $description .': '. $price;
                             }
-                            \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_price_salery_level_detail', 'form[salery_level]', $options_salery_level, [$customerBooking->salery_level], 1, false, false);
+                            BackendHelper::form_select('d2u_courses_price_salery_level_detail', 'form[salery_level]', $options_salery_level, [$customerBooking->salery_level], 1, false, false);
                         }
                     }
-                    \TobiasKrais\D2UHelper\BackendHelper::form_checkbox('d2u_courses_customer_bookings_paid', 'form[paid]', 'true', $customerBooking->paid, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_checkbox('d2u_courses_customer_bookings_waitlist_text', 'form[waitlist]', 'true', $customerBooking->waitlist, false);
+                    BackendHelper::form_checkbox('d2u_courses_customer_bookings_paid', 'form[paid]', 'true', $customerBooking->paid, false);
+                    BackendHelper::form_checkbox('d2u_courses_customer_bookings_waitlist_text', 'form[waitlist]', 'true', $customerBooking->waitlist, false);
                     $options_courses = [];
                     foreach (Course::getAll() as $course) {
                         $options_courses[$course->course_id] = $course->name;
                     }
                     natsort($options_courses);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_select('d2u_courses_courses', 'form[course_id]', $options_courses, [$customerBooking->course_id], 1, false, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_textarea('d2u_courses_customer_bookings_internal_remarks', 'form[remarks]', $customerBooking->remarks, 5, false, false, false);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_customer_bookings_ipAddress', 'form[ipAddress]', $customerBooking->ipAddress, false, true);
-                    \TobiasKrais\D2UHelper\BackendHelper::form_input('d2u_courses_customer_bookings_bookingDate', 'form[bookingDate]', $customerBooking->bookingDate, false, true, 'datetime-local');
+                    BackendHelper::form_select('d2u_courses_courses', 'form[course_id]', $options_courses, [$customerBooking->course_id], 1, false, false);
+                    BackendHelper::form_textarea('d2u_courses_customer_bookings_internal_remarks', 'form[remarks]', $customerBooking->remarks, 5, false, false, false);
+                    BackendHelper::form_input('d2u_courses_customer_bookings_ipAddress', 'form[ipAddress]', $customerBooking->ipAddress, false, true);
+                    BackendHelper::form_input('d2u_courses_customer_bookings_bookingDate', 'form[bookingDate]', $customerBooking->bookingDate, false, true, 'datetime-local');
                 ?>
 			</div>
 			<footer class="panel-footer">
@@ -165,9 +166,9 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
 	</form>
 	<br>
 	<?php
-        echo \TobiasKrais\D2UHelper\BackendHelper::getCSS();
-        echo \TobiasKrais\D2UHelper\BackendHelper::getJS();
-        echo \TobiasKrais\D2UHelper\BackendHelper::getJSOpenAll();
+        echo BackendHelper::getCSS();
+        echo BackendHelper::getJS();
+        echo BackendHelper::getJSOpenAll();
 }
 
 if ('' === $func) {
@@ -175,8 +176,7 @@ if ('' === $func) {
         . 'FROM '. rex::getTablePrefix() .'d2u_courses_customer_bookings AS customerBooking '
         . 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_courses AS courses '
             . 'ON customerBooking.course_id = courses.course_id ';
-    $query .= 'ORDER BY name, familyName, givenName';
-    $list = rex_list::factory($query, 1000);
+    $list = rex_list::factory(query: $query, rowsPerPage: 1000, defaultSort: ['name' => 'ASC', 'familyName' => 'ASC', 'givenName' => 'ASC']);
 
     $list->addTableAttribute('class', 'table-striped table-hover');
 
@@ -189,14 +189,18 @@ if ('' === $func) {
 
     $list->setColumnLabel('id', rex_i18n::msg('id'));
     $list->setColumnLayout('id', ['<th class="rex-table-id">###VALUE###</th>', '<td class="rex-table-id">###VALUE###</td>']);
+    $list->setColumnSortable('id');
 
     $list->setColumnLabel('familyName', rex_i18n::msg('d2u_courses_customer_bookings_familyName'));
     $list->setColumnParams('familyName', ['func' => 'edit', 'entry_id' => '###id###']);
+    $list->setColumnSortable('familyName');
 
     $list->setColumnLabel('givenName', rex_i18n::msg('d2u_courses_customer_bookings_givenName'));
     $list->setColumnParams('givenName', ['func' => 'edit', 'entry_id' => '###id###']);
+    $list->setColumnSortable('givenName');
 
     $list->setColumnLabel('name', rex_i18n::msg('d2u_courses_course'));
+    $list->setColumnSortable('name');
 
     $list->setColumnLabel('waitlist', rex_i18n::msg('d2u_courses_customer_bookings_waitlist'));
     $list->setColumnFormat('waitlist', 'custom', static function ($params) {
@@ -204,6 +208,7 @@ if ('' === $func) {
         $waitlist = $list_params->getValue('waitlist');
         return 1 === $waitlist ? rex_i18n::msg('d2u_courses_customer_bookings_yes') : rex_i18n::msg('d2u_courses_customer_bookings_no');
     });
+    $list->setColumnSortable('waitlist');
 
     $list->addColumn(rex_i18n::msg('module_functions'), '<i class="rex-icon rex-icon-edit"></i> ' . rex_i18n::msg('edit'));
     $list->setColumnLayout(rex_i18n::msg('module_functions'), ['<th class="rex-table-action">###VALUE###</th>', '<td class="rex-table-action">###VALUE###</td>']);
