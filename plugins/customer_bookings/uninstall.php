@@ -1,6 +1,6 @@
 <?php
 
-$sql = rex_sql::factory();
+$d2uCoursesAction = 'customer_bookings';
+$d2uCoursesRequestedAction = 'customer_bookings';
 
-// Delete tables
-$sql->setQuery('DROP TABLE IF EXISTS ' . rex::getTablePrefix() . 'd2u_courses_customer_bookings');
+require dirname(__DIR__, 2) .'/uninstall.php';

@@ -10,6 +10,17 @@ use rex_plugin;
  */
 class FrontendHelper
 {
+    public static function getConfigThemeColorStyle(string $property, string $lightKey, string $darkKey, string $fallback, bool $important = false): string
+    {
+        return self::getThemeColorStyle(
+            $property,
+            (string) rex_config::get('d2u_courses', $lightKey, $fallback),
+            (string) rex_config::get('d2u_courses', $darkKey, (string) rex_config::get('d2u_courses', $lightKey, $fallback)),
+            $fallback,
+            $important,
+        );
+    }
+
     /**
      * Returns alternate URLs. Key is Redaxo language id, value is URL.
      * @return string[] alternate URLs
@@ -71,7 +82,7 @@ class FrontendHelper
         elseif (filter_input(INPUT_GET, 'location_id', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0 || 'location_id' === $url_namespace) {
             $location_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'location_id', FILTER_VALIDATE_INT);
 
-            if ($location_id > 0 && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
+            if ($location_id > 0 && \TobiasKrais\D2UCourses\Extension::isActive('locations')) {
                 $location = new Location($location_id);
                 if ($location->location_category instanceof LocationCategory) {
                     $breadcrumbs[] = '<a href="' . $location->location_category->getUrl() . '">' . $location->location_category->name . '</a>';
@@ -83,7 +94,7 @@ class FrontendHelper
         elseif (filter_input(INPUT_GET, 'location_category_id', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0 || 'location_category_id' === $url_namespace) {
             $location_category_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'location_category_id', FILTER_VALIDATE_INT);
 
-            if ($location_category_id > 0 && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
+            if ($location_category_id > 0 && \TobiasKrais\D2UCourses\Extension::isActive('locations')) {
                 $location_category = new LocationCategory($location_category_id);
                 $breadcrumbs[] = '<a href="' . $location_category->getUrl() . '">' . $location_category->name . '</a>';
             }
@@ -92,7 +103,7 @@ class FrontendHelper
         elseif (filter_input(INPUT_GET, 'schedule_category_id', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0 || 'schedule_category_id' === $url_namespace) {
             $schedule_category_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'schedule_category_id', FILTER_VALIDATE_INT);
 
-            if ($schedule_category_id > 0 && rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
+            if ($schedule_category_id > 0 && \TobiasKrais\D2UCourses\Extension::isActive('schedule_categories')) {
                 $schedule_category = new ScheduleCategory($schedule_category_id);
                 if ($schedule_category->parent_schedule_category instanceof ScheduleCategory) {
                     $breadcrumbs[] = '<a href="' . $schedule_category->parent_schedule_category->getUrl() . '">' . $schedule_category->parent_schedule_category->name . '</a>';
@@ -104,7 +115,7 @@ class FrontendHelper
         elseif (filter_input(INPUT_GET, 'target_group_id', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0 || 'target_group_id' === $url_namespace) {
             $target_group_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (int) filter_input(INPUT_GET, 'target_group_id', FILTER_VALIDATE_INT);
 
-            if ($target_group_id > 0 && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
+            if ($target_group_id > 0 && \TobiasKrais\D2UCourses\Extension::isActive('target_groups')) {
                 $target_group = new TargetGroup($target_group_id);
                 $breadcrumbs[] = '<a href="' . $target_group->getUrl() . '">' . $target_group->name . '</a>';
             }
@@ -113,7 +124,7 @@ class FrontendHelper
         elseif (filter_input(INPUT_GET, 'target_group_child_id', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]) > 0 || 'target_group_child_id' === $url_namespace) {
             $target_group_child_id = (rex_addon::get('url')->isAvailable() && $url_id > 0) ? $url_id : (string) filter_input(INPUT_GET, 'target_group_child_id');
 
-            if ($target_group_child_id > 0 && rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
+            if ($target_group_child_id > 0 && \TobiasKrais\D2UCourses\Extension::isActive('target_groups')) {
                 $target_group_child = TargetGroup::getByChildID((string) $target_group_child_id);
                 if ($target_group_child->parent_target_group instanceof TargetGroup) {
                     $breadcrumbs[] = '<a href="' . $target_group_child->parent_target_group->getUrl() . '">' . $target_group_child->parent_target_group->name . '</a>';
@@ -123,6 +134,16 @@ class FrontendHelper
         }
 
         return $breadcrumbs;
+    }
+
+    public static function getThemeColorStyle(string $property, string $lightColor = '', string $darkColor = '', string $fallback = '', bool $important = false): string
+    {
+        $lightColor = self::normalizeThemeColor($lightColor, $fallback);
+        $darkColor = self::normalizeThemeColor($darkColor, $lightColor);
+        $importantSuffix = $important ? ' !important' : '';
+
+        return $property . ': ' . $lightColor . $importantSuffix . '; '
+            . $property . ': light-dark(' . $lightColor . ', ' . $darkColor . ')' . $importantSuffix . ';';
     }
 
     /**
@@ -142,5 +163,21 @@ class FrontendHelper
             $where = 'date_start = "" OR date_start >= CURDATE() OR date_end >= CURDATE()';
         }
         return $where;
+    }
+
+    private static function normalizeThemeColor(string $color, string $fallback): string
+    {
+        $color = trim($color);
+        $fallback = trim($fallback);
+
+        if ('' === $color) {
+            return '' !== $fallback ? $fallback : '#5e5c64';
+        }
+
+        if (1 === preg_match('/^(#[a-fA-F0-9]{3,8}|[a-zA-Z-]+|var\(--[a-zA-Z0-9_-]+\))$/', $color)) {
+            return $color;
+        }
+
+        return '' !== $fallback ? $fallback : '#5e5c64';
     }
 }

@@ -1,5 +1,10 @@
 <?php
 
+if (!class_exists(TobiasKrais\D2UCourses\Extension::class)) {
+    require_once __DIR__ .'/lib/Extension.php';
+}
+TobiasKrais\D2UCourses\Extension::migrateLegacyStates();
+
 // 3.0.1 Database update: set priorities
 $sql = rex_sql::factory();
 $sql->setQuery('SHOW COLUMNS FROM '. \rex::getTablePrefix() ."d2u_courses_categories LIKE 'priority';");
@@ -40,3 +45,23 @@ if (rex_version::compare(rex_addon::get('d2u_courses')->getVersion(), '3.3.0', '
 
 // use path relative to __DIR__ to get correct path in update temp dir
 $this->includeFile(__DIR__.'/install.php'); /** @phpstan-ignore-line */
+
+// 3.6.0 Config update: initialize dark mode colors from existing light mode values
+$colorConfigPairs = [
+    'location_bg_color' => 'dark_location_bg_color',
+    'schedule_category_bg_color' => 'dark_schedule_category_bg_color',
+    'target_group_bg_color' => 'dark_target_group_bg_color',
+];
+foreach ($colorConfigPairs as $lightKey => $darkKey) {
+    if (!rex_config::has('d2u_courses', $darkKey)) {
+        rex_config::set('d2u_courses', $darkKey, (string) rex_config::get('d2u_courses', $lightKey, ''));
+    }
+}
+
+// 3.6.0 Database update: initialize category dark mode color from existing light mode value
+$sql->setQuery('SHOW COLUMNS FROM '. \rex::getTablePrefix() ."d2u_courses_categories LIKE 'color_dark';");
+if ($sql->getRows() > 0) {
+    $sql->setQuery('UPDATE '. \rex::getTablePrefix() .'d2u_courses_categories '
+        .'SET color_dark = color '
+        .'WHERE (color_dark IS NULL OR color_dark = "") AND color IS NOT NULL AND color <> "";');
+}

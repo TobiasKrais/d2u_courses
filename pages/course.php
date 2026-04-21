@@ -64,16 +64,16 @@ if (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === (int) filter_input
     $downloads = preg_grep('/^\s*$/s', explode(',', $input_media_list['1']), PREG_GREP_INVERT);
     $course->downloads = is_array($downloads) ? $downloads : [];
     // Locations plugin
-    if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
+    if (\TobiasKrais\D2UCourses\Extension::isActive('locations')) {
         $course->location = $form['location_id'] > 0 ? new TobiasKrais\D2UCourses\Location($form['location_id']) : false;
         $course->room = $form['room'];
     }
     // Schedule categories plugin
-    if (rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
+    if (\TobiasKrais\D2UCourses\Extension::isActive('schedule_categories')) {
         $course->schedule_category_ids = $form['schedule_category_ids'] ?? [];
     }
     // Target groupes plugin
-    if (rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
+    if (\TobiasKrais\D2UCourses\Extension::isActive('target_groups')) {
         $course->target_group_ids = $form['target_group_ids'] ?? [];
     }
 
@@ -122,7 +122,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
 
     $readonly = false;
     if (rex::getUser() instanceof rex_user && !rex::getUser()->isAdmin() && !rex::getUser()->hasPerm('d2u_courses[courses_all]')
-        && rex_plugin::get('d2u_courses', 'locations')->isAvailable() && $course->location instanceof Location && !in_array(rex::getUser()->getLogin(), $course->location->redaxo_users, true)) {
+        && \TobiasKrais\D2UCourses\Extension::isActive('locations') && $course->location instanceof Location && !in_array(rex::getUser()->getLogin(), $course->location->redaxo_users, true)) {
         $readonly = true;
     }
 ?>
@@ -146,7 +146,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                             BackendHelper::form_input('d2u_courses_details_age', 'form[details_age]', $course->details_age, false, $readonly, 'text');
                             BackendHelper::form_mediafield('d2u_helper_picture', '1', $course->picture, $readonly);
                             BackendHelper::form_medialistfield('d2u_courses_downloads', 1, $course->downloads, $readonly);
-                            if (!rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && 'KuferSQL' !== $course->import_type) {
+                            if (!\TobiasKrais\D2UCourses\Extension::isActive('kufer_sync') && 'KuferSQL' !== $course->import_type) {
                                 BackendHelper::form_checkbox('d2u_courses_price_salery_level', 'form[price_salery_level]', 'true', $course->price_salery_level, $readonly);
                                 $price_salery_level_details = '';
                                 foreach ($course->price_salery_level_details as $key => $value) {
@@ -164,20 +164,20 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                                 'no' => rex_i18n::msg('d2u_courses_no'),
                                 'booked' => rex_i18n::msg('d2u_courses_booked'),
                             ];
-                            if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable() && 'KuferSQL' === $course->import_type && '' !== $course->course_number) {
+                            if (\TobiasKrais\D2UCourses\Extension::isActive('kufer_sync') && 'KuferSQL' === $course->import_type && '' !== $course->course_number) {
                                 unset($options_registration['yes_number']);
                             }
                             BackendHelper::form_select('d2u_courses_registration_possible', 'form[registration_possible]', $options_registration, [$course->registration_possible], 1, false, $readonly);
                             BackendHelper::form_input('d2u_courses_participants_max', 'form[participants_max]', $course->participants_max, false, $readonly, 'number');
                             BackendHelper::form_input('d2u_courses_participants_min', 'form[participants_min]', $course->participants_min, false, $readonly, 'number');
-                            if (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable() && 'KuferSQL' !== $course->import_type) {
+                            if (\TobiasKrais\D2UCourses\Extension::isActive('customer_bookings') && 'KuferSQL' !== $course->import_type) {
                                 BackendHelper::form_infotext('d2u_courses_customer_bookings_participants_hint', 'd2u_courses_customer_bookings_participants_hint');
                             }
                             else {
                                 BackendHelper::form_input('d2u_courses_participants_number', 'form[participants_number]', $course->participants_number, false, $readonly, 'number');
                                 BackendHelper::form_input('d2u_courses_participants_wait_list', 'form[participants_wait_list]', $course->participants_wait_list, false, $readonly, 'number');
                             }
-                            if (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable() && 'KuferSQL' !== $course->import_type) {
+                            if (\TobiasKrais\D2UCourses\Extension::isActive('customer_bookings') && 'KuferSQL' !== $course->import_type) {
                                 ?>
                                 <script>
                                     function participants_changer() {
@@ -254,11 +254,11 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                                 'event' => rex_i18n::msg('d2u_courses_google_type_event'),
                             ];
                             BackendHelper::form_select('d2u_courses_google_type', 'form[google_type]', $options_google_type, [$course->google_type], 1, false, $readonly);
-                            if (!rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
+                            if (!\TobiasKrais\D2UCourses\Extension::isActive('locations')) {
                                 BackendHelper::form_infotext('d2u_courses_google_type_event_hint', 'google_type_event_hint');
                             }
                             // Schedule categories plugin
-                            if (rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
+                            if (\TobiasKrais\D2UCourses\Extension::isActive('schedule_categories')) {
                                 $options_schedule_categories = [];
                                 foreach (ScheduleCategory::getAllNotParents() as $schedule_category) {
                                     $options_schedule_categories[$schedule_category->schedule_category_id] = ($schedule_category->parent_schedule_category instanceof ScheduleCategory ? $schedule_category->parent_schedule_category->name .' → ' : ''). $schedule_category->name;
@@ -266,7 +266,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                                 BackendHelper::form_select('d2u_courses_schedule_categories', 'form[schedule_category_ids][]', $options_schedule_categories, $course->schedule_category_ids, 10, true, $readonly);
                             }
                             // Target groups plugin
-                            if (rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
+                            if (\TobiasKrais\D2UCourses\Extension::isActive('target_groups')) {
                                 $options_target_groups = [];
                                 foreach (TobiasKrais\D2UCourses\TargetGroup::getAll() as $target_groups) {
                                     $options_target_groups[$target_groups->target_group_id] = $target_groups->name;
@@ -274,7 +274,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
                                 BackendHelper::form_select('d2u_courses_target_groups', 'form[target_group_ids][]', $options_target_groups, $course->target_group_ids, 5, true, $readonly);
                             }
                             // Locations plugin
-                            if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
+                            if (\TobiasKrais\D2UCourses\Extension::isActive('locations')) {
                                 $options_locations = [];
                                 foreach (TobiasKrais\D2UCourses\Location::getAll() as $location) {
                                     // Add location only if user has the right to edit courses for location
@@ -305,7 +305,7 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
 						<?php
                             if (!$readonly) {
                                 $has_bookings = false;
-                                if (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable()) {
+                                if (\TobiasKrais\D2UCourses\Extension::isActive('customer_bookings')) {
                                     $bookings = CustomerBooking::getAllForCourse($course->course_id);
                                     if (count($bookings) > 0) {
                                         $has_bookings = true;
@@ -338,7 +338,7 @@ if ('' === $func) {
             . 'ON categories_parents.parent_category_id = categories_grand_parents.category_id '
         . 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_categories AS categories_great_grand_parents '
             . 'ON categories_grand_parents.parent_category_id = categories_great_grand_parents.category_id ';
-    if (rex::getUser() instanceof rex_user && !rex::getUser()->isAdmin() && !rex::getUser()->hasPerm('d2u_courses[courses_all]') && rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
+    if (rex::getUser() instanceof rex_user && !rex::getUser()->isAdmin() && !rex::getUser()->hasPerm('d2u_courses[courses_all]') && \TobiasKrais\D2UCourses\Extension::isActive('locations')) {
         $query .= 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_locations AS locations '
                 . 'ON courses.location_id = locations.location_id '
             .'WHERE redaxo_users LIKE "%'. rex::getUser()->getLogin() .'%" ';
@@ -383,7 +383,7 @@ if ('' === $func) {
 
     $list->addColumn(rex_i18n::msg('delete'), '<i class="rex-icon rex-icon-delete"></i> ' . rex_i18n::msg('delete'));
     $list->setColumnLayout(rex_i18n::msg('delete'), ['', '<td class="rex-table-action">###VALUE###</td>']);
-    if (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable()) {
+    if (\TobiasKrais\D2UCourses\Extension::isActive('customer_bookings')) {
         $list->setColumnFormat(rex_i18n::msg('delete'), 'custom', static function ($params) {
             $list_params = $params['list'];
             $course_id = $list_params->getValue('course_id');

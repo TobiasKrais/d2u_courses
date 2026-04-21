@@ -1,5 +1,24 @@
 <?php
 
+if (!class_exists(TobiasKrais\D2UCourses\Extension::class)) {
+	require_once __DIR__ .'/lib/Extension.php';
+}
+
+$d2uCoursesAction = isset($d2uCoursesAction) && is_string($d2uCoursesAction) ? $d2uCoursesAction : '';
+$d2uCoursesRequestedAction = isset($d2uCoursesRequestedAction) && is_string($d2uCoursesRequestedAction) ? $d2uCoursesRequestedAction : $d2uCoursesAction;
+
+if ('' !== $d2uCoursesAction) {
+	$supportScript = __DIR__ .'/lib/ExtensionSupport/'. $d2uCoursesAction .'.install.php';
+	if (file_exists($supportScript)) {
+		require $supportScript;
+	}
+	if ('' !== $d2uCoursesRequestedAction) {
+		rex_config::set('d2u_courses', TobiasKrais\D2UCourses\Extension::getConfigKey($d2uCoursesRequestedAction), TobiasKrais\D2UCourses\Extension::STATE_ACTIVE);
+	}
+
+	return;
+}
+
 // START install database
 \rex_sql_table::get(\rex::getTable('d2u_courses_categories'))
     ->ensureColumn(new rex_sql_column('category_id', 'INT(11) unsigned', false, null, 'auto_increment'))
@@ -7,6 +26,7 @@
     ->ensureColumn(new \rex_sql_column('name', 'VARCHAR(255)', true))
     ->ensureColumn(new \rex_sql_column('description', 'TEXT', true))
     ->ensureColumn(new \rex_sql_column('color', 'VARCHAR(255)', true))
+	->ensureColumn(new \rex_sql_column('color_dark', 'VARCHAR(255)', true))
     ->ensureColumn(new \rex_sql_column('picture', 'VARCHAR(255)', true))
     ->ensureColumn(new \rex_sql_column('parent_category_id', 'INT(11)', true))
     ->ensureColumn(new \rex_sql_column('priority', 'INT(11)', true))
@@ -210,6 +230,18 @@ if (!rex_config::has('d2u_courses', 'article_id_courses')) {
     rex_config::set('d2u_courses', 'article_id_courses', rex_article::getSiteStartArticleId());
 }
 // END default settings
+
+TobiasKrais\D2UCourses\Extension::ensureConfigInitialized();
+foreach (TobiasKrais\D2UCourses\Extension::getStates() as $extensionKey => $active) {
+	if (!$active) {
+		continue;
+	}
+
+	$supportScript = __DIR__ .'/lib/ExtensionSupport/'. $extensionKey .'.install.php';
+	if (file_exists($supportScript)) {
+		require $supportScript;
+	}
+}
 
 // Update modules
 include __DIR__ . DIRECTORY_SEPARATOR .'lib'. DIRECTORY_SEPARATOR .'Module.php';

@@ -1,17 +1,50 @@
 <?php
 
+use TobiasKrais\D2UCourses\Extension;
 use TobiasKrais\D2UCourses\FrontendHelper;
 
+require_once __DIR__ .'/lib/deprecated_classes.php';
+
 if (\rex::isBackend() && is_object(\rex::getUser())) {
+    Extension::ensureConfigInitialized();
+
+    $page = $this->getProperty('page');
+    if (is_array($page)) {
+        $this->setProperty('page', Extension::removeInactivePagesFromNavigation($page));
+    }
+
     rex_perm::register('d2u_courses[]', rex_i18n::msg('d2u_courses_rights_all'));
     rex_perm::register('d2u_courses[courses_all]', rex_i18n::msg('d2u_courses_rights_courses_all'), rex_perm::OPTIONS);
     rex_perm::register('d2u_courses[categories]', rex_i18n::msg('d2u_courses_rights_categories'), rex_perm::OPTIONS);
+    rex_perm::register('d2u_courses[locations]', rex_i18n::msg('d2u_courses_locations_rights_locations'), rex_perm::OPTIONS);
+    rex_perm::register('d2u_courses[schedule_categories]', rex_i18n::msg('d2u_courses_schedule_category_rights_schedule_categories'), rex_perm::OPTIONS);
+    rex_perm::register('d2u_courses[target_groups]', rex_i18n::msg('d2u_courses_target_groups_rights_target_groups'), rex_perm::OPTIONS);
+    rex_perm::register('d2u_courses[customer_bookings]', rex_i18n::msg('d2u_courses_customer_bookings_rights_customer_bookings'), rex_perm::OPTIONS);
+    rex_perm::register('d2u_courses[kufer_sync]', rex_i18n::msg('d2u_courses_kufer_sync_rights_kufer_sync'), rex_perm::OPTIONS);
     rex_perm::register('d2u_courses[settings]', rex_i18n::msg('d2u_courses_rights_settings'), rex_perm::OPTIONS);
+
+    Extension::hideInactiveBackendPages();
 }
 
 if (\rex::isBackend()) {
     rex_extension::register('ART_PRE_DELETED', rex_d2u_courses_article_is_in_use(...));
     rex_extension::register('MEDIA_IS_IN_USE', rex_d2u_courses_media_is_in_use(...));
+
+    if (Extension::isActive('locations')) {
+        require_once __DIR__ .'/lib/ExtensionSupport/locations.boot.php';
+    }
+    if (Extension::isActive('schedule_categories')) {
+        require_once __DIR__ .'/lib/ExtensionSupport/schedule_categories.boot.php';
+    }
+    if (Extension::isActive('target_groups')) {
+        require_once __DIR__ .'/lib/ExtensionSupport/target_groups.boot.php';
+    }
+    if (Extension::isActive('customer_bookings')) {
+        require_once __DIR__ .'/lib/ExtensionSupport/customer_bookings.boot.php';
+    }
+    if (Extension::isActive('kufer_sync')) {
+        require_once __DIR__ .'/lib/ExtensionSupport/kufer_sync.boot.php';
+    }
 }
 else {
     rex_extension::register('D2U_HELPER_BREADCRUMBS', rex_d2u_courses_breadcrumbs(...));
@@ -51,7 +84,7 @@ function rex_d2u_courses_article_is_in_use(rex_extension_point $ep)
         ($addon->hasConfig('article_id_shopping_cart') && (int) $addon->getConfig('article_id_shopping_cart') === $article_id) ||
         ($addon->hasConfig('article_id_conditions') && (int) $addon->getConfig('article_id_conditions') === $article_id) ||
         ($addon->hasConfig('article_id_terms_of_participation') && (int) $addon->getConfig('article_id_terms_of_participation') === $article_id)) {
-        $message = '<a href="index.php?page=d2u_courses/settings">'.
+        $message = '<a href="index.php?page=d2u_courses/settings/settings">'.
              rex_i18n::msg('d2u_courses_rights_all') .' - '. rex_i18n::msg('d2u_helper_settings') . '</a>';
         if (!in_array($message, $warning, true)) {
             $warning[] = $message;

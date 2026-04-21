@@ -170,11 +170,11 @@ class Course
                 if ($result->getValue('category_id') > 0) {
                     $this->category = new Category((int) $result->getValue('category_id'));
                 }
-                if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
+                if (\TobiasKrais\D2UCourses\Extension::isActive('locations')) {
                     $this->location = $result->getValue('location_id') > 0 ? new Location((int) $result->getValue('location_id')) : false;
                     $this->room = stripslashes((string) $result->getValue('room'));
                 }
-                if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
+                if (\TobiasKrais\D2UCourses\Extension::isActive('kufer_sync')) {
                     // value has to be initialized before participants numbers are read / calculated
                     $this->import_type = (string) $result->getValue('import_type');
                 }
@@ -182,7 +182,7 @@ class Course
                 $this->participants_min = (int) $result->getValue('participants_min');
                 $this->participants_number = (int) $result->getValue('participants_number');
                 $this->participants_wait_list = (int) $result->getValue('participants_wait_list');
-                if (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable() && 'KuferSQL' !== $this->import_type) {
+                if (\TobiasKrais\D2UCourses\Extension::isActive('customer_bookings') && 'KuferSQL' !== $this->import_type) {
                     $number_participants = count(CustomerBooking::getAllForCourse($course_id));
                     if ($this->participants_max > 0 && $number_participants > $this->participants_max) {
                         $this->participants_number = $this->participants_max;
@@ -214,7 +214,7 @@ class Course
                 $result->next();
             }
             // Get schedule categories
-            if (rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
+            if (\TobiasKrais\D2UCourses\Extension::isActive('schedule_categories')) {
                 $result->setQuery('SELECT * FROM '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories WHERE course_id = '. $this->course_id .';');
                 for ($i = 0; $i < $result->getRows(); ++$i) {
                     $this->schedule_category_ids[] = (int) $result->getValue('schedule_category_id');
@@ -222,7 +222,7 @@ class Course
                 }
             }
             // Get target group ids
-            if (rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
+            if (\TobiasKrais\D2UCourses\Extension::isActive('target_groups')) {
                 $result->setQuery('SELECT * FROM '. rex::getTablePrefix() .'d2u_courses_2_target_groups WHERE course_id = '. $this->course_id .';');
                 for ($i = 0; $i < $result->getRows(); ++$i) {
                     $this->target_group_ids[] = (int) $result->getValue('target_group_id');
@@ -280,19 +280,19 @@ class Course
                     .'WHERE course_id = '. $this->course_id;
             $result->setQuery($query);
 
-            if (rex_plugin::get('d2u_courses', 'customer_bookings')->isInstalled()) {
+            if (\TobiasKrais\D2UCourses\Extension::isActive('customer_bookings')) {
                 $query = 'DELETE FROM '. rex::getTablePrefix() .'d2u_courses_customer_bookings '
                         .'WHERE course_id = '. $this->course_id;
                 $result->setQuery($query);
             }
 
-            if (rex_plugin::get('d2u_courses', 'schedule_categories')->isInstalled()) {
+            if (\TobiasKrais\D2UCourses\Extension::isActive('schedule_categories')) {
                 $query = 'DELETE FROM '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories '
                         .'WHERE course_id = '. $this->course_id;
                 $result->setQuery($query);
             }
 
-            if (rex_plugin::get('d2u_courses', 'target_groups')->isInstalled()) {
+            if (\TobiasKrais\D2UCourses\Extension::isActive('target_groups')) {
                 $query = 'DELETE FROM '. rex::getTablePrefix() .'d2u_courses_2_target_groups '
                         .'WHERE course_id = '. $this->course_id;
                 $result->setQuery($query);
@@ -545,11 +545,11 @@ class Course
             .'course_number = "'. $this->course_number .'", '
             .'downloads = "'. implode(',', $this->downloads) .'", '
             .'updatedate = CURRENT_TIMESTAMP ';
-        if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
+        if (\TobiasKrais\D2UCourses\Extension::isActive('locations')) {
             $query .= ', location_id = '. ($this->location instanceof Location ? $this->location->location_id : 0) .', '
                 .'`room` = "'. addslashes($this->room) .'" ';
         }
-        if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
+        if (\TobiasKrais\D2UCourses\Extension::isActive('kufer_sync')) {
             $query .= ', import_type = "'. $this->import_type .'"';
         }
         if ($this->course_id > 0) {
@@ -576,7 +576,7 @@ class Course
         $result->setQuery($query_category);
 
         // Save schedule category IDs
-        if (rex_plugin::get('d2u_courses', 'schedule_categories')->isAvailable()) {
+        if (\TobiasKrais\D2UCourses\Extension::isActive('schedule_categories')) {
             $query_schedules = 'DELETE FROM '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories WHERE course_id = '. $this->course_id .';'. PHP_EOL;
             foreach ($this->schedule_category_ids as $schedule_category_ids) {
                 $query_schedules .= 'INSERT INTO '. rex::getTablePrefix() .'d2u_courses_2_schedule_categories SET course_id = '. $this->course_id .', schedule_category_id = '. $schedule_category_ids .';'. PHP_EOL;
@@ -585,7 +585,7 @@ class Course
         }
 
         // Save target group IDs
-        if (rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
+        if (\TobiasKrais\D2UCourses\Extension::isActive('target_groups')) {
             $query_target = 'DELETE FROM '. rex::getTablePrefix() .'d2u_courses_2_target_groups WHERE course_id = '. $this->course_id .';'. PHP_EOL;
             foreach ($this->target_group_ids as $target_group_id) {
                 $query_target .= 'INSERT INTO '. rex::getTablePrefix() .'d2u_courses_2_target_groups SET course_id = '. $this->course_id .', target_group_id = '. $target_group_id .';'. PHP_EOL;
@@ -604,7 +604,7 @@ class Course
     public static function search($keyword): array
     {
         $query = 'SELECT courses.course_id FROM '. rex::getTablePrefix() .'d2u_courses_courses AS courses ';
-        if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
+        if (\TobiasKrais\D2UCourses\Extension::isActive('locations')) {
             $query .= 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_locations AS locations '
                 .'ON courses.location_id = locations.location_id ';
         }
@@ -619,7 +619,7 @@ class Course
                     ."OR courses.name LIKE '%". $keyword ."%' "
                     ."OR categories.name LIKE '%". $keyword ."%' "
                     ."OR categories.description LIKE '%". $keyword ."%' ";
-        if (rex_plugin::get('d2u_courses', 'locations')->isAvailable()) {
+        if (\TobiasKrais\D2UCourses\Extension::isActive('locations')) {
             $query .= "OR locations.name LIKE '%". $keyword ."%' "
                     ."OR locations.city LIKE '%". $keyword ."%' "
                     ."OR locations.zip_code LIKE '%". $keyword ."%' ";

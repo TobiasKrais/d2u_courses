@@ -2,6 +2,9 @@
 
 Kurse oder Veranstaltungen für Redaxo 5 mit optionaler Buchungsoption und Beispielmodulen.
 
+Die Klassen stehen unter dem Namespace `TobiasKrais\D2UCourses` zur Verfügung. Der bisherige Namespace `D2U_Courses`
+und die alten globalen Klassennamen werden über `lib/deprecated_classes.php` für die Übergangszeit bis Version 4.0.0 bereitgestellt.
+
 ## Installation
 
 1. Addon über den Redaxo Installer installieren. Nur die benötigten Plugins installieren.
@@ -60,8 +63,8 @@ echo '<a href="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_sh
 echo '<div id="cart_symbol" class="desktop-inner">';
 
 echo '<img src="'. rex_url::addonAssets('d2u_courses', 'cart_only.png') .'" alt="'. rex_article::get(rex_config::get('d2u_courses', 'article_id_shopping_cart', 0))->getName() .'">';
-if(count(\D2U_Courses\Cart::getCourseIDs()) > 0) {
-    echo '<div id="cart_info">'. count(\D2U_Courses\Cart::getCourseIDs()) .'</div>';
+if(count(\TobiasKrais\D2UCourses\Cart::getCourseIDs()) > 0) {
+    echo '<div id="cart_info">'. count(\TobiasKrais\D2UCourses\Cart::getCourseIDs()) .'</div>';
 }
 echo '</div>';
 echo '</a>';

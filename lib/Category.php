@@ -33,6 +33,9 @@ class Category
     /** @var string Color (hexadecimal value or CSS keyword) */
     public string $color = '#5e5c64';
 
+    /** @var string Dark mode color (hexadecimal value or CSS keyword) */
+    public string $color_dark = '';
+
     /** @var string Picture */
     public string $picture = '';
 
@@ -80,13 +83,14 @@ class Category
             if ('' !== $result->getValue('color')) {
                 $this->color = (string) $result->getValue('color');
             }
+            $this->color_dark = (string) $result->getValue('color_dark');
             $this->picture = (string) $result->getValue('picture');
             if ((int) $result->getValue('parent_category_id') > 0) {
                 $this->parent_category = new self((int) $result->getValue('parent_category_id'));
             }
             $this->priority = (int) $result->getValue('priority');
             $this->updatedate = (string) $result->getValue('updatedate');
-            if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
+            if (\TobiasKrais\D2UCourses\Extension::isActive('kufer_sync')) {
                 $kufer_categories = preg_grep('/^\s*$/s', explode(PHP_EOL, (string) $result->getValue('kufer_categories')), PREG_GREP_INVERT);
                 if (false !== $kufer_categories) {
                     $this->kufer_categories = array_map('trim', $kufer_categories);
@@ -392,10 +396,11 @@ class Category
             .'`name` = "'. addslashes($this->name) .'", '
             .'description = "'. addslashes($this->description) .'", '
             .'color = "'. $this->color .'", '
+            .'color_dark = "'. $this->color_dark . '", '
             .'picture = "'. $this->picture .'", '
             .'parent_category_id = '. ($this->parent_category instanceof self ? $this->parent_category->category_id : 0) .', '
             .'updatedate = CURRENT_TIMESTAMP';
-        if (rex_plugin::get('d2u_courses', 'kufer_sync')->isAvailable()) {
+        if (\TobiasKrais\D2UCourses\Extension::isActive('kufer_sync')) {
             $query .= ', kufer_categories = "'. implode(PHP_EOL, $this->kufer_categories) .'"'
                 .', google_type = "'. $this->google_type .'"';
         }
@@ -417,7 +422,7 @@ class Category
         if (!$error && $pre_save_object->name !== $this->name) {
             \TobiasKrais\D2UHelper\BackendHelper::generateUrlCache('courses_category_id');
             \TobiasKrais\D2UHelper\BackendHelper::generateUrlCache('course_id');
-            if (rex_plugin::get('d2u_courses', 'target_groups')->isAvailable()) {
+            if (\TobiasKrais\D2UCourses\Extension::isActive('target_groups')) {
                 \TobiasKrais\D2UHelper\BackendHelper::generateUrlCache('target_group_child_id');
             }
         }

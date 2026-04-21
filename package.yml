@@ -9,8 +9,30 @@ page:
     subpages:
         course: { title: 'translate:d2u_courses_courses', icon: rex-icon fa-leanpub }
         category: { title: 'translate:d2u_helper_categories', icon: rex-icon rex-icon-open-category, perm: 'd2u_courses[categories]' }
-        setup: { title: 'translate:d2u_helper_setup', icon: rex-icon rex-icon-install, itemClass: pull-right, perm: 'd2u_courses[settings]' }
-        settings: { title: 'translate:d2u_helper_settings', icon: rex-icon rex-icon-system, itemClass: pull-right, perm: 'd2u_courses[settings]' }
+        location:
+            title: 'translate:d2u_courses_locations'
+            icon: rex-icon fa-map-marker
+            perm: 'd2u_courses[locations]'
+            subpages:
+                location: { title: 'translate:d2u_courses_locations', icon: rex-icon fa-map-marker, perm: 'd2u_courses[locations]' }
+                category: { title: 'translate:d2u_courses_location_categories', icon: rex-icon rex-icon-open-category, perm: 'd2u_courses[locations]' }
+        schedule_categories: { title: 'translate:d2u_courses_schedule_categories', icon: rex-icon fa-calendar, perm: 'd2u_courses[schedule_categories]' }
+        target_groups: { title: 'translate:d2u_courses_target_groups', icon: rex-icon fa-bullseye, perm: 'd2u_courses[target_groups]' }
+        customer_bookings:
+            title: 'translate:d2u_courses_customer_bookings'
+            icon: rex-icon fa-user
+            perm: 'd2u_courses[customer_bookings]'
+            subpages:
+                customer_bookings: { title: 'translate:d2u_courses_customer_bookings', icon: rex-icon fa-user, perm: 'd2u_courses[customer_bookings]' }
+                export: { title: 'translate:d2u_courses_customer_bookings_export', icon: rex-icon fa-cloud-download, perm: 'd2u_courses[customer_bookings]' }
+        kufer_sync: { title: 'translate:d2u_courses_kufer_sync', icon: rex-icon fa-cloud-download, perm: 'd2u_courses[kufer_sync]' }
+        settings:
+            icon: rex-icon rex-icon-system
+            title: ''
+            itemClass: pull-right
+            subpages:
+                settings: { title: 'translate:d2u_helper_settings', icon: rex-icon rex-icon-system, perm: 'd2u_courses[settings]' }
+                setup: { title: 'translate:d2u_helper_setup', icon: rex-icon rex-icon-install, perm: 'd2u_courses[settings]' }
         help:
             title: ''
             icon: rex-icon rex-icon-help
@@ -36,7 +58,18 @@ conflicts:
 
 default_config:
     allow_company: 'true'
+    dark_location_bg_color: '#41b23b'
+    dark_schedule_category_bg_color: '#66ccc2'
+    dark_target_group_bg_color: '#b57a00'
+    extension_customer_bookings: 'inactive'
+    extension_kufer_sync: 'inactive'
+    extension_locations: 'inactive'
+    extension_schedule_categories: 'inactive'
+    extension_target_groups: 'inactive'
     forward_single_course: 'active'
+    location_bg_color: '#41b23b'
+    schedule_category_bg_color: '#66ccc2'
+    target_group_bg_color: '#b57a00'
 
 installer_ignore:
     - .github

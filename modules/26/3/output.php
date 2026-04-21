@@ -11,9 +11,6 @@ $category = $category_id > 0 ? new \TobiasKrais\D2UCourses\Category($category_id
 $courses = $category instanceof Category ? $category->getCourses(true) : []; /** @phpstan-ignore-line */
 $box_per_line = 4 === (int) 'REX_VALUE[5]' ? 4 : 3; /** @phpstan-ignore-line */
 
-$sprog = rex_addon::get('sprog');
-$tag_open = $sprog->getConfig('wildcard_open_tag');
-$tag_close = $sprog->getConfig('wildcard_close_tag');
 
 /*
  * Function stuff
@@ -24,13 +21,14 @@ if (!function_exists('printBoxModule26_3')) {
      * @param string $title Box title
      * @param string $picture_filename mediapool picture filename
      * @param string $color Background color (Hex)
+     * @param string $darkColor Dark mode background color (Hex)
      * @param string $url Link target url
      * @param int $box_per_line number boxes per line on large screens
      */
-    function printBoxModule26_3($title, $picture_filename, $color, $url, $box_per_line = 3): void
+    function printBoxModule26_3($title, $picture_filename, $color, $darkColor, $url, $box_per_line = 3): void
     {
         echo '<div class="col-6 col-md-4 col-lg-'. (4 === $box_per_line ? '3' : '4') .' spacer">';
-        echo '<div class="category_box" style="background-color: '. ('' === $color ? 'grey' : ''. $color) .'" data-height-watch>';
+        echo '<div class="category_box" style="'. TobiasKrais\D2UCourses\FrontendHelper::getThemeColorStyle('background-color', $color, $darkColor, 'grey') .'" data-height-watch>';
         echo '<a href="'. $url .'">';
         echo '<div class="view">';
         if ('' !== $picture_filename) {
@@ -58,7 +56,7 @@ if (rex::isBackend()) {
     } elseif (count($courses) > 0) { /** @phpstan-ignore-line */
         if ($category instanceof Category) { /** @phpstan-ignore-line */
             if ('REX_VALUE[2]' === 'true') { /** @phpstan-ignore-line */
-                echo '<div class="col-12 spacer"><div class="page_title_bg" style="background-color: '. $category->color .' !important">';
+                echo '<div class="col-12 spacer"><div class="page_title_bg" style="'. TobiasKrais\D2UCourses\FrontendHelper::getThemeColorStyle('background-color', $category->color, $category->color_dark, '#5e5c64', true) .'">';
                 echo '<h1 class="page_title">';
                 if ($category->parent_category instanceof Category) {
                     echo $category->parent_category->name .': ';
@@ -78,7 +76,7 @@ if (rex::isBackend()) {
                 $title = $list_course->name .'<br><small>'
                     . ('REX_VALUE[3]' === 'true' && '' !== $list_course->teaser ? $list_course->teaser .'<br>' : '') /** @phpstan-ignore-line */
                     . (new DateTime($list_course->date_start))->format('d.m.Y') .'</small>';
-                printBoxModule26_3($title, $list_course->picture, $list_course->category->color, $list_course->getUrl(true), $box_per_line);
+                printBoxModule26_3($title, $list_course->picture, $list_course->category->color, $list_course->category->color_dark, $list_course->getUrl(true), $box_per_line);
             }
         }
     }

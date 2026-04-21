@@ -639,7 +639,7 @@ class Cart
 
     /**
      * Get Cart.
-     * @return \D2U_Courses\Cart
+    * @return \TobiasKrais\D2UCourses\Cart
      */
     public static function getCart(): self
     {
@@ -733,7 +733,7 @@ class Cart
      */
     public function saveBookings($cart, $invoice_address): bool
     {
-        if (!rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable()) {
+        if (!\TobiasKrais\D2UCourses\Extension::isActive('customer_bookings')) {
             return false;
         }
 
@@ -876,7 +876,7 @@ class Cart
                             $price_full = $price_full + ((float) str_replace(',', '.', str_replace('.', '', $participant_data['price'])));
                         }
 
-                        if('booked' === $course->registration_possible || (rex_plugin::get('d2u_courses', 'customer_bookings')->isAvailable() && $course->participants_max > 0 && CustomerBooking::getNumberForCourse($course->course_id) > $course->participants_max)) {
+                        if('booked' === $course->registration_possible || (\TobiasKrais\D2UCourses\Extension::isActive('customer_bookings') && $course->participants_max > 0 && CustomerBooking::getNumberForCourse($course->course_id) > $course->participants_max)) {
                             $body .= 'Mit dieser Buchung sind Sie auf der Warteliste eingetragen.<br>';
                         }
                         $body .= '<br>';

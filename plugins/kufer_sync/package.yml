@@ -1,12 +1,7 @@
 package: d2u_courses/kufer_sync
-version: '3.5.2'
+version: '3.6.0'
 author: Tobias Krais
 supportpage: http://github.com/tobiaskrais/d2u_courses
-
-page:
-    title: 'translate:d2u_courses_kufer_sync'
-    perm: 'd2u_courses[kufer_sync]'
-    icon: rex-icon fa-cloud-download
 
 requires:
     php:
