@@ -17,7 +17,7 @@ class Module
         $modules = [];
         $modules[] = new \TobiasKrais\D2UHelper\Module('26-1',
             'D2U Veranstaltungen - Ausgabe Veranstaltungen (BS4, deprecated)',
-            17);
+            18);
         $modules[] = new \TobiasKrais\D2UHelper\Module('26-2',
             'D2U Veranstaltungen - Warenkorb (BS4, deprecated)',
             11);
@@ -26,7 +26,7 @@ class Module
             5);
         $modules[] = new \TobiasKrais\D2UHelper\Module('26-4',
             'D2U Veranstaltungen - Ausgabe Veranstaltungen (BS5)',
-            1);
+            2);
         $modules[] = new \TobiasKrais\D2UHelper\Module('26-5',
             'D2U Veranstaltungen - Warenkorb (BS5)',
             1);

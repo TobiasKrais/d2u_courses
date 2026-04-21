@@ -130,7 +130,7 @@ if (\TobiasKrais\D2UCourses\Extension::isActive('locations')) {
 <?php
 }
 if (rex_addon::get('d2u_news')->isAvailable()) {
-    $categories = \D2U_News\Category::getAll(rex_clang::getCurrentId());
+	$categories = \TobiasKrais\D2UNews\Category::getAll(rex_clang::getCurrentId());
     if (count($categories) > 0) {
 ?>
 		<div class="row">

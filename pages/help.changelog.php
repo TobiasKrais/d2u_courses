@@ -1,4 +1,9 @@
 <h2>Changelog</h2>
+<p>3.6.1-DEV:</p>
+<ul>
+	<li>Module 26-1 und 26-4 verwenden fuer die optionale News-Anbindung jetzt den neuen Namespace <code>TobiasKrais\D2UNews</code>.</li>
+	<li>Kompatibilitaet zu d2u_news ab Version 1.2.0 als Paketkonflikt hinterlegt.</li>
+</ul>
 <p>3.6.0:</p>
 <ul>
 	<li>Wichtige Hinweise

@@ -27,7 +27,7 @@ $news_category_id = (int) 'REX_VALUE[5]';
 $news = [];
 $new_category = false;
 if ($news_category_id > 0) { /** @phpstan-ignore-line */
-    $new_category = new \D2U_News\Category($news_category_id, rex_clang::getCurrentId());
+    $new_category = new \TobiasKrais\D2UNews\Category($news_category_id, rex_clang::getCurrentId());
     $news = $new_category->getNews(true);
 }
 $linkbox_category_id = (int) 'REX_VALUE[6]';
