@@ -2,6 +2,8 @@
 <p>3.6.1-DEV:</p>
 <ul>
 	<li>Backend: CSRF-Schutz fuer Speichern-, Loesch- und Statusaktionen der Kursverwaltung ergaenzt.</li>
+	<li>Backend: CSRF-Schutz fuer Modul-Installation, -Update und -Deinstallation auf der Setup-Seite ergaenzt.</li>
+	<li>Sicherheit: Kurssuche (<code>Course::search()</code>) verwendet jetzt Parameter-Bindung statt String-Interpolation, damit aus dem Suchstichwort keine SQL-Anfrage manipuliert werden kann.</li>
 	<li>Module 26-1 und 26-4 verwenden fuer die optionale News-Anbindung jetzt den neuen Namespace <code>TobiasKrais\D2UNews</code>.</li>
 	<li>Kompatibilitaet zu d2u_news ab Version 1.2.0 als Paketkonflikt hinterlegt.</li>
 </ul>

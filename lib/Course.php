@@ -603,6 +603,9 @@ class Course
      */
     public static function search($keyword): array
     {
+        $like = '%' . addcslashes((string) $keyword, '\\%_') . '%';
+        $params = ['keyword' => $like];
+
         $query = 'SELECT courses.course_id FROM '. rex::getTablePrefix() .'d2u_courses_courses AS courses ';
         if (\TobiasKrais\D2UCourses\Extension::isActive('locations')) {
             $query .= 'LEFT JOIN '. rex::getTablePrefix() .'d2u_courses_locations AS locations '
@@ -613,20 +616,20 @@ class Course
             ."WHERE courses.online_status = 'online'"
                 .'AND ('. FrontendHelper::getShowTimeWhere() .') '
                 .'AND ('
-                    ."courses.description LIKE '%". $keyword ."%' "
-                    ."OR courses.instructor LIKE '%". $keyword ."%' "
-                    ."OR courses.course_number LIKE '%". $keyword ."%' "
-                    ."OR courses.name LIKE '%". $keyword ."%' "
-                    ."OR categories.name LIKE '%". $keyword ."%' "
-                    ."OR categories.description LIKE '%". $keyword ."%' ";
+                    .'courses.description LIKE :keyword '
+                    .'OR courses.instructor LIKE :keyword '
+                    .'OR courses.course_number LIKE :keyword '
+                    .'OR courses.name LIKE :keyword '
+                    .'OR categories.name LIKE :keyword '
+                    .'OR categories.description LIKE :keyword ';
         if (\TobiasKrais\D2UCourses\Extension::isActive('locations')) {
-            $query .= "OR locations.name LIKE '%". $keyword ."%' "
-                    ."OR locations.city LIKE '%". $keyword ."%' "
-                    ."OR locations.zip_code LIKE '%". $keyword ."%' ";
+            $query .= 'OR locations.name LIKE :keyword '
+                    .'OR locations.city LIKE :keyword '
+                    .'OR locations.zip_code LIKE :keyword ';
         }
         $query .= ')';
         $result = rex_sql::factory();
-        $result->setQuery($query);
+        $result->setQuery($query, $params);
 
         $courses = [];
         for ($i = 0; $i < $result->getRows(); ++$i) {
