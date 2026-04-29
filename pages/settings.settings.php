@@ -92,6 +92,22 @@ if (!$invalidCsrf && 'save' === filter_input(INPUT_POST, 'btn_save')) {
 		}
 	}
 
+    // Validate hex color values to prevent CSS injection. Invalid values fall back to defaults.
+    $colorDefaults = [
+        'location_bg_color' => '#41b23b',
+        'schedule_category_bg_color' => '#66ccc2',
+        'target_group_bg_color' => '#b57a00',
+    ];
+    foreach ($colorDefaults as $colorKey => $defaultColor) {
+        if (array_key_exists($colorKey, $settings)) {
+            $settings[$colorKey] = BackendHelper::sanitizeHexColor($settings[$colorKey], $defaultColor);
+        }
+        $darkKey = 'dark_' . $colorKey;
+        if (array_key_exists($darkKey, $settings)) {
+            $settings[$darkKey] = BackendHelper::sanitizeHexColor($settings[$darkKey]);
+        }
+    }
+
     // Save settings
 	if ([] !== $missingArticleFields) {
 		echo rex_view::error(rex_i18n::msg('form_save_error') .'<ul><li>'. implode('</li><li>', $missingArticleFields) .'</li></ul>');

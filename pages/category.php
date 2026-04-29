@@ -38,8 +38,8 @@ if (!$invalidCsrf && (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === 
 
     $category_id = $form['category_id'];
     $category = new TobiasKrais\D2UCourses\Category($category_id);
-    $category->color = $form['color'];
-    $category->color_dark = $form['color_dark'];
+    $category->color = \TobiasKrais\D2UHelper\BackendHelper::sanitizeHexColor($form['color'] ?? '');
+    $category->color_dark = \TobiasKrais\D2UHelper\BackendHelper::sanitizeHexColor($form['color_dark'] ?? '');
     $category->picture = $input_media[1];
     $category->parent_category = $form['parent_category_id'] > 0 ? new TobiasKrais\D2UCourses\Category($form['parent_category_id']) : false;
     $category->priority = $form['priority'];
