@@ -309,7 +309,7 @@ class TargetGroup
                 $query = 'UPDATE ';
             }
             $query .= rex::getTablePrefix().'d2u_courses_target_groups SET '
-                .'`name` = "'. addslashes($this->name) .'", '
+                .'`name` = :name, '
                 .'picture = "'. $this->picture .'", '
                 .'updatedate = CURRENT_TIMESTAMP ';
             if (\TobiasKrais\D2UCourses\Extension::isActive('kufer_sync')) {
@@ -317,10 +317,10 @@ class TargetGroup
                     .', kufer_target_group_name = "'. $this->kufer_target_group_name .'"';
             }
             if ($this->target_group_id > 0) {
-                $query .= ' WHERE target_group_id = '. $this->target_group_id;
+                $query .= ' WHERE target_group_id = '. (int) $this->target_group_id;
             }
             $result = rex_sql::factory();
-            $result->setQuery($query);
+            $result->setQuery($query, [':name' => $this->name]);
 
             if (0 === $this->target_group_id) {
                 $this->target_group_id = (int) $result->getLastId();

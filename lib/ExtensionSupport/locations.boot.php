@@ -46,17 +46,17 @@ function rex_d2u_courses_locations_media_is_in_use(rex_extension_point $ep)
 {
     $warning = $ep->getSubject();
     $params = $ep->getParams();
-    $filename = addslashes($params['filename']);
+    $filename = $params['filename'];
 
     // Locations
     $sql_locations = \rex_sql::factory();
     $sql_locations->setQuery('SELECT location_id, name FROM `' . \rex::getTablePrefix() . 'd2u_courses_locations` '
-        .'WHERE picture = "'. $filename .'"');
+        .'WHERE picture = :filename', [':filename' => $filename]);
 
     // Categories
     $sql_categories = \rex_sql::factory();
     $sql_categories->setQuery('SELECT location_category_id, name FROM `' . \rex::getTablePrefix() . 'd2u_courses_location_categories` '
-        .'WHERE picture = "'. $filename .'"');
+        .'WHERE picture = :filename', [':filename' => $filename]);
 
     // Prepare warnings
     // Courses

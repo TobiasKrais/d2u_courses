@@ -393,22 +393,22 @@ class Category
             $query = 'UPDATE ';
         }
         $query .= rex::getTablePrefix().'d2u_courses_categories SET '
-            .'`name` = "'. addslashes($this->name) .'", '
-            .'description = "'. addslashes($this->description) .'", '
+            .'`name` = :name, '
+            .'description = :description, '
             .'color = "'. $this->color .'", '
             .'color_dark = "'. $this->color_dark . '", '
             .'picture = "'. $this->picture .'", '
-            .'parent_category_id = '. ($this->parent_category instanceof self ? $this->parent_category->category_id : 0) .', '
+            .'parent_category_id = '. ($this->parent_category instanceof self ? (int) $this->parent_category->category_id : 0) .', '
             .'updatedate = CURRENT_TIMESTAMP';
         if (\TobiasKrais\D2UCourses\Extension::isActive('kufer_sync')) {
             $query .= ', kufer_categories = "'. implode(PHP_EOL, $this->kufer_categories) .'"'
                 .', google_type = "'. $this->google_type .'"';
         }
         if ($this->category_id > 0) {
-            $query .= ' WHERE category_id = '. $this->category_id;
+            $query .= ' WHERE category_id = '. (int) $this->category_id;
         }
         $result = rex_sql::factory();
-        $result->setQuery($query);
+        $result->setQuery($query, [':name' => $this->name, ':description' => $this->description]);
         $error = $result->hasError();
 
         if (0 === $this->category_id) {

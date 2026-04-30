@@ -516,47 +516,56 @@ class Course
             $query = 'UPDATE ';
         }
         $query .= rex::getTablePrefix() .'d2u_courses_courses SET '
-            .'`name` = "'. addslashes($this->name) .'", '
-            .'teaser = "'. addslashes($this->teaser) .'", '
-            .'description = "'. addslashes($this->description) .'", '
-            .'details_course = "'. addslashes($this->details_course) .'", '
-            .'details_deadline = "'. addslashes($this->details_deadline) .'", '
+            .'`name` = :name, '
+            .'teaser = :teaser, '
+            .'description = :description, '
+            .'details_course = :details_course, '
+            .'details_deadline = :details_deadline, '
             .'details_age = "'. $this->details_age .'", '
             .'picture = "'. $this->picture .'", '
             .'price = '. number_format($this->price > 0 ? $this->price : 0, 2, '.', '') .', '
             .'price_discount = '. number_format($this->price_discount > 0 ? $this->price_discount : 0, 2, '.', '') .', '
-            .'price_notes = "'. addslashes($this->price_notes) .'", '
+            .'price_notes = :price_notes, '
             .'price_salery_level = '. ($this->price_salery_level ? 1 : 0) .', '
             ."price_salery_level_details = '". json_encode($this->price_salery_level_details, JSON_UNESCAPED_UNICODE) ."', "
             .'date_start = "'. $this->date_start .'", '
             .'date_end = "'. $this->date_end .'", '
             .'`time` = "'. $this->time .'", '
-            .'category_id = '. ($this->category instanceof Category ? $this->category->category_id : 0) .', '
-            .'participants_max = '. ($this->participants_max > 0 ? $this->participants_max : 0) .', '
-            .'participants_min = '. ($this->participants_min > 0 ? $this->participants_min : 0) .', '
-            .'participants_number = '. ($this->participants_number > 0 ? $this->participants_number : 0) .', '
-            .'participants_wait_list = '. ($this->participants_wait_list > 0 ? $this->participants_wait_list : 0) .', '
+            .'category_id = '. ($this->category instanceof Category ? (int) $this->category->category_id : 0) .', '
+            .'participants_max = '. ($this->participants_max > 0 ? (int) $this->participants_max : 0) .', '
+            .'participants_min = '. ($this->participants_min > 0 ? (int) $this->participants_min : 0) .', '
+            .'participants_number = '. ($this->participants_number > 0 ? (int) $this->participants_number : 0) .', '
+            .'participants_wait_list = '. ($this->participants_wait_list > 0 ? (int) $this->participants_wait_list : 0) .', '
             .'registration_possible = "'. $this->registration_possible .'", '
             .'online_status = "'. $this->online_status .'", '
             .'google_type = "'. $this->google_type .'", '
             .'url_external = "'. $this->url_external .'", '
-            .'redaxo_article = '. ($this->redaxo_article > 0 ? $this->redaxo_article : 0) .', '
+            .'redaxo_article = '. ($this->redaxo_article > 0 ? (int) $this->redaxo_article : 0) .', '
             .'instructor = "'. $this->instructor .'", '
             .'course_number = "'. $this->course_number .'", '
             .'downloads = "'. implode(',', $this->downloads) .'", '
             .'updatedate = CURRENT_TIMESTAMP ';
+        $params = [
+            ':name' => $this->name,
+            ':teaser' => $this->teaser,
+            ':description' => $this->description,
+            ':details_course' => $this->details_course,
+            ':details_deadline' => $this->details_deadline,
+            ':price_notes' => $this->price_notes,
+        ];
         if (\TobiasKrais\D2UCourses\Extension::isActive('locations')) {
-            $query .= ', location_id = '. ($this->location instanceof Location ? $this->location->location_id : 0) .', '
-                .'`room` = "'. addslashes($this->room) .'" ';
+            $query .= ', location_id = '. ($this->location instanceof Location ? (int) $this->location->location_id : 0) .', '
+                .'`room` = :room ';
+            $params[':room'] = $this->room;
         }
         if (\TobiasKrais\D2UCourses\Extension::isActive('kufer_sync')) {
             $query .= ', import_type = "'. $this->import_type .'"';
         }
         if ($this->course_id > 0) {
-            $query .= ' WHERE course_id = '. $this->course_id;
+            $query .= ' WHERE course_id = '. (int) $this->course_id;
         }
         $result = rex_sql::factory();
-        $result->setQuery($query);
+        $result->setQuery($query, $params);
 
         if (0 === $this->course_id) {
             $this->course_id = (int) $result->getLastId();

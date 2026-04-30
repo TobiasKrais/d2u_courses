@@ -46,12 +46,12 @@ function rex_d2u_courses_target_groups_media_is_in_use(rex_extension_point $ep)
 {
     $warning = $ep->getSubject();
     $params = $ep->getParams();
-    $filename = addslashes($params['filename']);
+    $filename = $params['filename'];
 
     // Target groups
     $sql_target_groups = \rex_sql::factory();
     $sql_target_groups->setQuery('SELECT target_group_id, name FROM `' . \rex::getTablePrefix() . 'd2u_courses_target_groups` '
-        .'WHERE picture = "'. $filename .'"');
+        .'WHERE picture = :filename', [':filename' => $filename]);
 
     // Prepare warnings
     // Target groups

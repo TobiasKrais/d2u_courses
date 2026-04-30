@@ -127,17 +127,18 @@ function rex_d2u_courses_media_is_in_use(rex_extension_point $ep)
 {
     $warning = $ep->getSubject();
     $params = $ep->getParams();
-    $filename = addslashes($params['filename']);
+    $filename = (string) $params['filename'];
+    $filenameLike = '%' . str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $filename) . '%';
 
     // Courses
     $sql_courses = \rex_sql::factory();
     $sql_courses->setQuery('SELECT course_id, `name` FROM `' . \rex::getTablePrefix() . 'd2u_courses_courses` '
-        .'WHERE FIND_IN_SET("'. $filename .'", downloads) OR picture = "'. $filename .'" OR description LIKE "%'. $filename .'%"');
+        .'WHERE FIND_IN_SET(:filename, downloads) OR picture = :filename OR description LIKE :filenameLike', [':filename' => $filename, ':filenameLike' => $filenameLike]);
 
     // Categories
     $sql_categories = \rex_sql::factory();
     $sql_categories->setQuery('SELECT category_id, name FROM `' . \rex::getTablePrefix() . 'd2u_courses_categories` '
-        .'WHERE picture = "'. $filename .'"');
+        .'WHERE picture = :filename', [':filename' => $filename]);
 
     // Prepare warnings
     // Courses

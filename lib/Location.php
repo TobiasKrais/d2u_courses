@@ -250,27 +250,27 @@ class Location
             $query = 'UPDATE ';
         }
         $query .= rex::getTablePrefix().'d2u_courses_locations SET '
-            .'`name` = "'. addslashes($this->name) .'", '
+            .'`name` = :name, '
             .'latitude = "'. $this->latitude .'", '
             .'longitude = "'. $this->longitude .'", '
             .'city = "'. $this->city .'", '
             .'zip_code = "'. $this->zip_code .'", '
             .'country_code = "'. $this->country_code .'", '
             .'street = "'. $this->street .'", '
-            .'location_category_id = '. ($this->location_category instanceof LocationCategory ? $this->location_category->location_category_id : 0) .', '
+            .'location_category_id = '. ($this->location_category instanceof LocationCategory ? (int) $this->location_category->location_category_id : 0) .', '
             .'redaxo_users = "'. implode('|', $this->redaxo_users) .'", '
             .'picture = "'. $this->picture .'", '
             .'site_plan = "'. $this->site_plan .'", '
             .'updatedate = CURRENT_TIMESTAMP ';
         if (\TobiasKrais\D2UCourses\Extension::isActive('kufer_sync')) {
-            $query .= ', kufer_location_id = '. ($this->kufer_location_id > 0 ? $this->kufer_location_id : 0);
+            $query .= ', kufer_location_id = '. ($this->kufer_location_id > 0 ? (int) $this->kufer_location_id : 0);
         }
         if ($this->location_id > 0) {
-            $query .= ' WHERE location_id = '. $this->location_id;
+            $query .= ' WHERE location_id = '. (int) $this->location_id;
         }
 
         $result = rex_sql::factory();
-        $result->setQuery($query);
+        $result->setQuery($query, [':name' => $this->name]);
 
         if (0 === $this->location_id) {
             $this->location_id = (int) $result->getLastId();

@@ -338,18 +338,18 @@ class ScheduleCategory
             $query = 'UPDATE ';
         }
         $query .= rex::getTablePrefix().'d2u_courses_schedule_categories SET '
-            .'`name` = "'. addslashes($this->name) .'", '
+            .'`name` = :name, '
             .'picture = "'. $this->picture .'", '
-            .'parent_schedule_category_id = '. ($this->parent_schedule_category instanceof self ? $this->parent_schedule_category->schedule_category_id : 0) .', '
+            .'parent_schedule_category_id = '. ($this->parent_schedule_category instanceof self ? (int) $this->parent_schedule_category->schedule_category_id : 0) .', '
             .'updatedate = CURRENT_TIMESTAMP ';
         if (\TobiasKrais\D2UCourses\Extension::isActive('kufer_sync')) {
             $query .= ', kufer_categories = "'. implode(PHP_EOL, $this->kufer_categories) .'"';
         }
         if ($this->schedule_category_id > 0) {
-            $query .= ' WHERE schedule_category_id = '. $this->schedule_category_id;
+            $query .= ' WHERE schedule_category_id = '. (int) $this->schedule_category_id;
         }
         $result = rex_sql::factory();
-        $result->setQuery($query);
+        $result->setQuery($query, [':name' => $this->name]);
 
         if (0 === $this->schedule_category_id) {
             $this->schedule_category_id = (int) $result->getLastId();

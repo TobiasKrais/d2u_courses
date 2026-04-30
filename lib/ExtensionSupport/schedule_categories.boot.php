@@ -46,12 +46,12 @@ function rex_d2u_courses_schedule_categories_media_is_in_use(rex_extension_point
 {
     $warning = $ep->getSubject();
     $params = $ep->getParams();
-    $filename = addslashes($params['filename']);
+    $filename = $params['filename'];
 
     // Schedule categories
     $sql_schedule_categories = \rex_sql::factory();
     $sql_schedule_categories->setQuery('SELECT schedule_category_id, name FROM `' . \rex::getTablePrefix() . 'd2u_courses_schedule_categories` '
-        .'WHERE picture = "'. $filename .'"');
+        .'WHERE picture = :filename', [':filename' => $filename]);
 
     // Prepare warnings
     // Schedule categories

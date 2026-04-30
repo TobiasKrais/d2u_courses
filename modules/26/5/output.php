@@ -659,7 +659,7 @@ if (isset($form_data['invoice_form'])) {
                     $multinewsletter_group = new FriendsOfRedaxo\MultiNewsletter\Group((int) $newsletter_group_id);
                     if ($multinewsletter_group->id > 0) {
                         echo '<input type="checkbox" class="cart_checkbox" name="invoice_form[multinewsletter][]" id="invoice_form-multinewsletter" value="'. $multinewsletter_group->id .'">';
-                        echo '<label class="cart_checkbox" for="invoice_form-multinewsletter">'. $multinewsletter_group->name .'</label><br>';
+                        echo '<label class="cart_checkbox" for="invoice_form-multinewsletter">'. rex_escape($multinewsletter_group->name) .'</label><br>';
                     }
                 }
             }
@@ -719,7 +719,7 @@ if (isset($form_data['invoice_form'])) {
             echo '<div class="cart_row_title" style="'. ($course->category instanceof Category ? TobiasKrais\D2UCourses\FrontendHelper::getThemeColorStyle('background-color', $course->category->color, $course->category->color_dark, 'grey') : TobiasKrais\D2UCourses\FrontendHelper::getThemeColorStyle('background-color', 'grey', 'grey', 'grey')) .'">';
             echo '<div class="row">';
             echo '<div class="col-12">';
-            echo '<a href="'. $course->getUrl(true) .'" title="'. $course->name .'" class="cart_course_title">';
+            echo '<a href="'. $course->getUrl(true) .'" title="'. rex_escape($course->name) .'" class="cart_course_title">';
             echo $course->name;
             if ('' !== $course->course_number) {
                 echo ' ('. $course->course_number .')';

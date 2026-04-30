@@ -6,8 +6,9 @@
 	<li>Sicherheit: Kurssuche (<code>Course::search()</code>) verwendet jetzt Parameter-Bindung statt String-Interpolation, damit aus dem Suchstichwort keine SQL-Anfrage manipuliert werden kann.</li>
 	<li>Sicherheit: Hex-Farben aus den Einstellungen und der Kategorieverwaltung werden jetzt vor dem Speichern strikt validiert (#RGB / #RRGGBB / #RRGGBBAA), damit keine CSS-Werte ueber das Backend eingeschleust werden koennen.</li>
 	<li>Module 26-1 und 26-4 verwenden fuer die optionale News-Anbindung jetzt den neuen Namespace <code>TobiasKrais\D2UNews</code>.</li>
-	<li>Kompatibilitaet zu d2u_news ab Version 1.2.0 als Paketkonflikt hinterlegt.</li>
-</ul>
+	<li>Kompatibilitaet zu d2u_news ab Version 1.2.0 als Paketkonflikt hinterlegt.</li>        <li>Security: Die <code>media-is-in-use</code>-Extension-Points in <code>boot.php</code> verwenden jetzt gebundene Parameter statt SQL-String-Konkatenation mit <code>addslashes()</code>.</li>
+	<li>Security: Die <code>save()</code>-Methoden in <code>lib/*.php</code> (Course, Category, Location, LocationCategory, TargetGroup, ScheduleCategory) sowie die media-is-in-use-Hooks in <code>lib/ExtensionSupport/*.boot.php</code> verwenden jetzt gebundene Parameter statt SQL-String-Konkatenation mit <code>addslashes()</code>.</li>
+	<li>Security: Modul-Ausgaben (<code>modules/26/1/output.php</code>, <code>modules/26/4/output.php</code>) härten Leaflet-Popup-Inhalte: Werte werden via <code>json_encode()</code> in JS-Strings übergeben statt mit <code>addslashes()</code>; Lat/Long strikt als <code>(float)</code> gecastet. Weitere Backend-Eingaben (Kurs-Namen/-Titel) werden in HTML-Ausgaben mit <code>rex_escape()</code> gehärtet.</li></ul>
 <p>3.6.0:</p>
 <ul>
 	<li>Wichtige Hinweise

@@ -197,15 +197,15 @@ class LocationCategory
             $query = 'UPDATE ';
         }
         $query .= rex::getTablePrefix().'d2u_courses_location_categories SET '
-            .'`name` = "'. addslashes($this->name) .'", '
+            .'`name` = :name, '
             .'picture = "'. $this->picture .'", '
-            .'zoom_level = '. $this->zoom_level .', '
+            .'zoom_level = '. (int) $this->zoom_level .', '
             .'updatedate = CURRENT_TIMESTAMP ';
         if ($this->location_category_id > 0) {
-            $query .= ' WHERE location_category_id = '. $this->location_category_id;
+            $query .= ' WHERE location_category_id = '. (int) $this->location_category_id;
         }
         $result = rex_sql::factory();
-        $result->setQuery($query);
+        $result->setQuery($query, [':name' => $this->name]);
 
         if (0 === $this->location_category_id) {
             $this->location_category_id = (int) $result->getLastId();

@@ -164,7 +164,7 @@ if (rex::isBackend()) {
         if (count($category->getChildren(true)) > 0) {
             // Are child categories available?
             echo '<div class="col-12 course-title"><div class="page_title_bg" style="'. TobiasKrais\D2UCourses\FrontendHelper::getThemeColorStyle('background-color', $category->color, $category->color_dark, '#5e5c64', true) .'">';
-            echo '<h1 class="page_title">'. $category->name .'</h1>';
+            echo '<h1 class="page_title">'. rex_escape($category->name) .'</h1>';
             echo '</div></div>';
             if ('' !== trim($category->description)) {
                 echo '<div class="col-12 course_row spacer">';
@@ -190,7 +190,7 @@ if (rex::isBackend()) {
             }
         }
         echo '<div class="col-12 course-title"><div class="page_title_bg" style="'. TobiasKrais\D2UCourses\FrontendHelper::getConfigThemeColorStyle('background-color', 'location_bg_color', 'dark_location_bg_color', '#41b23b', true) .'">';
-        echo '<h1 class="page_title">'. $location_category->name .'</h1>';
+        echo '<h1 class="page_title">'. rex_escape($location_category->name) .'</h1>';
         echo '</div></div>';
         foreach ($locations as $current_location) {
             printBoxModule26_1($current_location->name, $current_location->picture, (string) rex_config::get('d2u_courses', 'location_bg_color', '#41b23b'), (string) rex_config::get('d2u_courses', 'dark_location_bg_color', (string) rex_config::get('d2u_courses', 'location_bg_color', '#41b23b')), $current_location->getUrl(), $box_per_line);
@@ -204,7 +204,7 @@ if (rex::isBackend()) {
     elseif ($schedule_category instanceof ScheduleCategory) {
         if (count($schedule_category->getChildren(true)) > 0) {
             echo '<div class="col-12 course-title"><div class="page_title_bg" style="'. TobiasKrais\D2UCourses\FrontendHelper::getConfigThemeColorStyle('background-color', 'schedule_category_bg_color', 'dark_schedule_category_bg_color', '#66ccc2', true) .'">';
-            echo '<h1 class="page_title">'. $schedule_category->name .'</h1>';
+            echo '<h1 class="page_title">'. rex_escape($schedule_category->name) .'</h1>';
             echo '</div></div>';
             // Children
             foreach ($schedule_category->getChildren(true) as $child_schedule_category) {
@@ -218,7 +218,7 @@ if (rex::isBackend()) {
     elseif ($target_group instanceof TargetGroup) {
         if (count($target_group->getChildren()) > 0) {
             echo '<div class="col-12 course-title"><div class="page_title_bg" style="'. TobiasKrais\D2UCourses\FrontendHelper::getConfigThemeColorStyle('background-color', 'target_group_bg_color', 'dark_target_group_bg_color', '#b57a00', true) .'">';
-            echo '<h1 class="page_title">'. $target_group->name .'</h1>';
+            echo '<h1 class="page_title">'. rex_escape($target_group->name) .'</h1>';
             echo '</div></div>';
             // Children
             foreach ($target_group->getChildren() as $child_target_group) {
@@ -280,7 +280,7 @@ if (rex::isBackend()) {
                     if ($url) {
                         echo '<a href="'. $selected_news->getUrl() .'">';
                     }
-                    echo '<div class="box_title">'. $selected_news->name .'</div>';
+                    echo '<div class="box_title">'. rex_escape($selected_news->name) .'</div>';
                     if ($url) {
                         echo '</a>';
                     }
@@ -612,7 +612,7 @@ if (rex::isBackend()) {
         if ('' !== $course->picture) {
             $box_picture = '<div class="col-12 col-md-6 course_row">';
             $box_picture .= '<div class="course_box spacer_box course_picture">';
-            $box_picture .= '<img src="index.php?rex_media_type=d2u_helper_sm&rex_media_file='. $course->picture .'" alt="'. $course->name .'">';
+            $box_picture .= '<img src="index.php?rex_media_type=d2u_helper_sm&rex_media_file='. $course->picture .'" alt="'. rex_escape($course->name) .'">';
             $box_picture .= '</div>';
             $box_picture .= '</div>';
         }
@@ -747,10 +747,10 @@ if (rex::isBackend()) {
 							shadowAnchor: [13, 40], // the same for the shadow
 							popupAnchor:  [0, -41]  // point from which the popup should open relative to the iconAnchor
 						});
-						var marker = L.marker([<?= $course->location->latitude .','. $course->location->longitude ?>], {
+						var marker = L.marker([<?= (float) $course->location->latitude ?>, <?= (float) $course->location->longitude ?>], {
 							draggable: false,
 							icon: myIcon
-						}).addTo(map).bindPopup('<?= addslashes($course->location->name) ?>').openPopup();
+						}).addTo(map).bindPopup(<?= json_encode((string) $course->location->name, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>).openPopup();
 					</script>
 				<?php
                 } elseif (rex_addon::get('geolocation')->isAvailable()) {
