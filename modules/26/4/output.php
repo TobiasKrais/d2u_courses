@@ -120,15 +120,15 @@ if (!function_exists('printBoxModule26_1')) {
     {
         echo '<div class="col-6'. ($number_columns >= 3 ? ' col-md-4' : '') . (4 === $number_columns ? ' col-lg-3' : '') .' spacer">';
         echo '<div class="category_box" style="'. TobiasKrais\D2UCourses\FrontendHelper::getThemeColorStyle('background-color', $color, $darkColor, 'grey') .'" data-height-watch>';
-        echo '<a href="'. $url .'">';
+        echo '<a href="'. rex_escape($url) .'">';
         echo '<div class="view">';
         if ('' !== $picture_filename) {
-            echo '<img src="index.php?rex_media_type=d2u_helper_sm&rex_media_file='. $picture_filename .'" alt="'. $title .'">';
+            echo '<img src="index.php?rex_media_type=d2u_helper_sm&rex_media_file='. rex_escape(rawurlencode($picture_filename)) .'" alt="'. rex_escape($title) .'">';
         } else {
             echo '<img src="'.	rex_addon::get('d2u_courses')->getAssetsUrl('empty_box.png') .'" alt="Placeholder">';
         }
         echo '</div>';
-        echo '<div class="box_title">'. $title .'</div>';
+        echo '<div class="box_title">'. rex_escape($title) .'</div>';
         echo '</a>';
         echo '</div>';
         echo '</div>';
@@ -148,7 +148,7 @@ if (rex::isBackend()) {
         echo '<div class="search_div">';
         echo '<form action="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_courses')) .'" method="post">';
         echo '<label class="d-none" for="course_search">'. Sprog\Wildcard::get('d2u_courses_search') .'</label>';
-        echo '<input class="search_box" name="course_search" id="course_search" value="'. filter_input(INPUT_POST, 'course_search') .'" type="text">'
+        echo '<input class="search_box" name="course_search" id="course_search" value="'. rex_escape((string) filter_input(INPUT_POST, 'course_search')) .'" type="text">'
             . '<button class="search_button" title="'. Sprog\Wildcard::get('d2u_courses_search') .'"><img src="'. rex_url::addonAssets('d2u_courses', 'lens.png').'" alt="'. Sprog\Wildcard::get('d2u_courses_search') .'"></button>'
             . '</form>';
         echo '</div>';
@@ -278,7 +278,7 @@ if (rex::isBackend()) {
                     echo '<div class="news_box" data-height-watch>';
                     $url = $selected_news->getUrl();
                     if ($url) {
-                        echo '<a href="'. $selected_news->getUrl() .'">';
+                        echo '<a href="'. rex_escape($selected_news->getUrl()) .'">';
                     }
                     echo '<div class="box_title">'. rex_escape($selected_news->name) .'</div>';
                     if ($url) {
@@ -304,7 +304,7 @@ if (rex::isBackend()) {
         if (null !== filter_input(INPUT_POST, 'course_search')) {
             echo '<div class="col-12 course-title">';
             echo '<div class="search_title">';
-            echo '<h1>'. \Sprog\Wildcard::get('d2u_courses_search_results') .' "'. filter_input(INPUT_POST, 'course_search') .'":</h1>';
+            echo '<h1>'. \Sprog\Wildcard::get('d2u_courses_search_results') .' "'. rex_escape((string) filter_input(INPUT_POST, 'course_search')) .'":</h1>';
             echo '</div>';
             echo '</div>';
         } elseif ($target_group instanceof TargetGroup) {
@@ -354,7 +354,7 @@ if (rex::isBackend()) {
                     $title .= ' - '. \Sprog\Wildcard::get('d2u_courses_booked_complete');
                 }
 
-                echo '<a href="'. $list_course->getUrl(true) .'" title="'. $title .'" class="course_row_a">';
+                echo '<a href="'. rex_escape($list_course->getUrl(true)) .'" title="'. rex_escape($title) .'" class="course_row_a">';
                 echo '<div class="row course_row" data-match-height>';
 
                 echo '<div class="col-12 col-md-6 spacer_box">';
@@ -655,16 +655,16 @@ if (rex::isBackend()) {
                         $api_key = (string) rex_config::get('d2u_helper', 'maps_key');
                     }
                     ?>
-					<script src="https://maps.googleapis.com/maps/api/js?key=<?= $api_key ?>"></script>
+					<script src="https://maps.googleapis.com/maps/api/js?key=<?= rex_escape(rawurlencode($api_key)) ?>"></script>
 					<div id="map_canvas" style="display: block; width: 100%; height: 400px"></div>
 					<script>
 					<?php
                         // If longitude and latitude is available: create map
                         if ((0 > $course->location->latitude || 0 < $course->location->latitude) && (0 > $course->location->longitude || 0 < $course->location->longitude)) {
                     ?>
-						var myLatlng = new google.maps.LatLng(<?= $course->location->latitude .','. $course->location->longitude ?>);
+						var myLatlng = new google.maps.LatLng(<?= (float) $course->location->latitude ?>, <?= (float) $course->location->longitude ?>);
 						var myOptions = {
-							zoom: <?= $course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10 ?>,
+							zoom: <?= $course->location->location_category instanceof LocationCategory ? (int) $course->location->location_category->zoom_level : 10 ?>,
 							center: myLatlng,
 							mapTypeId: google.maps.MapTypeId.ROADMAP
 						};
@@ -676,7 +676,7 @@ if (rex::isBackend()) {
 						});
 
 						var infowindow = new google.maps.InfoWindow({
-							content: "<?= $course->location->name ?>",
+							content: <?= json_encode((string) $course->location->name, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>,
 							position: myLatlng
 						});
 						infowindow.open(map, marker);
@@ -690,7 +690,7 @@ if (rex::isBackend()) {
                     ?>
 						var geocoder = new google.maps.Geocoder();
 						var map;
-						var address = "<?= $course->location->street .', '. $course->location->zip_code .' '. $course->location->city ?>";
+						var address = <?= json_encode($course->location->street .', '. $course->location->zip_code .' '. $course->location->city, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>;
 						if (geocoder) {
 							geocoder.geocode( { 'address': address}, function(results, status) {
 								if (status === google.maps.GeocoderStatus.OK) {
@@ -700,7 +700,7 @@ if (rex::isBackend()) {
 										position: results[0].geometry.location
 									});
 									var infowindow = new google.maps.InfoWindow({
-										content: "<?= $course->location->name ?>",
+										content: <?= json_encode((string) $course->location->name, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>,
 										position: results[0].geometry.location
 									});
 									infowindow.open(map, marker);
@@ -714,7 +714,7 @@ if (rex::isBackend()) {
 						}
 
 						var myOptions = {
-							zoom: <?= $course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10 ?>,
+							zoom: <?= $course->location->location_category instanceof LocationCategory ? (int) $course->location->location_category->zoom_level : 10 ?>,
 							mapTypeId: google.maps.MapTypeId.ROADMAP
 						};
 						map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
@@ -730,9 +730,9 @@ if (rex::isBackend()) {
                     echo '<script src="'. rex_url::addonAssets('d2u_helper', $leaflet_js_file) .'?buster='. filemtime(rex_path::addonAssets('d2u_helper', $leaflet_js_file)) .'"></script>' . PHP_EOL;
 
                 ?>
-					<div id="map-<?= $map_id ?>" style="width:100%;height:400px"></div>
+					<div id="map-<?= (int) $map_id ?>" style="width:100%;height:400px"></div>
 					<script type="text/javascript" async="async">
-						var map = L.map('map-<?= $map_id ?>').setView([<?= $course->location->latitude .','. $course->location->longitude ?>], <?= $course->location->location_category instanceof LocationCategory ? $course->location->location_category->zoom_level : 10 ?>);
+						var map = L.map('map-<?= (int) $map_id ?>').setView([<?= (float) $course->location->latitude ?>, <?= (float) $course->location->longitude ?>], <?= $course->location->location_category instanceof LocationCategory ? (int) $course->location->location_category->zoom_level : 10 ?>);
 						L.tileLayer('/?osmtype=german&z={z}&x={x}&y={y}', {
 							attribution: 'Map data &copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
 						}).addTo(map);

@@ -29,15 +29,15 @@ if (!function_exists('printBoxModule26_3')) {
     {
         echo '<div class="col-6 col-md-4 col-lg-'. (4 === $box_per_line ? '3' : '4') .' spacer">';
         echo '<div class="category_box" style="'. TobiasKrais\D2UCourses\FrontendHelper::getThemeColorStyle('background-color', $color, $darkColor, 'grey') .'" data-height-watch>';
-        echo '<a href="'. $url .'">';
+        echo '<a href="'. rex_escape($url) .'">';
         echo '<div class="view">';
         if ('' !== $picture_filename) {
-            echo '<img src="index.php?rex_media_type=d2u_helper_sm&rex_media_file='. $picture_filename .'" alt="'. $title .'">';
+            echo '<img src="index.php?rex_media_type=d2u_helper_sm&rex_media_file='. rex_escape(rawurlencode($picture_filename)) .'" alt="'. rex_escape($title) .'">';
         } else {
             echo '<img src="'.	rex_addon::get('d2u_courses')->getAssetsUrl('empty_box.png') .'" alt="Placeholder">';
         }
         echo '</div>';
-        echo '<div class="box_title">'. $title .'</div>';
+        echo '<div class="box_title">'. rex_escape($title) .'</div>';
         echo '</a>';
         echo '</div>';
         echo '</div>';
