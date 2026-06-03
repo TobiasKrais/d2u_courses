@@ -145,7 +145,7 @@ if (rex_addon::get('d2u_news')->isAvailable()) {
                         if ((int) 'REX_VALUE[5]' === $category->category_id) {
                             echo 'selected="selected" ';
                         }
-                        echo '>'. $category->name .'</option>';
+                        echo '>'. rex_escape($category->name) .'</option>';
                     }
                     echo '</select>';
                 ?>
@@ -174,7 +174,7 @@ if (rex_addon::get('d2u_linkbox')->isAvailable()) {
                         if ((int) 'REX_VALUE[6]' === $category->category_id) {
                             echo 'selected="selected" ';
                         }
-                        echo '>'. $category->name .'</option>';
+                        echo '>'. rex_escape($category->name) .'</option>';
                     }
                     echo '</select>';
                 ?>

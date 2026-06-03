@@ -278,9 +278,9 @@ if (rex::isBackend()) {
                     echo '<div class="news_box" data-height-watch>';
                     $url = $selected_news->getUrl();
                     if ($url) {
-                        echo '<a href="'. rex_escape($selected_news->getUrl()) .'">';
+                        echo '<a href="'. rex_escape((string) $selected_news->getUrl()) .'">';
                     }
-                    echo '<div class="box_title">'. rex_escape($selected_news->name) .'</div>';
+                    echo '<div class="box_title">'. rex_escape((string) $selected_news->name) .'</div>';
                     if ($url) {
                         echo '</a>';
                     }
@@ -310,7 +310,7 @@ if (rex::isBackend()) {
         } elseif ($target_group instanceof TargetGroup) {
             echo '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="'. TobiasKrais\D2UCourses\FrontendHelper::getConfigThemeColorStyle('background-color', 'target_group_bg_color', 'dark_target_group_bg_color', '#b57a00', true) .'">';
             echo '<h1 class="page_title">';
-            echo $target_group->name;
+            echo rex_escape($target_group->name);
             echo '</h1>';
             echo '</div></div>';
             if ('' !== trim($target_group->description)) {
@@ -321,17 +321,17 @@ if (rex::isBackend()) {
         } elseif ($schedule_category instanceof ScheduleCategory) {
             echo '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="'. TobiasKrais\D2UCourses\FrontendHelper::getConfigThemeColorStyle('background-color', 'schedule_category_bg_color', 'dark_schedule_category_bg_color', '#66ccc2', true) .'">';
             echo '<h1 class="page_title">';
-            echo $schedule_category->name;
+            echo rex_escape($schedule_category->name);
             echo '</h1>';
             echo '</div></div>';
         } elseif ($location instanceof Location) {
             echo '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="'. TobiasKrais\D2UCourses\FrontendHelper::getConfigThemeColorStyle('background-color', 'location_bg_color', 'dark_location_bg_color', '#41b23b', true) .'">';
-            echo '<h1 class="page_title">'. ($location->location_category instanceof LocationCategory ? $location->location_category->name .': ' : '') . $location->name .'</h1>';
+            echo '<h1 class="page_title">'. ($location->location_category instanceof LocationCategory ? rex_escape($location->location_category->name) .': ' : '') . rex_escape($location->name) .'</h1>';
             echo '</div></div>';
         } elseif ($category instanceof Category) {
             echo '<div class="col-12 course-title course-list-title"><div class="page_title_bg" style="'. TobiasKrais\D2UCourses\FrontendHelper::getThemeColorStyle('background-color', $category->color, $category->color_dark, '#5e5c64', true) .'">';
             echo '<h1 class="page_title">';
-            echo $category->name;
+            echo rex_escape($category->name);
             echo '</h1>';
             echo '</div></div>';
             if ('' !== trim($category->description)) {
@@ -359,7 +359,7 @@ if (rex::isBackend()) {
 
                 echo '<div class="col-12 col-md-6 spacer_box">';
                 echo '<div class="course_row_title" '.  ($list_course->category instanceof Category ? 'style="'. TobiasKrais\D2UCourses\FrontendHelper::getThemeColorStyle('background-color', $list_course->category->color, $list_course->category->color_dark, '#5e5c64') .'" ' : '') .'" data-height-watch>';
-                echo $title;
+                echo rex_escape($title);
                 echo '</div>';
                 echo '</div>';
 
@@ -368,9 +368,9 @@ if (rex::isBackend()) {
                 if ('' !== $list_course->date_start) {
                     echo (new DateTime($list_course->date_start))->format('d.m.Y')
                         .('' !== $list_course->date_end ? ' - '. (new DateTime($list_course->date_end))->format('d.m.Y') : '')
-                        .('' !== $list_course->time ? '<br>'. $list_course->time .'' : '');
+                        .('' !== $list_course->time ? '<br>'. rex_escape($list_course->time) .'' : '');
                 } elseif ('' !== $list_course->time) {
-                    echo $list_course->time;
+                    echo rex_escape($list_course->time);
                 } else {
                     echo $list_course->teaser;
                 }
@@ -380,7 +380,7 @@ if (rex::isBackend()) {
                 echo '<div class="col-4 col-md-2 course_row">';
                 echo '<div class="course_box spacer_box" data-height-watch>';
                 if (\TobiasKrais\D2UCourses\Extension::isActive('locations') && $list_course->location instanceof Location && $list_course->location->location_category instanceof LocationCategory) {
-                    echo $list_course->location->location_category->name;
+                    echo rex_escape($list_course->location->location_category->name);
                 }
                 if (('yes' === $list_course->registration_possible || 'yes_number' === $list_course->registration_possible) && $list_course->participants_max > 0 && $list_course->participants_number < $list_course->participants_max) {
                     echo ' <div class="open"></div>';

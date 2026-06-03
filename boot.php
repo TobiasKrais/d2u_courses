@@ -71,7 +71,7 @@ function rex_d2u_courses_article_is_in_use(rex_extension_point $ep)
     // Courses
     for ($i = 0; $i < $sql_courses->getRows(); ++$i) {
         $message = '<a href="javascript:openPage(\'index.php?page=d2u_courses/courses&func=edit&entry_id='.
-            $sql_courses->getValue('course_id') .'\')">'. rex_i18n::msg('d2u_courses_rights_all') .' - '. rex_i18n::msg('d2u_courses_courses') .': '. $sql_courses->getValue('name') .'</a>';
+            $sql_courses->getValue('course_id') .'\')">'. rex_i18n::msg('d2u_courses_rights_all') .' - '. rex_i18n::msg('d2u_courses_courses') .': '. rex_escape($sql_courses->getValue('name')) .'</a>';
         if (!in_array($message, $warning, true)) {
             $warning[] = $message;
         }
@@ -106,11 +106,7 @@ function rex_d2u_courses_article_is_in_use(rex_extension_point $ep)
  */
 function rex_d2u_courses_breadcrumbs(rex_extension_point $ep)
 {
-    $params = $ep->getParams();
-    $url_namespace = (string) $params['url_namespace'];
-    $url_id = (int) $params['url_id'];
-
-    $breadcrumbs = FrontendHelper::getBreadcrumbs($url_namespace, $url_id);
+    $breadcrumbs = FrontendHelper::getBreadcrumbs();
     if (count($breadcrumbs) === 0) {
         $breadcrumbs = $ep->getSubject();
     }
@@ -144,7 +140,7 @@ function rex_d2u_courses_media_is_in_use(rex_extension_point $ep)
     // Courses
     for ($i = 0; $i < $sql_courses->getRows(); ++$i) {
         $message = rex_i18n::msg('d2u_courses_rights_all') .' - '. rex_i18n::msg('d2u_courses_courses') .': <a href="javascript:openPage(\'index.php?page=d2u_courses/course&func=edit&entry_id='.
-            $sql_courses->getValue('course_id') .'\')">'. $sql_courses->getValue('name') .'</a>';
+            $sql_courses->getValue('course_id') .'\')">'. rex_escape($sql_courses->getValue('name')) .'</a>';
         if (!in_array($message, $warning, true)) {
             $warning[] = $message;
         }
@@ -154,7 +150,7 @@ function rex_d2u_courses_media_is_in_use(rex_extension_point $ep)
     // Categories
     for ($i = 0; $i < $sql_categories->getRows(); ++$i) {
         $message = rex_i18n::msg('d2u_courses_rights_all') .' - '. rex_i18n::msg('d2u_helper_categories') .': <a href="javascript:openPage(\'index.php?page=d2u_courses/category&func=edit&entry_id='. $sql_categories->getValue('category_id') .'\')">'.
-             $sql_categories->getValue('name') . '</a>';
+             rex_escape($sql_categories->getValue('name')) . '</a>';
         if (!in_array($message, $warning, true)) {
             $warning[] = $message;
         }

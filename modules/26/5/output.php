@@ -508,9 +508,9 @@ if (isset($form_data['invoice_form'])) {
         echo '<div class="cart_row_title" style="'. ($course->category instanceof Category ? TobiasKrais\D2UCourses\FrontendHelper::getThemeColorStyle('background-color', $course->category->color, $course->category->color_dark, 'grey') : TobiasKrais\D2UCourses\FrontendHelper::getThemeColorStyle('background-color', 'grey', 'grey', 'grey')) .'">';
         echo '<div class="row" data-match-height>';
         echo '<div class="col-12">';
-        echo '<b>'. $course->name;
+        echo '<b>'. rex_escape($course->name);
         if ('' !== $course->course_number) {
-            echo ' ('. $course->course_number .')';
+            echo ' ('. rex_escape($course->course_number) .')';
         }
         echo '</b><br />';
         if ('' !== $course->date_start || '' !== $course->date_end || '' !== $course->time) {
@@ -720,9 +720,9 @@ if (isset($form_data['invoice_form'])) {
             echo '<div class="row">';
             echo '<div class="col-12">';
             echo '<a href="'. $course->getUrl(true) .'" title="'. rex_escape($course->name) .'" class="cart_course_title">';
-            echo $course->name;
+            echo rex_escape($course->name);
             if ('' !== $course->course_number) {
-                echo ' ('. $course->course_number .')';
+                echo ' ('. rex_escape($course->course_number) .')';
             }
             echo '</a><br />';
             if ('' !== $course->date_start || '' !== $course->date_end || '' !== $course->time) {

@@ -251,6 +251,6 @@ $d2u_module_manager->autoupdate();
 // Update translations
 if (!class_exists(TobiasKrais\D2UCourses\LangHelper::class)) {
     // Load class in case addon is deactivated
-    require_once 'lib/LangHelper.php';
+    require_once __DIR__ .'/lib/LangHelper.php';
 }
 TobiasKrais\D2UCourses\LangHelper::factory()->install();

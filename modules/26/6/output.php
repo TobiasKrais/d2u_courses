@@ -59,9 +59,9 @@ if (rex::isBackend()) {
                 echo '<div class="col-12 spacer"><div class="page_title_bg" style="'. TobiasKrais\D2UCourses\FrontendHelper::getThemeColorStyle('background-color', $category->color, $category->color_dark, '#5e5c64', true) .'">';
                 echo '<h1 class="page_title">';
                 if ($category->parent_category instanceof Category) {
-                    echo $category->parent_category->name .': ';
+                    echo rex_escape($category->parent_category->name) .': ';
                 }
-                echo $category->name;
+                echo rex_escape((string) $category->name);
                 echo '</h1>';
                 echo '</div></div>';
             }
@@ -76,7 +76,9 @@ if (rex::isBackend()) {
                 $title = $list_course->name .'<br><small>'
                     . ('REX_VALUE[3]' === 'true' && '' !== $list_course->teaser ? $list_course->teaser .'<br>' : '') /** @phpstan-ignore-line */
                     . (new DateTime($list_course->date_start))->format('d.m.Y') .'</small>';
-                printBoxModule26_3($title, $list_course->picture, $list_course->category->color, $list_course->category->color_dark, $list_course->getUrl(true), $box_per_line);
+                $category_color = $list_course->category instanceof Category ? $list_course->category->color : '#5e5c64';
+                $category_color_dark = $list_course->category instanceof Category ? $list_course->category->color_dark : '';
+                printBoxModule26_3($title, $list_course->picture, $category_color, $category_color_dark, $list_course->getUrl(true), $box_per_line);
             }
         }
     }

@@ -240,7 +240,7 @@ class LangHelper extends \TobiasKrais\D2UHelper\ALangHelper
 
     /**
      * Factory method.
-     * @return d2u_courses_lang_helper Object
+     * @return self Object
      */
     public static function factory()
     {

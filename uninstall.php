@@ -51,6 +51,6 @@ $sql->setQuery('DROP TABLE IF EXISTS ' . \rex::getTablePrefix() . 'd2u_courses_c
 // Delete language replacements
 if (!class_exists(TobiasKrais\D2UCourses\LangHelper::class)) {
     // Load class in case addon is deactivated
-    require_once 'lib/LangHelper.php';
+    require_once __DIR__ .'/lib/LangHelper.php';
 }
 TobiasKrais\D2UCourses\LangHelper::factory()->uninstall();

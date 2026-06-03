@@ -759,16 +759,14 @@ class Cart
                 $booking->emergency_number = array_key_exists('emergency_number', $participant_data) && '' !== $participant_data['emergency_number'] ? $participant_data['emergency_number'] : $invoice_address['phone'];
                 $booking->email = $invoice_address['e-mail'];
                 $booking->kids_go_home_alone = array_key_exists('kids_go_home_alone', $invoice_address) && 'yes' === $invoice_address['kids_go_home_alone'];
-                if ($course_id > 0) {
-                    $course = new Course($course_id);
-                    if ($course->price_salery_level) {
-                        $price_level_row_counter = 0;
-                        foreach ($course->price_salery_level_details as $level_description => $level_price) {
-                            ++$price_level_row_counter;
-                            if ($price_level_row_counter === (int) $participant_data['price_salery_level_row_number']) {
-                                $booking->salery_level = $level_description;
-                                break;
-                            }
+                $course = new Course($course_id);
+                if ($course->price_salery_level) {
+                    $price_level_row_counter = 0;
+                    foreach ($course->price_salery_level_details as $level_description => $level_price) {
+                        ++$price_level_row_counter;
+                        if ($price_level_row_counter === (int) $participant_data['price_salery_level_row_number']) {
+                            $booking->salery_level = $level_description;
+                            break;
                         }
                     }
                 }

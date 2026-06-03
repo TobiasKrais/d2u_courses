@@ -33,7 +33,7 @@ class Location
     public float $longitude = 0;
 
     /** @var float Latitude */
-    public float$latitude = 0;
+    public float $latitude = 0;
 
     /** @var string Street */
     public string $street = '';
