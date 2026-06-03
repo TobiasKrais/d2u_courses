@@ -1,5 +1,5 @@
 <h2>Changelog</h2>
-<p>3.6.1-DEV:</p>
+<p>3.6.1:</p>
 <ul>
 	<li>Backend: Abbrechen-Buttons in den Formularen fuer Kurse, Kategorien, Standorte, Standortkategorien, Termin-Kategorien, Zielgruppen und Kundenbuchungen fuehren jetzt wieder zur Liste.</li>
 	<li>Backend: CSRF-Schutz fuer Speichern-, Loesch- und Statusaktionen der Kursverwaltung ergaenzt.</li>
