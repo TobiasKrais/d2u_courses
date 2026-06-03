@@ -1,4 +1,8 @@
 <h2>Changelog</h2>
+<p>3.6.2-DEV:</p>
+<ul>
+	<li>...</li>
+</ul>
 <p>3.6.1:</p>
 <ul>
 	<li>Backend: Abbrechen-Buttons in den Formularen fuer Kurse, Kategorien, Standorte, Standortkategorien, Termin-Kategorien, Zielgruppen und Kundenbuchungen fuehren jetzt wieder zur Liste.</li>
