@@ -7,7 +7,8 @@
 	<li>Sicherheit: Kurssuche (<code>Course::search()</code>) verwendet jetzt Parameter-Bindung statt String-Interpolation, damit aus dem Suchstichwort keine SQL-Anfrage manipuliert werden kann.</li>
 	<li>Sicherheit: Hex-Farben aus den Einstellungen und der Kategorieverwaltung werden jetzt vor dem Speichern strikt validiert (#RGB / #RRGGBB / #RRGGBBAA), damit keine CSS-Werte ueber das Backend eingeschleust werden koennen.</li>
 	<li>Module 26-1 und 26-4 verwenden fuer die optionale News-Anbindung jetzt den neuen Namespace <code>TobiasKrais\D2UNews</code>.</li>
-	<li>Kompatibilitaet zu d2u_news ab Version 1.2.0 als Paketkonflikt hinterlegt.</li>        <li>Security: Die <code>media-is-in-use</code>-Extension-Points in <code>boot.php</code> verwenden jetzt gebundene Parameter statt SQL-String-Konkatenation mit <code>addslashes()</code>.</li>
+	<li>Kompatibilitaet zu d2u_news ab Version 1.2.0 als Paketkonflikt hinterlegt.</li>
+	<li>Security: Die <code>media-is-in-use</code>-Extension-Points in <code>boot.php</code> verwenden jetzt gebundene Parameter statt SQL-String-Konkatenation mit <code>addslashes()</code>.</li>
 	<li>Security: Die <code>save()</code>-Methoden in <code>lib/*.php</code> (Course, Category, Location, LocationCategory, TargetGroup, ScheduleCategory) sowie die media-is-in-use-Hooks in <code>lib/ExtensionSupport/*.boot.php</code> verwenden jetzt gebundene Parameter statt SQL-String-Konkatenation mit <code>addslashes()</code>.</li>
 	<li>Security: Modul-Ausgaben (<code>modules/26/1/output.php</code>, <code>modules/26/4/output.php</code>) härten Leaflet-Popup-Inhalte: Werte werden via <code>json_encode()</code> in JS-Strings übergeben statt mit <code>addslashes()</code>; Lat/Long strikt als <code>(float)</code> gecastet. Weitere Backend-Eingaben (Kurs-Namen/-Titel) werden in HTML-Ausgaben mit <code>rex_escape()</code> gehärtet.</li>
 	<li>Security: In den Modulen <code>modules/26/1</code>, <code>26/3</code>, <code>26/4</code>, <code>26/6</code> werden Box-Helper (<code>printBoxModule26_*</code>), <code>href</code>-URLs (Kurs-, News- und Kategorie-Links), Bild-Dateinamen und das eingehende <code>course_search</code>-POST-Feld jetzt mit <code>rex_escape()</code> bzw. <code>rawurlencode()</code> ausgegeben. Google-Maps-API-Key wird vor der Einbettung URL-kodiert; Map-IDs und Zoom-Level strikt als <code>(int)</code> bzw. <code>(float)</code> gecastet, Standortname und Adresse über <code>json_encode()</code> in JS-Strings übergeben.</li>
@@ -17,7 +18,8 @@
 	<li>Bugfix: In <code>lib/Cart.php</code> (<code>saveBookings()</code>) wird das <code>Course</code>-Objekt jetzt immer instanziiert, bevor auf <code>registration_possible</code>/<code>participants_max</code> zugegriffen wird. Bisher war <code>$course</code> nur bei <code>course_id &gt; 0</code> definiert, sodass ein Warteschlangen-Check auf einer undefinierten Variable laufen konnte.</li>
 	<li>Bugfix: Die Fallback-<code>require_once</code>-Aufrufe für <code>LangHelper</code> (<code>install.php</code>, <code>uninstall.php</code>) und <code>KuferSyncCronjob</code> (<code>lib/ExtensionSupport/kufer_sync.uninstall.php</code>) nutzen jetzt absolute Pfade (<code>__DIR__</code>) statt CWD-abhängiger relativer Pfade.</li>
 	<li>Intern: PHPDoc-Rückgabetyp von <code>LangHelper::factory()</code> auf <code>self</code> korrigiert (vorher veralteter Alias <code>d2u_courses_lang_helper</code>).</li>
-	<li>Intern: Überzählige Argumente beim Aufruf von <code>FrontendHelper::getBreadcrumbs()</code> in <code>boot.php</code> entfernt (Methode ermittelt URL-Namespace/-ID selbst; die übergebenen Werte wurden ignoriert, keine Verhaltensänderung).</li></ul>
+	<li>Intern: Überzählige Argumente beim Aufruf von <code>FrontendHelper::getBreadcrumbs()</code> in <code>boot.php</code> entfernt (Methode ermittelt URL-Namespace/-ID selbst; die übergebenen Werte wurden ignoriert, keine Verhaltensänderung).</li>
+</ul>
 <p>3.6.0:</p>
 <ul>
 	<li>Wichtige Hinweise
