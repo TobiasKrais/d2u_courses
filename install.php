@@ -244,13 +244,18 @@ foreach (TobiasKrais\D2UCourses\Extension::getStates() as $extensionKey => $acti
 }
 
 // Update modules
-include __DIR__ . DIRECTORY_SEPARATOR .'lib'. DIRECTORY_SEPARATOR .'Module.php';
+if (!class_exists(\TobiasKrais\D2UCourses\Module::class)) {
+	require_once __DIR__ . DIRECTORY_SEPARATOR .'lib'. DIRECTORY_SEPARATOR .'Module.php';
+}
+if (!class_exists(\TobiasKrais\D2UHelper\ModuleManager::class)) {
+	require_once rex_path::addon('d2u_helper', 'lib/ModuleManager.php');
+}
 $d2u_module_manager = new \TobiasKrais\D2UHelper\ModuleManager(\TobiasKrais\D2UCourses\Module::getModules(), '', 'd2u_courses');
 $d2u_module_manager->autoupdate();
 
 // Update translations
 if (!class_exists(TobiasKrais\D2UCourses\LangHelper::class)) {
     // Load class in case addon is deactivated
-    require_once __DIR__ .'/lib/LangHelper.php';
+    require_once __DIR__ . DIRECTORY_SEPARATOR .'lib'. DIRECTORY_SEPARATOR .'LangHelper.php';
 }
 TobiasKrais\D2UCourses\LangHelper::factory()->install();
