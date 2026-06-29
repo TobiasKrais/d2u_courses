@@ -14,7 +14,6 @@ use Exception;
 use rex_config;
 
 use rex_mailer;
-use rex_plugin;
 use rex_request;
 
 use function array_key_exists;
