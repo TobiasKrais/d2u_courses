@@ -805,7 +805,7 @@ if (isset($form_data['invoice_form'])) {
 
                         // Age / Birthday
                         if ($ask_age > 0 && (count($ask_age_root_category_ids) === 0 || ($course->category instanceof Category && in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_ids, true)))) { /** @phpstan-ignore-line */
-                            echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open . (1 === $ask_age ? 'd2u_courses_birthdate' : 'd2u_courses_age'). $tag_close .'</div>'; /** @phpstan-ignore-line */
+                            echo '<div class="col-12 col-sm-6 col-md-4">'. Sprog\Wildcard::get(1 === $ask_age ? 'd2u_courses_birthdate' : 'd2u_courses_age') .'</div>'; /** @phpstan-ignore-line */
                             echo '<div class="col-10 col-sm-5 col-md-7 div_cart">';
                             if (1 === $ask_age && array_key_exists('birthday', $participant_data)) { /** @phpstan-ignore-line */
                                 echo '<input type="date" class="date" name="participant_'. $course_id .'['. $participant_id .'][birthday]" value="'. $participant_data['birthday'] .'" required placeholder="'. \Sprog\Wildcard::get('d2u_courses_date_placeholder') .'" min="1900-01-01" max="'. (date('Y-m-d')) .'">';
