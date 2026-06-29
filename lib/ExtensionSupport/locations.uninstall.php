@@ -16,5 +16,14 @@ $sql->setQuery('DROP VIEW IF EXISTS ' . \rex::getTablePrefix() . 'd2u_courses_ur
 $sql->setQuery('DROP TABLE IF EXISTS ' . rex::getTablePrefix() . 'd2u_courses_location_categories');
 $sql->setQuery('DROP TABLE IF EXISTS ' . rex::getTablePrefix() . 'd2u_courses_locations');
 
-$sql->setQuery('ALTER TABLE ' . \rex::getTablePrefix() . 'd2u_courses_courses DROP location_id;');
-$sql->setQuery('ALTER TABLE ' . \rex::getTablePrefix() . 'd2u_courses_courses DROP `room`;');
+// Remove columns only if they still exist to avoid errors on repeated uninstall
+$coursesTable = \rex_sql_table::get(\rex::getTable('d2u_courses_courses'));
+if ($coursesTable->exists()) {
+    if ($coursesTable->hasColumn('location_id')) {
+        $coursesTable->removeColumn('location_id');
+    }
+    if ($coursesTable->hasColumn('room')) {
+        $coursesTable->removeColumn('room');
+    }
+    $coursesTable->alter();
+}

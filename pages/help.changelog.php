@@ -2,6 +2,7 @@
 <p>3.6.2-DEV:</p>
 <ul>
 	<li>Bugfix: Der Online/Offline-Schalter in der Backend-Liste funktioniert wieder. Beim Erzeugen des CSRF-geschützten Status-Links wurde der Platzhalter für die Datensatz-ID URL-kodiert und dadurch nicht mehr durch die echte ID ersetzt.</li>
+	<li>Bugfix: Beim Deinstallieren der Standort-Erweiterung (<code>lib/ExtensionSupport/locations.uninstall.php</code>) brach das Entfernen der Spalten <code>location_id</code> und <code>room</code> mit einem SQL-Fehler (1091 "Can't DROP COLUMN") ab, wenn die Spalten bereits entfernt waren. Das Entfernen erfolgt jetzt idempotent über <code>rex_sql_table</code> mit Existenzprüfung.</li>
 </ul>
 <p>3.6.1:</p>
 <ul>
