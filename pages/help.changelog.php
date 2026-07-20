@@ -1,6 +1,7 @@
 <h2>Changelog</h2>
 <p>3.6.2-DEV:</p>
 <ul>
+	<li>Anpassung an d2u_helper: Die Leaflet-Bibliothek liegt im d2u_helper-Addon jetzt unter <code>assets/leaflet/</code> statt <code>assets/modules/04-2/</code>. Die Module 26-1 und 26-4 laden die Leaflet-Assets (JS und Marker-Bilder) entsprechend über die neuen Pfade. Benötigt d2u_helper mit verschobenen Assets.</li>
 	<li>Bugfix: Der Online/Offline-Schalter in der Backend-Liste funktioniert wieder. Beim Erzeugen des CSRF-geschützten Status-Links wurde der Platzhalter für die Datensatz-ID URL-kodiert und dadurch nicht mehr durch die echte ID ersetzt.</li>
 	<li>Bugfix: Beim Deinstallieren der Standort-Erweiterung (<code>lib/ExtensionSupport/locations.uninstall.php</code>) brach das Entfernen der Spalten <code>location_id</code> und <code>room</code> mit einem SQL-Fehler (1091 "Can't DROP COLUMN") ab, wenn die Spalten bereits entfernt waren. Das Entfernen erfolgt jetzt idempotent über <code>rex_sql_table</code> mit Existenzprüfung.</li>
 </ul>
