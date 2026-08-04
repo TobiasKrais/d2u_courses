@@ -244,7 +244,13 @@ foreach (TobiasKrais\D2UCourses\Extension::getStates() as $extensionKey => $acti
 }
 
 // Update modules
-if (!class_exists(\TobiasKrais\D2UCourses\Module::class)) {
+// class_exists must run WITHOUT autoload (second arg false): during an addon
+// update this file runs from the temp ".new.d2u_courses" folder while the old
+// classes are still registered in the autoloader. With autoloading enabled the
+// old Module class would be loaded from the old path and Module::getModules()
+// would return the old module definitions, so modules would not update until a
+// manual reinstall.
+if (!class_exists(\TobiasKrais\D2UCourses\Module::class, false)) {
 	require_once __DIR__ . DIRECTORY_SEPARATOR .'lib'. DIRECTORY_SEPARATOR .'Module.php';
 }
 if (!class_exists(\TobiasKrais\D2UHelper\ModuleManager::class)) {
@@ -254,8 +260,9 @@ $d2u_module_manager = new \TobiasKrais\D2UHelper\ModuleManager(\TobiasKrais\D2UC
 $d2u_module_manager->autoupdate();
 
 // Update translations
-if (!class_exists(TobiasKrais\D2UCourses\LangHelper::class)) {
-    // Load class in case addon is deactivated
+if (!class_exists(TobiasKrais\D2UCourses\LangHelper::class, false)) {
+    // Load class in case addon is deactivated (no autoload, so the new class is
+    // loaded from the temp update folder during an addon update)
     require_once __DIR__ . DIRECTORY_SEPARATOR .'lib'. DIRECTORY_SEPARATOR .'LangHelper.php';
 }
 TobiasKrais\D2UCourses\LangHelper::factory()->install();
