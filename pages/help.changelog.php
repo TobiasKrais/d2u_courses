@@ -1,5 +1,5 @@
 <h2>Changelog</h2>
-<p>3.6.2-DEV:</p>
+<p>3.6.2:</p>
 <ul>
 	<li>Bugfix: Beim Addon-<em>Update</em> wurden die Module nicht aktualisiert (nur ein manuelles Reinstall half). Ursache: In <code>install.php</code> lud <code>class_exists()</code> mit aktiviertem Autoload die alte <code>Module</code>-Klasse aus dem bestehenden Addon-Pfad, wodurch das <code>require_once</code> aus dem temporären Update-Ordner (<code>.new.d2u_courses</code>) übersprungen wurde und <code>Module::getModules()</code> die alten Definitionen lieferte. Die Prüfung nutzt jetzt <code>class_exists(..., false)</code> (ohne Autoload); gilt auch für den <code>LangHelper</code>.</li>
 	<li>Anpassung an d2u_helper: Die Leaflet-Bibliothek liegt im d2u_helper-Addon jetzt unter <code>assets/leaflet/</code> statt <code>assets/modules/04-2/</code>. Die Module 26-1 und 26-4 laden die Leaflet-Assets (JS und Marker-Bilder) entsprechend über die neuen Pfade. Benötigt d2u_helper mit verschobenen Assets.</li>
