@@ -1,4 +1,8 @@
 <h2>Changelog</h2>
+<p>3.6.3-DEV:</p>
+<ul>
+	<li>...</li>
+</ul>
 <p>3.6.2:</p>
 <ul>
 	<li>Wartung: Interne CI-Dateien im Verzeichnis <code>.github</code> (GitHub Actions, Dependabot) werden nicht mehr mit dem Installer-Paket ausgeliefert.</li>
