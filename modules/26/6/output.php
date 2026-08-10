@@ -24,8 +24,9 @@ if (!function_exists('printBoxModule26_3')) {
      * @param string $darkColor Dark mode background color (Hex)
      * @param string $url Link target url
      * @param int $box_per_line number boxes per line on large screens
+     * @param string $subtitle_html pre-escaped HTML subtitle rendered below the title; caller must escape user data
      */
-    function printBoxModule26_3($title, $picture_filename, $color, $darkColor, $url, $box_per_line = 3): void
+    function printBoxModule26_3($title, $picture_filename, $color, $darkColor, $url, $box_per_line = 3, $subtitle_html = ''): void
     {
         echo '<div class="col-6 col-md-4 col-lg-'. (4 === $box_per_line ? '3' : '4') .' spacer">';
         echo '<div class="category_box" style="'. TobiasKrais\D2UCourses\FrontendHelper::getThemeColorStyle('background-color', $color, $darkColor, 'grey') .'" data-height-watch>';
@@ -37,7 +38,7 @@ if (!function_exists('printBoxModule26_3')) {
             echo '<img src="'.	rex_addon::get('d2u_courses')->getAssetsUrl('empty_box.png') .'" alt="Placeholder">';
         }
         echo '</div>';
-        echo '<div class="box_title">'. rex_escape($title) .'</div>';
+        echo '<div class="box_title">'. rex_escape($title) . ('' !== $subtitle_html ? '<br><small>'. $subtitle_html .'</small>' : '') .'</div>';
         echo '</a>';
         echo '</div>';
         echo '</div>';
@@ -73,12 +74,11 @@ if (rex::isBackend()) {
         }
         foreach ($courses as $list_course) {
             if ($list_course instanceof Course) { /** @phpstan-ignore-line */
-                $title = $list_course->name .'<br><small>'
-                    . ('REX_VALUE[3]' === 'true' && '' !== $list_course->teaser ? $list_course->teaser .'<br>' : '') /** @phpstan-ignore-line */
-                    . (new DateTime($list_course->date_start))->format('d.m.Y') .'</small>';
+                $subtitle_html = ('REX_VALUE[3]' === 'true' && '' !== $list_course->teaser ? rex_escape($list_course->teaser) .'<br>' : '') /** @phpstan-ignore-line */
+                    . rex_escape((new DateTime($list_course->date_start))->format('d.m.Y'));
                 $category_color = $list_course->category instanceof Category ? $list_course->category->color : '#5e5c64';
                 $category_color_dark = $list_course->category instanceof Category ? $list_course->category->color_dark : '';
-                printBoxModule26_3($title, $list_course->picture, $category_color, $category_color_dark, $list_course->getUrl(true), $box_per_line);
+                printBoxModule26_3($list_course->name, $list_course->picture, $category_color, $category_color_dark, $list_course->getUrl(true), $box_per_line, $subtitle_html);
             }
         }
     }

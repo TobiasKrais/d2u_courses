@@ -1,7 +1,7 @@
 <h2>Changelog</h2>
 <p>3.6.3-DEV:</p>
 <ul>
-	<li>...</li>
+	<li>Bugfix Module 26-1, 26-3, 26-4 und 26-6 (Kurs-Boxen): Der Kurstitel enthält für die Datums-/Teaser-Zeile bewusst HTML-Auszeichnung (<code>&lt;br&gt;</code>, <code>&lt;small&gt;</code>). Diese wurde zusammen mit dem Titel per <code>rex_escape()</code> maskiert und daher als sichtbarer Quelltext (z. B. <code>&amp;lt;br&amp;gt;</code>) ausgegeben. Name, Teaser und Datum werden jetzt einzeln escaped, die Struktur-Auszeichnung wird korrekt als HTML gerendert. Modul-Revisionen erhöht.</li>
 </ul>
 <p>3.6.2:</p>
 <ul>

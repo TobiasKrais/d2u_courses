@@ -17,22 +17,22 @@ class Module
         $modules = [];
         $modules[] = new \TobiasKrais\D2UHelper\Module('26-1',
             'D2U Veranstaltungen - Ausgabe Veranstaltungen (BS4, deprecated)',
-            19);
+            20);
         $modules[] = new \TobiasKrais\D2UHelper\Module('26-2',
             'D2U Veranstaltungen - Warenkorb (BS4, deprecated)',
             11);
         $modules[] = new \TobiasKrais\D2UHelper\Module('26-3',
             'D2U Veranstaltungen - Ausgabe Veranstaltungen einer Kategorie in Boxen (BS4, deprecated)',
-            5);
+            6);
         $modules[] = new \TobiasKrais\D2UHelper\Module('26-4',
             'D2U Veranstaltungen - Ausgabe Veranstaltungen (BS5)',
-            3);
+            4);
         $modules[] = new \TobiasKrais\D2UHelper\Module('26-5',
             'D2U Veranstaltungen - Warenkorb (BS5)',
             1);
         $modules[] = new \TobiasKrais\D2UHelper\Module('26-6',
             'D2U Veranstaltungen - Ausgabe Veranstaltungen einer Kategorie in Boxen (BS5)',
-            1);
+            2);
         return $modules;
     }
 }
