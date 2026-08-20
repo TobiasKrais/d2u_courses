@@ -25,7 +25,8 @@
 }
 
 .div_cart input, .div_cart select {
-	background-color: white;
+	background-color: light-dark(#ffffff, #2b2a2a);
+	color: light-dark(#4f4c4c, #e6e6e6);
 	border: 0;
 	height: 30px;
 	margin-right: 5px;
@@ -75,7 +76,7 @@ label.cart_text, label.cart_select {
     float: left;
     width: 150px;
 }
-input.cart_checkbox {
+input[type="checkbox"].cart_checkbox {
 	-webkit-appearance: none;
 	appearance: none;
 	position: relative;
@@ -87,24 +88,24 @@ input.cart_checkbox {
 	background-color: #ccc;
 	border-radius: 24px;
 	cursor: pointer;
-	vertical-align: middle;
+	vertical-align: top;
 	transition: background-color .2s;
 }
-input.cart_checkbox::before {
+input[type="checkbox"].cart_checkbox::before {
 	content: "";
 	position: absolute;
 	top: 2px;
 	left: 2px;
-	width: 20px;
-	height: 20px;
+	width: 14px;
+	height: 14px;
 	background-color: #fff;
 	border-radius: 50%;
 	transition: left .2s;
 }
-input.cart_checkbox:checked {
+input[type="checkbox"].cart_checkbox:checked {
 	background-color: #41b23b;
 }
-input.cart_checkbox:checked::before {
+input[type="checkbox"].cart_checkbox:checked::before {
 	left: 22px;
 }
 .cart_remark label.cart_remark {
@@ -117,13 +118,18 @@ textarea.cart_remark {
 	display: block;
 	width: 100%;
 	box-sizing: border-box;
+	background-color: light-dark(#f4f4f4, #2b2a2a);
+	color: light-dark(#4f4c4c, #e6e6e6);
+	border: none;
+	padding: 5px;
 }
 label.cart_checkbox {
 	max-width: 80%;
 }
 .cart_checkbox {
-    background-color: #f4f4f4;
-    border: 3px #f4f4f4 solid;
+    background-color: transparent;
+    border: 3px solid transparent;
+    color: light-dark(#4f4c4c, #e6e6e6);
     max-width: 100%;
     padding-left: 7px;
 }
@@ -131,9 +137,9 @@ label.cart_checkbox {
 	text-decoration: underline;
 }
 input.cart_text, input.cart_date, input.cart_email, input.cart_number, select.cart_select {
-    background-color: #f4f4f4;
+    background-color: light-dark(#f4f4f4, #2b2a2a);
     border: none;
-    color: #4f4c4c !important;
+    color: light-dark(#4f4c4c, #e6e6e6) !important;
     max-width: 100%;
 	padding: 5px;
     width: 300px;
@@ -157,4 +163,18 @@ input.cart_text, input.cart_date, input.cart_email, input.cart_number, select.ca
 #iban_not_sepa {
 	color: orange;
 	display: none;
+}
+
+/* Visible keyboard focus indicator (inputs have no border, checkboxes use appearance:none) */
+input.cart_text:focus-visible,
+input.cart_date:focus-visible,
+input.cart_email:focus-visible,
+input.cart_number:focus-visible,
+select.cart_select:focus-visible,
+textarea.cart_remark:focus-visible,
+.div_cart input:focus-visible,
+.div_cart select:focus-visible,
+input[type="checkbox"].cart_checkbox:focus-visible {
+	outline: 2px solid #005fcc;
+	outline-offset: 2px;
 }

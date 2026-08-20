@@ -487,7 +487,7 @@ class Course
         if ('' === $this->url) {
             $parameterArray = [];
             $parameterArray['course_id'] = $this->course_id;
-            $this->url = rex_getUrl((int) rex_config::get('d2u_courses', 'course_article_id'), '', $parameterArray, '&');
+            $this->url = rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_courses'), '', $parameterArray, '&');
         }
 
         if ($including_domain) {

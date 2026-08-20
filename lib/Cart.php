@@ -71,7 +71,9 @@ class Cart
                 'nationality' => '',
                 'nativeLanguage' => '',
                 'price' => '',
-                'price_salery_level_row_number' => rex_request('participant_price_salery_level_row_add', 'int', 0)
+                'price_salery_level_row_number' => rex_request('participant_price_salery_level_row_add', 'int', 0),
+                'kids_go_home_alone' => '',
+                'photo_permission' => ''
             ];
         }
         rex_request::setSession('cart', $cart);
@@ -102,7 +104,9 @@ class Cart
                 'nationality' => '',
                 'nativeLanguage' => '',
                 'price' => '',
-                'price_salery_level_row_number' => rex_request('participant_price_salery_level_row_add', 'int', 0)
+                'price_salery_level_row_number' => rex_request('participant_price_salery_level_row_add', 'int', 0),
+                'kids_go_home_alone' => '',
+                'photo_permission' => ''
             ];
         }
         rex_request::setSession('cart', $cart);
@@ -337,7 +341,20 @@ class Cart
         }
 
         // <BEMERKUNG>Minor kids are allowed to return home by their own.</BEMERKUNG>
-        if (isset($invoice_address['kids_go_home_alone']) && 'yes' === $invoice_address['kids_go_home_alone']) {
+        // The flag is now stored per participant; emit the note if any participant set it.
+        $any_kids_go_home_alone = false;
+        foreach ($cart as $course_participants) {
+            if (!is_array($course_participants)) {
+                continue;
+            }
+            foreach ($course_participants as $course_participant) {
+                if (is_array($course_participant) && array_key_exists('kids_go_home_alone', $course_participant) && 'yes' === $course_participant['kids_go_home_alone']) {
+                    $any_kids_go_home_alone = true;
+                    break 2;
+                }
+            }
+        }
+        if ($any_kids_go_home_alone) {
             $bemerkung = $xml->createElement('BEMERKUNG');
             $bemerkung->appendChild($xml->createTextNode(\Sprog\Wildcard::get('d2u_courses_kids_go_home_alone')));
             $stammdaten->appendChild($bemerkung);
@@ -757,7 +774,8 @@ class Cart
                 $booking->nativeLanguage = $participant_data['nativeLanguage'];
                 $booking->emergency_number = array_key_exists('emergency_number', $participant_data) && '' !== $participant_data['emergency_number'] ? $participant_data['emergency_number'] : $invoice_address['phone'];
                 $booking->email = $invoice_address['e-mail'];
-                $booking->kids_go_home_alone = array_key_exists('kids_go_home_alone', $invoice_address) && 'yes' === $invoice_address['kids_go_home_alone'];
+                $booking->kids_go_home_alone = array_key_exists('kids_go_home_alone', $participant_data) && 'yes' === $participant_data['kids_go_home_alone'];
+                $booking->photo_permission = array_key_exists('photo_permission', $participant_data) && 'yes' === $participant_data['photo_permission'];
                 $course = new Course($course_id);
                 if ($course->price_salery_level) {
                     $price_level_row_counter = 0;
@@ -859,6 +877,12 @@ class Cart
                         if (isset($participant_data['gender']) && '' !== $participant_data['gender']) {
                             $body .= 'Geschlecht: '. $participant_data['gender']  .'<br>';
                         }
+                        if (array_key_exists('kids_go_home_alone', $participant_data) && 'yes' === $participant_data['kids_go_home_alone']) {
+                            $body .= \Sprog\Wildcard::get('d2u_courses_kids_go_home_alone') .'<br>';
+                        }
+                        if (array_key_exists('photo_permission', $participant_data) && 'yes' === $participant_data['photo_permission']) {
+                            $body .= \Sprog\Wildcard::get('d2u_courses_photo_permission') .'<br>';
+                        }
                         $price_level_description = '';
                         if ($course->price_salery_level && isset($participant_data['price']) && isset($participant_data['price_salery_level_row_number']) && '' !== $participant_data['price']) {
                             $price_level_row_counter = 0;
@@ -884,14 +908,9 @@ class Cart
                 $body .= 'Anzahl Anmeldungen: '. $participant['participant_number'] .'<br>';
             }
         }
-        if (isset($invoice_address['kids_go_home_alone']) && 'yes' === $invoice_address['kids_go_home_alone']) {
-            $body .= '<br>'. \Sprog\Wildcard::get('d2u_courses_kids_go_home_alone') .'<br>';
-        }
-        if (isset($invoice_address['photo_permission']) && 'yes' === $invoice_address['photo_permission']) {
-            $body .= '<br>'. \Sprog\Wildcard::get('d2u_courses_photo_permission') .'<br>';
-        }
         if (isset($invoice_address['remark']) && '' !== trim((string) $invoice_address['remark'])) {
-            $body .= '<br><b>'. rex_escape((string) rex_config::get('d2u_courses', 'cart_remark_label', 'Bemerkung')) .':</b><br>'. nl2br(rex_escape((string) $invoice_address['remark'])) .'<br>';
+            $remark_label = isset($invoice_address['remark_label']) && '' !== trim((string) $invoice_address['remark_label']) ? (string) $invoice_address['remark_label'] : (string) rex_config::get('d2u_courses', 'cart_remark_label', 'Bemerkung');
+            $body .= '<br><b>'. rex_escape($remark_label) .':</b><br>'. nl2br(rex_escape((string) $invoice_address['remark'])) .'<br>';
         }
 
         // invoice data

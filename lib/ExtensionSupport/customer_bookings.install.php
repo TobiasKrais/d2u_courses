@@ -15,6 +15,7 @@
     ->ensureColumn(new \rex_sql_column('emergency_number', 'VARCHAR(50)', true))
     ->ensureColumn(new \rex_sql_column('email', 'VARCHAR(100)', true))
     ->ensureColumn(new \rex_sql_column('kids_go_home_alone', 'TINYINT(1)', true))
+    ->ensureColumn(new \rex_sql_column('photo_permission', 'TINYINT(1)', true))
     ->ensureColumn(new \rex_sql_column('waitlist', 'INT(1)', true))
     ->ensureColumn(new \rex_sql_column('salery_level', 'VARCHAR(100)', true))
     ->ensureColumn(new \rex_sql_column('paid', 'INT(1)', true))

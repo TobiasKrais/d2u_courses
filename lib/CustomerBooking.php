@@ -61,6 +61,9 @@ class CustomerBooking
     /** @var bool kids may go home alone */
     public bool $kids_go_home_alone = true;
 
+    /** @var bool child may be photographed during the event */
+    public bool $photo_permission = false;
+
     /** @var bool True if customer is on waitlist */
     public bool $waitlist = false;
 
@@ -135,6 +138,7 @@ class CustomerBooking
                 $customer_booking->country = (string) $result->getValue('country');
                 $customer_booking->pension_insurance_id = (string) $result->getValue('pension_insurance_id');
                 $customer_booking->kids_go_home_alone = 1 === (int) $result->getValue('kids_go_home_alone');
+                $customer_booking->photo_permission = 1 === (int) $result->getValue('photo_permission');
                 $customer_booking->salery_level = (string) $result->getValue('salery_level');
                 $customer_booking->emergency_number = (string) $result->getValue('emergency_number');
                 $customer_booking->email = (string) $result->getValue('email');
@@ -215,6 +219,7 @@ class CustomerBooking
         $sql->setValue('nativeLanguage', $this->nativeLanguage);
         $sql->setValue('pension_insurance_id', $this->pension_insurance_id);
         $sql->setValue('kids_go_home_alone', (int) $this->kids_go_home_alone);
+        $sql->setValue('photo_permission', (int) $this->photo_permission);
         $sql->setValue('salery_level', $this->salery_level);
         $sql->setValue('course_id', $this->course_id);
         $sql->setValue('paid', (int) $this->paid);

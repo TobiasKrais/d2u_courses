@@ -59,6 +59,8 @@ foreach (\TobiasKrais\D2UCourses\Cart::getCourseIDs() as $course_id) {
                 'nativeLanguage' => (array_key_exists('nativeLanguage', $participant_data) && false !== filter_var($participant_data['nativeLanguage']) ? trim(filter_var($participant_data['nativeLanguage'])) : ''),
                 'price' => trim($participant_price),
                 'price_salery_level_row_number' => (array_key_exists('price_salery_level_row_number', $participant_data) && false !== filter_var($participant_data['price_salery_level_row_number']) ? trim(filter_var($participant_data['price_salery_level_row_number'])) : ''),
+                'kids_go_home_alone' => (array_key_exists('kids_go_home_alone', $participant_data) && 'yes' === $participant_data['kids_go_home_alone']) ? 'yes' : '',
+                'photo_permission' => (array_key_exists('photo_permission', $participant_data) && 'yes' === $participant_data['photo_permission']) ? 'yes' : '',
             ];
             $cart->updateParticipant($course_id, (int) $participant_id, $participant_data_update);
         }
@@ -90,6 +92,10 @@ $ask_emergency_number = 'REX_VALUE[6]' === 'true' ? true : false; /** @phpstan-i
 $ask_penson_assurance_id = 'REX_VALUE[7]' === 'true' ? true : false; /** @phpstan-ignore-line */
 $ask_nationality = 'REX_VALUE[8]' === 'true' ? true : false; /** @phpstan-ignore-line */
 $ask_nativeLanguage = 'REX_VALUE[9]' === 'true' ? true : false; /** @phpstan-ignore-line */
+$ask_kids_go_home_alone = 'REX_VALUE[10]' === 'true' ? true : false; /** @phpstan-ignore-line */
+$ask_photo_permission = 'REX_VALUE[11]' === 'true' ? true : false; /** @phpstan-ignore-line */
+$show_cart_remark = 'REX_VALUE[12]' === 'true' ? true : false; /** @phpstan-ignore-line */
+$cart_remark_label = trim('REX_VALUE[id=13 output=html]'); /** @phpstan-ignore-line */
 
 $ask_age_root_category_ids = [];
 if ('REX_VALUE[3]' === 'true' && is_array(rex_var::toArray('REX_VALUE[4]'))) { /** @phpstan-ignore-line */
@@ -318,10 +324,10 @@ if (isset($form_data['invoice_form'])) {
     echo '<p>';
     echo '<label class="cart_text" for="invoice_form-e-mail-verification">'. \Sprog\Wildcard::get('d2u_courses_email_verification') .' *</label>';
     echo '<input type="email" class="cart_text" name="invoice_form[e-mail-verification]" id="invoice_form-e-mail-verification" value="" required onblur="checkEmail();">';
-    echo ' <span id="email_wrong">'. \Sprog\Wildcard::get('d2u_courses_email_verification_failure') .'</span>';
+    echo ' <span id="email_wrong" role="alert" aria-live="assertive">'. \Sprog\Wildcard::get('d2u_courses_email_verification_failure') .'</span>';
     echo '</p>';
 
-    echo '<p class="d-none">';
+    echo '<p class="d-none" aria-hidden="true">';
     echo '<label class="cart_text" for="e-mail">Leave empty</label>';
     echo '<input type="text" class="cart_text" name="e-mail" id="e-mail" value="">';
     echo '</p>'; 
@@ -389,8 +395,8 @@ if (isset($form_data['invoice_form'])) {
         echo '<p>';
         echo '<label class="cart_text" for="invoice_form-iban">'. \Sprog\Wildcard::get('d2u_courses_payment_iban') .' *</label>';
         echo '<input type="text" class="cart_text" name="invoice_form[iban]" id="invoice_form-iban" maxlength="35" value="" onblur="alertInvalidIBAN(this);alertForeignIBAN(this.value);" required>';
-        echo ' <span id="iban_wrong">'. \Sprog\Wildcard::get('d2u_courses_cart_iban_wrong') .'</span>';
-        echo '<div id="iban_not_sepa"><p>'
+        echo ' <span id="iban_wrong" role="alert" aria-live="assertive">'. \Sprog\Wildcard::get('d2u_courses_cart_iban_wrong') .'</span>';
+        echo '<div id="iban_not_sepa" role="alert" aria-live="polite"><p>'
             .'<label class="cart_text">&nbsp;</label>'
             .\Sprog\Wildcard::get('d2u_courses_cart_iban_not_sepa') .'</p></div>';
         echo '</p>';
@@ -500,7 +506,6 @@ if (isset($form_data['invoice_form'])) {
     }
     // Bestellübersicht
     echo '<div class="registration_header cart_row_title"><h1>'. \Sprog\Wildcard::get('d2u_courses_order_overview') .'</h1></div>';
-    $has_minor_participants = false;
     foreach (TobiasKrais\D2UCourses\Cart::getCourseIDs() as $course_id) {
         $course = new TobiasKrais\D2UCourses\Course($course_id);
         echo '<div class="row">';
@@ -595,9 +600,6 @@ if (isset($form_data['invoice_form'])) {
                         }
                     }
                     echo '</li>';
-                    if ('' !== $participant['birthday'] && $cart::calculateAge($participant['birthday']) < 18) {
-                        $has_minor_participants = true;
-                    }
                 }
             }
             echo '</ul>';
@@ -608,25 +610,17 @@ if (isset($form_data['invoice_form'])) {
         echo '</div>';
         echo '</div>';
     }
-    // Child-course questions: show if admin enabled the option OR minors are in the cart
-    if ($has_minor_participants || 'active' === rex_config::get('d2u_courses', 'ask_kids_go_home_alone', 'inactive')) {
-        echo '<p class="cart_checkbox">';
-        echo '<input type="checkbox" class="cart_checkbox" name="invoice_form[kids_go_home_alone]" id="invoice_kids_go_home_alone" value="yes">';
-        echo '<label class="cart_checkbox" for="invoice_kids_go_home_alone">'. \Sprog\Wildcard::get('d2u_courses_kids_go_home_alone') .'</label></p>';
-    }
-    // May the child be photographed during the event?
-    if ($has_minor_participants || 'active' === rex_config::get('d2u_courses', 'ask_photo_permission', 'inactive')) {
-        echo '<p class="cart_checkbox">';
-        echo '<input type="checkbox" class="cart_checkbox" name="invoice_form[photo_permission]" id="invoice_photo_permission" value="yes">';
-        echo '<label class="cart_checkbox" for="invoice_photo_permission">'. \Sprog\Wildcard::get('d2u_courses_photo_permission') .'</label></p>';
-    }
-    // Optional free-text remark; label is configurable in the addon settings
-    $cart_remark_label = trim((string) rex_config::get('d2u_courses', 'cart_remark_label', ''));
-    if ('' !== $cart_remark_label) {
+    // Optional free-text remark; enabled and labelled per module. The label is
+    // sent along as a hidden field so the confirmation mail can use it (Cart.php
+    // has no access to the module settings).
+    if ($show_cart_remark && '' !== $cart_remark_label) { /** @phpstan-ignore-line */
         $cart_remark_value = (isset($form_data['invoice_form']) && is_array($form_data['invoice_form']) && isset($form_data['invoice_form']['remark'])) ? (string) $form_data['invoice_form']['remark'] : '';
+        // Unwrap a single surrounding <p> from the WYSIWYG label so it sits inline
+        $cart_remark_label_display = (preg_match('#^\s*<p>(.*)</p>\s*$#is', $cart_remark_label, $cart_remark_label_match) && false === stripos($cart_remark_label_match[1], '<p')) ? $cart_remark_label_match[1] : $cart_remark_label;
         echo '<p class="cart_remark">';
-        echo '<label class="cart_remark" for="invoice_form-remark">'. rex_escape($cart_remark_label) .'</label>';
-        echo '<textarea class="cart_remark" name="invoice_form[remark]" id="invoice_form-remark" rows="4">'. rex_escape($cart_remark_value) .'</textarea></p>';
+        echo '<label class="cart_remark" for="invoice_form-remark">'. $cart_remark_label_display .'</label>';
+        echo '<textarea class="cart_remark" name="invoice_form[remark]" id="invoice_form-remark" rows="4">'. rex_escape($cart_remark_value) .'</textarea>';
+        echo '<input type="hidden" name="invoice_form[remark_label]" value="'. rex_escape(trim(strip_tags($cart_remark_label)), 'html_attr') .'"></p>';
     }
 
     echo '<p>&nbsp;</p>';
@@ -635,13 +629,13 @@ if (isset($form_data['invoice_form'])) {
         echo '<input type="checkbox" class="cart_checkbox" name="invoice_form[conditions]" id="invoice_form-conditions" value="yes" required>';
         echo '<label class="cart_checkbox" for="invoice_form-conditions">';
         if (rex_config::get('d2u_courses', 'article_id_conditions', 0) > 0) {
-            echo '<a href="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_conditions')) .'" target="blank">'. \Sprog\Wildcard::get('d2u_courses_accept_conditions') .'</a>';
+            echo '<a href="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_conditions')) .'" target="_blank" rel="noopener noreferrer">'. \Sprog\Wildcard::get('d2u_courses_accept_conditions') .'</a>';
         }
         if (rex_config::get('d2u_courses', 'article_id_conditions', 0) > 0 && rex_config::get('d2u_courses', 'article_id_terms_of_participation', 0) > 0) {
             echo '<br>';
         }
         if (rex_config::get('d2u_courses', 'article_id_terms_of_participation', 0) > 0) {
-            echo '<a href="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_terms_of_participation')) .'" target="blank">'. \Sprog\Wildcard::get('d2u_courses_accept_terms_of_participation') .'</a>';
+            echo '<a href="'. rex_getUrl((int) rex_config::get('d2u_courses', 'article_id_terms_of_participation')) .'" target="_blank" rel="noopener noreferrer">'. \Sprog\Wildcard::get('d2u_courses_accept_terms_of_participation') .'</a>';
         }
         echo ' *</label></p>';
     }
@@ -649,7 +643,7 @@ if (isset($form_data['invoice_form'])) {
     if (rex_config::get('d2u_helper', 'article_id_privacy_policy', 0) > 0) {
         echo '<p class="cart_checkbox">';
         echo '<input type="checkbox" class="cart_checkbox" name="invoice_form[privacy_policy]" id="invoice_form-privacy_policy" value="yes" required>';
-        echo '<label class="cart_checkbox" for="invoice_form-privacy_policy"><a href="'. rex_getUrl((int) rex_config::get('d2u_helper', 'article_id_privacy_policy')) .'" target="blank">'.
+        echo '<label class="cart_checkbox" for="invoice_form-privacy_policy"><a href="'. rex_getUrl((int) rex_config::get('d2u_helper', 'article_id_privacy_policy')) .'" target="_blank" rel="noopener noreferrer">'.
             \Sprog\Wildcard::get('d2u_courses_accept_privacy_policy') .'</a> *</label>';
         echo '</p>';
     }
@@ -672,8 +666,8 @@ if (isset($form_data['invoice_form'])) {
                 foreach ($multinewsletter_group as $newsletter_group_id) {
                     $multinewsletter_group = new FriendsOfRedaxo\MultiNewsletter\Group((int) $newsletter_group_id);
                     if ($multinewsletter_group->id > 0) {
-                        echo '<input type="checkbox" class="cart_checkbox" name="invoice_form[multinewsletter][]" id="invoice_form-multinewsletter" value="'. $multinewsletter_group->id .'">';
-                        echo '<label class="cart_checkbox" for="invoice_form-multinewsletter">'. rex_escape($multinewsletter_group->name) .'</label><br>';
+                        echo '<input type="checkbox" class="cart_checkbox" name="invoice_form[multinewsletter][]" id="invoice_form-multinewsletter-'. $multinewsletter_group->id .'" value="'. $multinewsletter_group->id .'">';
+                        echo '<label class="cart_checkbox" for="invoice_form-multinewsletter-'. $multinewsletter_group->id .'">'. rex_escape($multinewsletter_group->name) .'</label><br>';
                     }
                 }
             }
@@ -819,12 +813,12 @@ if (isset($form_data['invoice_form'])) {
 
                         // Age / Birthday
                         if ($ask_age > 0 && (count($ask_age_root_category_ids) === 0 || ($course->category instanceof Category && in_array($course->category->getPartentRoot()->category_id, $ask_age_root_category_ids, true)))) { /** @phpstan-ignore-line */
-                            echo '<div class="col-12 col-sm-6 col-md-4">'. $tag_open . (1 === $ask_age ? 'd2u_courses_birthdate' : 'd2u_courses_age'). $tag_close .'</div>'; /** @phpstan-ignore-line */
+                            echo '<div class="col-12 col-sm-6 col-md-4">'. \Sprog\Wildcard::get(1 === $ask_age ? 'd2u_courses_birthdate' : 'd2u_courses_age') .'</div>'; /** @phpstan-ignore-line */
                             echo '<div class="col-10 col-sm-5 col-md-7 div_cart">';
                             if (1 === $ask_age && array_key_exists('birthday', $participant_data)) { /** @phpstan-ignore-line */
-                                echo '<input type="date" class="date" name="participant_'. $course_id .'['. $participant_id .'][birthday]" value="'. $participant_data['birthday'] .'" required placeholder="'. \Sprog\Wildcard::get('d2u_courses_date_placeholder') .'" min="1900-01-01" max="'. (date('Y-m-d')) .'">';
+                                echo '<input type="date" class="date" data-participant-age-input data-participant-key="'. $course_id .'_'. $participant_id .'" name="participant_'. $course_id .'['. $participant_id .'][birthday]" value="'. $participant_data['birthday'] .'" required placeholder="'. \Sprog\Wildcard::get('d2u_courses_date_placeholder') .'" min="1900-01-01" max="'. (date('Y-m-d')) .'">';
                             } elseif (2 === $ask_age && array_key_exists('age', $participant_data)) { /** @phpstan-ignore-line */
-                                echo '<input type="number" name="participant_'. $course_id .'['. $participant_id .'][age]" value="'. $participant_data['age'] .'" required>';
+                                echo '<input type="number" data-participant-age-input data-participant-key="'. $course_id .'_'. $participant_id .'" name="participant_'. $course_id .'['. $participant_id .'][age]" value="'. $participant_data['age'] .'" required>';
                             }
                             echo '</div>';
                         }
@@ -903,6 +897,31 @@ if (isset($form_data['invoice_form'])) {
                             }
                             echo '</select></div>';
                         }
+
+                        // Photo permission / home-alone questions, per participant.
+                        // Rendered whenever the age query and the module option are
+                        // active; only-for-minors visibility is decided server-side
+                        // for the stored value and updated live via JS on age input.
+                        if ($ask_age > 0 && ($ask_kids_go_home_alone || $ask_photo_permission)) { /** @phpstan-ignore-line */
+                            $participant_is_minor = false;
+                            if (1 === $ask_age && array_key_exists('birthday', $participant_data) && '' !== $participant_data['birthday'] && TobiasKrais\D2UCourses\Cart::calculateAge($participant_data['birthday']) < 18) { /** @phpstan-ignore-line */
+                                $participant_is_minor = true;
+                            } elseif (2 === $ask_age && array_key_exists('age', $participant_data) && '' !== $participant_data['age'] && (int) $participant_data['age'] < 18) { /** @phpstan-ignore-line */
+                                $participant_is_minor = true;
+                            }
+                            echo '<div class="col-12 minor-questions" data-participant-minor-container="'. $course_id .'_'. $participant_id .'"'. ($participant_is_minor ? '' : ' style="display:none;"') .'>';
+                            if ($ask_kids_go_home_alone) { /** @phpstan-ignore-line */
+                                echo '<p class="cart_checkbox">';
+                                echo '<input type="checkbox" class="cart_checkbox" name="participant_'. $course_id .'['. $participant_id .'][kids_go_home_alone]" id="kids_'. $course_id .'_'. $participant_id .'" value="yes"'. (array_key_exists('kids_go_home_alone', $participant_data) && 'yes' === $participant_data['kids_go_home_alone'] ? ' checked' : '') .'>';
+                                echo '<label class="cart_checkbox" for="kids_'. $course_id .'_'. $participant_id .'">'. \Sprog\Wildcard::get('d2u_courses_kids_go_home_alone') .'</label></p>';
+                            }
+                            if ($ask_photo_permission) { /** @phpstan-ignore-line */
+                                echo '<p class="cart_checkbox">';
+                                echo '<input type="checkbox" class="cart_checkbox" name="participant_'. $course_id .'['. $participant_id .'][photo_permission]" id="photo_'. $course_id .'_'. $participant_id .'" value="yes"'. (array_key_exists('photo_permission', $participant_data) && 'yes' === $participant_data['photo_permission'] ? ' checked' : '') .'>';
+                                echo '<label class="cart_checkbox" for="photo_'. $course_id .'_'. $participant_id .'">'. \Sprog\Wildcard::get('d2u_courses_photo_permission') .'</label></p>';
+                            }
+                            echo '</div>';
+                        }
                         echo '<div class="col-12">&nbsp;</div>';
                     }
                 }
@@ -933,6 +952,29 @@ if (isset($form_data['invoice_form'])) {
 
         echo '</div>';
         echo '</form>';
+        echo <<<'SCRIPT'
+<script>
+(function(){
+    if (window.d2uCourseMinorInit) { return; }
+    window.d2uCourseMinorInit = true;
+    function ageFromDate(v){ var d = new Date(v); if (isNaN(d.getTime())) { return null; } var t = new Date(); var a = t.getFullYear() - d.getFullYear(); var m = t.getMonth() - d.getMonth(); if (m < 0 || (m === 0 && t.getDate() < d.getDate())) { a--; } return a; }
+    function toggle(input){
+        var key = input.getAttribute('data-participant-key');
+        var box = document.querySelector('[data-participant-minor-container="' + key + '"]');
+        if (!box) { return; }
+        var minor = false;
+        if (input.type === 'date') { var a = input.value ? ageFromDate(input.value) : null; minor = (a !== null && a < 18); }
+        else { minor = (input.value !== '' && parseInt(input.value, 10) < 18); }
+        box.style.display = minor ? '' : 'none';
+    }
+    function handler(e){ var t = e.target; if (t && t.getAttribute && t.hasAttribute('data-participant-age-input')) { toggle(t); } }
+    document.addEventListener('input', handler);
+    document.addEventListener('change', handler);
+    var inputs = document.querySelectorAll('[data-participant-age-input]');
+    for (var i = 0; i < inputs.length; i++) { toggle(inputs[i]); }
+})();
+</script>
+SCRIPT;
         echo '</div>';
     }
 }

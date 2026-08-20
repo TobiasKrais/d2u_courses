@@ -58,11 +58,14 @@ if (!$invalidCsrf && (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === 
     $course->price_discount = (float) $form['price_discount'];
     $course->price_notes = $form['price_notes'];
     $course->price_salery_level = array_key_exists('price_salery_level', $form) ? (string) $form['price_salery_level'] : '';
-    $course->price_salery_level_details = [];
-    foreach (explode(PHP_EOL, $form['price_salery_level_details']) as $price_salery_level_details_line) {
-        $line = explode(':', $price_salery_level_details_line);
-        if (2 === count($line)) {
-            $course->price_salery_level_details[trim($line[0])] = trim($line[1]);
+    // Field is not rendered for kufer_sync / KuferSQL imports; keep the stored value then.
+    if (array_key_exists('price_salery_level_details', $form)) {
+        $course->price_salery_level_details = [];
+        foreach (explode(PHP_EOL, $form['price_salery_level_details']) as $price_salery_level_details_line) {
+            $line = explode(':', $price_salery_level_details_line);
+            if (2 === count($line)) {
+                $course->price_salery_level_details[trim($line[0])] = trim($line[1]);
+            }
         }
     }
     $course->date_start = $form['date_start'];
@@ -72,8 +75,13 @@ if (!$invalidCsrf && (1 === (int) filter_input(INPUT_POST, 'btn_save') || 1 === 
     $course->secondary_category_ids = $form['secondary_category_ids'] ?? [];
     $course->participants_max = (int) $form['participants_max'];
     $course->participants_min = (int) $form['participants_min'];
-    $course->participants_number = (int) $form['participants_number'];
-    $course->participants_wait_list = (int) $form['participants_wait_list'];
+    // Fields are not rendered when the customer_bookings plugin manages them; keep the stored value then.
+    if (array_key_exists('participants_number', $form)) {
+        $course->participants_number = (int) $form['participants_number'];
+    }
+    if (array_key_exists('participants_wait_list', $form)) {
+        $course->participants_wait_list = (int) $form['participants_wait_list'];
+    }
     $course->registration_possible = $form['registration_possible'];
     $course->online_status = array_key_exists('online_status', $form) ? 'online' : 'offline';
     $course->google_type = $form['google_type'];

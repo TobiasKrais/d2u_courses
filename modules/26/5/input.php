@@ -17,6 +17,27 @@
 		</div>
 	</div>
 </div>
+<div id="minor_questions">
+	<div class="row">
+		<div class="col-xs-12">&nbsp;</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-4">
+			<input type="checkbox" name="REX_INPUT_VALUE[10]" value="true" <?= 'REX_VALUE[10]' === 'true' ? ' checked="checked"' : '' /** @phpstan-ignore-line */ ?> class="form-control d2u_helper_toggle" />
+		</div>
+		<div class="col-xs-8">
+			Bei minderjährigen Teilnehmern fragen, ob sie nach der Veranstaltung ohne Begleitung nach Hause gehen dürfen
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-4">
+			<input type="checkbox" name="REX_INPUT_VALUE[11]" value="true" <?= 'REX_VALUE[11]' === 'true' ? ' checked="checked"' : '' /** @phpstan-ignore-line */ ?> class="form-control d2u_helper_toggle" />
+		</div>
+		<div class="col-xs-8">
+			Bei minderjährigen Teilnehmern fragen, ob das Kind während der Veranstaltung fotografiert werden darf
+		</div>
+	</div>
+</div>
 <div class="row">
 	<div class="col-xs-12">&nbsp;</div>
 </div>
@@ -45,6 +66,7 @@
 <script>
 	function toggleDetailsView() {
 		if($("select[name='REX_INPUT_VALUE[1]']").val() > 0) {
+			$("#minor_questions").fadeIn();
 			$("#all_categories").fadeIn();
 			if($("input[name='REX_INPUT_VALUE[3]']").is(':checked')) {
 				$("#categories").fadeIn();
@@ -54,6 +76,7 @@
 			}
 		}
 		else {
+			$("#minor_questions").hide();
 			$("#all_categories").hide();
 			$("#categories").hide();
 		}
@@ -136,6 +159,38 @@
     }
 ?>
 
+<div class="row">
+<div class="row">
+	<div class="col-xs-4">
+		<input type="checkbox" name="REX_INPUT_VALUE[12]" value="true" <?= 'REX_VALUE[12]' === 'true' ? ' checked="checked"' : '' /** @phpstan-ignore-line */ ?> class="form-control d2u_helper_toggle" onChange="toggleRemarkView()" />
+	</div>
+	<div class="col-xs-8">
+		Optionales Freitextfeld im Warenkorb anzeigen
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">&nbsp;</div>
+</div>
+<div class="row" id="cart_remark_label_row">
+	<div class="col-xs-12 col-sm-4">Beschriftung des Freitextfeldes</div>
+	<div class="col-xs-12 col-sm-8">
+		<textarea name="REX_INPUT_VALUE[13]" class="form-control <?= \TobiasKrais\D2UHelper\BackendHelper::getWYSIWYGEditorClass('simple') ?>" rows="3">REX_VALUE[13]</textarea>
+	</div>
+	<div class="col-xs-12">&nbsp;</div>
+</div>
+<script>
+	function toggleRemarkView() {
+		if($("input[name='REX_INPUT_VALUE[12]']").is(':checked')) {
+			$("#cart_remark_label_row").fadeIn();
+		}
+		else {
+			$("#cart_remark_label_row").hide();
+		}
+	}
+	$(document).ready(function() {
+		toggleRemarkView();
+	});
+</script>
 <div class="row">
 	<div class="col-xs-12">
 		<p>Einstellung für den Warenkorb werden im <a href="index.php?page=d2u_courses/settings/settings">D2U Veranstaltungen Addon > Einstellungen</a> verwaltet.</p>
