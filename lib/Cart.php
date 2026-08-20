@@ -887,6 +887,12 @@ class Cart
         if (isset($invoice_address['kids_go_home_alone']) && 'yes' === $invoice_address['kids_go_home_alone']) {
             $body .= '<br>'. \Sprog\Wildcard::get('d2u_courses_kids_go_home_alone') .'<br>';
         }
+        if (isset($invoice_address['photo_permission']) && 'yes' === $invoice_address['photo_permission']) {
+            $body .= '<br>'. \Sprog\Wildcard::get('d2u_courses_photo_permission') .'<br>';
+        }
+        if (isset($invoice_address['remark']) && '' !== trim((string) $invoice_address['remark'])) {
+            $body .= '<br><b>'. rex_escape((string) rex_config::get('d2u_courses', 'cart_remark_label', 'Bemerkung')) .':</b><br>'. nl2br(rex_escape((string) $invoice_address['remark'])) .'<br>';
+        }
 
         // invoice data
         $body .= '<br><b>Adresse:</b><br>';

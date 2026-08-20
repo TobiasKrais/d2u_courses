@@ -54,6 +54,7 @@ if (!$invalidCsrf && 'save' === filter_input(INPUT_POST, 'btn_save')) {
     $settings['allow_company'] = array_key_exists('allow_company', $settings);
     $settings['allow_company_bank_transfer'] = array_key_exists('allow_company_bank_transfer', $settings);
     $settings['ask_kids_go_home_alone'] = array_key_exists('ask_kids_go_home_alone', $settings) ? 'active' : 'inactive';
+    $settings['ask_photo_permission'] = array_key_exists('ask_photo_permission', $settings) ? 'active' : 'inactive';
     $settings['ask_vacation_pass'] = array_key_exists('ask_vacation_pass', $settings) ? 'active' : 'inactive';
     $settings['forward_single_course'] = array_key_exists('forward_single_course', $settings) ? 'active' : 'inactive';
     $settings['lang_wildcard_overwrite'] = array_key_exists('lang_wildcard_overwrite', $settings) ? 'true' : 'false';
@@ -416,6 +417,8 @@ if ('form_saved' === filter_input(INPUT_GET, 'message')) {
 						BackendHelper::form_linkfield('d2u_courses_settings_article_conditions', '3', (int) rex_config::get('d2u_courses', 'article_id_conditions'), (int) rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
 						BackendHelper::form_linkfield('d2u_courses_settings_article_terms_of_participation', '4', (int) rex_config::get('d2u_courses', 'article_id_terms_of_participation'), (int) rex_config::get('d2u_helper', 'default_lang', rex_clang::getStartId()));
 						BackendHelper::form_checkbox('d2u_courses_settings_ask_kids_go_home_alone', 'settings[ask_kids_go_home_alone]', 'active', 'active' === (string) rex_config::get('d2u_courses', 'ask_kids_go_home_alone'));
+						BackendHelper::form_checkbox('d2u_courses_settings_ask_photo_permission', 'settings[ask_photo_permission]', 'active', 'active' === (string) rex_config::get('d2u_courses', 'ask_photo_permission'));
+						BackendHelper::form_input('d2u_courses_settings_cart_remark_label', 'settings[cart_remark_label]', (string) rex_config::get('d2u_courses', 'cart_remark_label'), true, false, 'text');
 						if (!Extension::isActive('kufer_sync')) {
 							BackendHelper::form_checkbox('d2u_courses_settings_ask_vacation_pass', 'settings[ask_vacation_pass]', 'active', 'active' === (string) rex_config::get('d2u_courses', 'ask_vacation_pass'));
                         }

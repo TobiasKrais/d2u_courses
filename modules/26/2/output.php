@@ -608,11 +608,25 @@ if (isset($form_data['invoice_form'])) {
         echo '</div>';
         echo '</div>';
     }
-    // Are minors allowed to retun home by their own?
-    if ('active' === rex_config::get('d2u_courses', 'ask_kids_go_home_alone', 'inactive')) {
+    // Child-course questions: show if admin enabled the option OR minors are in the cart
+    if ($has_minor_participants || 'active' === rex_config::get('d2u_courses', 'ask_kids_go_home_alone', 'inactive')) {
         echo '<p class="cart_checkbox">';
         echo '<input type="checkbox" class="cart_checkbox" name="invoice_form[kids_go_home_alone]" id="invoice_kids_go_home_alone" value="yes">';
         echo '<label class="cart_checkbox" for="invoice_kids_go_home_alone">'. \Sprog\Wildcard::get('d2u_courses_kids_go_home_alone') .'</label></p>';
+    }
+    // May the child be photographed during the event?
+    if ($has_minor_participants || 'active' === rex_config::get('d2u_courses', 'ask_photo_permission', 'inactive')) {
+        echo '<p class="cart_checkbox">';
+        echo '<input type="checkbox" class="cart_checkbox" name="invoice_form[photo_permission]" id="invoice_photo_permission" value="yes">';
+        echo '<label class="cart_checkbox" for="invoice_photo_permission">'. \Sprog\Wildcard::get('d2u_courses_photo_permission') .'</label></p>';
+    }
+    // Optional free-text remark; label is configurable in the addon settings
+    $cart_remark_label = trim((string) rex_config::get('d2u_courses', 'cart_remark_label', ''));
+    if ('' !== $cart_remark_label) {
+        $cart_remark_value = (isset($form_data['invoice_form']) && is_array($form_data['invoice_form']) && isset($form_data['invoice_form']['remark'])) ? (string) $form_data['invoice_form']['remark'] : '';
+        echo '<p class="cart_remark">';
+        echo '<label class="cart_remark" for="invoice_form-remark">'. rex_escape($cart_remark_label) .'</label>';
+        echo '<textarea class="cart_remark" name="invoice_form[remark]" id="invoice_form-remark" rows="4">'. rex_escape($cart_remark_value) .'</textarea></p>';
     }
 
     echo '<p>&nbsp;</p>';
