@@ -165,18 +165,18 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
 					<div class="panel-body-wrapper slide">
 						<?php
                             BackendHelper::form_input('d2u_helper_name', 'form[name]', $course->name, true, $readonly);
-                            echo '<p class="rex-note">'. rex_i18n::msg('d2u_courses_seo_hint_meta_title') .'</p>';
+                            echo '<p class="rex-note">'. rex_i18n::msg('d2u_helper_seo_hint_meta_title') .'</p>';
                             BackendHelper::form_input('d2u_courses_course_number', 'form[course_number]', $course->course_number, false, $readonly, 'text');
                             BackendHelper::form_input('d2u_courses_instructor', 'form[instructor]', $course->instructor, false, $readonly, 'text');
                             BackendHelper::form_checkbox('d2u_helper_online_status', 'form[online_status]', 'online', 'online' === $course->online_status, $readonly);
                             BackendHelper::form_input('d2u_courses_teaser', 'form[teaser]', $course->teaser, false, $readonly, 'text');
-                            echo '<p class="rex-note">'. rex_i18n::msg('d2u_courses_seo_hint_meta_description') .'</p>';
+                            echo '<p class="rex-note">'. rex_i18n::msg('d2u_helper_seo_hint_meta_description') .'</p>';
                             BackendHelper::form_textarea('d2u_courses_description', 'form[description]', $course->description, 5, false, $readonly, true);
                             BackendHelper::form_textarea('d2u_courses_details_course', 'form[details_course]', $course->details_course, 3, false, $readonly, true);
                             BackendHelper::form_textarea('d2u_courses_details_deadline', 'form[details_deadline]', $course->details_deadline, 3, false, $readonly, false);
                             BackendHelper::form_input('d2u_courses_details_age', 'form[details_age]', $course->details_age, false, $readonly, 'text');
                             BackendHelper::form_mediafield('d2u_helper_picture', '1', $course->picture, $readonly);
-                            echo '<p class="rex-note">'. rex_i18n::msg('d2u_courses_seo_hint_image') .'</p>';
+                            echo '<p class="rex-note">'. rex_i18n::msg('d2u_helper_seo_hint_image') .'</p>';
                             BackendHelper::form_medialistfield('d2u_courses_downloads', 1, $course->downloads, $readonly);
                             if (!\TobiasKrais\D2UCourses\Extension::isActive('kufer_sync') && 'KuferSQL' !== $course->import_type) {
                                 BackendHelper::form_checkbox('d2u_courses_price_salery_level', 'form[price_salery_level]', 'true', $course->price_salery_level, $readonly);

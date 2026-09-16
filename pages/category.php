@@ -135,11 +135,11 @@ if ('edit' === $func || 'clone' === $func || 'add' === $func) {
 				<?php
                     $category = new TobiasKrais\D2UCourses\Category($entry_id);
                     BackendHelper::form_input('d2u_helper_name', 'form[name]', $category->name, true, false);
-                    echo '<p class="rex-note">'. rex_i18n::msg('d2u_courses_seo_hint_meta_title') .'</p>';
+                    echo '<p class="rex-note">'. rex_i18n::msg('d2u_helper_seo_hint_meta_title') .'</p>';
                     BackendHelper::form_textarea('d2u_courses_description', 'form[description]', $category->description, 5, false, false, true);
                     BackendHelper::form_input_color_pair('d2u_courses_categories_color', 'form[color]', $category->color, 'form[color_dark]', '' !== $category->color_dark ? $category->color_dark : $category->color, true);
                     BackendHelper::form_mediafield('d2u_helper_picture', '1', $category->picture, false);
-                    echo '<p class="rex-note">'. rex_i18n::msg('d2u_courses_seo_hint_image') .'</p>';
+                    echo '<p class="rex-note">'. rex_i18n::msg('d2u_helper_seo_hint_image') .'</p>';
                     $options_parents = [-1 => rex_i18n::msg('d2u_courses_categories_parent_category_none')];
                     foreach (TobiasKrais\D2UCourses\Category::getAllParents() as $parent) {
                         if ($parent->category_id !== $category->category_id) {
