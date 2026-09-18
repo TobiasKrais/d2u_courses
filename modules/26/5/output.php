@@ -1,4 +1,5 @@
 <?php
+/* d2u_translate: 13:html */
 
 use TobiasKrais\D2UCourses\Category;
 
